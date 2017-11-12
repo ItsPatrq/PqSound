@@ -17,24 +17,24 @@ class BufferLoader {
 
     loadBuffer = function (url, index) {
         // Load buffer asynchronously
-        var request = new XMLHttpRequest();
+        let request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.responseType = 'arraybuffer';
 
-        var loader = this;
+        let thisBuffer = this;
 
         request.onload = function () {
             // Asynchronously decode the audio file data in request.response
-            loader.mainApp.context.decodeAudioData(
+            thisBuffer.mainApp.context.decodeAudioData(
                 request.response,
                 function (buffer) {
                     if (!buffer) {
                         alert('error decoding file data: ' + url);
                         return;
                     }
-                    loader.bufferList[index] = buffer;
-                    if (++loader.loadCount == loader.urlList.length)
-                        loader.onload(loader.bufferList);
+                    thisBuffer.bufferList[index] = buffer;
+                    if (++thisBuffer.loadCount == thisBuffer.urlList.length)
+                        thisBuffer.onload(thisBuffer.bufferList);
                 },
                 function (error) {
                     console.error('decodeAudioData error', error);

@@ -6,7 +6,7 @@ const KeyboardComponent = (props) => {
     if (props.show) {
         var renderOctaves = new Array;
         for (var i = 0; i < props.octaves; i++) {
-            renderOctaves.push(<Octave index={i} key={i.toString()} handleClick={props.handleClick} />);
+            renderOctaves.push(<Octave index={i} key={i.toString()} handleDown={props.handleDown} />);
         }
         return (
             <div className="keyboardBody">

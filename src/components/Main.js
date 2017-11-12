@@ -4,6 +4,7 @@ require('styles/App.css');
 require('styles/Keyboard.css');
 
 const BufferLoader = require('../engine/BufferLoader');
+const Sound = require('../engine/Sound');
 
 import React from 'react';
 import Text from './Text';
@@ -17,8 +18,10 @@ class AppComponent extends React.Component {
   constructor() {
     super();
     this.keyboardBuffers = new Array;
+    this.keys = new Array;
     this.bufferLoader = null;
     this.context = null;
+    this.lastPressedKey = null;
 
     this.state = {
       text: 'Not clicked!',
@@ -26,26 +29,35 @@ class AppComponent extends React.Component {
       numberOfOctaves: 1,
       firstOctave: 1
     };
+
+    document.onmouseup = this.handleUp.bind(this);
   }
 
   componentDidMount() {
-    this.bufferLoader =new BufferLoader(
+    this.bufferLoader = new BufferLoader(
       this,
       pianoSounds.pianoSounds,
       function (bufferList) {
         for (let i = 0; i < bufferList.length; i++) {
-          this.mainApp.keyboardBuffers.push(this.mainApp.context.createBufferSource());
-          this.mainApp.keyboardBuffers[i].buffer = bufferList[i];
-          this.mainApp.keyboardBuffers[i].connect(this.mainApp.context.destination);
+          this.mainApp.keyboardBuffers.push(bufferList[i]);
         }
-        console.log(this);
+        for (let i = 0; i < this.mainApp.state.numberOfOctaves * 12; i++) {
+          this.mainApp.keys.push(new Sound(this.mainApp.context, this.mainApp.keyboardBuffers[i]));
+        }
       }
     );
     this.bufferLoader.load();
   }
 
-  handleClick(i) {
-    this.keyboardBuffers[i].noteOn(0);
+  handleDown(i) {
+    this.lastPressedKey = i;
+    this.keys[i].play();
+  }
+  handleUp() {
+    if (this.lastPressedKey !== null) {
+      this.keys[this.lastPressedKey].stop();
+      this.lastPressedKey = null;
+    }
   }
 
   onButtonClicked() {
@@ -82,7 +94,7 @@ class AppComponent extends React.Component {
                 </Col>
               </Col>
               <Col className="keyboard">
-                <Keyboard show={this.state.showKeyboard} octaves={this.state.numberOfOctaves} handleClick={this.handleClick.bind(this)} />
+                <Keyboard show={this.state.showKeyboard} octaves={this.state.numberOfOctaves} handleDown={this.handleDown.bind(this)} />
               </Col>
             </Col>
           </Row>
