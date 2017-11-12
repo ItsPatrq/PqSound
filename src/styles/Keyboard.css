@@ -1,0 +1,113 @@
+.keyboard {
+    background-color: #272927;
+    color: #000000;
+    position: absolute;
+    text-align: center;
+    display: block;
+    overflow-x:auto;
+    overflow-y:hidden;
+    white-space: nowrap;
+    top: 100%;
+    transform: translateY(-100%);
+}
+
+
+.keyboardBody {
+    width: 100%;
+    position: relative;
+    float: left;
+}
+
+.colorLine {
+    background-color: #9C0413;
+    color: #000000;
+    height: 5px;
+    position: absolute;
+    top: 1px;
+    width: 100%;
+    z-index: 100;
+    display: block;
+}
+
+.octave {
+    position: relative;
+    /* float: left; */
+    display: inline-block;    
+}
+
+.whiteKey {
+    float: left;
+    width: 88px;
+    height: 460px;
+    background-color: #F4F4F4;
+    border: 1px solid #626262;
+    position: relative;
+    -moz-border-radius: 0 0 15px 15px;
+    border-radius: 0 0 15px 15px;
+    background-image: -webkit-gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
+    -webkit-box-shadow: 0 -10px 2px 0px #838383 none, 0 -60px 40px 10px #EEEEEE inset;
+    background-image: -moz-linear-gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
+    -moz-box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px #EEEEEE inset;
+    background-image: -gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
+    box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px #EEEEEE inset;
+}
+
+div.whiteKey:active,
+div.whiteKey.pressed {
+  border: 1px solid #343434;
+	background-image: -webkit-gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
+	-webkit-box-shadow: 0 -5px 20px -3px #272927 inset;
+	
+	background-image: -moz-linear-gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
+	-moz-box-shadow: 0 -5px 2px 0px #838383 inset,0 -3px 20px -3px #272927 inset;
+	
+	background-image: -gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
+	box-shadow: 0 -5px 20px -3px #272927 inset;
+}
+.blackKey {
+	float: left;
+	width: 44px;
+	height: 320px;
+	background-color: #000000;
+	border-bottom: 2px solid #000;
+	border-left: 2px solid #000;
+	border-right: 2px solid #000;
+	position: absolute;
+	top: 6px;
+	z-index: 100;
+	-moz-border-radius: 0 0 5px 5px;
+	border-radius: 0 0 5px 5px;
+	border-top: 0px;
+	-moz-box-shadow: 0 -9px 10px 9px #303030 inset, 0 -15px #F7F7F7 inset;
+	-webkit-box-shadow: 0 -9px 10px 9px #303030 inset, 0 -15px #F7F7F7 inset;
+	box-shadow: 0 -9px 10px 9px #303030 inset, 0 -15px #F7F7F7 inset;
+}
+
+div.blackKey:active,
+div.blackKey.pressed {
+  border: 1px solid #CECECE;
+  border-top: 1px solid #626262;
+	-moz-box-shadow: 0 0 6px 7px #303030 inset, 0 -5px #F7F7F7 inset;
+	-webkit-box-shadow: 0 0 6px 7px #303030 inset, 0 -5px #F7F7F7 inset;
+	box-shadow: 0 0 6px 7px #303030 inset, 0 -5px #F7F7F7 inset;
+}
+
+div.flatKeys {
+
+}
+
+div.flatKeys :nth-child(1) {
+	margin-left: 67px;
+}
+div.flatKeys :nth-child(2) {
+	margin-left: 157px;
+}
+div.flatKeys :nth-child(3) {
+	margin-left: 338px;
+}
+div.flatKeys :nth-child(4) {
+	margin-left: 428px;
+}
+div.flatKeys :nth-child(5) {
+	margin-left: 517px;
+}
