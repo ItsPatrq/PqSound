@@ -1,3 +1,5 @@
+require('styles/Keyboard.css');
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import Octave from './Octave';

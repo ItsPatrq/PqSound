@@ -1,7 +1,8 @@
 class Sound {
-  constructor(context, buffer) {
+  constructor(context, buffer, volume) {
     this.context = context;
     this.buffer = buffer;
+    this.volume = volume;
   }
 
   setup() {
@@ -10,7 +11,7 @@ class Sound {
     this.source.buffer = this.buffer;
     this.source.connect(this.gainNode);
     this.gainNode.connect(this.context.destination);
-    this.gainNode.gain.setValueAtTime(0.8, this.context.currentTime);
+    this.gainNode.gain.setValueAtTime(this.volume, this.context.currentTime);
   }
 
   play() {

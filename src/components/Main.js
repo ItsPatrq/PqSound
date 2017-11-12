@@ -1,7 +1,6 @@
 require('styles/reset.css');
 require('normalize.css/normalize.css');
 require('styles/App.css');
-require('styles/Keyboard.css');
 
 const BufferLoader = require('../engine/BufferLoader');
 const Sound = require('../engine/Sound');
@@ -13,6 +12,7 @@ import Keyboard from './Keyboard/Keyboard';
 import TopNavBar from './TopNavBar';
 import { Col, Grid, Row } from 'react-bootstrap';
 import pianoSounds from '../engine/audioFiles';
+import TrackList from './TrackList/TrackList';
 
 class AppComponent extends React.Component {
   constructor() {
@@ -27,7 +27,8 @@ class AppComponent extends React.Component {
       text: 'Not clicked!',
       showKeyboard: false,
       numberOfOctaves: 1,
-      firstOctave: 1
+      firstOctave: 1,
+      trackList: new Array
     };
 
     document.onmouseup = this.handleUp.bind(this);
@@ -42,8 +43,11 @@ class AppComponent extends React.Component {
           this.mainApp.keyboardBuffers.push(bufferList[i]);
         }
         for (let i = 0; i < this.mainApp.state.numberOfOctaves * 12; i++) {
-          this.mainApp.keys.push(new Sound(this.mainApp.context, this.mainApp.keyboardBuffers[i]));
+          this.mainApp.keys.push(new Sound(this.mainApp.context, this.mainApp.keyboardBuffers[i], 1));
         }
+        this.mainApp.setState(prevState => ({
+          trackList: [...prevState.trackList, { 'name': 'piano', 'volume': 1 }, { 'name': 'percussion', 'volume': 1}]
+        }));
       }
     );
     this.bufferLoader.load();
@@ -53,6 +57,7 @@ class AppComponent extends React.Component {
     this.lastPressedKey = i;
     this.keys[i].play();
   }
+
   handleUp() {
     if (this.lastPressedKey !== null) {
       this.keys[this.lastPressedKey].stop();
@@ -65,6 +70,7 @@ class AppComponent extends React.Component {
       text: 'Clicked!',
       showKeyboard: !prevState.showKeyboard
     }));
+    console.log(this.state);
   }
 
   render() {
@@ -72,6 +78,11 @@ class AppComponent extends React.Component {
       <div className="main">
         <TopNavBar />
         <Grid fluid>
+          <Row>
+            <Col xs={12} className="nopadding infoBar">
+              <center><p>Top info bar: *start* *stop* *BPM:120* *itp*</p></center>
+            </Col>
+          </Row>
           <Row>
             <Col xs={2} className="nopadding">
               <Col xs={6} className="trackDetails nopadding">
@@ -82,8 +93,8 @@ class AppComponent extends React.Component {
               </Col>
             </Col>
             <Col xs={10} className="nopadding">
-              <Col xs={2} className="trackList nopadding">
-                trackList
+              <Col xs={2} className="nopadding">
+                <TrackList trackList={this.state.trackList} />
               </Col>
               <Col xs={10} className="nopadding trackList">
                 <Col className="tempRed nopadding">

@@ -8,7 +8,6 @@ class BufferLoader {
 
         try {
             this.mainApp.context = new AudioContext();
-            console.log(this.mainApp);
         } catch (e) {
             //TODO: error panel
             alert('Web Audio API is not supported in this browser');
