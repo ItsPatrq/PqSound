@@ -4,7 +4,6 @@ require('styles/App.css');
 
 const BufferLoader = require('../engine/BufferLoader');
 const Sound = require('../engine/Sound');
-const Track = require('../engine/Track');
 
 import React from 'react';
 import Text from './Text';
@@ -13,7 +12,9 @@ import Keyboard from './Keyboard/Keyboard';
 import TopNavBar from './TopNavBar';
 import { Col, Grid, Row } from 'react-bootstrap';
 import pianoSounds from '../engine/audioFiles';
-import TrackList from './TrackList/TrackListComponent';
+import TrackList from './TrackList/Pq.Ui.TrackList';
+import Track from '../engine/Track';
+import * as Utils from '../engine/Pq.Utils';
 
 class AppComponent extends React.Component {
   constructor() {
@@ -66,8 +67,17 @@ class AppComponent extends React.Component {
     }
   }
 
-  trackListChange(action, index){
-    
+  trackListChange(action, index) {
+    switch (action) {
+      case Utils.updateActions.add: {
+        this.setState(prevState => ({
+          trackList: [...prevState.trackList, new Track('Piano1', 'sampler', 100, false, false, 1)]
+        }));
+      }
+      default: {
+
+      }
+    }
   }
 
   onButtonClicked() {
@@ -99,7 +109,7 @@ class AppComponent extends React.Component {
             </Col>
             <Col xs={10} className="nopadding">
               <Col xs={2} className="nopadding">
-                <TrackList trackList={this.state.trackList} />
+                <TrackList trackList={this.state.trackList} onModelChange={this.trackListChange.bind(this)} />
               </Col>
               <Col xs={10} className="nopadding trackList">
                 <Col className="tempRed nopadding">
