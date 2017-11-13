@@ -4,6 +4,7 @@ require('styles/App.css');
 
 const BufferLoader = require('../engine/BufferLoader');
 const Sound = require('../engine/Sound');
+const Track = require('../engine/Track');
 
 import React from 'react';
 import Text from './Text';
@@ -12,7 +13,7 @@ import Keyboard from './Keyboard/Keyboard';
 import TopNavBar from './TopNavBar';
 import { Col, Grid, Row } from 'react-bootstrap';
 import pianoSounds from '../engine/audioFiles';
-import TrackList from './TrackList/TrackList';
+import TrackList from './TrackList/TrackListComponent';
 
 class AppComponent extends React.Component {
   constructor() {
@@ -46,7 +47,7 @@ class AppComponent extends React.Component {
           this.mainApp.keys.push(new Sound(this.mainApp.context, this.mainApp.keyboardBuffers[i], 1));
         }
         this.mainApp.setState(prevState => ({
-          trackList: [...prevState.trackList, { 'name': 'piano', 'volume': 1 }, { 'name': 'percussion', 'volume': 1}]
+          trackList: [...prevState.trackList, new Track('Piano1', 'sampler', 100, false, false, 1)]
         }));
       }
     );
@@ -63,6 +64,10 @@ class AppComponent extends React.Component {
       this.keys[this.lastPressedKey].stop();
       this.lastPressedKey = null;
     }
+  }
+
+  trackListChange(action, index){
+    
   }
 
   onButtonClicked() {

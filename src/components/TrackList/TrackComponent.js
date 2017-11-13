@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Track = (props) => {    
+const Track = (props) => {
     return (
         <div className="trackRow">
             <p className="text">Name: {props.trackDetails.name}</p>
@@ -9,7 +9,7 @@ const Track = (props) => {
             <input
                 type="range"
                 min="0" max="100"
-                value={props.trackDetails.volume} 
+                value={props.trackDetails.volume}
                 onChange={props.handleInputChange}/>
 
         </div>
