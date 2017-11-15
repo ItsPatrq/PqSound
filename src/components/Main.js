@@ -15,7 +15,13 @@ import pianoSounds from '../engine/audioFiles';
 import TrackList from './TrackList/Pq.Ui.TrackList';
 import Track from '../engine/Track';
 import * as Utils from '../engine/Pq.Utils';
+import { connect } from 'react-redux';
 
+@connect((store)=> {
+  return {
+    trackName: store.trackList.tracks.name
+  };
+})
 class AppComponent extends React.Component {
   constructor() {
     super();
@@ -89,6 +95,7 @@ class AppComponent extends React.Component {
   }
 
   render() {
+    console.log(this.props)
     return (
       <div className="main">
         <TopNavBar />
