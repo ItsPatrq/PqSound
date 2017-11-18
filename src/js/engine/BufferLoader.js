@@ -36,7 +36,7 @@ class BufferLoader {
                         thisBuffer.onload(thisBuffer.bufferList);
                 },
                 function (error) {
-                    console.error('decodeAudioData error', error);
+                    alert('decodeAudioData error', error);
                 }
             );
         }

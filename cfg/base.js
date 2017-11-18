@@ -16,10 +16,11 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      actions: `${defaultSettings.srcPath}/actions/`,
-      components: `${defaultSettings.srcPath}/components/`,
-      sources: `${defaultSettings.srcPath}/sources/`,
-      stores: `${defaultSettings.srcPath}/stores/`,
+      actions: `${defaultSettings.srcPath}/js/actions/`,
+      reducers: `${defaultSettings.srcPath}/js/reducers/`,
+      components: `${defaultSettings.srcPath}/js/components/`,
+      containers: `${defaultSettings.srcPath}/js/containers/`,
+      engine: `${defaultSettings.srcPath}/js/engine/`,
       styles: `${defaultSettings.srcPath}/styles/`,
       config: `${defaultSettings.srcPath}/config/` + process.env.REACT_WEBPACK_ENV,
       'react/lib/ReactMount': 'react-dom/lib/ReactMount'

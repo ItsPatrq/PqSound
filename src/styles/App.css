@@ -38,16 +38,10 @@ body {
   height: calc(100vh - 100px);
 }
 
-.trackList {
-  border-style: solid;
-  border-width: thin;
-  height: calc(100vh - 100px);
-}
-
 .nopadding {
   padding: 0 !important;
   margin: 0 !important;
-  overflow: hidden;  
+  overflow: hidden;
 }
 
 .infoBar {

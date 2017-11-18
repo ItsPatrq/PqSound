@@ -24,6 +24,7 @@ const OctaveComponent = (props) => {
     );
 }
 OctaveComponent.propTypes = {
-    index: PropTypes.number.isRequired
+    index: PropTypes.number.isRequired,
+    handleDown: PropTypes.func.isRequired
 }
 export default OctaveComponent;

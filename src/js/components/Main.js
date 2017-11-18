@@ -16,12 +16,8 @@ import TrackList from './TrackList/Pq.Ui.TrackList';
 import Track from '../engine/Track';
 import * as Utils from '../engine/Pq.Utils';
 import { connect } from 'react-redux';
+import {addTrack} from '../actions/trackListActions'
 
-@connect((store)=> {
-  return {
-    trackName: store.trackList.tracks.name
-  };
-})
 class AppComponent extends React.Component {
   constructor() {
     super();
@@ -95,7 +91,6 @@ class AppComponent extends React.Component {
   }
 
   render() {
-    console.log(this.props)
     return (
       <div className="main">
         <TopNavBar />
@@ -137,4 +132,10 @@ class AppComponent extends React.Component {
   }
 }
 
-export default AppComponent;
+const mapStateToProps = (state) => {
+  return {
+    trackName: state.tracks.trackList
+  }
+}
+
+export default connect(mapStateToProps)(AppComponent);

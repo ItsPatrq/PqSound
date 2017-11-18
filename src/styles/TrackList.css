@@ -1,6 +1,19 @@
+.trackList {
+    border-style: solid;
+    border-width: thin;
+    height: calc(100vh - 100px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
 .trackRow {
     margin-top: 5px;
     margin-bottom: 5px;
-    height: 75px;
+    height: 50px;
     background-color: #9E9E9E;
+    overflow-x: hidden;
+}
+
+.active {
+    background-color: red;
 }
