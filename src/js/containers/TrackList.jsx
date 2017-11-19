@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Glyphicon } from 'react-bootstrap';
 import Track from 'components/TrackList/Track';
 import * as trackListActions from 'actions/trackListActions';
-import { fetchSamplerInstrument, loadKeyboardSounds } from 'actions/webAudioActions';
+import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Pq.Utils';
 
 class TrackList extends React.Component {

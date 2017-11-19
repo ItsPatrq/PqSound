@@ -66,6 +66,7 @@ export default function reducer(state = {
             for (let i = 0; i < state.bufferLoader.bufferList.length; i++) {
                 newSamplerInstrumentsSounds[instrumentIndex].buffer.push(state.bufferLoader.bufferList[i]);
             }
+            state.bufferLoader.bufferList.length = 0;
             newSamplerInstrumentsSounds[instrumentIndex].loaded = true;
 
             return {

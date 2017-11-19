@@ -4,3 +4,9 @@ export function changeOctaveNumber(number) {
         payload: number
     }
 }
+
+export function switchKeyboardVisibility(){
+    return{
+        type: 'SWITCH_KEYBOARD_VISIBILITY'
+    }
+}

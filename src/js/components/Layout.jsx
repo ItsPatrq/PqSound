@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Grid, Row } from 'react-bootstrap';
 
 import TopNavBar from 'containers/TopNavBar';
-import TopInfoBar from 'containers/TopInfoBar';
+import ControlBar from 'containers/ControlBar';
 import TrackDetails from 'containers/TrackDetails';
 import TrackList from 'containers/TrackList';
 import CompositionGrid from 'containers/CompositionGrid';
@@ -14,7 +14,7 @@ const Layout = (/*props*/) => {
             <TopNavBar />
             <Grid fluid>
                 <Row>
-                    <TopInfoBar />
+                    <ControlBar />
                 </Row>
                 <Row>
                     <Col xs={2} className="nopadding">
