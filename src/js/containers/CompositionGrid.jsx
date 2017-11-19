@@ -3,7 +3,7 @@ import { Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import TrackCompositionRow from 'components/CompositionGrid/TrackCompositionRow';
 import PianoRoll from 'components/CompositionGrid/PianoRoll';
-import { showPianoRoll, updateTrackComposition } from 'actions/compositionActions';
+import { showPianoRoll } from 'actions/compositionActions';
 
 class CompositionGrid extends React.Component {
     constructor() {

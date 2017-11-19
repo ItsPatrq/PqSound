@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Glyphicon } from 'react-bootstrap';
-import Track from 'components/TrackList/Track';
+import Track from 'components/Track';
 import * as trackListActions from 'actions/trackListActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
-import * as Utils from 'engine/Pq.Utils';
+import * as Utils from 'engine/Utils';
 
 class TrackList extends React.Component {
     constructor() {

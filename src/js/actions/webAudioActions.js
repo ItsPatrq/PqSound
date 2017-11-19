@@ -15,7 +15,6 @@ export function fetchSamplerInstrument(instrumentName, needToUpdateKeyboard=fals
                         type: 'FETCHED_SAMPLER_INSTRUMENT',
                         payload: instrumentName
                     })
-                    console.log('helo');
                     if (needToUpdateKeyboard) {
                         dispatch({
                             type: 'LOAD_KEYBOARD_SOUNDS',

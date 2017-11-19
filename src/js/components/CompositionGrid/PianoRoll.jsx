@@ -1,9 +1,8 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
 import QuarterNote from './QuarterNote';
-import * as Utils from 'engine/Pq.Utils';
 
-const PianoRoll = (props) => {
+const PianoRoll = () => {
     let keyRows = new Array;
     for (let i = 0; i < 88; i++) {
         let rowClassName;

@@ -1,4 +1,4 @@
-import * as Utils from '../engine/Pq.Utils';
+import * as Utils from '../engine/Utils';
 
 export default function reducer(state = {
     bitsInComposition: 48,

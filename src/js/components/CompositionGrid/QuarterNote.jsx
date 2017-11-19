@@ -1,7 +1,6 @@
 import React from 'react';
 import { Col } from 'react-bootstrap';
 import SixteenthNote from './SixteenthNote'
-import * as Utils from 'engine/Pq.Utils';
 
 const QuarterNote = (props) => {
     let quarterNote = new Array;

@@ -1,4 +1,4 @@
-import * as Utils from 'engine/Pq.Utils';
+import * as Utils from 'engine/Utils';
 import * as AudioFiles from 'engine/audioFiles';
 import BufferLoader from 'engine/BufferLoader';
 import Sound from 'engine/Sound';

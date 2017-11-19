@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import * as Utils from 'engine/Pq.Utils';
+import * as Utils from 'engine/Utils';
 import { updateTrackComposition } from 'actions/compositionActions';
 
 const SixteenthNote = (props) => {
@@ -15,7 +15,7 @@ const SixteenthNote = (props) => {
             Utils.isNullOrUndefined(props.tracksCompositions[props.pianoRollTrack][props.pianoRollRegion]) ||
             Utils.isNullOrUndefined(props.tracksCompositions[props.pianoRollTrack][props.pianoRollRegion]) ||
             Utils.isNullOrUndefined(props.tracksCompositions[props.pianoRollTrack][props.pianoRollRegion][props.pianoRollKey]) ||
-            Utils.isNullOrUndefined(props.tracksCompositions[props.pianoRollTrack][props.pianoRollRegion][props.pianoRollKey][props.quarterIndex]) || 
+            Utils.isNullOrUndefined(props.tracksCompositions[props.pianoRollTrack][props.pianoRollRegion][props.pianoRollKey][props.quarterIndex]) ||
             !props.tracksCompositions[props.pianoRollTrack][props.pianoRollRegion][props.pianoRollKey][props.quarterIndex][i]
         ) {
             sixteenthNote.push(
