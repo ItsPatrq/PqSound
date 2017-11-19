@@ -2,7 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Glyphicon } from 'react-bootstrap';
 import Track from 'components/TrackList/Track';
-import * as Actions from 'actions/trackListActions'
+import * as trackListActions from 'actions/trackListActions';
+import { fetchSamplerInstrument, loadKeyboardSounds } from 'actions/webAudioActions';
+import * as Utils from 'engine/Pq.Utils';
 
 class TrackList extends React.Component {
     constructor() {
@@ -10,17 +12,34 @@ class TrackList extends React.Component {
     }
 
     addTrack() {
-        this.props.dispatch(Actions.addTrack());
+        this.props.dispatch(trackListActions.addTrack());
     }
 
     removeTrack(index) {
-        if(this.props.trackList.length > 1){
-            this.props.dispatch(Actions.removeTrack(index));
+        if (this.props.trackList.length > 1) {
+            this.props.dispatch(trackListActions.removeTrack(index));
         }
     }
 
-    handleRecordClick(index){
-        this.props.dispatch(Actions.changeRecordState(index));
+    handleRecordClick(index) {
+        this.props.dispatch(trackListActions.changeRecordState(index));
+        this.shouldFetchSamplerInstrument(index, true);
+    }
+
+    //Sprawdzanie czy wybrany jest sampler i czy ma załadowane sample TODO: zmienic nazwe tej metody?
+    shouldFetchSamplerInstrument(index, shouldLoadToKeyboard) {
+        for (let i = 0; i < this.props.trackList.length; i++) {
+            if (this.props.trackList[i].index === index &&
+                this.props.trackList[i].instrument.name === 'Sampler') {
+                for (let j = 0; j < this.props.samplerInstruments.length; j++) {
+                    if (this.props.trackList[i].instrument.preset === this.props.samplerInstruments[j].name &&
+                        !this.props.samplerInstruments[j].loaded && !this.props.fetching) {
+                            this.props.dispatch(fetchSamplerInstrument(this.props.trackList[i].instrument.preset, shouldLoadToKeyboard, this.props.trackList[i].volume));
+                        }
+                }
+
+            }
+        }
     }
 
     render() {
@@ -45,9 +64,15 @@ class TrackList extends React.Component {
 
 //REDUX connection
 const mapStateToProps = (state) => {
+    let samplerInstruments = null;
+    if (!Utils.isNullUndefinedOrEmpty(state.webAudio.samplerInstrumentsSounds)) {
+        samplerInstruments = state.webAudio.samplerInstrumentsSounds.map(a => ({ 'name': a.name, 'loaded': a.loaded }));
+    }
     return {
         trackList: state.tracks.trackList,
-        active: state.tracks.active
+        active: state.tracks.active,
+        samplerInstruments: samplerInstruments,
+        fetching: state.webAudio.fetching
     }
 }
 

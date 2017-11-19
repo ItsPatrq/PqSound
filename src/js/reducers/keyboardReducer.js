@@ -1,6 +1,6 @@
 export default function reducer(state={
     octaves: 1,
-    firstOctave: 1,
+    firstOctave: 2,
     show: true
 }, action) {
     switch (action.type){

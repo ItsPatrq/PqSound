@@ -3,8 +3,12 @@ import * as Utils from '../engine/Pq.Utils';
 export default function reducer(state = {
     trackList: [{
         'name': 'Piano',
-        'instrument': 'Sampler',
+        'instrument': {
+            'name': 'Sampler',
+            'preset': 'piano'
+        },
         'volume': 100,
+        'pan': 0,
         'record': true,
         'mute': false,
         'solo': false,
@@ -19,8 +23,12 @@ export default function reducer(state = {
                 newTrackList.push(
                     {
                         'name': 'Piano',
-                        'instrument': 'Sampler',
+                        'instrument': {
+                            'name': 'Sampler',
+                            'preset': 'piano'
+                        },
                         'volume': 100,
+                        'pan': 0,
                         'record': false,
                         'mute': false,
                         'solo': false,
@@ -45,8 +53,8 @@ export default function reducer(state = {
                             newTrackList[1].record = true;
                             active = 1;
                         } else {
-                            newTrackList[i-1].record = true;
-                            active = i-1;
+                            newTrackList[i - 1].record = true;
+                            active = i - 1;
                         }
                     }
                     newTrackList.splice(i, 1);

@@ -1,17 +1,36 @@
 import React from 'react';
 import Octave from 'components/Keyboard/Octave';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 class Keyboard extends React.Component {
-    constructor(){
+    constructor() {
         super();
+        this.lastPressedKey = null;
+
+        document.onmouseup = this.handleUp.bind(this);
     }
+
+    componentDidMount() {
+
+    }
+
+    handleUp() {
+        if (this.lastPressedKey !== null) {
+            this.props.keysSounds[this.lastPressedKey].stop();
+            this.lastPressedKey = null;
+        }
+    }
+
+    handleDown(i) {
+        this.lastPressedKey = i;
+        this.props.keysSounds[i].play();
+    }
+
     render() {
-        console.log(this.props);
         if (this.props.keyboard.show) {
             var renderOctaves = new Array;
             for (var i = 0; i < this.props.keyboard.octaves; i++) {
-                renderOctaves.push(<Octave index={i} key={i.toString()} handleDown={() => {}} />);
+                renderOctaves.push(<Octave index={i} key={i.toString()} handleDown={this.handleDown.bind(this)} />);
             }
             return (
                 <div className="keyboardBody">
@@ -27,7 +46,8 @@ class Keyboard extends React.Component {
 //REDUX connection
 const mapStateToProps = (state) => {
     return {
-        keyboard: state.keyboard
+        keyboard: state.keyboard,
+        keysSounds: state.webAudio.keyboard.sounds
     }
 }
 
