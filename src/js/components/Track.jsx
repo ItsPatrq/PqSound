@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Col, Row, Label, Button, ButtonGroup, Glyphicon } from 'react-bootstrap';
+import { Col, Row, Label, Button, ButtonGroup, Glyphicon, FormControl } from 'react-bootstrap';
 
 const Track = (props) => {
+    let handleTrackNameChange = function (event){
+        props.handleTrackNameChange(event, props.trackDetails.index);
+    }
     let buttonrecord;
     if(props.trackDetails.record){
         buttonrecord = <Button bsSize="xsmall" bsStyle="danger" onClick={() => props.handleRecord(props.trackDetails.index)}>R</Button>;
@@ -23,7 +26,7 @@ const Track = (props) => {
                     <Button bsSize="xsmall">M</Button>
                     {buttonrecord}
                 </ButtonGroup>
-                <Label>{props.trackDetails.name}</Label>
+                <FormControl value={props.trackDetails.name} onChange={handleTrackNameChange}/>
                 <Button bsSize="xsmall"><Glyphicon glyph="remove" onClick={() => props.handleRemove(props.trackDetails.index)}/></Button>
             </Col>
         </Row>

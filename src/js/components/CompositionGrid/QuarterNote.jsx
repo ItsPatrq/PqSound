@@ -13,7 +13,6 @@ const QuarterNote = (props) => {
         );
 
     }
-    console.log(quarterNote);
     return (
         <div >
             {quarterNote}

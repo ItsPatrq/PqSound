@@ -18,3 +18,14 @@ export function changeRecordState(index) {
         payload: index
     }
 }
+
+export function changeTrackName(newName, newIndex) {
+    return{
+        type: 'CHANGE_TRACK_NAME',
+        payload: 
+        {
+            index: newIndex,
+            newTrackName: newName
+        }
+    }
+}

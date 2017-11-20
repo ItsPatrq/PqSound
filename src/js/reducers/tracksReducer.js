@@ -85,6 +85,18 @@ export default function reducer(state = {
                 active: action.payload
             }
         }
+        case 'CHANGE_TRACK_NAME': {
+            const newTrackList = [...state.trackList];
+            for (let i = 0; i < newTrackList.length; i++) {
+                if (newTrackList[i].index === action.payload.index) {
+                    newTrackList[i].name = action.payload.newTrackName;
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
     }
 
     return state;
