@@ -1,19 +1,27 @@
 import React from 'react';
-import { Col, Button, Glyphicon } from 'react-bootstrap';
+import { Col, Button, Glyphicon, FormControl } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import Sequencer from 'engine/Sequencer';
+import * as actions from 'actions/controlActions';
 
 class ControlBar extends React.Component {
     constructor() {
         super();
-        this.sequencer = new Sequencer;
+        this.sequencer = new Sequencer();
+        this.sequencer.init();
     }
 
-    handlePlay(){
+    handlePlay() {
+        console.log("Handle play control");                
         this.sequencer.handlePlay();
     }
 
-    handleStop(){
+    handleStop() {
         this.sequencer.handleStop();
+    }
+
+    handleBPMChange(event) {
+        this.props.dispatch(actions.changeBPM(event.target.value));
     }
 
     render() {
@@ -21,10 +29,11 @@ class ControlBar extends React.Component {
             <Col xs={12} className="nopadding infoBar">
                 <center>
                     <p>
-                        <Button><Glyphicon glyph="play" onClick={this.handlePlay.bind(this)}/></Button>
+                        <FormControl bsSize="sm" value={this.props.BPM} onChange={this.handleBPMChange.bind(this)} />
+                        <Button><Glyphicon glyph="play" onClick={this.handlePlay.bind(this)} /></Button>
                         <Button><Glyphicon glyph="pause" /></Button>
-                        <Button><Glyphicon glyph="stop" onClick={this.handleStop.bind(this)}/></Button>
-                        *BPM:120* *Time Signature: 4/4* *currenttime=xxx*
+                        <Button><Glyphicon glyph="stop" onClick={this.handleStop.bind(this)} /></Button>
+                        *Time Signature: 4/4* *currenttime=xxx*
                     </p>
                 </center>
             </Col>
@@ -32,4 +41,11 @@ class ControlBar extends React.Component {
     }
 }
 
-export default ControlBar;
+//REDUX connection
+const mapStateToProps = (state) => {
+    return {
+        BPM: state.control.BPM
+    }
+}
+
+export default connect(mapStateToProps)(ControlBar);
