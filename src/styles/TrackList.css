@@ -7,11 +7,12 @@
 }
 
 .trackRow {
-    margin-top: 5px;
-    margin-bottom: 5px;
     height: 50px;
     background-color: #9E9E9E;
     overflow-x: hidden;
+    border-style: solid;
+    border-bottom-width: thin;
+    border-color: #212121;
 }
 
 .active {

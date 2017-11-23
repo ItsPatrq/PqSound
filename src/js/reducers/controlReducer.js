@@ -1,5 +1,7 @@
 export default function reducer(state = {
     BPM: 120,
+    minBPM: 50,
+    maxBPM: 250,
     playing: false,
     show: false
 }, action) {

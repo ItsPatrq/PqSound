@@ -22,7 +22,7 @@ export function changeRecordState(index) {
 export function changeTrackName(newName, newIndex) {
     return{
         type: 'CHANGE_TRACK_NAME',
-        payload: 
+        payload:
         {
             index: newIndex,
             newTrackName: newName

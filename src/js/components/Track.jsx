@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Col, Row, Label, Button, ButtonGroup, Glyphicon, FormControl } from 'react-bootstrap';
+import { Col, Row, Button, ButtonGroup, Glyphicon, FormControl } from 'react-bootstrap';
 
 const Track = (props) => {
     let handleTrackNameChange = function (event){

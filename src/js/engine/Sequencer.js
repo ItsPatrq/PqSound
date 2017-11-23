@@ -9,7 +9,6 @@ class Sequencer {
         this.timerWorker = null;
     }
     handlePlay() {
-        console.log("Handle play scheduler");        
         this.noteTime = 0.0;
         this.startTime = Store.getState().webAudio.context.currentTime + 0.005;
         this.rythmIndex = 0;
@@ -26,7 +25,7 @@ class Sequencer {
 
         while (this.noteTime < currentTime + 0.120) {
             // Convert noteTime to context time.
-            var contextPlayTime = this.noteTime + this.startTime;
+            // var contextPlayTime = this.noteTime + this.startTime;
 
             Store.getState().webAudio.keyboard.sounds[this.rythmIndex].play();
             this.advenceNote();
