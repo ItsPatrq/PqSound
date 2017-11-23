@@ -10,3 +10,10 @@ export function changeBPM(BPM) {
         payload: BPM
     }
 }
+
+export function changeTool(tool){
+    return{
+        type: 'CHANGE_TOOL',
+        payload: tool
+    }
+}

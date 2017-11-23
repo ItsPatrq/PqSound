@@ -47,4 +47,5 @@ body {
 .infoBar {
   height: 50px;
   background: #BDBDBD;
+  overflow: visible;
 }

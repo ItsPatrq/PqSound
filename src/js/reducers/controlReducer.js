@@ -1,9 +1,12 @@
+import * as Utils from 'engine/Utils';
+
 export default function reducer(state = {
     BPM: 120,
     minBPM: 50,
     maxBPM: 250,
     playing: false,
-    show: false
+    show: false,
+    tool: Utils.tools.draw
 }, action) {
     switch (action.type) {
         case 'SWITCH_PLAY_STATE': {
@@ -16,6 +19,12 @@ export default function reducer(state = {
             return {
                 ...state,
                 BPM: action.payload
+            }
+        }
+        case 'CHANGE_TOOL':{
+            return {
+                ...state,
+                tool: action.payload
             }
         }
     }

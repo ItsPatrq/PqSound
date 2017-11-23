@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Sequencer from 'engine/Sequencer';
 import * as actions from 'actions/controlActions';
 import BPMInput from 'components/controlBar/BPMInput';
+import ToolDropdown from 'components/controlBar/ToolDropdown';
 
 class ControlBar extends React.Component {
     constructor(props) {
@@ -11,7 +12,7 @@ class ControlBar extends React.Component {
         this.sequencer = new Sequencer();
         this.sequencer.init();
         this.state = {
-            tempBPM: props.BPM
+            tempBPM: props.controlState.BPM
         };
     }
 
@@ -28,10 +29,17 @@ class ControlBar extends React.Component {
     }
 
     handleBPMChange() {
-        if (this.state.tempBPM >= this.props.minBPM && this.state.tempBPM <= this.props.maxBPM &&
-            this.state.tempBPM !== this.props.BPM) {
+        if (this.state.tempBPM >= this.props.controlState.minBPM && this.state.tempBPM <= this.props.controlState.maxBPM &&
+            this.state.tempBPM !== this.props.controlState.BPM) {
             this.props.dispatch(actions.changeBPM(this.state.tempBPM));
+        } else {
+            this.setState(() => { return { tempBPM: this.props.controlState.BPM }; });
         }
+    }
+
+    handleToolChange(tool){
+        if(tool !== this.props.controlState.tool)
+        this.props.dispatch(actions.changeTool(tool));
     }
 
     render() {
@@ -41,11 +49,14 @@ class ControlBar extends React.Component {
                     BPM:
                         <BPMInput changeBPM={this.handleBPMChange.bind(this)} changeTempBPM={this.handleTempBPMChange.bind(this)} BPM={this.state.tempBPM} />
                 </Col>
+                <Col xs={3}>
+                    <ToolDropdown id={'leftClickTools'} onToolChange={this.handleToolChange.bind(this)}/>
+                </Col>
                 <center>
                     <p>
-                        <Button><Glyphicon glyph="play" onClick={this.handlePlay.bind(this)} /></Button>
+                        <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play"/></Button>
                         <Button><Glyphicon glyph="pause" /></Button>
-                        <Button><Glyphicon glyph="stop" onClick={this.handleStop.bind(this)} /></Button>
+                        <Button onClick={this.handleStop.bind(this)}><Glyphicon glyph="stop" /></Button>
                         *Time Signature: 4/4* *currenttime=xxx*
                     </p>
                 </center>
@@ -57,9 +68,7 @@ class ControlBar extends React.Component {
 //REDUX connection
 const mapStateToProps = (state) => {
     return {
-        BPM: state.control.BPM,
-        minBPM: state.control.minBPM,
-        maxBPM: state.control.maxBPM
+        controlState: state.control
     }
 }
 

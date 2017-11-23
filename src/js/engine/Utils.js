@@ -19,6 +19,11 @@ module.exports.samplerInstruments = [
     'piano'
 ]
 
+module.exports.tools = {
+    draw: 0,
+    select: 1
+}
+
 module.exports.isNullOrUndefined = (value) => {
     return typeof(value) === 'undefined' || value === null;
 }
