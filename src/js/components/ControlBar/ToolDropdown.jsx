@@ -1,6 +1,5 @@
 import React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-import * as Utils from 'engine/Utils';
 
 const ToolDropdown = (props) => {
     return (

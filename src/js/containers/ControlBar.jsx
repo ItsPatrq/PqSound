@@ -5,6 +5,8 @@ import Sequencer from 'engine/Sequencer';
 import * as actions from 'actions/controlActions';
 import BPMInput from 'components/controlBar/BPMInput';
 import ToolDropdown from 'components/controlBar/ToolDropdown';
+import NoteDrawLengthDropdown from 'components/controlBar/NoteDrawLengthDropdown';
+import RegionDrawLengthInput from 'components/controlBar/RegionDrawLengthInput';
 
 class ControlBar extends React.Component {
     constructor(props) {
@@ -12,7 +14,8 @@ class ControlBar extends React.Component {
         this.sequencer = new Sequencer();
         this.sequencer.init();
         this.state = {
-            tempBPM: props.controlState.BPM
+            tempBPM: props.controlState.BPM,
+            tempRegionDrawLength: props.controlState.regionDrawLength
         };
     }
 
@@ -24,8 +27,8 @@ class ControlBar extends React.Component {
         this.sequencer.handleStop();
     }
 
-    handleTempBPMChange(value) {
-        this.setState(() => { return { tempBPM: value }; });
+    handleTempBPMChange(BPM) {
+        this.setState(() => { return { tempBPM: BPM }; });
     }
 
     handleBPMChange() {
@@ -37,9 +40,28 @@ class ControlBar extends React.Component {
         }
     }
 
-    handleToolChange(tool){
-        if(tool !== this.props.controlState.tool)
-        this.props.dispatch(actions.changeTool(tool));
+    handleToolChange(tool) {
+        if (tool !== this.props.controlState.tool)
+            this.props.dispatch(actions.changeTool(tool));
+    }
+
+    handleNoteDrawLengthChange(length) {
+        if (length !== this.props.controlState.noteDrawLength) {
+            this.props.dispatch(actions.changeNoteDrawLength(length));
+        }
+    }
+
+    handleRegionDrawLengthChange() {
+        if (this.state.tempRegionDrawLength >= 1 && this.state.tempRegionDrawLength <= this.props.controlState.maxRegionDrawLength &&
+            this.state.tempRegionDrawLength !== this.props.controlState.regionDrawLength) {
+            this.props.dispatch(actions.changeRegionDrawLength(this.state.tempRegionDrawLength));
+        } else {
+            this.setState(() => { return { tempRegionDrawLength: this.props.controlState.regionDrawLength }; });
+        }
+    }
+
+    handleTempRegionDrawLengthChange(regionDrawLength) {
+        this.setState(() => { return { tempRegionDrawLength: regionDrawLength }; });
     }
 
     render() {
@@ -50,11 +72,16 @@ class ControlBar extends React.Component {
                         <BPMInput changeBPM={this.handleBPMChange.bind(this)} changeTempBPM={this.handleTempBPMChange.bind(this)} BPM={this.state.tempBPM} />
                 </Col>
                 <Col xs={3}>
-                    <ToolDropdown id={'leftClickTools'} onToolChange={this.handleToolChange.bind(this)}/>
+                    <ToolDropdown id={'leftClickTools'} onToolChange={this.handleToolChange.bind(this)} />
+                    <NoteDrawLengthDropdown id={'noteDrawLength'} isVisible={this.props.showPianoRoll} onNoteDrawLengthChange={this.handleNoteDrawLengthChange.bind(this)} />
+                    <RegionDrawLengthInput id={'regionDrawLength'} isVisible={!this.props.showPianoRoll}
+                        regionDrawLength={this.state.tempRegionDrawLength} onRegionDrawLengthChange={this.handleRegionDrawLengthChange.bind(this)}
+                        onTempRegionDrawLengthChange={this.handleTempRegionDrawLengthChange.bind(this)}
+                    />
                 </Col>
                 <center>
                     <p>
-                        <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play"/></Button>
+                        <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play" /></Button>
                         <Button><Glyphicon glyph="pause" /></Button>
                         <Button onClick={this.handleStop.bind(this)}><Glyphicon glyph="stop" /></Button>
                         *Time Signature: 4/4* *currenttime=xxx*
@@ -68,7 +95,8 @@ class ControlBar extends React.Component {
 //REDUX connection
 const mapStateToProps = (state) => {
     return {
-        controlState: state.control
+        controlState: state.control,
+        showPianoRoll: state.composition.showPianoRoll
     }
 }
 

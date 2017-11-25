@@ -6,7 +6,10 @@ export default function reducer(state = {
     maxBPM: 250,
     playing: false,
     show: false,
-    tool: Utils.tools.draw
+    tool: Utils.tools.draw,
+    noteDrawLength: 2,
+    regionDrawLength: 2,
+    maxRegionDrawLength: 16
 }, action) {
     switch (action.type) {
         case 'SWITCH_PLAY_STATE': {
@@ -25,6 +28,18 @@ export default function reducer(state = {
             return {
                 ...state,
                 tool: action.payload
+            }
+        }
+        case 'CHANGE_REGION_DRAW_LENGTH':{
+            return {
+                ...state,
+                regionDrawLength: action.payload
+            }
+        }
+        case 'CHANGE_NOTE_DRAW_LENGTH':{
+            return {
+                ...state,
+                noteDrawLength: action.payload
             }
         }
     }

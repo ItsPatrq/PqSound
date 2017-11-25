@@ -17,3 +17,17 @@ export function changeTool(tool){
         payload: tool
     }
 }
+
+export function changeRegionDrawLength(length){
+    return {
+        type: 'CHANGE_REGION_DRAW_LENGTH',
+        payload: length
+    }
+}
+
+export function changeNoteDrawLength(length){
+    return {
+        type: 'CHANGE_NOTE_DRAW_LENGTH',
+        payload: length
+    }
+}

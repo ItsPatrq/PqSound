@@ -24,6 +24,14 @@ module.exports.tools = {
     select: 1
 }
 
+module.exports.noteLengths = {
+    '1/1': 0,
+    '1/2': 1,
+    '1/4': 2,
+    '1/8': 3,
+    '1/16': 4
+}
+
 module.exports.isNullOrUndefined = (value) => {
     return typeof(value) === 'undefined' || value === null;
 }

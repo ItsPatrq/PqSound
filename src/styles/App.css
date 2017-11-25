@@ -49,3 +49,8 @@ body {
   background: #BDBDBD;
   overflow: visible;
 }
+
+.regionDrawLengthInput {
+  max-width: 50px;
+  display: inline-block;
+}
