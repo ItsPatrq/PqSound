@@ -56,7 +56,7 @@ class CompositionGrid extends React.Component {
                     } case 3: {
                         noteLength = 2;
                         break;
-                    } case 5: {
+                    } case 4: {
                         noteLength = 1;
                         break;
                     }

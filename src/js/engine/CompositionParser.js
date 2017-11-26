@@ -58,3 +58,7 @@ module.exports.notesToDrawParser = (pianoRollNote) => {
     }
     return notesToDraw;
 }
+
+module.exports.notesToPlay = () => {
+    //TODO
+}
