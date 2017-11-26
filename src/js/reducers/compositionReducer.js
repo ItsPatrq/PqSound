@@ -75,7 +75,7 @@ export default function reducer(state = {
         }
         case 'ADD_NOTE':{
             let newRegionsList = JSON.parse(JSON.stringify(state.regionList));
-            let currRegion = compositionParser.getRegionByRegionId(newRegionsList, action.payload.regionId);
+            let currRegion = compositionParser.getRegionByRegionId(action.payload.regionId, newRegionsList);
             if(Utils.isNullOrUndefined(currRegion.notes[action.payload.noteNumber])){
                 currRegion.notes[action.payload.noteNumber] = new Array;
             }

@@ -39,33 +39,46 @@ class CompositionGrid extends React.Component {
         }
     }
 
-    handleNoteClicked(noteNumber, sixteenthNumber) {
-        let noteLength;
-        switch(this.props.noteDrawLength) {
-            case 0:{
-                noteLength = 16;
-                break;
-            } case 1:{
-                noteLength = 8;
-                break;
-            } case 2:{
-                noteLength = 4;
-                break;
-            } case 3:{
-                noteLength = 2;
-                break;
-            } case 5:{
-                noteLength = 1;
+    handleNoteClicked(noteNumber, sixteenthNumber, notesToDraw) {
+        switch (this.props.selectedTool) {
+            case Utils.tools.draw: {
+                let noteLength;
+                switch (this.props.noteDrawLength) {
+                    case 0: {
+                        noteLength = 16;
+                        break;
+                    } case 1: {
+                        noteLength = 8;
+                        break;
+                    } case 2: {
+                        noteLength = 4;
+                        break;
+                    } case 3: {
+                        noteLength = 2;
+                        break;
+                    } case 5: {
+                        noteLength = 1;
+                        break;
+                    }
+                }
+                let canDraw = sixteenthNumber + noteLength <= notesToDraw.length ? true : false;
+                for (let i = 0; i < noteLength && canDraw; i++) {
+                    if (notesToDraw[sixteenthNumber + i]) {
+                        canDraw = false;
+                    }
+                }
+                if (canDraw) {
+                    this.props.dispatch(addNote(this.props.composition.pianoRollRegion, noteNumber, sixteenthNumber, noteLength));
+                }
             }
         }
-        this.props.dispatch(addNote(this.props.composition.pianoRollRegion, noteNumber, sixteenthNumber, noteLength));
     }
 
     render() {
         let trackCompositionRowList = new Array;
         let pianoRoll;
         if (this.props.composition.showPianoRoll) {
-            let bitsNumber = getRegionByRegionId(this.props.composition.regionList, this.props.composition.pianoRollRegion).regionLength;
+            let bitsNumber = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).regionLength;
             pianoRoll = <PianoRoll bitsNumber={bitsNumber} onNoteClick={this.handleNoteClicked.bind(this)} />
         } else {
             for (let i = 0; i < this.props.trackList.length; i++) {

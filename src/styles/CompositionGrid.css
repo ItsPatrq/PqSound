@@ -81,7 +81,11 @@
 }
 
 .sixteenthNote.active {
-    background-color: greenyellow;
+    background-color: aquamarine;
+}
+
+.sixteenthNote.noRightBorder {
+    border-right: 0;
 }
 
 .pianoRow {
