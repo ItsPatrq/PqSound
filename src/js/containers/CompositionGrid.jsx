@@ -3,7 +3,7 @@ import { Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import TrackCompositionRow from 'components/CompositionGrid/TrackCompositionRow';
 import PianoRoll from 'components/CompositionGrid/PianoRoll';
-import { showPianoRoll, addRegion, addNote } from 'actions/compositionActions';
+import { showPianoRoll, addRegion, addNote, removeRegion } from 'actions/compositionActions';
 import { getRegionIdByBitIndex, getRegionByRegionId } from 'engine/CompositionParser';
 import * as Utils from 'engine/Utils';
 
@@ -30,10 +30,14 @@ class CompositionGrid extends React.Component {
     }
 
     handleRegionClicked(trackIndex, bitIndex) {
+        let regionIndex = getRegionIdByBitIndex(trackIndex, bitIndex);        
         switch (this.props.selectedTool) {
             case Utils.tools.select: {
-                let regionIndex = getRegionIdByBitIndex(trackIndex, bitIndex);
                 this.props.dispatch(showPianoRoll(trackIndex, regionIndex));
+                break;
+            }
+            case Utils.tools.remove: {
+                this.props.dispatch(removeRegion(regionIndex));
                 break;
             }
         }

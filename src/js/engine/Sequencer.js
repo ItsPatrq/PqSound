@@ -1,22 +1,27 @@
 import Store from '../stroe';
+import { notesToPlay } from 'engine/CompositionParser';
+import * as Utils from 'engine/Utils';
 
 class Sequencer {
     constructor() {
         this.noteTime = null;
         this.startTime = null;
-        this.rythmIndex = null;
+        this.sixteenthPlaying = 0;
         this.timeoutId = null;
         this.timerWorker = null;
     }
     handlePlay() {
         this.noteTime = 0.0;
         this.startTime = Store.getState().webAudio.context.currentTime + 0.005;
-        this.rythmIndex = 0;
         this.schedule();
         this.timerWorker.postMessage('start');
     }
     handleStop(/*event*/) {
-        clearTimeout(this.timeoutId);
+        this.timerWorker.postMessage('stop');
+        this.sixteenthPlaying = 0;
+    }
+    handlePause(/*event*/){
+        this.timerWorker.postMessage('stop');
     }
     schedule() {
         let currentTime = Store.getState().webAudio.context.currentTime;
@@ -25,22 +30,25 @@ class Sequencer {
 
         while (this.noteTime < currentTime + 0.120) {
             // Convert noteTime to context time.
-            // var contextPlayTime = this.noteTime + this.startTime;
-
-            Store.getState().webAudio.keyboard.sounds[this.rythmIndex].play();
+            var contextPlayTime = this.noteTime + this.startTime;
+            
+            //iterate through all tracks
+            for (let i = 0; i < Store.getState().tracks.trackList.length; i++) {
+                let currentNotesToPlay = notesToPlay(this.sixteenthPlaying, Store.getState().tracks.trackList[i].index);
+                if(!Utils.isNullUndefinedOrEmpty(currentNotesToPlay)){
+                    for(let j = 0; j < currentNotesToPlay.length; j++){
+                        Store.getState().webAudio.keyboard.sounds[currentNotesToPlay[j]].play(contextPlayTime);
+                    }
+                }
+            }
             this.advenceNote();
         }
     }
     advenceNote() {
         let tempo = Store.getState().control.BPM;
-        console.log(tempo);
         var secoundsPerBeat = 60.0 / tempo;
 
-        this.rythmIndex++;
-
-        if (this.rythmIndex === 12) {
-            this.rythmIndex = 0;
-        }
+        this.sixteenthPlaying++;
 
         this.noteTime += 0.25 * secoundsPerBeat;
     }

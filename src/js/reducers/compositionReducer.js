@@ -5,78 +5,51 @@ export default function reducer(state = {
     bitsInComposition: 48,
     showPianoRoll: false,
     pianoRollRegion: null,
-    pianoRollTrack: null,
-    regionsPerTrack: [
-        {
-            trackIndex: 1,
-            regions: [
-
-            ]
-        }
-    ],
     regionList: new Array,
     regionLastId: 0
 }, action) {
     switch (action.type) {
-        case 'ADD_TRACK_TO_COMPOSITION': {
-            let newRegionsPerTrack = JSON.parse(JSON.stringify(state.regionsPerTrack));
-            newRegionsPerTrack.push({
-                trackIndex: state.regionsPerTrack.length + 1,
-                regions: [
-
-                ]
+        case 'REMOVE_TRACK_FROM_COMPOSITION': {
+            let newRegionList = state.regionList.filter((el) => {return el.trackIndex !== action.payload})
+            for (let i = 0; i < newRegionList.length; i++) {
+                if (newRegionList[i].trackIndex > action.payload) {
+                    newRegionList[i].trackIndex = newRegionList[i].trackIndex - 1;
+                }
+            }
+            let newPianoRollRegion = state.pianoRollRegion === action.payload ? null : state.pianoRollRegion
+            return {
+                ...state,
+                regionList: newRegionList,
+                pianoRollRegion: newPianoRollRegion
+            }
+        }
+        case 'ADD_REGION': {
+            let newRegionsList = JSON.parse(JSON.stringify(state.regionList));
+            let newRegionLastId = state.regionLastId;
+            newRegionsList.push({
+                id: ++newRegionLastId,
+                trackIndex: action.payload.trackIndex,
+                regionLength: action.payload.length,
+                start: action.payload.start,
+                end: action.payload.start + action.payload.length - 1,
+                notes: new Array(88)
             });
             return {
                 ...state,
-                regionsPerTrack: newRegionsPerTrack
-            }
-        }
-        case 'REMOVE_TRACK_FROM_COMPOSITION': {
-            let newRegionsPerTrack = JSON.parse(JSON.stringify(state.regionsPerTrack));
-            for(let i = 0; i < newRegionsPerTrack.length; i++){
-                if(newRegionsPerTrack[i].trackIndex === action.payload){
-                    newRegionsPerTrack.splice(i, 1);
-                    for (let j = i; j < newRegionsPerTrack.length; j++) {
-                        newRegionsPerTrack[j].trackIndex = j + 1;
-                    }
-                    break;
-                }
-            }
-            return {
-                ...state,
-                regionsPerTrack: newRegionsPerTrack
-            }
-        }
-        case 'ADD_REGION':{
-            let newRegionsPerTrack = JSON.parse(JSON.stringify(state.regionsPerTrack));
-            let newRegionsList = JSON.parse(JSON.stringify(state.regionList));
-            let newRegionLastId = state.regionLastId;
-            for(let i = 0; i < newRegionsPerTrack.length; i++){
-                if(newRegionsPerTrack[i].trackIndex === action.payload.trackIndex){
-                    newRegionsPerTrack[i].regions.push({
-                        start: action.payload.start,
-                        end: action.payload.start + action.payload.length - 1,
-                        id: ++newRegionLastId
-                    });
-                    newRegionsList.push({
-                        id: newRegionLastId,
-                        regionLength: action.payload.length,
-                        notes: new Array(88)
-                    });
-                    break;
-                }
-            }
-            return {
-                ...state,
-                regionsPerTrack: newRegionsPerTrack,
                 regionList: newRegionsList,
                 regionLastId: newRegionLastId
             }
         }
-        case 'ADD_NOTE':{
+        case 'REMOVE_REGION': {
+            return {
+                ...state,
+                regionList: state.regionList.filter((el) => {return el.id !== action.payload})
+            }
+        }
+        case 'ADD_NOTE': {
             let newRegionsList = JSON.parse(JSON.stringify(state.regionList));
             let currRegion = compositionParser.getRegionByRegionId(action.payload.regionId, newRegionsList);
-            if(Utils.isNullOrUndefined(currRegion.notes[action.payload.noteNumber])){
+            if (Utils.isNullOrUndefined(currRegion.notes[action.payload.noteNumber])) {
                 currRegion.notes[action.payload.noteNumber] = new Array;
             }
             currRegion.notes[action.payload.noteNumber].push({
@@ -98,14 +71,23 @@ export default function reducer(state = {
             return {
                 ...state,
                 showPianoRoll: true,
-                pianoRollRegion: action.payload.regionIndex,
-                pianoRollTrack: action.payload.trackIndex
+                pianoRollRegion: action.payload.regionIndex
             }
         }
-        case 'HIDE_PIANO_ROLL': {
+        case 'SWITCH_PIANO_ROLL_VISIBILITY': {
+            let show;
+            if (Utils.isNullUndefinedOrEmpty(action.payload)) {
+                if (Utils.isNullUndefinedOrEmpty(state.pianoRollRegion)) {
+                    show = false
+                } else {
+                    show = !state.showPianoRoll;
+                }
+            } else {
+                show = action.payload;
+            }
             return {
                 ...state,
-                showPianoRoll: false
+                showPianoRoll: show
             }
         }
     }

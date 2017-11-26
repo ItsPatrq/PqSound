@@ -14,7 +14,6 @@ class TrackList extends React.Component {
 
     addTrack() {
         this.props.dispatch(trackListActions.addTrack());
-        this.props.dispatch(compositionActions.addTrackToComposition())
     }
 
     removeTrack(index) {

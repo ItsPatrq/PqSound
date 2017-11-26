@@ -27,6 +27,10 @@ class ControlBar extends React.Component {
         this.sequencer.handleStop();
     }
 
+    handlePause(){
+        this.sequencer.handlePause();
+    }
+
     handleTempBPMChange(BPM) {
         this.setState(() => { return { tempBPM: BPM }; });
     }
@@ -82,7 +86,7 @@ class ControlBar extends React.Component {
                 <center>
                     <p>
                         <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play" /></Button>
-                        <Button><Glyphicon glyph="pause" /></Button>
+                        <Button onClick={this.handlePause.bind(this)}><Glyphicon glyph="pause" /></Button>
                         <Button onClick={this.handleStop.bind(this)}><Glyphicon glyph="stop" /></Button>
                         *Time Signature: 4/4* *currenttime=xxx*
                     </p>

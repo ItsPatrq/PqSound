@@ -1,8 +1,3 @@
-export function addTrackToComposition(){
-    return {
-        type: 'ADD_TRACK_TO_COMPOSITION'
-    }
-}
 export function removeTrackFromComposition(index){
     return {
         type: 'REMOVE_TRACK_FROM_COMPOSITION',
@@ -17,6 +12,12 @@ export function addRegion(newTrackIndex, newStart, length){
             start: newStart,
             length: length
         }
+    }
+}
+export function removeRegion(newRegionId){
+    return {
+        type: 'REMOVE_REGION',
+        payload: newRegionId
     }
 }
 export function changeOctaveNumber(number) {
@@ -34,9 +35,10 @@ export function showPianoRoll(newTrackIndex, newRegionIndex) {
         }
     }
 }
-export function hidePianoRoll() {
+export function switchPianorollVisibility(show) {
     return{
-        type: 'HIDE_PIANO_ROLL'
+        type: 'SWITCH_PIANO_ROLL_VISIBILITY',
+        payload: show
     }
 }
 export function updateTrackComposition(newPianoKey, newQuarterIndex, newSixteenthIndex) {

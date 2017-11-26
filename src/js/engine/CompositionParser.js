@@ -1,29 +1,28 @@
 import Store from '../stroe';
 import * as Utils from 'engine/Utils';
-import { getRegionsByTrackIndex } from './Utils';
 
 module.exports.regionToDrawParser = (trackIndex, bits) => {
-    let regionList = Utils.getRegionsByTrackIndex(Store.getState().composition.regionsPerTrack, trackIndex);
+    let trackRegionList = module.exports.getRegionsByTrackIndex(trackIndex);
     let bitsToDraw = new Array;
     for (let i = 0; i < bits; i++) {
         bitsToDraw.push(0);
     }
-    for (let i = 0; i < regionList.length; i++) {
-        bitsToDraw[regionList[i].start] = 1; //For applying different CSS for first and last bit in region
-        for (let j = regionList[i].start + 1; j < regionList[i].end; j++) {
+    for (let i = 0; i < trackRegionList.length; i++) {
+        bitsToDraw[trackRegionList[i].start] = 1; //For applying different CSS for first and last bit in region
+        for (let j = trackRegionList[i].start + 1; j < trackRegionList[i].end; j++) {
             bitsToDraw[j] = 2;
         }
-        bitsToDraw[regionList[i].end] = 3; //For applying different CSS for first and last bit in region
+        bitsToDraw[trackRegionList[i].end] = 3; //For applying different CSS for first and last bit in region
     }
     return bitsToDraw;
 }
 
 module.exports.getRegionIdByBitIndex = (trackIndex, bitIndex) => {
-    let regionList = Utils.getRegionsByTrackIndex(Store.getState().composition.regionsPerTrack, trackIndex);
+    let trackRegionList = module.exports.getRegionsByTrackIndex(trackIndex);
     let regionId;
-    for (let i = 0; i < regionList.length; i++) {
-        if (regionList[i].start <= bitIndex && regionList[i].end >= bitIndex) {
-            regionId = regionList[i].id;
+    for (let i = 0; i < trackRegionList.length; i++) {
+        if (trackRegionList[i].start <= bitIndex && trackRegionList[i].end >= bitIndex) {
+            regionId = trackRegionList[i].id;
         }
     }
     return regionId;
@@ -38,6 +37,19 @@ module.exports.getRegionByRegionId = (regionId, regionList) => {
             return regionList[i];
         }
     }
+}
+
+module.exports.getRegionsByTrackIndex = (trackIndex, allRegions) => {
+    let regionsByTrackIndex = new Array;
+    if(Utils.isNullOrUndefined(allRegions)){
+        allRegions = Store.getState().composition.regionList;
+    }
+    for(let i = 0; i < allRegions.length; i++){
+        if(allRegions[i].trackIndex === trackIndex){
+            regionsByTrackIndex.push(allRegions[i]);
+        }
+    }
+    return regionsByTrackIndex;
 }
 
 module.exports.notesToDrawParser = (pianoRollNote) => {
@@ -59,6 +71,24 @@ module.exports.notesToDrawParser = (pianoRollNote) => {
     return notesToDraw;
 }
 
-module.exports.notesToPlay = () => {
-    //TODO
+module.exports.notesToPlay = (sixteenthPlaying, trackIndex) => {
+    let regions = module.exports.getRegionsByTrackIndex(trackIndex);
+    if(!Utils.isNullUndefinedOrEmpty(regions)){
+        let notesToPlay = new Array;
+        for(let i = 0; i < regions.length; i++){
+            if(regions[i].start * 16 <= sixteenthPlaying && (regions[i].end + 1) * 16 >= sixteenthPlaying){
+                let currRegion = regions[i];
+                for(let j = 0; j < currRegion.notes.length; j++){
+                    if(!Utils.isNullUndefinedOrEmpty(currRegion.notes[j])){
+                        for(let z = 0; z < currRegion.notes[j].length; z++){
+                            if(currRegion.notes[j][z].sixteenthNumber + currRegion.start * 16 === sixteenthPlaying){
+                                notesToPlay.push(j);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return(notesToPlay);
+    }
 }

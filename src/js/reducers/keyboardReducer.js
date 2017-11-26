@@ -1,3 +1,5 @@
+import * as Utils from 'engine/Utils';
+
 export default function reducer(state = {
     octaves: 1,
     firstOctave: 2,
@@ -11,9 +13,15 @@ export default function reducer(state = {
             }
         }
         case 'SWITCH_KEYBOARD_VISIBILITY': {
+            let showKeyboard;
+            if (Utils.isNullUndefinedOrEmpty(action.payload)) {
+                showKeyboard = !state.show;
+            } else {
+                showKeyboard = action.payload;
+            }
             return {
                 ...state,
-                show: !state.show
+                show: showKeyboard
             }
         }
     }

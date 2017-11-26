@@ -21,7 +21,8 @@ module.exports.samplerInstruments = [
 
 module.exports.tools = {
     draw: 0,
-    select: 1
+    select: 1,
+    remove: 2
 }
 
 module.exports.noteLengths = {

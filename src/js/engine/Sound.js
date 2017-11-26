@@ -14,9 +14,9 @@ class Sound {
     this.gainNode.gain.setValueAtTime(this.volume, this.context.currentTime);
   }
 
-  play() {
+  play(contextPlayTime) {
     this.setup();
-    this.source.start(this.context.currentTime);
+    this.source.start(contextPlayTime);
   }
 
   stop() {
