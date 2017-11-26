@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, Col } from 'react-bootstrap';
+import { FormControl } from 'react-bootstrap';
 
 const RegionDrawLengthInput = (props) => {
     let _handleChange = (e) => {

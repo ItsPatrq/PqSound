@@ -1,3 +1,24 @@
+export function addTrackToComposition(){
+    return {
+        type: 'ADD_TRACK_TO_COMPOSITION'
+    }
+}
+export function removeTrackFromComposition(index){
+    return {
+        type: 'REMOVE_TRACK_FROM_COMPOSITION',
+        payload: index
+    }
+}
+export function addRegion(newTrackIndex, newStart, length){
+    return {
+        type: 'ADD_REGION',
+        payload: {
+            trackIndex: newTrackIndex,
+            start: newStart,
+            length: length
+        }
+    }
+}
 export function changeOctaveNumber(number) {
     return{
         type: 'CHANGE_BITS_NUMBER',
@@ -25,6 +46,18 @@ export function updateTrackComposition(newPianoKey, newQuarterIndex, newSixteent
             pianoKey: newPianoKey,
             quarterIndex: newQuarterIndex,
             sixteenthIndex: newSixteenthIndex
+        }
+    }
+}
+
+export function addNote (newRegionId, newNoteNumber, newSixteenthNumber, newNoteLength) {
+    return{
+        type: 'ADD_NOTE',
+        payload: {
+            regionId: newRegionId,
+            noteNumber: newNoteNumber,
+            sixteenthNumber: newSixteenthNumber,
+            noteLength: newNoteLength
         }
     }
 }

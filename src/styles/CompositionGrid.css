@@ -14,6 +14,8 @@
 .compositionPanel {
     height: calc(100vh - 134px);
     background-color: #616161;
+    overflow: scroll;
+    overflow-y: scroll;
 }
 
 .trackCompositionRow {
@@ -35,9 +37,19 @@
     display: inline-block;
 }
 
+.region {
+    background-color: rebeccapurple;
+}
+
+.region.noRightBorder {
+    background-color: rebeccapurple;
+    border-right: 0;
+}
+
 .keyRow {
+    width: fit-content;
+    white-space: nowrap;    
     height: 20px;
-    overflow: hidden;
     border-style: solid;
     border-bottom-width: thin;
     border-color: #212121;
@@ -54,13 +66,14 @@
 .quarterNote {
     height: 20px;
     border-style: solid;
-    border-right-width: thick;
+    border-right-width: 1px;
     border-color: #212121;
     display: inline-block;
 }
 
 .sixteenthNote {
     height: 20px;
+    width: 40px;
     border-style: solid;
     border-right-width: thin;
     border-color: #212121;
@@ -69,4 +82,17 @@
 
 .sixteenthNote.active {
     background-color: greenyellow;
+}
+
+.pianoRow {
+    display: inline;
+}
+
+.bit {
+    height: 20px;
+    width: 644px;
+    border-style: solid;
+    border-right-width: thick;
+    border-color: #212121;
+    display: inline-block;
 }

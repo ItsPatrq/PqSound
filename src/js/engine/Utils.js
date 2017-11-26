@@ -47,3 +47,11 @@ module.exports.getTrackByIndex = (trackList, index) => {
         }
     }
 }
+
+module.exports.getRegionsByTrackIndex = (regionsByTrack, index) => {
+    for(let i = 0; i < regionsByTrack.length; i++){
+        if(regionsByTrack[i].trackIndex === index){
+            return regionsByTrack[i].regions;
+        }
+    }
+}

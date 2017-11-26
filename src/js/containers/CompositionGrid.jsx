@@ -3,7 +3,8 @@ import { Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import TrackCompositionRow from 'components/CompositionGrid/TrackCompositionRow';
 import PianoRoll from 'components/CompositionGrid/PianoRoll';
-import { showPianoRoll } from 'actions/compositionActions';
+import { showPianoRoll, addRegion, addNote } from 'actions/compositionActions';
+import { getRegionIdByBitIndex, getRegionByRegionId } from 'engine/CompositionParser';
 import * as Utils from 'engine/Utils';
 
 class CompositionGrid extends React.Component {
@@ -11,24 +12,69 @@ class CompositionGrid extends React.Component {
         super();
     }
 
-    handleRegionClicked(trackIndex, regionIndex) {
-        if(this.props.selectedTool === Utils.tools.draw){
-        this.props.dispatch(showPianoRoll(trackIndex, regionIndex));
+    handleEmptyBitClicked(trackIndex, bitIndex, bitsToDraw) {
+        switch (this.props.selectedTool) {
+            case Utils.tools.draw: {
+                let canDraw = true;
+                for (let i = 0; i < this.props.regionDrawLength; i++) {
+                    if (bitsToDraw[bitIndex + i]) {
+                        canDraw = false;
+                    }
+                }
+                if (canDraw) {
+                    this.props.dispatch(addRegion(trackIndex, bitIndex, this.props.regionDrawLength));
+                }
+                break;
+            }
         }
+    }
+
+    handleRegionClicked(trackIndex, bitIndex) {
+        switch (this.props.selectedTool) {
+            case Utils.tools.select: {
+                let regionIndex = getRegionIdByBitIndex(trackIndex, bitIndex);
+                this.props.dispatch(showPianoRoll(trackIndex, regionIndex));
+                break;
+            }
+        }
+    }
+
+    handleNoteClicked(noteNumber, sixteenthNumber) {
+        let noteLength;
+        switch(this.props.noteDrawLength) {
+            case 0:{
+                noteLength = 16;
+                break;
+            } case 1:{
+                noteLength = 8;
+                break;
+            } case 2:{
+                noteLength = 4;
+                break;
+            } case 3:{
+                noteLength = 2;
+                break;
+            } case 5:{
+                noteLength = 1;
+            }
+        }
+        this.props.dispatch(addNote(this.props.composition.pianoRollRegion, noteNumber, sixteenthNumber, noteLength));
     }
 
     render() {
         let trackCompositionRowList = new Array;
         let pianoRoll;
         if (this.props.composition.showPianoRoll) {
-            pianoRoll = <PianoRoll />
+            let bitsNumber = getRegionByRegionId(this.props.composition.regionList, this.props.composition.pianoRollRegion).regionLength;
+            pianoRoll = <PianoRoll bitsNumber={bitsNumber} onNoteClick={this.handleNoteClicked.bind(this)} />
         } else {
             for (let i = 0; i < this.props.trackList.length; i++) {
                 trackCompositionRowList.push(<TrackCompositionRow
                     bits={this.props.composition.bitsInComposition}
                     key={this.props.trackList[i].index}
                     trackIndex={this.props.trackList[i].index}
-                    handleRegionClicked={this.handleRegionClicked.bind(this)}
+                    onEmptyBitClick={this.handleEmptyBitClicked.bind(this)}
+                    onRegionClick={this.handleRegionClicked.bind(this)}
                 />)
             }
         }
@@ -58,7 +104,8 @@ const mapStateToProps = (state) => {
         active: state.tracks.active,
         composition: state.composition,
         selectedTool: state.control.tool,
-        regionDrawLength: state.control.regionDrawLength
+        regionDrawLength: state.control.regionDrawLength,
+        noteDrawLength: state.control.noteDrawLength
     }
 }
 

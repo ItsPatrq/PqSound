@@ -1,8 +1,8 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
-import QuarterNote from './QuarterNote';
+import Bit from './Bit';
 
-const PianoRoll = () => {
+const PianoRoll = (props) => {
     let keyRows = new Array;
     for (let i = 0; i < 88; i++) {
         let rowClassName;
@@ -11,9 +11,13 @@ const PianoRoll = () => {
         } else {
             rowClassName = 'nopadding keyRow white';
         }
+        let bits = new Array;
+        for (let j = 0; j < props.bitsNumber; j++){
+            bits.push(<Bit key={j} pianoRollNote={i} bitNumber={j} onNoteClick={props.onNoteClick}/>);
+        }
         keyRows.push(
             <Row className={rowClassName} key={'pianRollKeyRow' + i}>
-                <QuarterNote index={1} pianoRollKey={i} state={[]} />
+                {bits}
             </Row>
         );
     }

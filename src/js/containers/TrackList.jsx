@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Glyphicon } from 'react-bootstrap';
 import Track from 'components/Track';
 import * as trackListActions from 'actions/trackListActions';
+import * as compositionActions from 'actions/compositionActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 
@@ -13,11 +14,13 @@ class TrackList extends React.Component {
 
     addTrack() {
         this.props.dispatch(trackListActions.addTrack());
+        this.props.dispatch(compositionActions.addTrackToComposition())
     }
 
     removeTrack(index) {
         if (this.props.trackList.length > 1) {
             this.props.dispatch(trackListActions.removeTrack(index));
+            this.props.dispatch(compositionActions.removeTrackFromComposition(index));
         }
     }
 
