@@ -10,7 +10,7 @@ export default function reducer(state = {
 }, action) {
     switch (action.type) {
         case 'REMOVE_TRACK_FROM_COMPOSITION': {
-            let newRegionList = state.regionList.filter((el) => {return el.trackIndex !== action.payload})
+            let newRegionList = state.regionList.filter((el) => { return el.trackIndex !== action.payload })
             for (let i = 0; i < newRegionList.length; i++) {
                 if (newRegionList[i].trackIndex > action.payload) {
                     newRegionList[i].trackIndex = newRegionList[i].trackIndex - 1;
@@ -43,7 +43,7 @@ export default function reducer(state = {
         case 'REMOVE_REGION': {
             return {
                 ...state,
-                regionList: state.regionList.filter((el) => {return el.id !== action.payload})
+                regionList: state.regionList.filter((el) => { return el.id !== action.payload })
             }
         }
         case 'ADD_NOTE': {
@@ -56,6 +56,22 @@ export default function reducer(state = {
                 sixteenthNumber: action.payload.sixteenthNumber,
                 length: action.payload.noteLength
             })
+            return {
+                ...state,
+                regionList: newRegionsList
+            }
+        }
+        case 'REMOVE_NOTE': {
+            let newRegionsList = JSON.parse(JSON.stringify(state.regionList));
+            let currRegion = compositionParser.getRegionByRegionId(action.payload.regionId, newRegionsList);
+            for (let i = 0; i < currRegion.notes[action.payload.noteNumber].length; i++) {
+                if (currRegion.notes[action.payload.noteNumber][i].sixteenthNumber <= action.payload.sixteenthNumber &&
+                    currRegion.notes[action.payload.noteNumber][i].sixteenthNumber +
+                    currRegion.notes[action.payload.noteNumber][i].length > action.payload.sixteenthNumber) {
+                    currRegion.notes[action.payload.noteNumber].splice(i, 1);
+                    break;
+                }
+            }
             return {
                 ...state,
                 regionList: newRegionsList

@@ -3,7 +3,7 @@ import { Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import TrackCompositionRow from 'components/CompositionGrid/TrackCompositionRow';
 import PianoRoll from 'components/CompositionGrid/PianoRoll';
-import { showPianoRoll, addRegion, addNote, removeRegion } from 'actions/compositionActions';
+import { showPianoRoll, addRegion, removeRegion, addNote, removeNote } from 'actions/compositionActions';
 import { getRegionIdByBitIndex, getRegionByRegionId } from 'engine/CompositionParser';
 import * as Utils from 'engine/Utils';
 
@@ -44,27 +44,27 @@ class CompositionGrid extends React.Component {
     }
 
     handleNoteClicked(noteNumber, sixteenthNumber, notesToDraw) {
+        let noteLength;
+        switch (this.props.noteDrawLength) {
+            case 0: {
+                noteLength = 16;
+                break;
+            } case 1: {
+                noteLength = 8;
+                break;
+            } case 2: {
+                noteLength = 4;
+                break;
+            } case 3: {
+                noteLength = 2;
+                break;
+            } case 4: {
+                noteLength = 1;
+                break;
+            }
+        }
         switch (this.props.selectedTool) {
             case Utils.tools.draw: {
-                let noteLength;
-                switch (this.props.noteDrawLength) {
-                    case 0: {
-                        noteLength = 16;
-                        break;
-                    } case 1: {
-                        noteLength = 8;
-                        break;
-                    } case 2: {
-                        noteLength = 4;
-                        break;
-                    } case 3: {
-                        noteLength = 2;
-                        break;
-                    } case 4: {
-                        noteLength = 1;
-                        break;
-                    }
-                }
                 let canDraw = sixteenthNumber + noteLength <= notesToDraw.length ? true : false;
                 for (let i = 0; i < noteLength && canDraw; i++) {
                     if (notesToDraw[sixteenthNumber + i]) {
@@ -74,6 +74,13 @@ class CompositionGrid extends React.Component {
                 if (canDraw) {
                     this.props.dispatch(addNote(this.props.composition.pianoRollRegion, noteNumber, sixteenthNumber, noteLength));
                 }
+                break;
+            }
+            case Utils.tools.remove: {
+                if(notesToDraw[sixteenthNumber]){
+                    this.props.dispatch(removeNote(this.props.composition.pianoRollRegion, noteNumber, sixteenthNumber, noteLength));
+                }
+                break;
             }
         }
     }

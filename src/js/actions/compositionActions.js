@@ -63,3 +63,15 @@ export function addNote (newRegionId, newNoteNumber, newSixteenthNumber, newNote
         }
     }
 }
+
+export function removeNote (newRegionId, newNoteNumber, newSixteenthNumber, newNoteLength) {
+    return{
+        type: 'REMOVE_NOTE',
+        payload: {
+            regionId: newRegionId,
+            noteNumber: newNoteNumber,
+            sixteenthNumber: newSixteenthNumber,
+            noteLength: newNoteLength            
+        }
+    }
+}
