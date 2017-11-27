@@ -1,12 +1,13 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
 import Bit from './Bit';
+import {keyNotes} from 'engine/constants';
 
 const PianoRoll = (props) => {
     let keyRows = new Array;
     for (let i = 0; i < 88; i++) {
         let rowClassName;
-        if (i % 2 === 0) {
+        if (keyNotes[i]) {
             rowClassName = 'nopadding keyRow black'
         } else {
             rowClassName = 'nopadding keyRow white';
