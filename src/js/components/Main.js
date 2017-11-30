@@ -14,8 +14,8 @@ import { Col, Grid, Row } from 'react-bootstrap';
 import pianoSounds from '../engine/audioFiles';
 import TrackList from './TrackList/Pq.Ui.TrackList';
 import Track from '../engine/Track';
-import * as Utils from '../engine/Pq.Utils';
 import { connect } from 'react-redux';
+import {updateActions} from 'engine/Constants';
 import {addTrack} from '../actions/trackListActions'
 
 class AppComponent extends React.Component {
@@ -71,7 +71,7 @@ class AppComponent extends React.Component {
 
   trackListChange(action, index) {
     switch (action) {
-      case Utils.updateActions.add: {
+      case updateActions.add: {
         this.setState(prevState => ({
           trackList: [...prevState.trackList, new Track('Piano1', 'sampler', 100, false, false, 1)]
         }));

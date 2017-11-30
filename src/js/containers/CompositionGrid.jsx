@@ -5,7 +5,7 @@ import TrackCompositionRow from 'components/CompositionGrid/TrackCompositionRow'
 import PianoRoll from 'components/CompositionGrid/PianoRoll';
 import { showPianoRoll, addRegion, removeRegion, addNote, removeNote } from 'actions/compositionActions';
 import { getRegionIdByBitIndex, getRegionByRegionId } from 'engine/CompositionParser';
-import * as Utils from 'engine/Utils';
+import {tools} from 'engine/Constants'
 
 class CompositionGrid extends React.Component {
     constructor() {
@@ -14,7 +14,7 @@ class CompositionGrid extends React.Component {
 
     handleEmptyBitClicked(trackIndex, bitIndex, bitsToDraw) {
         switch (this.props.selectedTool) {
-            case Utils.tools.draw: {
+            case tools.draw.id: {
                 let canDraw = true;
                 for (let i = 0; i < this.props.regionDrawLength; i++) {
                     if (bitsToDraw[bitIndex + i]) {
@@ -30,13 +30,13 @@ class CompositionGrid extends React.Component {
     }
 
     handleRegionClicked(trackIndex, bitIndex) {
-        let regionIndex = getRegionIdByBitIndex(trackIndex, bitIndex);        
+        let regionIndex = getRegionIdByBitIndex(trackIndex, bitIndex);
         switch (this.props.selectedTool) {
-            case Utils.tools.select: {
+            case tools.select.id: {
                 this.props.dispatch(showPianoRoll(trackIndex, regionIndex));
                 break;
             }
-            case Utils.tools.remove: {
+            case tools.remove.id: {
                 this.props.dispatch(removeRegion(regionIndex));
                 break;
             }
@@ -64,7 +64,7 @@ class CompositionGrid extends React.Component {
             }
         }
         switch (this.props.selectedTool) {
-            case Utils.tools.draw: {
+            case tools.draw.id: {
                 let canDraw = sixteenthNumber + noteLength <= notesToDraw.length ? true : false;
                 for (let i = 0; i < noteLength && canDraw; i++) {
                     if (notesToDraw[sixteenthNumber + i]) {
@@ -76,7 +76,7 @@ class CompositionGrid extends React.Component {
                 }
                 break;
             }
-            case Utils.tools.remove: {
+            case tools.remove.id: {
                 if(notesToDraw[sixteenthNumber]){
                     this.props.dispatch(removeNote(this.props.composition.pianoRollRegion, noteNumber, sixteenthNumber, noteLength));
                 }

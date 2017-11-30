@@ -1,4 +1,4 @@
-import * as Utils from 'engine/Utils';
+import * as Constants from 'engine/Constants';
 
 export default function reducer(state = {
     BPM: 120,
@@ -6,7 +6,7 @@ export default function reducer(state = {
     maxBPM: 250,
     playing: false,
     show: false,
-    tool: Utils.tools.draw,
+    tool: Constants.tools.draw.id,
     noteDrawLength: 2,
     regionDrawLength: 2,
     maxRegionDrawLength: 16

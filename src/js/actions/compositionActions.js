@@ -71,7 +71,7 @@ export function removeNote (newRegionId, newNoteNumber, newSixteenthNumber, newN
             regionId: newRegionId,
             noteNumber: newNoteNumber,
             sixteenthNumber: newSixteenthNumber,
-            noteLength: newNoteLength            
+            noteLength: newNoteLength
         }
     }
 }

@@ -1,4 +1,4 @@
-import * as Utils from 'engine/Utils';
+import {samplerInstruments} from 'engine/Constants';
 import * as AudioFiles from 'engine/audioFiles';
 import BufferLoader from 'engine/BufferLoader';
 import Sound from 'engine/Sound';
@@ -26,13 +26,15 @@ export default function reducer(state = {
             }
 
             newBufferLoader = new BufferLoader(newContext);
-
-            for (let i = 0; i < Utils.samplerInstruments.length; i++) {
-                newSamplerInstrumentsSounds.push({
-                    name: Utils.samplerInstruments[i],
-                    loaded: false,
-                    buffer: new Array
-                });
+            
+            for (let property in samplerInstruments) {
+                if (samplerInstruments.hasOwnProperty(property)) {
+                    newSamplerInstrumentsSounds.push({
+                        name: property,
+                        loaded: false,
+                        buffer: new Array
+                    })
+                }
             }
             return {
                 ...state,

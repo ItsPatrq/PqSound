@@ -1,21 +1,22 @@
 import React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-import * as Utils from 'engine/Utils';
+import {noteLengths} from 'engine/Constants';
 
 const NoteDrawLengthDropdown = (props) => {
     if (props.isVisible) {
         let noteLengthsMenuItems = new Array;
-        for (let property in Utils.noteLengths) {
-            if (Utils.noteLengths.hasOwnProperty(property)) {
+        for (let property in noteLengths) {
+            if (noteLengths.hasOwnProperty(property)) {
                 noteLengthsMenuItems.push(
                     <MenuItem
-                        key={(Utils.noteLengths[property] + 1).toString()}
-                        eventKey={(Utils.noteLengths[property] + 1).toString()}
-                        onClick={() => props.onNoteDrawLengthChange(Utils.noteLengths[property])}>{property}
+                        key={(noteLengths[property].id + 1).toString()}
+                        eventKey={(noteLengths[property].id + 1).toString()}
+                        onClick={() => props.onNoteDrawLengthChange(noteLengths[property].id)}>{noteLengths[property].name}
                     </MenuItem>
                 );
             }
         }
+        
         return (
             <DropdownButton bsStyle="default" className="drop-down" title="Note draw length" id={props.id} >
                 {noteLengthsMenuItems}
