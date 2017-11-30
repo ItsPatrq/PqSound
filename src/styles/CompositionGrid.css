@@ -15,13 +15,15 @@
     height: calc(100vh - 134px);
     background-color: #616161;
     overflow: scroll;
+    overflow-x: scroll;
     overflow-y: scroll;
 }
 
 .trackCompositionRow {
     height: 50px;
+    width: fit-content;    
     background-color: #9E9E9E;
-    overflow: hidden;
+    white-space: nowrap;
     border-style: solid;
     border-top-width: thin;
     border-bottom-width: thin;
@@ -48,7 +50,7 @@
 
 .keyRow {
     width: fit-content;
-    white-space: nowrap;    
+    white-space: nowrap;
     height: 20px;
     border-style: solid;
     border-bottom-width: thin;
