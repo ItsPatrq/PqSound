@@ -3,10 +3,12 @@ import { Col, Button, Glyphicon } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Sequencer from 'engine/Sequencer';
 import * as actions from 'actions/controlActions';
+import {changeBitsInComposition} from 'actions/compositionActions';
 import BPMInput from 'components/controlBar/BPMInput';
 import ToolDropdown from 'components/controlBar/ToolDropdown';
 import NoteDrawLengthDropdown from 'components/controlBar/NoteDrawLengthDropdown';
 import RegionDrawLengthInput from 'components/controlBar/RegionDrawLengthInput';
+import BitsInCompositionInput from 'components/controlBar/BitsInCompositionInput';
 
 class ControlBar extends React.Component {
     constructor(props) {
@@ -15,7 +17,8 @@ class ControlBar extends React.Component {
         this.sequencer.init();
         this.state = {
             tempBPM: props.controlState.BPM,
-            tempRegionDrawLength: props.controlState.regionDrawLength
+            tempRegionDrawLength: props.controlState.regionDrawLength,
+            tempBitsInComposition: props.bitsInComposition
         };
     }
 
@@ -68,6 +71,19 @@ class ControlBar extends React.Component {
         this.setState(() => { return { tempRegionDrawLength: regionDrawLength }; });
     }
 
+    handleBitsInCompositionChange(){
+        if (this.state.tempBitsInComposition >= 48 && this.state.tempBitsInComposition <= this.props.maxBitsInComposition &&
+            this.state.tempBitsInComposition !== this.props.bitsInComposition) {
+                this.props.dispatch(changeBitsInComposition(this.state.tempBitsInComposition));
+        } else {
+            this.setState(() => { return { tempBitsInComposition: this.props.bitsInComposition }; });
+        }
+    }
+
+    handleTempBitsInComposition(bitsInComposition) {
+        this.setState(() => { return { tempBitsInComposition: bitsInComposition }; });
+    }
+
     render() {
         return (
             <Col xs={12} className="nopadding infoBar">
@@ -82,6 +98,10 @@ class ControlBar extends React.Component {
                         regionDrawLength={this.state.tempRegionDrawLength} onRegionDrawLengthChange={this.handleRegionDrawLengthChange.bind(this)}
                         onTempRegionDrawLengthChange={this.handleTempRegionDrawLengthChange.bind(this)}
                     />
+                    <BitsInCompositionInput id={'birsInComposition'} onBitsInCompositionChange={this.handleBitsInCompositionChange.bind(this)}
+                        onTempBitsInCompositionChange={this.handleTempBitsInComposition.bind(this)} bitsInComposition={this.state.tempBitsInComposition}
+                        />
+
                 </Col>
                 <center>
                     <p>
@@ -100,7 +120,9 @@ class ControlBar extends React.Component {
 const mapStateToProps = (state) => {
     return {
         controlState: state.control,
-        showPianoRoll: state.composition.showPianoRoll
+        showPianoRoll: state.composition.showPianoRoll,
+        bitsInComposition: state.composition.bitsInComposition,
+        maxBitsInComposition: state.composition.maxBitsInComposition
     }
 }
 

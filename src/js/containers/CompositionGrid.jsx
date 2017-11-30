@@ -17,7 +17,7 @@ class CompositionGrid extends React.Component {
             case tools.draw.id: {
                 let canDraw = true;
                 for (let i = 0; i < this.props.regionDrawLength; i++) {
-                    if (bitsToDraw[bitIndex + i] || bitIndex + i > this.props.composition.bitsInComposition) {
+                    if (bitsToDraw[bitIndex + i] || bitIndex + i >= this.props.composition.bitsInComposition) {
                         canDraw = false;
                         break;
                     }
