@@ -23,7 +23,7 @@ class Sound {
   getVolume(){
     for(let i = 0; i < Store.getState().tracks.trackList.length; i++){
       if(Store.getState().tracks.trackList[i].index === this.trackIndex){
-        return 1000;
+        return Store.getState().tracks.trackList[i].volume;
       }
     }
   }
