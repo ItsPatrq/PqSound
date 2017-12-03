@@ -13,7 +13,7 @@
 
 .compositionPanel {
     height: calc(100vh - 134px);
-    background-color: #616161;
+    background-color: #3a3a3a;
     overflow: scroll;
     overflow-x: scroll;
     overflow-y: scroll;

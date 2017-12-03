@@ -17,7 +17,7 @@ class TrackList extends React.Component {
     }
 
     removeTrack(index) {
-        if (this.props.trackList.length > 1) {
+        if (this.props.trackList.length > 2) {
             this.props.dispatch(trackListActions.removeTrack(index));
             this.props.dispatch(compositionActions.removeTrackFromComposition(index));
         }
@@ -48,15 +48,26 @@ class TrackList extends React.Component {
         }
     }
 
+    changeSelectedTrack(index) {
+        if(this.props.selected !== index) {
+            this.props.dispatch(trackListActions.changeSelectedTrack(index));
+        }
+    }
+
     render() {
         let renderTrackList = new Array;
-        for (let i = 0; i < this.props.trackList.length; i++) {
+        /**
+         * start iteration from i = 1 because i = 0 is the master track
+         */
+        for (let i = 1; i < this.props.trackList.length; i++) {
             renderTrackList.push(
                 <Track key={i.toString()}
                     trackDetails={this.props.trackList[i]}
+                    handleRowClicked={this.changeSelectedTrack.bind(this)}
                     handleRemove={this.removeTrack.bind(this)}
                     handleRecord={this.handleRecordClick.bind(this)}
                     handleTrackNameChange={this.handleTrackNameChange.bind(this)}
+                    selected={this.props.selected}
                 />
             );
         }
@@ -77,7 +88,7 @@ const mapStateToProps = (state) => {
     }
     return {
         trackList: state.tracks.trackList,
-        active: state.tracks.active,
+        selected: state.tracks.selected,
         samplerInstruments: samplerInstruments,
         fetching: state.webAudio.fetching
     }

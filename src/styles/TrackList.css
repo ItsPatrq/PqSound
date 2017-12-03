@@ -2,19 +2,19 @@
     border-style: solid;
     border-width: thin;
     height: calc(100vh - 100px);
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 
 .trackRow {
     height: 50px;
-    background-color: #9E9E9E;
+    background-color: rgb(82, 97, 102);
     overflow-x: hidden;
     border-style: solid;
     border-bottom-width: thin;
     border-color: #212121;
 }
 
-.active {
-    background-color: red;
+.trackRow.selected {
+    background-color: #607D8B;
 }

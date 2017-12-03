@@ -29,3 +29,10 @@ export function changeTrackName(newName, newIndex) {
         }
     }
 }
+
+export function changeSelectedTrack(newIndex){
+    return{
+        type: 'CHANGE_SELECTED_TRACK',
+        payload: newIndex
+    }
+}

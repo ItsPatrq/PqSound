@@ -33,6 +33,10 @@ module.exports.tools = {
     remove: { name: 'Remove', id: 2 }
 }
 
+module.exports.instruments = {
+    sampler: { name: 'Sampler', id: 0 }
+}
+
 /**
  * object containing all available sampler instruments
  */

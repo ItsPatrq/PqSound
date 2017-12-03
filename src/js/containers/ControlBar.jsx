@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import Sequencer from 'engine/Sequencer';
 import * as actions from 'actions/controlActions';
 import {changeBitsInComposition} from 'actions/compositionActions';
-import BPMInput from 'components/controlBar/BPMInput';
-import ToolDropdown from 'components/controlBar/ToolDropdown';
-import NoteDrawLengthDropdown from 'components/controlBar/NoteDrawLengthDropdown';
-import RegionDrawLengthInput from 'components/controlBar/RegionDrawLengthInput';
-import BitsInCompositionInput from 'components/controlBar/BitsInCompositionInput';
+import BPMInput from 'components/ControlBar/BPMInput';
+import ToolDropdown from 'components/ControlBar/ToolDropdown';
+import NoteDrawLengthDropdown from 'components/ControlBar/NoteDrawLengthDropdown';
+import RegionDrawLengthInput from 'components/ControlBar/RegionDrawLengthInput';
+import BitsInCompositionInput from 'components/ControlBar/BitsInCompositionInput';
 
 class ControlBar extends React.Component {
     constructor(props) {
@@ -72,6 +72,7 @@ class ControlBar extends React.Component {
     }
 
     handleBitsInCompositionChange(){
+        //TODO: Delete regions on lowering bits in coposition
         if (this.state.tempBitsInComposition >= 48 && this.state.tempBitsInComposition <= this.props.maxBitsInComposition &&
             this.state.tempBitsInComposition !== this.props.bitsInComposition) {
                 this.props.dispatch(changeBitsInComposition(this.state.tempBitsInComposition));

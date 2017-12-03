@@ -1,7 +1,16 @@
 import * as Utils from '../engine/Utils';
 
 export default function reducer(state = {
-    trackList: [{
+    trackList: [
+        {
+            'name': 'Master',
+            'volume': 100,
+            'pan': 0,
+            'mute': false,
+            'solo': false,
+            'index': 0
+        },
+        {
         'name': 'Piano',
         'instrument': {
             'name': 'Sampler',
@@ -14,7 +23,7 @@ export default function reducer(state = {
         'solo': false,
         'index': 1
     }],
-    active: 1
+    selected: 1
 }, action) {
     switch (action.type) {
         case 'ADD_TRACK': {
@@ -22,7 +31,7 @@ export default function reducer(state = {
             if (Utils.isNullUndefinedOrEmpty(action.payload)) {
                 newTrackList.push(
                     {
-                        'name': 'Piano',
+                        'name': 'Default',
                         'instrument': {
                             'name': 'Sampler',
                             'preset': 'piano'
@@ -32,7 +41,7 @@ export default function reducer(state = {
                         'record': false,
                         'mute': false,
                         'solo': false,
-                        'index': state.trackList.length + 1
+                        'index': state.trackList.length
                     }
                 );
             } else {
@@ -45,21 +54,15 @@ export default function reducer(state = {
         }
         case 'REMOVE_TRACK': {
             let newTrackList = [...state.trackList];
-            let active = state.active;
-            for (let i = 0; i < newTrackList.length; i++) {
+            let selected = state.selected;
+            for (let i = 1; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
-                    if (newTrackList[i].record) {
-                        if (i === 0) {
-                            newTrackList[1].record = true;
-                            active = 1;
-                        } else {
-                            newTrackList[i - 1].record = true;
-                            active = i - 1;
-                        }
+                    if (newTrackList[i].index === selected) {
+                        selected = null
                     }
                     newTrackList.splice(i, 1);
                     for (let j = i; j < newTrackList.length; j++) {
-                        newTrackList[j].index = j + 1;
+                        newTrackList[j].index = j;
                     }
                     break;
                 }
@@ -67,7 +70,7 @@ export default function reducer(state = {
             return {
                 ...state,
                 trackList: newTrackList,
-                active: active
+                selected: selected
             }
         }
         case 'CHANGE_RECORD_STATE': {
@@ -75,14 +78,11 @@ export default function reducer(state = {
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
                     newTrackList[i].record = !newTrackList[i].record;
-                } else if (newTrackList[i].index === state.active) {
-                    newTrackList[i].record = false;
                 }
             }
             return {
                 ...state,
-                trackList: newTrackList,
-                active: action.payload
+                trackList: newTrackList
             }
         }
         case 'CHANGE_TRACK_NAME': {
@@ -95,6 +95,12 @@ export default function reducer(state = {
             return {
                 ...state,
                 trackList: newTrackList
+            }
+        }
+        case 'CHANGE_SELECTED_TRACK': {
+            return {
+                ...state,
+                selected: action.payload
             }
         }
     }

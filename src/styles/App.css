@@ -1,7 +1,7 @@
 /* Base Application Styles */
 body {
   color: #fff;
-  background: #8C8C88;
+  background: #616161;
   padding-top: 50px;  
   width: 100vw;
   height: calc(100vh - 50px);
@@ -33,9 +33,11 @@ body {
 }
 
 .trackDetails {
+  padding: 0;
   border-style: solid;
   border-width: thin;
   height: calc(100vh - 100px);
+  overflow: hidden;
 }
 
 .nopadding {
@@ -46,7 +48,7 @@ body {
 
 .infoBar {
   height: 50px;
-  background: #BDBDBD;
+  background: rgb(129, 129, 129);
   overflow: visible;
 }
 
@@ -54,3 +56,15 @@ body {
   max-width: 50px;
   display: inline-block;
 }
+
+.btn-group-flex {
+  color: pink;
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+}
+
+  .btn-group-flex .btn:first-child {
+    flex-grow: 1;
+    text-align: left;
+  }

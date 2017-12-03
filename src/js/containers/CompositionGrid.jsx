@@ -5,7 +5,7 @@ import TrackCompositionRow from 'components/CompositionGrid/TrackCompositionRow'
 import PianoRoll from 'components/CompositionGrid/PianoRoll';
 import { showPianoRoll, addRegion, removeRegion, addNote, removeNote } from 'actions/compositionActions';
 import { getRegionIdByBitIndex, getRegionByRegionId } from 'engine/CompositionParser';
-import {tools} from 'engine/Constants'
+import { tools } from 'engine/Constants'
 
 class CompositionGrid extends React.Component {
     constructor() {
@@ -78,7 +78,7 @@ class CompositionGrid extends React.Component {
                 break;
             }
             case tools.remove.id: {
-                if(notesToDraw[sixteenthNumber]){
+                if (notesToDraw[sixteenthNumber]) {
                     this.props.dispatch(removeNote(this.props.composition.pianoRollRegion, noteNumber, sixteenthNumber, noteLength));
                 }
                 break;
@@ -93,7 +93,10 @@ class CompositionGrid extends React.Component {
             let bitsNumber = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).regionLength;
             pianoRoll = <PianoRoll bitsNumber={bitsNumber} onNoteClick={this.handleNoteClicked.bind(this)} />
         } else {
-            for (let i = 0; i < this.props.trackList.length; i++) {
+            /**
+ * start iteration from i = 1 because i = 0 is the master track
+ */
+            for (let i = 1; i < this.props.trackList.length; i++) {
                 trackCompositionRowList.push(<TrackCompositionRow
                     bits={this.props.composition.bitsInComposition}
                     key={this.props.trackList[i].index}
@@ -126,7 +129,6 @@ class CompositionGrid extends React.Component {
 const mapStateToProps = (state) => {
     return {
         trackList: state.tracks.trackList,
-        active: state.tracks.active,
         composition: state.composition,
         selectedTool: state.control.tool,
         regionDrawLength: state.control.regionDrawLength,
