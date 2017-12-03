@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
 import Bit from './Bit';
-import {keyNotes} from 'engine/Constants';
+import {keyNotes} from 'constants/Constants';
 
 const PianoRoll = (props) => {
     let keyRows = new Array;

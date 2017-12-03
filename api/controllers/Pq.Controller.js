@@ -7,8 +7,10 @@ exports.getInstrument = function (req, res) {
     var sound = req.url.substring(23);
     var instrument = sound.substring(0, sound.indexOf('/'));
     var filePath = instrumentsPath + sound;
-    if (instrument === 'Piano') {
+    if (instrument === 'ClassicalPiano') {
         getSound(req, res, filePath, 'audio/ogg');
+    } else if(instrument === 'SlingerlandKit'){
+        getSound(req, res, filePath, 'audio/wav');
     } else {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         res.write('Instrument \'' + instrument + '\' not found');

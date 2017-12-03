@@ -1,6 +1,6 @@
 import React from 'react';
 import { ButtonToolbar, MenuItem, SplitButton } from 'react-bootstrap';
-import { instruments } from 'engine/Constants';
+import { instruments } from 'constants/Constants';
 import InstrumentModal from './InstrumentModal';
 
 const InstrumentInput = (props) => {
@@ -18,7 +18,6 @@ const InstrumentInput = (props) => {
             );
         }
     }
-
     return (
         <ButtonToolbar className="instrumentInput">
             <SplitButton bsStyle="info" title={props.selectedTrack.instrument.name} id="split-button-instrument-input" onClick={() => props.instrumentModalVisibilitySwitch()}>
@@ -28,6 +27,7 @@ const InstrumentInput = (props) => {
                 modalVisibilitySwitch={props.instrumentModalVisibilitySwitch}
                 showModal={props.showModal}
                 track={props.selectedTrack}
+                onSamplerPresetChange={props.onSamplerPresetChange}
             />
         </ButtonToolbar>
     );

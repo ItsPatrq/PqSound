@@ -3,7 +3,7 @@ import * as compositionParser from 'engine/CompositionParser';
 
 export default function reducer(state = {
     bitsInComposition: 48,
-    maxBitsInComposition: 1000, 
+    maxBitsInComposition: 1000,
     showPianoRoll: false,
     pianoRollRegion: null,
     regionList: new Array,

@@ -1,4 +1,4 @@
-import * as Constants from 'engine/Constants';
+import * as Constants from 'constants/Constants';
 
 export default function reducer(state = {
     BPM: 120,

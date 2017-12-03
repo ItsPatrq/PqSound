@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from 'components/Layout';
 import { connect } from 'react-redux';
 import { initializeWebAudio, fetchSamplerInstrument } from 'actions/webAudioActions';
+import {initTrackSound} from '../actions/trackListActions'
 
 require('styles/reset.css');
 require('normalize.css/normalize.css');
@@ -14,7 +15,8 @@ require('styles/TrackDetails.css');
 class Main extends React.Component {
     componentDidMount() {
         this.props.dispatch(initializeWebAudio());
-        this.props.dispatch(fetchSamplerInstrument('piano', true, 1));
+        this.props.dispatch(fetchSamplerInstrument('Classical Piano', true, 1));
+        this.props.dispatch(initTrackSound(1));
     }
 
     render() {

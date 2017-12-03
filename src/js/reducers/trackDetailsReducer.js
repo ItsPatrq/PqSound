@@ -1,5 +1,3 @@
-import * as Utils from '../engine/Utils';
-
 export default function reducer(state = {
     showInstrumentModal: false
 }, action) {

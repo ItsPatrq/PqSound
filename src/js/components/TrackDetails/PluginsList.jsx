@@ -1,6 +1,6 @@
 import React from 'react';
 
-const VolumeSlider = (props) => {
+const VolumeSlider = () => {
     return (
         <div className="pluginList">
             <p>List of plugins</p>

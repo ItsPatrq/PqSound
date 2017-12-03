@@ -5,7 +5,7 @@ import TrackCompositionRow from 'components/CompositionGrid/TrackCompositionRow'
 import PianoRoll from 'components/CompositionGrid/PianoRoll';
 import { showPianoRoll, addRegion, removeRegion, addNote, removeNote } from 'actions/compositionActions';
 import { getRegionIdByBitIndex, getRegionByRegionId } from 'engine/CompositionParser';
-import { tools } from 'engine/Constants'
+import { tools } from 'constants/Constants'
 
 class CompositionGrid extends React.Component {
     constructor() {

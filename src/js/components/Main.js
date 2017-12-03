@@ -15,7 +15,7 @@ import pianoSounds from '../engine/audioFiles';
 import TrackList from './TrackList/Pq.Ui.TrackList';
 import Track from '../engine/Track';
 import { connect } from 'react-redux';
-import {updateActions} from 'engine/Constants';
+import {updateActions} from 'constants/Constants';
 import {addTrack} from '../actions/trackListActions'
 
 class AppComponent extends React.Component {

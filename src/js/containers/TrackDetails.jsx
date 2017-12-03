@@ -8,6 +8,8 @@ import PluginsList from 'components/TrackDetails/PluginsList';
 import TrackName from 'components/TrackDetails/TrackName';
 import SoloMuteButtons from 'components/TrackDetails/SoloMuteButtons';
 import * as Actions from 'actions/trackDetailsActions';
+import { changeTrackPreset } from 'actions/trackListActions';
+import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 
 class TrackDetails extends React.Component {
@@ -31,8 +33,30 @@ class TrackDetails extends React.Component {
         }
     }
 
+    getTrackPreset(index) {
+        for (let i = 0; i < this.props.trackList.length; i++) {
+            if (this.props.trackList[i].index === index) {
+                return this.props.trackList[i].instrument.preset;
+            }
+        }
+    }
+
     instrumentModalVisibilitySwitch() {
         this.props.dispatch(Actions.instrumentModalVisibilitySwitch());
+    }
+
+    onSamplerPresetChange(newPresetName) {
+        if (this.getTrackPreset(this.props.selected) !== newPresetName) {
+            this.props.dispatch(changeTrackPreset(newPresetName, this.props.selected));
+            for (let i = 0; i < this.props.samplerInstruments.length; i++) {
+                if (this.props.samplerInstruments[i].name === newPresetName) {
+                    if (!this.props.samplerInstruments[i].loaded) {
+                        this.props.dispatch(fetchSamplerInstrument(newPresetName));
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     render() {
@@ -44,6 +68,7 @@ class TrackDetails extends React.Component {
                             instrumentModalVisibilitySwitch={this.instrumentModalVisibilitySwitch.bind(this)}
                             showModal={this.props.trackDetails.showInstrumentModal}
                             selectedTrack={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
+                            onSamplerPresetChange={this.onSamplerPresetChange.bind(this)}
                         />
                         <PluginsList />
                         <PanKnob />
@@ -91,7 +116,10 @@ const mapStateToProps = (state) => {
     return {
         trackList: state.tracks.trackList,
         selected: state.tracks.selected,
-        trackDetails: state.trackDetails
+        trackDetails: state.trackDetails,
+        samplerInstruments: state.webAudio.samplerInstrumentsSounds.map(
+            (value) => { return { name: value.name, loaded: value.loaded } }
+        )
     }
 }
 

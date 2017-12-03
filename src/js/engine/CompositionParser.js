@@ -82,7 +82,7 @@ module.exports.notesToPlay = (sixteenthPlaying, trackIndex) => {
                     if(!Utils.isNullUndefinedOrEmpty(currRegion.notes[j])){
                         for(let z = 0; z < currRegion.notes[j].length; z++){
                             if(currRegion.notes[j][z].sixteenthNumber + currRegion.start * 16 === sixteenthPlaying){
-                                notesToPlay.push(j);
+                                notesToPlay.push({note: j, length: currRegion.notes[j][z].length});
                             }
                         }
                     }

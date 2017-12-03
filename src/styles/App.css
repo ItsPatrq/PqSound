@@ -56,15 +56,3 @@ body {
   max-width: 50px;
   display: inline-block;
 }
-
-.btn-group-flex {
-  color: pink;
-  display: flex;
-  align-items: stretch;
-  align-content: stretch;
-}
-
-  .btn-group-flex .btn:first-child {
-    flex-grow: 1;
-    text-align: left;
-  }

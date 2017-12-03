@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-import {tools} from 'engine/Constants';
+import {tools} from 'constants/Constants';
 
 const ToolDropdown = (props) => {
     let toolsMenuItems = new Array;

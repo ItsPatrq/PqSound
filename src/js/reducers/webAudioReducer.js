@@ -1,16 +1,10 @@
-import {samplerInstruments} from 'engine/Constants';
-import * as AudioFiles from 'engine/audioFiles';
+import SamplerPresets from 'constants/SamplerPresets';
 import BufferLoader from 'engine/BufferLoader';
-import Sound from 'engine/Sound';
 
 export default function reducer(state = {
     context: null,
     bufferLoader: null,
-    samplerInstrumentsSounds: null,
-    keyboard: {
-        instrument: null,
-        sounds: null
-    },
+    samplerInstrumentsSounds: new Array,
     fetching: false
 }, action) {
     switch (action.type) {
@@ -26,11 +20,11 @@ export default function reducer(state = {
             }
 
             newBufferLoader = new BufferLoader(newContext);
-            
-            for (let property in samplerInstruments) {
-                if (samplerInstruments.hasOwnProperty(property)) {
+
+            for (let i = 0; i < SamplerPresets.length; i++) {
+                for (let j = 0; j < SamplerPresets[i].presets.length; j++) {
                     newSamplerInstrumentsSounds.push({
-                        name: property,
+                        name: SamplerPresets[i].presets[j].name,
                         loaded: false,
                         buffer: new Array
                     })
@@ -46,7 +40,14 @@ export default function reducer(state = {
         case 'NEED_TO_FETCH_SAMPLER_INSTRUMENT': {
             let newBufferLoader = { ...state.bufferLoader };
 
-            newBufferLoader.urlList = AudioFiles[action.payload.name];
+            for (let i = 0; i < SamplerPresets.length; i++) {
+                for (let j = 0; j < SamplerPresets[i].presets.length; j++) {
+                    if (SamplerPresets[i].presets[j].name === action.payload.name) {
+                        newBufferLoader.urlList = SamplerPresets[i].presets[j].content.map((el) => { return el.url });
+                        break;
+                    }
+                }
+            }
             newBufferLoader.onload = action.payload.callback;
             newBufferLoader.load();
             return {
@@ -56,8 +57,8 @@ export default function reducer(state = {
             }
         }
         case 'FETCHED_SAMPLER_INSTRUMENT': {
-            let newSamplerInstrumentsSounds = JSON.parse(JSON.stringify(state.samplerInstrumentsSounds));
-
+            //let newSamplerInstrumentsSounds = JSON.parse(JSON.stringify(state.samplerInstrumentsSounds));
+            let newSamplerInstrumentsSounds = [...state.samplerInstrumentsSounds];
             let instrumentIndex;
             for (let i = 0; i < newSamplerInstrumentsSounds.length; i++) {
                 if (newSamplerInstrumentsSounds[i].name === action.payload) {
@@ -66,40 +67,19 @@ export default function reducer(state = {
                 }
             }
             for (let i = 0; i < state.bufferLoader.bufferList.length; i++) {
+
                 newSamplerInstrumentsSounds[instrumentIndex].buffer.push(state.bufferLoader.bufferList[i]);
             }
-            state.bufferLoader.bufferList.length = 0;
             newSamplerInstrumentsSounds[instrumentIndex].loaded = true;
 
             return {
                 ...state,
                 samplerInstrumentsSounds: newSamplerInstrumentsSounds,
-                fetching: false
-            }
-        }
-        case 'LOAD_KEYBOARD_SOUNDS': {
-            let index;
-            let newKeyboardSounds = new Array;
-
-            for (let i = 0; i < state.samplerInstrumentsSounds.length; i++) {
-                if (state.samplerInstrumentsSounds[i].name === action.payload.name) {
-                    index = i;
-                    break;
-                }
-            }
-            for (let i = 0; i < 12; i++) {
-                newKeyboardSounds.push(new Sound(state.context, state.samplerInstrumentsSounds[index].buffer[i], action.payload.volume));
-            }
-            return {
-                ...state,
-                keyboard: {
-                    instrument: action.payload.name,
-                    sounds: newKeyboardSounds
-                }
+                fetching: false,
+                bufferLoader: new BufferLoader(state.context)
             }
         }
     }
 
     return state;
 }
-

@@ -37,7 +37,7 @@ class Sequencer {
                 let currentNotesToPlay = notesToPlay(this.sixteenthPlaying, Store.getState().tracks.trackList[i].index);
                 if(!Utils.isNullUndefinedOrEmpty(currentNotesToPlay)){
                     for(let j = 0; j < currentNotesToPlay.length; j++){
-                        Store.getState().webAudio.keyboard.sounds[currentNotesToPlay[j]].play(contextPlayTime);
+                        Store.getState().tracks.trackList[i].sound.play(contextPlayTime, currentNotesToPlay[j].note);
                     }
                 }
             }

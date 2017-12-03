@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-import { noteLengths } from 'engine/Constants';
+import { noteLengths } from 'constants/Constants';
 
 const NoteDrawLengthDropdown = (props) => {
     if (props.isVisible) {

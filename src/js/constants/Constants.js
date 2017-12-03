@@ -1,5 +1,5 @@
 /**
- * Module for bookshelf-related utilities.
+ * Module for constants variabes
  * @module Constants
  */
 
@@ -33,15 +33,11 @@ module.exports.tools = {
     remove: { name: 'Remove', id: 2 }
 }
 
+/**
+ * object constaining all available instruments
+ */
 module.exports.instruments = {
     sampler: { name: 'Sampler', id: 0 }
-}
-
-/**
- * object containing all available sampler instruments
- */
-module.exports.samplerInstruments = {
-    piano: { name: 'Piano', id: 0 }
 }
 
 module.exports.updateActions = {

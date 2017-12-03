@@ -10,20 +10,29 @@ class Keyboard extends React.Component {
         document.onmouseup = this.handleUp.bind(this);
     }
 
-    componentDidMount() {
-
+    getAllRecordingTracks(){
+        let recordingTracksSounds = new Array;
+        for(let i = 1; i < this.props.trackList.length; i++){
+            if(this.props.trackList[i].record){
+                recordingTracksSounds.push(this.props.trackList[i].sound);
+            }
+        }
+        return recordingTracksSounds;
     }
 
     handleUp() {
-        if (this.lastPressedKey !== null) {
-            this.props.keysSounds[this.lastPressedKey].stop();
-            this.lastPressedKey = null;
-        }
+        // if (this.lastPressedKey !== null) {
+        //     this.props.keysSounds[this.lastPressedKey].stop();
+        //     this.lastPressedKey = null;
+        // }
     }
 
-    handleDown(i) {
-        this.lastPressedKey = i;
-        this.props.keysSounds[i].play();
+    handleDown(note) {
+        this.lastPressedKey = note;
+        let recordingTracksSounds = this.getAllRecordingTracks();
+        for(let i = 0; i < recordingTracksSounds.length; i++){
+            recordingTracksSounds[i].play(null, note);
+        }
     }
 
     render() {
@@ -47,7 +56,7 @@ class Keyboard extends React.Component {
 const mapStateToProps = (state) => {
     return {
         keyboard: state.keyboard,
-        keysSounds: state.webAudio.keyboard.sounds
+        trackList: state.tracks.trackList
     }
 }
 

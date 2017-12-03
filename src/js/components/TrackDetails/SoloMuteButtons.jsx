@@ -1,7 +1,7 @@
 import React from 'react';
 import {ButtonGroup, Button, Col} from 'react-bootstrap';
 
-const SoloMuteButtons = (props) => {
+const SoloMuteButtons = () => {
     return (
         <div className="soloMuteButtons">
         <ButtonGroup justified>

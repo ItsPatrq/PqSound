@@ -25,8 +25,9 @@ class BufferLoader {
                         return;
                     }
                     thisBuffer.bufferList[index] = buffer;
-                    if (++thisBuffer.loadCount == thisBuffer.urlList.length)
+                    if (++thisBuffer.loadCount == thisBuffer.urlList.length){
                         thisBuffer.onload(thisBuffer.bufferList);
+                    }
                 },
                 function (error) {
                     alert('decodeAudioData error', error);
