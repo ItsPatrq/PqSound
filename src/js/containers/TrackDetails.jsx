@@ -8,7 +8,7 @@ import PluginsList from 'components/TrackDetails/PluginsList';
 import TrackName from 'components/TrackDetails/TrackName';
 import SoloMuteButtons from 'components/TrackDetails/SoloMuteButtons';
 import * as Actions from 'actions/trackDetailsActions';
-import { changeTrackPreset } from 'actions/trackListActions';
+import { changeTrackPreset, changeTrackVolume } from 'actions/trackListActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 
@@ -59,6 +59,11 @@ class TrackDetails extends React.Component {
         }
     }
 
+    onVolumeChange(index, newVolume) {
+        console.log(newVolume)
+        this.props.dispatch(changeTrackVolume(index, parseInt(newVolume) / parseInt(100)));
+    }
+
     render() {
         if (!!this.props.selected) {
             return (
@@ -72,7 +77,11 @@ class TrackDetails extends React.Component {
                         />
                         <PluginsList />
                         <PanKnob />
-                        <VolumeSlider />
+                        <VolumeSlider
+                            volume={Utils.getTrackByIndex(this.props.trackList, this.props.selected).volume}
+                            onVolumeChange={this.onVolumeChange.bind(this)}
+                            trackIndex={this.props.selected}
+                        />
                         <SoloMuteButtons />
                         <TrackName name={this.getTrackName(this.props.selected)} />
                     </Col>
@@ -82,7 +91,11 @@ class TrackDetails extends React.Component {
                         </ButtonToolbar>
                         <PluginsList />
                         <PanKnob />
-                        <VolumeSlider />
+                        <VolumeSlider
+                            volume={Utils.getTrackByIndex(this.props.trackList, 0).volume}
+                            onVolumeChange={this.onVolumeChange.bind(this)}
+                            trackIndex={0}
+                        />
                         <SoloMuteButtons />
                         <TrackName name={this.getTrackName(0)} />
                     </Col>

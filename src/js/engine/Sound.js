@@ -38,7 +38,7 @@ class Sound {
   }
 
   play(contextPlayTime, note) {
-    if (!isNullOrUndefined(contextPlayTime)) {
+    if (isNullOrUndefined(contextPlayTime)) {
       contextPlayTime = this.context.currentTime + 0.01;
     }
     if (!isNullOrUndefined(this.getBuffers(note))) {

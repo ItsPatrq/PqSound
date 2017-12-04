@@ -109,7 +109,9 @@ class ControlBar extends React.Component {
                         <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play" /></Button>
                         <Button onClick={this.handlePause.bind(this)}><Glyphicon glyph="pause" /></Button>
                         <Button onClick={this.handleStop.bind(this)}><Glyphicon glyph="stop" /></Button>
-                        *Time Signature: 4/4* *currenttime=xxx*
+                        *Time Signature: 4/4* <br/>
+                        *currenttime={this.props.controlState.sixteenthNotePlaying * 0.25 * (60 / this.props.controlState.BPM)}*
+                        *current note playing: {this.props.controlState.sixteenthNotePlaying}*
                     </p>
                 </center>
             </Col>

@@ -1,5 +1,6 @@
 import Store from '../stroe';
 import { notesToPlay } from 'engine/CompositionParser';
+import { updateCurrentTime } from 'actions/controlActions';
 import * as Utils from 'engine/Utils';
 
 class Sequencer {
@@ -19,6 +20,7 @@ class Sequencer {
     handleStop(/*event*/) {
         this.timerWorker.postMessage('stop');
         this.sixteenthPlaying = 0;
+        Store.dispatch(updateCurrentTime(this.sixteenthPlaying));
     }
     handlePause(/*event*/){
         this.timerWorker.postMessage('stop');
@@ -28,7 +30,10 @@ class Sequencer {
 
         currentTime -= this.startTime;
 
-        while (this.noteTime < currentTime + 0.120) {
+        /**
+         * Schedule notes to play for x secounds in advance (in this case, x = 0.26)
+         */
+        while (this.noteTime < currentTime + 0.200) {
             // Convert noteTime to context time.
             var contextPlayTime = this.noteTime + this.startTime;
             
@@ -44,6 +49,9 @@ class Sequencer {
             this.advenceNote();
         }
     }
+    /**
+     * change the current note to plan up in time by one sixteenth note time length
+     */
     advenceNote() {
         let tempo = Store.getState().control.BPM;
         var secoundsPerBeat = 60.0 / tempo;
@@ -51,6 +59,8 @@ class Sequencer {
         this.sixteenthPlaying++;
 
         this.noteTime += 0.25 * secoundsPerBeat;
+
+        Store.dispatch(updateCurrentTime(this.sixteenthPlaying));
     }
     init() {
         var that = this;

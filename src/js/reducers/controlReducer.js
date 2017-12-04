@@ -9,7 +9,8 @@ export default function reducer(state = {
     tool: Constants.tools.draw.id,
     noteDrawLength: 2,
     regionDrawLength: 2,
-    maxRegionDrawLength: 16
+    maxRegionDrawLength: 16,
+    sixteenthNotePlaying: 0
 }, action) {
     switch (action.type) {
         case 'SWITCH_PLAY_STATE': {
@@ -40,6 +41,12 @@ export default function reducer(state = {
             return {
                 ...state,
                 noteDrawLength: action.payload
+            }
+        }
+        case 'UPDATE_CURRENT_TIME':{
+            return {
+                ...state,
+                sixteenthNotePlaying: action.payload
             }
         }
     }

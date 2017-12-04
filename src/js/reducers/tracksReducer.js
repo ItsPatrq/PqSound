@@ -134,6 +134,18 @@ export default function reducer(state = {
                 trackList: newTrackList
             }
         }
+        case 'CHANGE_TRACK_VOLUME': {
+            let newTrackList = [...state.trackList];
+            for (let i = 0; i < newTrackList.length; i++) {
+                if (newTrackList[i].index === action.payload.index) {
+                    newTrackList[i].volume = action.payload.volume;
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
     }
 
     return state;

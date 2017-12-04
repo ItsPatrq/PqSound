@@ -53,3 +53,13 @@ export function initTrackSound(newIndex){
         payload: newIndex
     }
 }
+
+export function changeTrackVolume(newIndex, newVolume){
+    return{
+        type: 'CHANGE_TRACK_VOLUME',
+        payload: {
+            index: newIndex,
+            volume: newVolume
+        }
+    }
+}

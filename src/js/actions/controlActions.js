@@ -31,3 +31,10 @@ export function changeNoteDrawLength(length){
         payload: length
     }
 }
+
+export function updateCurrentTime(newSixteenthNotePlaying){
+    return {
+        type: 'UPDATE_CURRENT_TIME',
+        payload: newSixteenthNotePlaying
+    }
+}
