@@ -9,6 +9,8 @@ exports.getInstrument = function (req, res) {
     var filePath = instrumentsPath + sound;
     if (instrument === 'ClassicalPiano') {
         getSound(req, res, filePath, 'audio/ogg');
+    } else if(instrument === 'DSKGrandPiano') {
+        getSound(req, res, filePath, 'audio/wav');
     } else if(instrument === 'SlingerlandKit'){
         getSound(req, res, filePath, 'audio/wav');
     } else {

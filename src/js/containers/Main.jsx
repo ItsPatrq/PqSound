@@ -15,7 +15,7 @@ require('styles/TrackDetails.css');
 class Main extends React.Component {
     componentDidMount() {
         this.props.dispatch(initializeWebAudio());
-        this.props.dispatch(fetchSamplerInstrument('Classical Piano', true, 1));
+        this.props.dispatch(fetchSamplerInstrument('DSK Grand Piano', true, 1));
         this.props.dispatch(initTrackSound(1));
     }
 

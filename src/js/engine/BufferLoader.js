@@ -21,7 +21,7 @@ class BufferLoader {
                 request.response,
                 function (buffer) {
                     if (!buffer) {
-                        alert('error decoding file data: ' + url);
+                        console.log('error decoding file data: ' + url);
                         return;
                     }
                     thisBuffer.bufferList[index] = buffer;
@@ -30,13 +30,13 @@ class BufferLoader {
                     }
                 },
                 function (error) {
-                    alert('decodeAudioData error', error);
+                    console.log('decodeAudioData error', error);
                 }
             );
         }
 
         request.onerror = function () {
-            alert('BufferLoader: XHR error');
+            console.log('BufferLoader: XHR error');
         }
 
         request.send();

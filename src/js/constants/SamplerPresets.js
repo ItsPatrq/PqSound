@@ -15,9 +15,9 @@ export default [
         name: 'Acoustic Pianos',
         presets: [
             {
-                name: 'Classical Piano',
+                name: 'DSK Grand Piano',
                 id: 0,
-                content: AudioFiles.ClassicalPiano
+                content: AudioFiles.DSKGrandPiano
             }
         ]
     }

@@ -12,6 +12,17 @@ for(let i = 0; i < keys.length; i++){
 }
 module.exports.ClassicalPiano = ClassicalPiano;
 
+let DSKGrandPianoURL = baseURL + 'DSKGrandPiano/DSK_Grand_';
+let DSKGrandPiano = new Array;
+for(let i = 0; i < 8; i++)
+for(let j = 0; j < keys.length; j++){
+    DSKGrandPiano.push({
+        name: keys[j] + i.toString(),
+        url: DSKGrandPianoURL + keys[j] + i + '.wav'
+    });
+}
+module.exports.DSKGrandPiano = DSKGrandPiano;
+
 let slingerlandKitURL = baseURL + 'SlingerlandKit/';
 module.exports.SlingerlandKit = [
     {

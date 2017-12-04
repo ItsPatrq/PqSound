@@ -1,7 +1,7 @@
 import * as Utils from 'engine/Utils';
 
 export default function reducer(state = {
-    octaves: 1,
+    octaves: 7,
     firstOctave: 2,
     show: false
 }, action) {

@@ -15,7 +15,7 @@ export default function reducer(state = {
             name: 'Piano',
             instrument: {
                 name: 'Sampler',
-                preset: 'Classical Piano'
+                preset: 'DSK Grand Piano'
             },
             sound: null,
             volume: 1.0,
@@ -36,7 +36,7 @@ export default function reducer(state = {
                         name: 'Default',
                         instrument: {
                             name: 'Sampler',
-                            preset: 'Classical Piano'
+                            preset: 'DSK Grand Piano'
                         },
                         sound: null,
                         volume: 1.0,
