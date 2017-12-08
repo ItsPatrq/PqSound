@@ -2,22 +2,12 @@
 let keys = ['C', 'Cs', 'D', 'Ds', 'E', 'F', 'Fs', 'G', 'Gs', 'A', 'As', 'B'];
 let baseURL = 'http://localhost:3000/api/samplerinstrument/';
 
-let classicalPianoURL = baseURL + 'ClassicalPiano/';
-let ClassicalPiano = new Array;
-for(let i = 0; i < keys.length; i++){
-    ClassicalPiano.push({
-        name: '2'+keys[i],
-        url: classicalPianoURL + '2' + keys[i] + '.ogg'
-    });
-}
-module.exports.ClassicalPiano = ClassicalPiano;
-
 let DSKGrandPianoURL = baseURL + 'DSKGrandPiano/DSK_Grand_';
 let DSKGrandPiano = new Array;
 for(let i = 0; i < 8; i++)
 for(let j = 0; j < keys.length; j++){
     DSKGrandPiano.push({
-        name: keys[j] + i.toString(),
+        name: 'DSKGrandPiano' + keys[j] + i.toString(),
         url: DSKGrandPianoURL + keys[j] + i + '.wav'
     });
 }

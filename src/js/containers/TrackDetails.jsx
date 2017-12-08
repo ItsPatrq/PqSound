@@ -45,13 +45,13 @@ class TrackDetails extends React.Component {
         this.props.dispatch(Actions.instrumentModalVisibilitySwitch());
     }
 
-    onSamplerPresetChange(newPresetName) {
-        if (this.getTrackPreset(this.props.selected) !== newPresetName) {
-            this.props.dispatch(changeTrackPreset(newPresetName, this.props.selected));
+    onSamplerPresetChange(newPresetId) {
+        if (this.getTrackPreset(this.props.selected).id !== newPresetId) {
+            this.props.dispatch(changeTrackPreset(newPresetId, this.props.selected));
             for (let i = 0; i < this.props.samplerInstruments.length; i++) {
-                if (this.props.samplerInstruments[i].name === newPresetName) {
+                if (this.props.samplerInstruments[i].id === newPresetId) {
                     if (!this.props.samplerInstruments[i].loaded) {
-                        this.props.dispatch(fetchSamplerInstrument(newPresetName));
+                        this.props.dispatch(fetchSamplerInstrument(newPresetId));
                     }
                     break;
                 }
@@ -60,7 +60,6 @@ class TrackDetails extends React.Component {
     }
 
     onVolumeChange(index, newVolume) {
-        console.log(newVolume)
         this.props.dispatch(changeTrackVolume(index, parseInt(newVolume) / parseInt(100)));
     }
 
@@ -131,7 +130,7 @@ const mapStateToProps = (state) => {
         selected: state.tracks.selected,
         trackDetails: state.trackDetails,
         samplerInstruments: state.webAudio.samplerInstrumentsSounds.map(
-            (value) => { return { name: value.name, loaded: value.loaded } }
+            (value) => { return { name: value.name, loaded: value.loaded, id: value.id } }
         )
     }
 }

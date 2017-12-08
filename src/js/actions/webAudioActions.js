@@ -4,26 +4,17 @@ export function initializeWebAudio() {
     }
 }
 
-export function fetchSamplerInstrument(instrumentName, needToUpdateKeyboard=false, loadVolume=1) {
+export function fetchSamplerInstrument(newInstrumentId) {
     return function (dispatch) {
         dispatch({
             type: 'NEED_TO_FETCH_SAMPLER_INSTRUMENT',
             payload: {
-                name: instrumentName,
+                instrumentId: newInstrumentId,
                 callback: () => {
                     dispatch({
                         type: 'FETCHED_SAMPLER_INSTRUMENT',
-                        payload: instrumentName
+                        payload: newInstrumentId
                     })
-                    if (needToUpdateKeyboard) {
-                        dispatch({
-                            type: 'LOAD_KEYBOARD_SOUNDS',
-                            payload: {
-                                name: instrumentName,
-                                volume: loadVolume
-                            }
-                        })
-                }
                 }
             }
         });

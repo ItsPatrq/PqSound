@@ -30,12 +30,12 @@ export function changeTrackName(newName, newIndex) {
     }
 }
 
-export function changeTrackPreset(newPreset, newIndex) {
+export function changeTrackPreset(newPresetId, newIndex) {
     return {
         type: 'CHANGE_TRACK_PRESET',
         payload: {
             index: newIndex,
-            preset: newPreset
+            presetId: newPresetId
         }
     }
 }
@@ -50,6 +50,13 @@ export function changeSelectedTrack(newIndex){
 export function initTrackSound(newIndex){
     return{
         type: 'INIT_TRACK_SOUND',
+        payload: newIndex
+    }
+}
+
+export function initInstrumentContext(newIndex){
+    return{
+        type: 'INIT_INSTRUMENT_CONTEXT',
         payload: newIndex
     }
 }

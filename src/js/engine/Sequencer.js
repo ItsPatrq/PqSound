@@ -39,10 +39,11 @@ class Sequencer {
             
             //iterate through all tracks
             for (let i = 0; i < Store.getState().tracks.trackList.length; i++) {
-                let currentNotesToPlay = notesToPlay(this.sixteenthPlaying, Store.getState().tracks.trackList[i].index);
+                let currTrackIndex = Store.getState().tracks.trackList[i].index;
+                let currentNotesToPlay = notesToPlay(this.sixteenthPlaying, currTrackIndex);
                 if(!Utils.isNullUndefinedOrEmpty(currentNotesToPlay)){
                     for(let j = 0; j < currentNotesToPlay.length; j++){
-                        Store.getState().tracks.trackList[i].sound.play(contextPlayTime, currentNotesToPlay[j].note);
+                        Store.getState().webAudio.sound.play(currTrackIndex, contextPlayTime, 88 - currentNotesToPlay[j].note);
                     }
                 }
             }

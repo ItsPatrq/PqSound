@@ -1,29 +1,34 @@
 import * as Utils from 'engine/Utils';
-import Sound from 'engine/Sound'
+import Sound from 'engine/Sound';
+import { Sampler } from 'instruments';
+import {trackTypes} from 'constants/Constants';
+import {Utils as SamplerPresetsUtils, Presets as SamplerPresets }  from 'constants/SamplerPresets';
 
 export default function reducer(state = {
     trackList: [
         {
             name: 'Master',
+            trackType: trackTypes.AUX,
+            pluginList: new Array,
             volume: 1.0,
             pan: 0,
             mute: false,
             solo: false,
             index: 0
+            //output: context.destination
         },
         {
             name: 'Piano',
-            instrument: {
-                name: 'Sampler',
-                preset: 'DSK Grand Piano'
-            },
-            sound: null,
+            trackType: trackTypes.virtualInstrument,
+            instrument: new Sampler(SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id)),
+            pluginList: new Array,
             volume: 1.0,
             pan: 0,
             record: true,
             mute: false,
             solo: false,
-            index: 1
+            index: 1,
+            output: 0
         }],
     selected: 1
 }, action) {
@@ -34,17 +39,16 @@ export default function reducer(state = {
                 newTrackList.push(
                     {
                         name: 'Default',
-                        instrument: {
-                            name: 'Sampler',
-                            preset: 'DSK Grand Piano'
-                        },
-                        sound: null,
+                        trackType: trackTypes.virtualInstrument,
+                        instrument: new Sampler(SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id)),
+                        pluginList: new Array,
                         volume: 1.0,
                         pan: 0,
                         record: false,
                         mute: false,
                         solo: false,
-                        index: state.trackList.length
+                        index: state.trackList.length,
+                        output: 0
                     }
                 );
             } else {
@@ -110,7 +114,7 @@ export default function reducer(state = {
             let newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
-                    newTrackList[i].instrument.preset = action.payload.preset;
+                    newTrackList[i].instrument.preset = SamplerPresetsUtils.getPresetById(action.payload.presetId);
                 }
             }
             return {
@@ -126,6 +130,22 @@ export default function reducer(state = {
                 for (let i = 0; i < newTrackList.length; i++) {
                     if (newTrackList[i].index === action.payload) {
                         newTrackList[i].sound = new Sound(action.payload);
+                    }
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
+        case 'INIT_INSTRUMENT_CONTEXT':{
+            let newTrackList = [...state.trackList];
+            if (Utils.isNullOrUndefined(action.payload)) {
+                newTrackList[newTrackList.length - 1].instrument.initContext();
+            } else {
+                for (let i = 0; i < newTrackList.length; i++) {
+                    if (newTrackList[i].index === action.payload) {
+                        newTrackList[i].instrument.initContext();
                     }
                 }
             }

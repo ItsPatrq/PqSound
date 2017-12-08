@@ -3,7 +3,7 @@ module.exports.isNullOrUndefined = (value) => {
 }
 
 module.exports.isNullUndefinedOrEmpty = (value) => {
-    return typeof(value) === 'undefined' || value === null || value.length === 0 || (Object.keys(value).length === 0 && value.constructor === Object);
+    return typeof(value) === 'undefined' || value === null || value.length === 0 || (value.constructor === Object && Object.keys(value).length === 0);
 }
 
 module.exports.getTrackByIndex = (trackList, index) => {

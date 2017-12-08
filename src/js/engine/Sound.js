@@ -1,50 +1,21 @@
 import Store from '../stroe';
-import { getTrackByIndex } from 'engine/Utils';
-import { isNullOrUndefined } from './Utils';
+import * as Utils from 'engine/Utils';
 
-class Sound {
-  constructor(trackIndex) {
-    this.trackIndex = trackIndex;
-    this.context = Store.getState().webAudio.context;
+export default class Sound {
+  constructor(newContext) {
+    this.context = newContext;
   }
 
-  getBuffers(note){
-    let currentTrack = getTrackByIndex(Store.getState().tracks.trackList, this.trackIndex);
-    if (currentTrack.instrument.name === 'Sampler') {
-      let currentPreset = currentTrack.instrument.preset;
-      for (let i = 0; i < Store.getState().webAudio.samplerInstrumentsSounds.length; i++) {
-        if (Store.getState().webAudio.samplerInstrumentsSounds[i].name === currentPreset) {
-          return Store.getState().webAudio.samplerInstrumentsSounds[i].buffer[note];
-        }
-      }
-    }
-  }
-
-  getVolume(){
-    for(let i = 0; i < Store.getState().tracks.trackList.length; i++){
-      if(Store.getState().tracks.trackList[i].index === this.trackIndex){
-        return Store.getState().tracks.trackList[i].volume;
-      }
-    }
-  }
-
-  setup(note) {
-    this.gainNode = this.context.createGain();
-    this.source = this.context.createBufferSource();
-    this.source.buffer = this.getBuffers(note);
-    this.source.connect(this.gainNode);
-    this.gainNode.connect(this.context.destination);
-    this.gainNode.gain.setValueAtTime(this.getVolume(), this.context.currentTime);
-  }
-
-  play(contextPlayTime, note) {
-    if (isNullOrUndefined(contextPlayTime)) {
+  play(trackIndex, contextPlayTime, note) {
+    if (Utils.isNullOrUndefined(contextPlayTime)) {
       contextPlayTime = this.context.currentTime + 0.01;
     }
-    if (!isNullOrUndefined(this.getBuffers(note))) {
-      this.setup(note);
-      this.source.start(contextPlayTime);
-    }
+    let currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
+    let source = currTrack.instrument.getInstrumentSoundNode(note);
+    /*let lastChainedNode = */
+    this.getAuxChainNode(source, trackIndex);
+
+    source.start(contextPlayTime);
   }
 
   stop() {
@@ -54,6 +25,43 @@ class Sound {
     this.source.stop(ct);
   }
 
-}
+  getPluginsChainNode(pluginList) {
+    let firstPluginInChain = pluginList[0].getPluginNode();
+    let lastPluginInChain = firstPluginInChain;
+    for (let i = 1; i < pluginList.length; i++) {
+      let curPluginNode = pluginList[i].getPluginNode();
+      lastPluginInChain.output.connect(curPluginNode.input);
+      lastPluginInChain = curPluginNode;
+    }
+    return {input: firstPluginInChain.input, output: lastPluginInChain.output};
+  }
 
-module.exports = Sound;
+  getCurrTrackPresetNode(currTrack){
+    let gainNode = this.context.createGain();
+    let panNode = this.context.createStereoPanner();
+    gainNode.gain.value = currTrack.volume;
+    panNode.panvalue = currTrack.pan;
+    gainNode.connect(panNode);
+    return {input: gainNode, output: panNode};
+  }
+
+  getAuxChainNode(lastChainedNode, trackIndex){
+    let currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
+    if (!Utils.isNullUndefinedOrEmpty(currTrack.pluginList)) {
+      let pluginsNode = this.getPluginsChainNode(currTrack.pluginList);
+      lastChainedNode.connect(pluginsNode.input);
+      lastChainedNode = pluginsNode.output;
+    }
+    let currTrackPresetNode = this.getCurrTrackPresetNode(currTrack);
+    lastChainedNode.connect(currTrackPresetNode.input);
+    lastChainedNode = currTrackPresetNode.output;
+
+    if(trackIndex !== 0){
+      return this.getAuxChainNode(lastChainedNode, currTrack.output);
+    }
+    else {
+      lastChainedNode.connect(this.context.destination);
+      return lastChainedNode;
+    }
+  }
+}

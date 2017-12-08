@@ -11,7 +11,7 @@ const Sampler = (props) => {
                 <MenuItem
                     key={SamplerPresets[i].presets[j].id.toString()}
                     eventKey={SamplerPresets[i].presets[j].id.toString()}
-                    onClick={() => props.onPresetChange(SamplerPresets[i].presets[j].name)}
+                    onClick={() => props.onPresetChange(SamplerPresets[i].presets[j].id)}
                 >
                     {SamplerPresets[i].presets[j].name}
                 </MenuItem>
@@ -27,7 +27,7 @@ const Sampler = (props) => {
         <div className="samplerInstrument">
             <p>Preset: </p>
             <div className="instrumentInput">
-                <DropdownButton id="preset-main-drop-down" bsStyle="default" className="drop-down" title={props.instrument.preset} >
+                <DropdownButton id="preset-main-drop-down" bsStyle="default" className="drop-down" title={props.instrument.preset.name} >
                     {allPresets}
                 </DropdownButton>
             </div>

@@ -1,8 +1,10 @@
 import SamplerPresets from 'constants/SamplerPresets';
 import BufferLoader from 'engine/BufferLoader';
+import Sound from 'engine/Sound';
 
 export default function reducer(state = {
     context: null,
+    sound: null,    
     bufferLoader: null,
     samplerInstrumentsSounds: new Array,
     fetching: false
@@ -12,8 +14,10 @@ export default function reducer(state = {
             let newContext = null;
             let newSamplerInstrumentsSounds = new Array;
             let newBufferLoader = null;
+            let newSound = null;
             try {
                 newContext = new (window.AudioContext || window.webkitAudioContext)();
+                newSound = new Sound(newContext);
             } catch (e) {
                 //TODO: error panel
                 alert('Web Audio API is not supported in this browser');
@@ -25,6 +29,7 @@ export default function reducer(state = {
                 for (let j = 0; j < SamplerPresets[i].presets.length; j++) {
                     newSamplerInstrumentsSounds.push({
                         name: SamplerPresets[i].presets[j].name,
+                        id: SamplerPresets[i].presets[j].id,
                         loaded: false,
                         buffer: new Array
                     })
@@ -33,16 +38,16 @@ export default function reducer(state = {
             return {
                 ...state,
                 context: newContext,
+                sound: newSound,
                 bufferLoader: newBufferLoader,
                 samplerInstrumentsSounds: newSamplerInstrumentsSounds
             }
         }
         case 'NEED_TO_FETCH_SAMPLER_INSTRUMENT': {
             let newBufferLoader = { ...state.bufferLoader };
-
             for (let i = 0; i < SamplerPresets.length; i++) {
                 for (let j = 0; j < SamplerPresets[i].presets.length; j++) {
-                    if (SamplerPresets[i].presets[j].name === action.payload.name) {
+                    if (SamplerPresets[i].presets[j].id === action.payload.instrumentId) {
                         newBufferLoader.urlList = SamplerPresets[i].presets[j].content.map((el) => { return el.url });
                         break;
                     }
@@ -61,7 +66,7 @@ export default function reducer(state = {
             let newSamplerInstrumentsSounds = [...state.samplerInstrumentsSounds];
             let instrumentIndex;
             for (let i = 0; i < newSamplerInstrumentsSounds.length; i++) {
-                if (newSamplerInstrumentsSounds[i].name === action.payload) {
+                if (newSamplerInstrumentsSounds[i].id === action.payload) {
                     instrumentIndex = i;
                     break;
                 }

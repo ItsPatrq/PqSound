@@ -26,7 +26,7 @@ class TrackList extends React.Component {
 
     handleRecordClick(index) {
         this.props.dispatch(trackListActions.changeRecordState(index));
-        this.shouldFetchSamplerInstrument(index, true);
+        this.shouldFetchSamplerInstrument(index);
     }
 
     handleTrackNameChange(event, trackIndex){
@@ -34,14 +34,14 @@ class TrackList extends React.Component {
     }
 
     //Sprawdzanie czy wybrany jest sampler i czy ma załadowane sample TODO: zmienic nazwe tej metody?
-    shouldFetchSamplerInstrument(index, shouldLoadToKeyboard) {
+    shouldFetchSamplerInstrument(index) {
         for (let i = 0; i < this.props.trackList.length; i++) {
             if (this.props.trackList[i].index === index &&
                 this.props.trackList[i].instrument.name === 'Sampler') {
                 for (let j = 0; j < this.props.samplerInstruments.length; j++) {
                     if (this.props.trackList[i].instrument.preset === this.props.samplerInstruments[j].name &&
                         !this.props.samplerInstruments[j].loaded && !this.props.fetching) {
-                            this.props.dispatch(fetchSamplerInstrument(this.props.trackList[i].instrument.preset, shouldLoadToKeyboard, this.props.trackList[i].volume));
+                            this.props.dispatch(fetchSamplerInstrument(this.props.trackList[i].instrument.preset));
                         }
                 }
 

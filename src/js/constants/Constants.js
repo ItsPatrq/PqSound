@@ -1,5 +1,5 @@
 /**
- * Module for constants variabes
+ * Module for constants variabes and enums
  * @module Constants
  */
 
@@ -40,6 +40,9 @@ module.exports.instruments = {
     sampler: { name: 'Sampler', id: 0 }
 }
 
+/**
+ * enum of update actions
+ */
 module.exports.updateActions = {
     solo: 0,
     mute: 1,
@@ -47,3 +50,12 @@ module.exports.updateActions = {
     add: 3,
     remove: 4
 };
+
+/**
+ * enum of available track types
+ */
+module.exports.trackTypes = {
+    virtualInstrument: 0,
+    audio: 1,
+    AUX: 2
+}

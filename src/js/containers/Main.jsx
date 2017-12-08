@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from 'components/Layout';
 import { connect } from 'react-redux';
 import { initializeWebAudio, fetchSamplerInstrument } from 'actions/webAudioActions';
-import {initTrackSound} from '../actions/trackListActions'
+import {initInstrumentContext} from '../actions/trackListActions'
 
 require('styles/reset.css');
 require('normalize.css/normalize.css');
@@ -15,8 +15,11 @@ require('styles/TrackDetails.css');
 class Main extends React.Component {
     componentDidMount() {
         this.props.dispatch(initializeWebAudio());
-        this.props.dispatch(fetchSamplerInstrument('DSK Grand Piano', true, 1));
-        this.props.dispatch(initTrackSound(1));
+        this.props.dispatch(fetchSamplerInstrument(0));
+        /**
+         * TODO: get rid of that. This is becaouse TrackList -> Instruments get initialized before whole Store, which makes Context unreachable
+         */
+        this.props.dispatch(initInstrumentContext(1));
     }
 
     render() {

@@ -6,19 +6,19 @@ import PropTypes from 'prop-types';
 const OctaveComponent = (props) => {
     return (
         <div className="octave octaveShort" id={'Octave' + props.index}>
-            <WhiteKey onDown={() => props.handleDown(props.index)} />
-            <WhiteKey onDown={() => props.handleDown(props.index + 2)} />
-            <WhiteKey onDown={() => props.handleDown(props.index + 4)} />
-            <WhiteKey onDown={() => props.handleDown(props.index + 5)} />
-            <WhiteKey onDown={() => props.handleDown(props.index + 7)} />
-            <WhiteKey onDown={() => props.handleDown(props.index + 9)} />
-            <WhiteKey onDown={() => props.handleDown(props.index + 11)} />
+            <WhiteKey onDown={() => props.handleDown(props.index * 12)} />
+            <WhiteKey onDown={() => props.handleDown(props.index * 12 + 2)} />
+            <WhiteKey onDown={() => props.handleDown(props.index * 12 + 4)} />
+            <WhiteKey onDown={() => props.handleDown(props.index * 12 + 5)} />
+            <WhiteKey onDown={() => props.handleDown(props.index * 12 + 7)} />
+            <WhiteKey onDown={() => props.handleDown(props.index * 12 + 9)} />
+            <WhiteKey onDown={() => props.handleDown(props.index * 12 + 11)} />
             <div className="flatKeys">
-                <BlackKey onDown={() => props.handleDown(props.index + 1)} />
-                <BlackKey onDown={() => props.handleDown(props.index + 3)} />
-                <BlackKey onDown={() => props.handleDown(props.index + 6)} />
-                <BlackKey onDown={() => props.handleDown(props.index + 8)} />
-                <BlackKey onDown={() => props.handleDown(props.index + 10)} />
+                <BlackKey onDown={() => props.handleDown(props.index * 12 + 1)} />
+                <BlackKey onDown={() => props.handleDown(props.index * 12 + 3)} />
+                <BlackKey onDown={() => props.handleDown(props.index * 12 + 6)} />
+                <BlackKey onDown={() => props.handleDown(props.index * 12 + 8)} />
+                <BlackKey onDown={() => props.handleDown(props.index * 12 + 10)} />
             </div>
         </div>
     );

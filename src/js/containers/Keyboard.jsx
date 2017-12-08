@@ -14,7 +14,7 @@ class Keyboard extends React.Component {
         let recordingTracksSounds = new Array;
         for(let i = 1; i < this.props.trackList.length; i++){
             if(this.props.trackList[i].record){
-                recordingTracksSounds.push(this.props.trackList[i].sound);
+                recordingTracksSounds.push(this.props.trackList[i].index);
             }
         }
         return recordingTracksSounds;
@@ -31,7 +31,7 @@ class Keyboard extends React.Component {
         this.lastPressedKey = note;
         let recordingTracksSounds = this.getAllRecordingTracks();
         for(let i = 0; i < recordingTracksSounds.length; i++){
-            recordingTracksSounds[i].play(null, note);
+            this.props.sound.play(recordingTracksSounds[i], null, note)
         }
     }
 
@@ -56,7 +56,8 @@ class Keyboard extends React.Component {
 const mapStateToProps = (state) => {
     return {
         keyboard: state.keyboard,
-        trackList: state.tracks.trackList
+        trackList: state.tracks.trackList,
+        sound: state.webAudio.sound
     }
 }
 

@@ -2,7 +2,7 @@ import * as Utils from 'engine/Utils';
 
 export default function reducer(state = {
     octaves: 7,
-    firstOctave: 2,
+    firstOctave: 0,
     show: false
 }, action) {
     switch (action.type) {
