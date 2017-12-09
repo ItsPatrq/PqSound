@@ -3,7 +3,7 @@ import { Col, Button, Glyphicon } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Sequencer from 'engine/Sequencer';
 import * as actions from 'actions/controlActions';
-import {changeBitsInComposition} from 'actions/compositionActions';
+import { changeBitsInComposition } from 'actions/compositionActions';
 import BPMInput from 'components/ControlBar/BPMInput';
 import ToolDropdown from 'components/ControlBar/ToolDropdown';
 import NoteDrawLengthDropdown from 'components/ControlBar/NoteDrawLengthDropdown';
@@ -23,15 +23,24 @@ class ControlBar extends React.Component {
     }
 
     handlePlay() {
-        this.sequencer.handlePlay();
+        if (!this.props.controlState.playing) {
+            this.props.dispatch(actions.switchPlayState());
+            this.sequencer.handlePlay();
+        }
     }
 
     handleStop() {
-        this.sequencer.handleStop();
+        if (this.props.controlState.playing) {
+            this.props.dispatch(actions.switchPlayState());
+            this.sequencer.handleStop();
+        }
     }
 
-    handlePause(){
-        this.sequencer.handlePause();
+    handlePause() {
+        if (this.props.controlState.playing) {
+            this.props.dispatch(actions.switchPlayState());
+            this.sequencer.handlePause();
+        }
     }
 
     handleTempBPMChange(BPM) {
@@ -71,11 +80,11 @@ class ControlBar extends React.Component {
         this.setState(() => { return { tempRegionDrawLength: regionDrawLength }; });
     }
 
-    handleBitsInCompositionChange(){
+    handleBitsInCompositionChange() {
         //TODO: Delete regions on lowering bits in coposition
         if (this.state.tempBitsInComposition >= 48 && this.state.tempBitsInComposition <= this.props.maxBitsInComposition &&
             this.state.tempBitsInComposition !== this.props.bitsInComposition) {
-                this.props.dispatch(changeBitsInComposition(this.state.tempBitsInComposition));
+            this.props.dispatch(changeBitsInComposition(this.state.tempBitsInComposition));
         } else {
             this.setState(() => { return { tempBitsInComposition: this.props.bitsInComposition }; });
         }
@@ -101,7 +110,7 @@ class ControlBar extends React.Component {
                     />
                     <BitsInCompositionInput id={'birsInComposition'} onBitsInCompositionChange={this.handleBitsInCompositionChange.bind(this)}
                         onTempBitsInCompositionChange={this.handleTempBitsInComposition.bind(this)} bitsInComposition={this.state.tempBitsInComposition}
-                        />
+                    />
 
                 </Col>
                 <center>
@@ -109,7 +118,7 @@ class ControlBar extends React.Component {
                         <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play" /></Button>
                         <Button onClick={this.handlePause.bind(this)}><Glyphicon glyph="pause" /></Button>
                         <Button onClick={this.handleStop.bind(this)}><Glyphicon glyph="stop" /></Button>
-                        *Time Signature: 4/4* <br/>
+                        *Time Signature: 4/4* <br />
                         *currenttime={this.props.controlState.sixteenthNotePlaying * 0.25 * (60 / this.props.controlState.BPM)}*
                         *current note playing: {this.props.controlState.sixteenthNotePlaying}*
                     </p>

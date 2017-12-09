@@ -60,14 +60,16 @@ class TrackDetails extends React.Component {
     }
 
     handleInstrumentChange(instrumentId) {
-        console.log(instrumentId);
         if(instrumentId !== this.getTrackInstrument(this.props.selected).id){
             this.props.dispatch(changeTrackInstrument(instrumentId, this.props.selected));
         }
     }
 
     onVolumeChange(index, newVolume) {
-        this.props.dispatch(changeTrackVolume(index, parseInt(newVolume) / parseInt(100)));
+        let parsedNewVolume = parseInt(newVolume) / parseInt(100);
+        
+        this.props.dispatch(changeTrackVolume(index, parsedNewVolume));
+        this.props.sound.onParamChange(index, 0, 0, 0, null, parsedNewVolume);
     }
 
     render() {
@@ -139,7 +141,8 @@ const mapStateToProps = (state) => {
         trackDetails: state.trackDetails,
         samplerInstruments: state.webAudio.samplerInstrumentsSounds.map(
             (value) => { return { name: value.name, loaded: value.loaded, id: value.id } }
-        )
+        ),
+        sound: state.webAudio.sound
     }
 }
 

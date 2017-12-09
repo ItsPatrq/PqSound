@@ -18,7 +18,6 @@ const InstrumentInput = (props) => {
             );
         }
     }
-    console.log(props.selectedTrack.instrument)
     return (
         <ButtonToolbar className="instrumentInput">
             <SplitButton bsStyle="info" title={props.selectedTrack.instrument.name} id="split-button-instrument-input" onClick={() => props.instrumentModalVisibilitySwitch()}>

@@ -1,14 +1,14 @@
 import * as Utils from 'engine/Utils';
 import Sound from 'engine/Sound';
 import { Sampler, Utils as InstrumentsUtils } from 'instruments';
-import {trackTypes} from 'constants/Constants';
+import {TrackTypes} from 'constants/Constants';
 import {Utils as SamplerPresetsUtils, Presets as SamplerPresets }  from 'constants/SamplerPresets';
 
 export default function reducer(state = {
     trackList: [
         {
             name: 'Master',
-            trackType: trackTypes.AUX,
+            trackType: TrackTypes.AUX,
             pluginList: new Array,
             volume: 1.0,
             pan: 0,
@@ -19,7 +19,7 @@ export default function reducer(state = {
         },
         {
             name: 'Piano',
-            trackType: trackTypes.virtualInstrument,
+            trackType: TrackTypes.virtualInstrument,
             instrument: new Sampler(SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id)),
             pluginList: new Array,
             volume: 1.0,
@@ -39,7 +39,7 @@ export default function reducer(state = {
                 newTrackList.push(
                     {
                         name: 'Default',
-                        trackType: trackTypes.virtualInstrument,
+                        trackType: TrackTypes.virtualInstrument,
                         instrument: new Sampler(SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id)),
                         pluginList: new Array,
                         volume: 1.0,

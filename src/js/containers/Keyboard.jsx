@@ -1,6 +1,7 @@
 import React from 'react';
 import Octave from 'components/Keyboard/Octave';
 import { connect } from 'react-redux';
+import {SoundOrigin} from 'constants/Constants';
 
 class Keyboard extends React.Component {
     constructor() {
@@ -31,7 +32,7 @@ class Keyboard extends React.Component {
         this.lastPressedKey = note;
         let recordingTracksSounds = this.getAllRecordingTracks();
         for(let i = 0; i < recordingTracksSounds.length; i++){
-            this.props.sound.play(recordingTracksSounds[i], null, note)
+            this.props.sound.play(recordingTracksSounds[i], null, note, SoundOrigin.pianoRollNote)
         }
     }
 

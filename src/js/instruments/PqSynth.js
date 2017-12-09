@@ -13,8 +13,8 @@ class PqSynth {
     }
 
     getInstrumentSoundNode(note) {
-        var oscillator = this.context.createOscillator();
-        oscillator.type = 'sine';
+        let oscillator = this.context.createOscillator();
+        oscillator.type = 'square';
         oscillator.frequency.value = keyFrequencies[note];
         return oscillator;
         
