@@ -8,7 +8,7 @@ import PluginsList from 'components/TrackDetails/PluginsList';
 import TrackName from 'components/TrackDetails/TrackName';
 import SoloMuteButtons from 'components/TrackDetails/SoloMuteButtons';
 import * as Actions from 'actions/trackDetailsActions';
-import { changeTrackPreset, changeTrackVolume } from 'actions/trackListActions';
+import { changeTrackPreset, changeTrackVolume, changeTrackInstrument } from 'actions/trackListActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 
@@ -28,7 +28,7 @@ class TrackDetails extends React.Component {
     getTrackInstrument(index) {
         for (let i = 0; i < this.props.trackList.length; i++) {
             if (this.props.trackList[i].index === index) {
-                return this.props.trackList[i].instrument.name;
+                return this.props.trackList[i].instrument;
             }
         }
     }
@@ -45,7 +45,7 @@ class TrackDetails extends React.Component {
         this.props.dispatch(Actions.instrumentModalVisibilitySwitch());
     }
 
-    onSamplerPresetChange(newPresetId) {
+    handleSamplerPresetChange(newPresetId) {
         if (this.getTrackPreset(this.props.selected).id !== newPresetId) {
             this.props.dispatch(changeTrackPreset(newPresetId, this.props.selected));
             for (let i = 0; i < this.props.samplerInstruments.length; i++) {
@@ -56,6 +56,13 @@ class TrackDetails extends React.Component {
                     break;
                 }
             }
+        }
+    }
+
+    handleInstrumentChange(instrumentId) {
+        console.log(instrumentId);
+        if(instrumentId !== this.getTrackInstrument(this.props.selected).id){
+            this.props.dispatch(changeTrackInstrument(instrumentId, this.props.selected));
         }
     }
 
@@ -72,7 +79,8 @@ class TrackDetails extends React.Component {
                             instrumentModalVisibilitySwitch={this.instrumentModalVisibilitySwitch.bind(this)}
                             showModal={this.props.trackDetails.showInstrumentModal}
                             selectedTrack={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
-                            onSamplerPresetChange={this.onSamplerPresetChange.bind(this)}
+                            onSamplerPresetChange={this.handleSamplerPresetChange.bind(this)}
+                            onInstrumentChange={this.handleInstrumentChange.bind(this)}
                         />
                         <PluginsList />
                         <PanKnob />

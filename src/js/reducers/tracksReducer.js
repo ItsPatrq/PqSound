@@ -1,6 +1,6 @@
 import * as Utils from 'engine/Utils';
 import Sound from 'engine/Sound';
-import { Sampler } from 'instruments';
+import { Sampler, Utils as InstrumentsUtils } from 'instruments';
 import {trackTypes} from 'constants/Constants';
 import {Utils as SamplerPresetsUtils, Presets as SamplerPresets }  from 'constants/SamplerPresets';
 
@@ -159,6 +159,19 @@ export default function reducer(state = {
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
                     newTrackList[i].volume = action.payload.volume;
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
+        case 'CHANGE_TRACK_INSTRUMENT':{
+            let newTrackList = [...state.trackList];
+            for(let i = 0; i < newTrackList.length; i++){
+                if(newTrackList[i].index === action.payload.index) {
+                    newTrackList[i].instrument = InstrumentsUtils.getInstrumentByIndex(action.payload.trackInstrumentId);
+                    break;
                 }
             }
             return {

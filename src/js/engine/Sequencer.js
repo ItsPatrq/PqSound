@@ -2,6 +2,7 @@ import Store from '../stroe';
 import { notesToPlay } from 'engine/CompositionParser';
 import { updateCurrentTime } from 'actions/controlActions';
 import * as Utils from 'engine/Utils';
+import { SoundOrigin } from 'constants/Constants';
 
 class Sequencer {
     constructor() {
@@ -20,10 +21,12 @@ class Sequencer {
     handleStop(/*event*/) {
         this.timerWorker.postMessage('stop');
         this.sixteenthPlaying = 0;
+        Store.getState().webAudio.sound.stopAll(SoundOrigin.composition);
         Store.dispatch(updateCurrentTime(this.sixteenthPlaying));
     }
-    handlePause(/*event*/){
+    handlePause(/*event*/) {
         this.timerWorker.postMessage('stop');
+        Store.getState().webAudio.sound.stopAll(SoundOrigin.composition);
     }
     schedule() {
         let currentTime = Store.getState().webAudio.context.currentTime;
@@ -36,17 +39,19 @@ class Sequencer {
         while (this.noteTime < currentTime + 0.200) {
             // Convert noteTime to context time.
             var contextPlayTime = this.noteTime + this.startTime;
-            
+
             //iterate through all tracks
             for (let i = 0; i < Store.getState().tracks.trackList.length; i++) {
                 let currTrackIndex = Store.getState().tracks.trackList[i].index;
                 let currentNotesToPlay = notesToPlay(this.sixteenthPlaying, currTrackIndex);
-                if(!Utils.isNullUndefinedOrEmpty(currentNotesToPlay)){
-                    for(let j = 0; j < currentNotesToPlay.length; j++){
-                        Store.getState().webAudio.sound.play(currTrackIndex, contextPlayTime, 88 - currentNotesToPlay[j].note);
+                if (!Utils.isNullUndefinedOrEmpty(currentNotesToPlay)) {
+                    for (let j = 0; j < currentNotesToPlay.length; j++) {
+                        Store.getState().webAudio.sound.play(currTrackIndex, contextPlayTime, 88 - currentNotesToPlay[j].note,
+                            SoundOrigin.composition, this.sixteenthPlaying +  currentNotesToPlay[j].durotian);
                     }
                 }
             }
+            Store.getState().webAudio.sound.scheduleStop(this.sixteenthPlaying, contextPlayTime, SoundOrigin.composition);
             this.advenceNote();
         }
     }
@@ -60,7 +65,7 @@ class Sequencer {
         this.sixteenthPlaying++;
 
         this.noteTime += 0.25 * secoundsPerBeat;
-
+        
         Store.dispatch(updateCurrentTime(this.sixteenthPlaying));
     }
     init() {

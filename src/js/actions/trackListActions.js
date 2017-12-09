@@ -70,3 +70,13 @@ export function changeTrackVolume(newIndex, newVolume){
         }
     }
 }
+
+export function changeTrackInstrument(newTrackInstrumentId, newIndex){
+    return {
+        type: 'CHANGE_TRACK_INSTRUMENT',
+        payload: {
+            index: newIndex,
+            trackInstrumentId: newTrackInstrumentId
+        }
+    }
+}

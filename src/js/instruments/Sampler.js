@@ -1,18 +1,19 @@
 import Store from '../stroe';
-import { instruments } from 'constants/Constants';
-import {isNullOrUndefined} from 'engine/Utils';
+import { Instruments } from 'constants/Constants';
+import { Presets } from 'constants/SamplerPresets';
+import { isNullOrUndefined } from 'engine/Utils';
 
 class Sampler {
-    constructor(preset) {
-        if(!isNullOrUndefined(Store)){
+    constructor(preset = Presets.DSKGrandPiano) {
+        if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
         }
-        this.name = instruments.sampler.name;
-        this.id = instruments.sampler.id;
+        this.name = Instruments.Sampler.name;
+        this.id = Instruments.Sampler.id;
         this.preset = preset;
     }
 
-    initContext(){
+    initContext() {
         this.context = Store.getState().webAudio.context;
     }
 
@@ -29,7 +30,7 @@ class Sampler {
         let source = this.context.createBufferSource();
         source.buffer = this.getBuffers(note);
         return source;
-        
+
     }
 }
 

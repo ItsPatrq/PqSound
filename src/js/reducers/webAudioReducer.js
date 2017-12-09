@@ -4,7 +4,7 @@ import Sound from 'engine/Sound';
 
 export default function reducer(state = {
     context: null,
-    sound: null,    
+    sound: null,
     bufferLoader: null,
     samplerInstrumentsSounds: new Array,
     fetching: false
