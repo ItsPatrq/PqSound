@@ -67,9 +67,10 @@ class TrackDetails extends React.Component {
 
     onVolumeChange(index, newVolume) {
         let parsedNewVolume = parseInt(newVolume) / parseInt(100);
-        
+        if(!parsedNewVolume){
+            parsedNewVolume = 0.0001;
+        }
         this.props.dispatch(changeTrackVolume(index, parsedNewVolume));
-        this.props.sound.onParamChange(index, 0, 0, 0, null, parsedNewVolume);
     }
 
     render() {

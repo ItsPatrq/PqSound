@@ -94,8 +94,8 @@ class CompositionGrid extends React.Component {
             pianoRoll = <PianoRoll bitsNumber={bitsNumber} onNoteClick={this.handleNoteClicked.bind(this)} />
         } else {
             /**
- * start iteration from i = 1 because i = 0 is the master track
- */
+             * start iteration from i = 1 because i = 0 is the master track
+             */
             for (let i = 1; i < this.props.trackList.length; i++) {
                 trackCompositionRowList.push(<TrackCompositionRow
                     bits={this.props.composition.bitsInComposition}

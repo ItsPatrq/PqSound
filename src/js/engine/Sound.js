@@ -86,44 +86,4 @@ export default class Sound {
     }
     return { input: chainInput, output: chainOutput };
   }
-
-  onParamChange(trackIndex, trackType, changeSource, changeIndex, changeId, newValue) {
-    let playingTrackSound = new Array;
-    if (trackType === TrackTypes.virtualInstrument) {
-      for (let i = 0; i < this.playingSounds.length; i++) {
-        for (let j = 0; j < this.playingSounds[i].length; j++) {
-          if (this.playingSounds[i][j].trackIndex === trackIndex) {
-            playingTrackSound.push(this.playingSounds[i][j]);
-          }
-        }
-      }
-      for (let i = 0; i < playingTrackSound.length; i++) {
-        switch (changeSource) {
-          case ChangeSourceEnum.trackParams: {
-            switch (changeIndex) {
-              case TrackParams.volume: {
-                playingTrackSound[i].nodes.aux[0].gainNode.gain.setValueAtTime(newValue, this.context.currentTime);
-                break;
-              }
-              case TrackParams.pan: {
-                playingTrackSound[i].nodes.aux[0].panNode.pan.setValueAtTime(newValue, this.context.currentTime);
-                break;
-              }
-            }
-            break;
-          }
-        }
-      }
-    }
-
-  }
-}
-
-const ChangeSourceEnum = {
-  trackParams: 0
-}
-
-const TrackParams = {
-  volume: 0,
-  pan: 1
 }

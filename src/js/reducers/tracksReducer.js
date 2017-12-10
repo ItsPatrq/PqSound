@@ -8,7 +8,7 @@ export default function reducer(state = {
     trackList: [
         {
             name: 'Master',
-            trackType: TrackTypes.AUX,
+            trackType: TrackTypes.aux,
             pluginList: new Array,
             volume: 1.0,
             pan: 0,
@@ -166,6 +166,7 @@ export default function reducer(state = {
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
                     newTrackList[i].volume = action.payload.volume;
+                    newTrackList[i].trackNode.changeVolume(action.payload.volume);
                 }
             }
             return {

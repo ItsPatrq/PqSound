@@ -11,3 +11,10 @@ export function switchKeyboardVisibility(show){
         payload: show
     }
 }
+
+export function updateWidth(width){
+    return {
+        type: 'UPDATE_WIDTH',
+        payload: width
+    }
+}

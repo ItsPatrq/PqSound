@@ -17,10 +17,10 @@ const Layout = (/*props*/) => {
                     <ControlBar />
                 </Row>
                 <Row>
-                    <Col xs={2} className="nopadding">
+                    <Col xs={2} className="nopadding" id="TrackDetailsCol">
                         <TrackDetails />
                     </Col>
-                    <Col xs={10} className="nopadding">
+                    <Col xs={10} className="nopadding" id="ComposingCol">
                         <Col xs={2} className="nopadding">
                             <TrackList />
                         </Col>

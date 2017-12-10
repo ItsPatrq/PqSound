@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { switchKeyboardVisibility } from 'actions/keyboardActions';
+import { switchKeyboardVisibility, updateWidth } from 'actions/keyboardActions';
 import { switchPianorollVisibility } from 'actions/compositionActions';
 import * as Utils from 'engine/Utils';
 
@@ -11,6 +11,12 @@ class TopNavBar extends React.Component {
     }
 
     switchKeyboardVisibility() {
+        let ComposingCol = document.getElementById('ComposingCol');
+        if (Utils.isNullOrUndefined(ComposingCol) && this.props.keyboardWidth !== 0) {
+            this.props.dispatch(updateWidth(0));
+        } else if (ComposingCol.offsetWidth !== this.props.keyboardWidth) {
+            this.props.dispatch(updateWidth(ComposingCol.offsetWidth));
+        }
         this.props.dispatch(switchKeyboardVisibility());
     }
 
@@ -64,6 +70,7 @@ class TopNavBar extends React.Component {
 const mapStateToProps = (state) => {
     return {
         keyboardVisible: state.keyboard.show,
+        keyboardWidth: state.keyboard.width,
         pianoRollVisible: state.composition.showPianoRoll,
         pianoRollRegion: state.composition.pianoRollRegion
     }

@@ -4,7 +4,7 @@
     position: absolute;
     text-align: center;
     display: block;
-    overflow-x:auto;
+    overflow-x:hidden;
     overflow-y:hidden;
     white-space: nowrap;
     top: 100%;
@@ -19,7 +19,7 @@
 }
 
 .colorLine {
-    background-color: #9C0413;
+    background-color: rgb(82, 97, 102);
     color: #000000;
     height: 5px;
     position: absolute;
@@ -27,6 +27,12 @@
     width: 100%;
     z-index: 100;
     display: block;
+}
+
+.keys {
+    position: relative;
+    /* float: left; */
+    display: inline-block;    
 }
 
 .octave {
@@ -37,8 +43,8 @@
 
 .whiteKey {
     float: left;
-    width: 88px;
-    height: 460px;
+    width: 66px;
+    height: 250px;
     background-color: #F4F4F4;
     border: 1px solid #626262;
     position: relative;
@@ -66,8 +72,8 @@ div.whiteKey.pressed {
 }
 .blackKey {
 	float: left;
-	width: 44px;
-	height: 320px;
+	width: 36px;
+	height: 150px;
 	background-color: #000000;
 	border-bottom: 2px solid #000;
 	border-left: 2px solid #000;
@@ -97,17 +103,17 @@ div.flatKeys {
 }
 
 div.flatKeys :nth-child(1) {
-	margin-left: 67px;
+	margin-left: 45px;
 }
 div.flatKeys :nth-child(2) {
-	margin-left: 157px;
+	margin-left: 113px;
 }
 div.flatKeys :nth-child(3) {
-	margin-left: 338px;
+	margin-left: 244px;
 }
 div.flatKeys :nth-child(4) {
-	margin-left: 428px;
+	margin-left: 312px;
 }
 div.flatKeys :nth-child(5) {
-	margin-left: 517px;
+	margin-left: 379px;
 }

@@ -5,7 +5,7 @@ import {keyNotes} from 'constants/Constants';
 
 const PianoRoll = (props) => {
     let keyRows = new Array;
-    for (let i = 0; i < 88; i++) {
+    for (let i = 87; i >= 0; i--) {
         let rowClassName;
         if (keyNotes[i]) {
             rowClassName = 'nopadding keyRow black'
