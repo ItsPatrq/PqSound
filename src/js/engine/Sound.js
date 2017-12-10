@@ -4,14 +4,14 @@ import { TrackTypes } from 'constants/Constants';
 export default class Sound {
   constructor(newContext) {
     this.context = newContext;
-    this.playingSounds = [[], [], []]; // trackindex, note, origin, nodes, endindex
+    this.playingSounds = [[], [], []]; // trackindex, note, origin, endindex
   }
 
   scheduleStop(sixteenthPlaying, contextPlayTime, origin) {
     for (let i = this.playingSounds[origin].length - 1; i >= 0; i--) {
       let currNote = this.playingSounds[origin][i];
       if (currNote.endIndex === sixteenthPlaying) {
-        this.stop(currNote.nodes.source, contextPlayTime);
+        this.stop(currNote.trackIndex, currNote.note, contextPlayTime);
         this.playingSounds[origin].splice(i, 1)
       }
     }
@@ -19,7 +19,7 @@ export default class Sound {
 
   stopAll(origin) {
     for (let i = this.playingSounds[origin].length - 1; i >= 0; i--) {
-      this.stop(this.playingSounds[origin][i].nodes.source);
+      this.stop(this.playingSounds[origin][i].trackIndex);
     }
     this.playingSounds[origin].length = 0;
   }
@@ -28,28 +28,24 @@ export default class Sound {
     if (Utils.isNullOrUndefined(contextPlayTime)) {
       contextPlayTime = this.context.currentTime + 0.01;
     }
-
-    let nodes = {};
+    this.playingSounds[origin].push( { trackIndex: trackIndex, note: note, origin: origin, endIndex: endIndex });
 
     let currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
-    let source = currTrack.instrument.getInstrumentSoundNode(note);
-    nodes.source = source;
-    nodes.aux = new Array;
     
-    let lastChainedNode = this.getAuxChainNode(source, trackIndex, nodes);
+    let auxChain = this.getAuxChainNode(trackIndex);
 
-    lastChainedNode.connect(this.context.destination);
+    auxChain.output.connect(this.context.destination);
     
-    source.start(contextPlayTime);
-    this.playingSounds[origin].push( { trackIndex: trackIndex, note: note, origin: origin, nodes: {...nodes}, endIndex: endIndex });
+    currTrack.instrument.connect(auxChain.input);
+    currTrack.instrument.noteOn(note, contextPlayTime);
   }
 
-  stop(sourceNode, contextStopTime) {
+  stop(trackIndex, note, contextStopTime) {
     if (Utils.isNullOrUndefined(contextStopTime)) {
       contextStopTime = this.context.currentTime + 0.01;
     }
-    //sourceNode.gain.exponentialRampToValueAtTime(0.001, contextStopTime);
-    sourceNode.stop(contextStopTime);
+    let currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
+    currTrack.instrument.noteOff(note, contextStopTime);
   }
 
   getPluginsChainNode(pluginList) {
@@ -63,36 +59,50 @@ export default class Sound {
     return { input: firstPluginInChain.input, output: lastPluginInChain.output };
   }
 
-  getCurrTrackPresetNode(currTrack, currentNodes) {
+  getCurrTrackPresetNode(currTrack) {
     let gainNode = this.context.createGain();
     let panNode = this.context.createStereoPanner();
     gainNode.gain.setValueAtTime(currTrack.volume, this.context.currentTime);
     panNode.pan.setValueAtTime(currTrack.pan, this.context.currentTime);
     gainNode.connect(panNode);
-    currentNodes.gainNode = gainNode;
-    currentNodes.panNode = panNode;
     return { input: gainNode, output: panNode };
   }
 
-  getAuxChainNode(lastChainedNode, trackIndex, currrNodes) {
+  getAuxChainNode(trackIndex, currrNodes, prevChain) {
     let currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
-    currrNodes.aux[currrNodes.aux.length] = {};
-    let currentNodes = currrNodes.aux[currrNodes.aux.length - 1];
-    currentNodes.trackIndex = trackIndex;
+    let currInput, currOutput;
+    if(!Utils.isNullUndefinedOrEmpty(prevChain)){
+      currInput = prevChain.input;
+      currOutput = prevChain.output;
+    }
+
     if (!Utils.isNullUndefinedOrEmpty(currTrack.pluginList)) {
       let pluginsNode = this.getPluginsChainNode(currTrack.pluginList);
-      lastChainedNode.connect(pluginsNode.input);
-      lastChainedNode = pluginsNode.output;
+      if(Utils.isNullUndefinedOrEmpty(prevChain)){
+        currInput = pluginsNode.input;
+        currOutput = pluginsNode.output;
+      } else {
+        currOutput.connect(pluginsNode.input);
+        currOutput = pluginsNode.output;
+      }
     }
-    let currTrackPresetNode = this.getCurrTrackPresetNode(currTrack, currentNodes);
-    lastChainedNode.connect(currTrackPresetNode.input);
-    lastChainedNode = currTrackPresetNode.output;
+
+    let currTrackPresetNode = this.getCurrTrackPresetNode(currTrack);
+    if(Utils.isNullUndefinedOrEmpty(currInput)){
+      currInput = currTrackPresetNode.input;
+      currOutput = currTrackPresetNode.output;
+    } else {
+      currOutput.connect(currTrackPresetNode.input);
+      currOutput = currTrackPresetNode.output;
+    }
+
+    let currChain = {input: currInput, output: currOutput};
 
     if (trackIndex !== 0) {
-      return this.getAuxChainNode(lastChainedNode, currTrack.output, currrNodes);
+      return this.getAuxChainNode(currTrack.output, currrNodes, currChain);
     }
     else {
-      return lastChainedNode;
+      return currChain;
     }
   }
 

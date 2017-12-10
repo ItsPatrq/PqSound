@@ -5,16 +5,16 @@ import Monotron from './Monotron';
 import {Instruments as InstrumentsEnum} from 'constants/Constants'
 let Utils = {};
 
-Utils.getInstrumentByIndex = (id) => {
+Utils.getInstrumentByIndex = (id, preset) => {
     switch(id) {
         case InstrumentsEnum.Sampler.id:{
-            return new Sampler();
+            return new Sampler(preset);
         }
         case InstrumentsEnum.PqSynth.id:{
-            return new PqSynth();
+            return new PqSynth(preset);
         }
-        case InstrumentsEnum.Monotrone.id:{
-            return new Monotron();
+        case InstrumentsEnum.Monotron.id:{
+            return new Monotron(preset);
         }
     }
 }

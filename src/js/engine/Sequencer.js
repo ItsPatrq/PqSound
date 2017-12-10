@@ -39,7 +39,9 @@ class Sequencer {
         while (this.noteTime < currentTime + 0.200) {
             // Convert noteTime to context time.
             var contextPlayTime = this.noteTime + this.startTime;
-
+            
+            Store.getState().webAudio.sound.scheduleStop(this.sixteenthPlaying, contextPlayTime, SoundOrigin.composition);
+            
             //iterate through all tracks
             for (let i = 0; i < Store.getState().tracks.trackList.length; i++) {
                 let currTrackIndex = Store.getState().tracks.trackList[i].index;
@@ -51,7 +53,6 @@ class Sequencer {
                     }
                 }
             }
-            Store.getState().webAudio.sound.scheduleStop(this.sixteenthPlaying, contextPlayTime, SoundOrigin.composition);
             this.advenceNote();
         }
     }

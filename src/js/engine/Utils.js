@@ -21,3 +21,11 @@ module.exports.getRegionsByTrackIndex = (regionsByTrack, index) => {
         }
     }
 }
+
+/**
+ * Returns corresponding fequency for the MIDI note number
+ * @param {*MIDI note number (for 69 frequency is equal to 440.0)} note
+ */
+module.exports.noteToFrequency = (note) => {
+    return Math.pow(2, (note - 69) / 12) * 440.0;
+}

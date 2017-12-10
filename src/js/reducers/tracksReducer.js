@@ -3,7 +3,6 @@ import Sound from 'engine/Sound';
 import { Sampler, Utils as InstrumentsUtils } from 'instruments';
 import {TrackTypes} from 'constants/Constants';
 import {Utils as SamplerPresetsUtils, Presets as SamplerPresets }  from 'constants/SamplerPresets';
-
 export default function reducer(state = {
     trackList: [
         {
@@ -14,7 +13,8 @@ export default function reducer(state = {
             pan: 0,
             mute: false,
             solo: false,
-            index: 0
+            index: 0,
+            nodes: new Array
             //output: context.destination
         },
         {
@@ -28,7 +28,8 @@ export default function reducer(state = {
             mute: false,
             solo: false,
             index: 1,
-            output: 0
+            output: 0,
+            nodes: new Array
         }],
     selected: 1
 }, action) {
@@ -48,7 +49,8 @@ export default function reducer(state = {
                         mute: false,
                         solo: false,
                         index: state.trackList.length,
-                        output: 0
+                        output: 0,
+                        nodes: new Array
                     }
                 );
             } else {
@@ -180,6 +182,5 @@ export default function reducer(state = {
             }
         }
     }
-
     return state;
 }

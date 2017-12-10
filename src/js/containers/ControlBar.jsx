@@ -9,6 +9,7 @@ import ToolDropdown from 'components/ControlBar/ToolDropdown';
 import NoteDrawLengthDropdown from 'components/ControlBar/NoteDrawLengthDropdown';
 import RegionDrawLengthInput from 'components/ControlBar/RegionDrawLengthInput';
 import BitsInCompositionInput from 'components/ControlBar/BitsInCompositionInput';
+import TimeBox from 'components/ControlBar/TimeBox';
 
 class ControlBar extends React.Component {
     constructor(props) {
@@ -121,6 +122,7 @@ class ControlBar extends React.Component {
                         *Time Signature: 4/4* <br />
                         *currenttime={this.props.controlState.sixteenthNotePlaying * 0.25 * (60 / this.props.controlState.BPM)}*
                         *current note playing: {this.props.controlState.sixteenthNotePlaying}*
+                        <TimeBox ms={this.props.controlState.sixteenthNotePlaying * 0.25 * (60 / this.props.controlState.BPM)}/>
                     </p>
                 </center>
             </Col>

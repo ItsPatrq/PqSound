@@ -22,10 +22,11 @@ class Keyboard extends React.Component {
     }
 
     handleUp() {
-        // if (this.lastPressedKey !== null) {
-        //     this.props.keysSounds[this.lastPressedKey].stop();
-        //     this.lastPressedKey = null;
-        // }
+        let recordingTracksSounds = this.getAllRecordingTracks();
+        for(let i = 0; i < recordingTracksSounds.length; i++){
+            this.props.sound.stop(recordingTracksSounds[i], this.lastPressedKey)
+        }
+        this.lastPressedKey = null;
     }
 
     handleDown(note) {
