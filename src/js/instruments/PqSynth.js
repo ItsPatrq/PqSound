@@ -3,7 +3,7 @@ import { Instruments, keyFrequencies } from 'constants/Constants';
 import { isNullOrUndefined } from 'engine/Utils';
 
 class PqSynthVoice {
-    constructor(freqyency) {
+    constructor(freqyency, startTime) {
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
 
@@ -12,17 +12,17 @@ class PqSynthVoice {
 
             this.oscillator.connect(this.output);
 
-            this.output.gain.setValueAtTime(0.0001, this.context.currentTime);
+            this.output.gain.setValueAtTime(0.0001, startTime || this.context.currentTime);
             this.oscillator.type = 'square';
-            this.oscillator.frequency.setValueAtTime(freqyency, this.context.currentTime);
+            this.oscillator.frequency.setValueAtTime(freqyency, startTime || this.context.currentTime);
 
-            this.oscillator.start(this.context.currentTime);
+            this.oscillator.start(startTime || this.context.currentTime);
         }
     }
 
     start(time) {
         time = time || this.context.currentTime;
-        this.output.gain.exponentialRampToValueAtTime(1.0, time + 0.1);
+        this.output.gain.exponentialRampToValueAtTime(1.0, time + 0.01);
     }
 
     stop(time) {
@@ -54,7 +54,7 @@ class PqSynth {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
             let frequency = keyFrequencies[note];
-            let currVoice = new PqSynthVoice(frequency);
+            let currVoice = new PqSynthVoice(frequency, startTime);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;

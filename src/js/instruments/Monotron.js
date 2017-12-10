@@ -3,7 +3,7 @@ import { Instruments, keyFrequencies } from 'constants/Constants';
 import { isNullOrUndefined, noteToFrequency } from 'engine/Utils';
 
 class MonotronVoise {
-    constructor(frequency) {
+    constructor(frequency, startTime) {
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
             this.frequency = frequency;
@@ -18,19 +18,19 @@ class MonotronVoise {
             this.lfo.connect(this.lfoGain);
             this.lfoGain.connect(this.vcf.frequency);
 
-            this.output.gain.setValueAtTime(0.0001, this.context.currentTime);
+            this.output.gain.setValueAtTime(0.0001, startTime || this.context.currentTime);
             this.vco.type = 'sawtooth'
             this.lfo.type = 'sawtooth'
-            this.vco.frequency.setValueAtTime(frequency, this.context.currentTime);
+            this.vco.frequency.setValueAtTime(frequency, startTime || this.context.currentTime);
 
-            this.vco.start(this.context.currentTime);
-            this.lfo.start(this.context.currentTime);
+            this.vco.start(startTime || this.context.currentTime);
+            this.lfo.start(startTime || this.context.currentTime);
         }
     }
 
     start(time) {
         time = time || this.context.currentTime;
-        this.output.gain.exponentialRampToValueAtTime(1.0, time + 0.1);
+        this.output.gain.exponentialRampToValueAtTime(1.0, time + 0.01);
     }
 
     stop(time) {
@@ -65,7 +65,7 @@ class Monotron {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
             let frequency = keyFrequencies[note];
-            let currVoice = new MonotronVoise(frequency);
+            let currVoice = new MonotronVoise(frequency, startTime);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;

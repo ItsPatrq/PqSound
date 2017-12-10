@@ -33,8 +33,8 @@ class ControlBar extends React.Component {
     handleStop() {
         if (this.props.controlState.playing) {
             this.props.dispatch(actions.switchPlayState());
-            this.sequencer.handleStop();
         }
+        this.sequencer.handleStop();
     }
 
     handlePause() {

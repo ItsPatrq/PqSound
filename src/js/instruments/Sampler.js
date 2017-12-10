@@ -4,7 +4,7 @@ import { Presets } from 'constants/SamplerPresets';
 import { isNullOrUndefined } from 'engine/Utils';
 
 class SamplerVoice {
-    constructor(buffer) {
+    constructor(buffer, startTime) {
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
 
@@ -12,17 +12,16 @@ class SamplerVoice {
             this.output = this.context.createGain();
             
             this.source.connect(this.output);
-
-            this.output.gain.setValueAtTime(0.0001, this.context.currentTime);
+            this.output.gain.setValueAtTime(0.0001, startTime || this.context.currentTime);
             this.source.buffer = buffer;
             
-            this.source.start(this.context.currentTime)
+            this.source.start(startTime || this.context.currentTime)
         }
     }
 
     start(time) {
         time = time || this.context.currentTime;
-        this.output.gain.exponentialRampToValueAtTime(1.0, time + 0.1);
+        this.output.gain.exponentialRampToValueAtTime(1.0, time + 0.01);
     }
 
     stop(time) {
@@ -54,7 +53,7 @@ class Sampler {
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let currVoice = new SamplerVoice(this.getBuffers(note));
+            let currVoice = new SamplerVoice(this.getBuffers(note), startTime);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;
@@ -73,7 +72,7 @@ class Sampler {
         this.output.connect(target);
     }
 
-        /**
+    /**
      * due to initializing web audio api at start of application and sampler is the default instrument
      */
     initContext() {

@@ -1,5 +1,6 @@
 import * as Utils from 'engine/Utils';
 import Sound from 'engine/Sound';
+import Track from 'engine/Track';
 import { Sampler, Utils as InstrumentsUtils } from 'instruments';
 import {TrackTypes} from 'constants/Constants';
 import {Utils as SamplerPresetsUtils, Presets as SamplerPresets }  from 'constants/SamplerPresets';
@@ -14,7 +15,7 @@ export default function reducer(state = {
             mute: false,
             solo: false,
             index: 0,
-            nodes: new Array
+            trackNode: new Track(1.0, 0)
             //output: context.destination
         },
         {
@@ -29,7 +30,7 @@ export default function reducer(state = {
             solo: false,
             index: 1,
             output: 0,
-            nodes: new Array
+            trackNode: new Track(1.0, 0)
         }],
     selected: 1
 }, action) {
@@ -50,7 +51,7 @@ export default function reducer(state = {
                         solo: false,
                         index: state.trackList.length,
                         output: 0,
-                        nodes: new Array
+                        trackNode: new Track(1.0, 0)
                     }
                 );
             } else {
@@ -144,10 +145,14 @@ export default function reducer(state = {
             let newTrackList = [...state.trackList];
             if (Utils.isNullOrUndefined(action.payload)) {
                 newTrackList[newTrackList.length - 1].instrument.initContext();
+                newTrackList[newTrackList.length - 1].trackNode.initContext();
+                newTrackList[0].trackNode.initContext();
             } else {
                 for (let i = 0; i < newTrackList.length; i++) {
                     if (newTrackList[i].index === action.payload) {
                         newTrackList[i].instrument.initContext();
+                        newTrackList[i].trackNode.initContext();
+                        newTrackList[0].trackNode.initContext();
                     }
                 }
             }
