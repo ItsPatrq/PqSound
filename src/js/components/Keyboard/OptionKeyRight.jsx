@@ -12,6 +12,7 @@ const OptionKeyRight = (props) => {
             <div className="shiftKeyDiv">
             <Button className="shiftKeyDiv" bsSize="lg" bsStyle="link" onClick={() => { props.onChangeKeyboardRange(12) }}>
                 <Glyphicon glyph="chevron-right" />
+                <Glyphicon glyph="chevron-right" />
             </Button>
             </div>
         </div>
