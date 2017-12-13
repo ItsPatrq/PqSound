@@ -1,9 +1,10 @@
 import React from 'react';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { switchKeyboardVisibility, updateWidth } from 'actions/keyboardActions';
+import { switchKeyboardVisibility, updateWidth, changeFirstKeyboardKey } from 'actions/keyboardActions';
 import { switchPianorollVisibility } from 'actions/compositionActions';
 import * as Utils from 'engine/Utils';
+import {keyboardWidths} from 'constants/Constants';
 
 class TopNavBar extends React.Component {
     constructor() {
@@ -71,6 +72,7 @@ const mapStateToProps = (state) => {
     return {
         keyboardVisible: state.keyboard.show,
         keyboardWidth: state.keyboard.width,
+        keyboardFirstKey: state.keyboard.firstKey,
         pianoRollVisible: state.composition.showPianoRoll,
         pianoRollRegion: state.composition.pianoRollRegion
     }

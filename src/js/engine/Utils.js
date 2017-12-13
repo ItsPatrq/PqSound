@@ -22,6 +22,27 @@ module.exports.getRegionsByTrackIndex = (regionsByTrack, index) => {
     }
 }
 
+module.exports.removeAllFromArray = (array, condition) => {
+    let newArray = [...array];
+    for(let i = newArray.lengt - 1; i >=0; i--){
+        if(condition(newArray[i])){
+            newArray.splice(i, 1);
+        }
+    }
+    return newArray;
+}
+
+module.exports.removeFirstFromArray = (array, condition) => {
+    let newArray = [...array];
+    for(let i = 0; i < newArray.length; i++){
+        if(condition(newArray[i], i)){
+            newArray.splice(i, 1);
+            break;
+        }
+    }
+    return newArray;
+}
+
 /**
  * Returns corresponding fequency for the MIDI note number
  * @param {*MIDI note number (for 69 frequency is equal to 440.0)} note

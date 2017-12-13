@@ -84,11 +84,11 @@ module.exports.SoundOrigin = {
 /**
  * widths in pixels for every piano key to determine if need to be displayed
  */
-let keyboardWidths = [  {sharp: false, startWidth: 0}, {sharp: true, startWidth: 45}, {sharp: false, startWidth: 66}];
-let octaveKeysWidth = [ {sharp: false, startWidth: 0}, {sharp: true, startWidth: 45}, {sharp: false, startWidth: 66},
-                        {sharp: true, startWidth: 113}, {sharp: false, startWidth: 122}, {sharp: false, startWidth: 198},
-                        {sharp: true, startWidth: 244}, {sharp: false, startWidth: 264}, {sharp: true, startWidth: 312},
-                        {sharp: false, startWidth: 330}, {sharp: true, startWidth: 379}, {sharp: false, startWidth: 396}]
+let keyboardWidths = [  {sharp: false, startWidth: 0}, {sharp: true, startWidth: 47}, {sharp: false, startWidth: 66}];
+let octaveKeysWidth = [ {sharp: false, startWidth: 0}, {sharp: true, startWidth: 55}, {sharp: false, startWidth: 66},
+                        {sharp: true, startWidth: 123}, {sharp: false, startWidth: 122}, {sharp: false, startWidth: 198},
+                        {sharp: true, startWidth: 254}, {sharp: false, startWidth: 264}, {sharp: true, startWidth: 322},
+                        {sharp: false, startWidth: 330}, {sharp: true, startWidth: 389}, {sharp: false, startWidth: 396}]
 for(let i = 0; i < 7; i++){
     for(let j = 0; j < 12; j++){
         keyboardWidths.push({sharp: octaveKeysWidth[j].sharp, startWidth: octaveKeysWidth[j].startWidth + 122 + i * 462});

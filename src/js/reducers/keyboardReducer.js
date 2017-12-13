@@ -1,11 +1,10 @@
 import * as Utils from 'engine/Utils';
 
 export default function reducer(state = {
-    octaves: 7,
-    firstOctave: 0,
     width: 0,
     firstKey: 0,
-    show: false
+    show: false,
+    notesPlaying: new Array
 }, action) {
     switch (action.type) {
         case 'CHANGE_OCTAVE_NUMBER': {
@@ -30,6 +29,32 @@ export default function reducer(state = {
             return {
                 ...state,
                 width: action.payload
+            }
+        }
+        case 'CHANGE_FIRST_KEYBOARD_KEY': {
+            return {
+                ...state,
+                firstKey: action.payload
+            }
+        }
+        case 'ADD_PLAYING_NOTE':{
+            let newNotesPlaying = [...state.notesPlaying];
+            newNotesPlaying.push(action.payload);
+            return {
+                ...state,
+                notesPlaying: newNotesPlaying
+            }
+        }
+        case 'REMOVE_PLAYING_NOTE':{
+            let newNotesPlaying = [...state.notesPlaying];
+            newNotesPlaying = Utils.removeFirstFromArray(newNotesPlaying, (element/*, index*/) => {
+                if(element === action.payload) {
+                    return true;
+                }
+            });
+            return {
+                ...state,
+                notesPlaying: newNotesPlaying
             }
         }
     }

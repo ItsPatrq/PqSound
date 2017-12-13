@@ -1,5 +1,6 @@
 .keyboard {
-    background-color: #272927;
+    background-color: rgb(82, 97, 102);
+    width: 100%;    
     color: #000000;
     position: absolute;
     text-align: center;
@@ -16,16 +17,23 @@
     width: 100%;
     position: relative;
     float: left;
+    display: flex;
+    display: -webkit-flex;
+}
+
+.shiftKeyDiv {
+    height: 110px;
+    
 }
 
 .colorLine {
     background-color: rgb(82, 97, 102);
     color: #000000;
-    height: 5px;
+    height: 6px;
     position: absolute;
-    top: 1px;
+    top: 0px;
     width: 100%;
-    z-index: 100;
+    z-index: 2;
     display: block;
 }
 
@@ -38,13 +46,56 @@
 .octave {
     position: relative;
     /* float: left; */
-    display: inline-block;    
+    display: inline-block; 
+}
+
+.keysRow{
+    display: inline-flex;
+    margin-left: 0px;
+    align-content: flex-start;
+}
+
+.optionKey {
+    width: 66px;
+    height: 230px;
+	background-color: rgb(82, 97, 102);
+	border-bottom: 2px solid #626262;
+	-moz-border-radius: 0 0 5px 5px;
+	border-radius: 0 0 5px 5px;
+    border-top: 0px;
+    z-index: 3;    
+}
+    .optionKey.right {
+        position: absolute;
+        float: right;
+    }
+    .optionKey.left {
+        position: relative;
+        float: left;
+    }
+
+.disabledKey {
+    float: left;
+    width: 66px;
+    height: 229px;
+    background-color: rgb(160, 160, 160);
+    border: 1px solid #2c2c2c;
+    position: relative;
+    -moz-border-radius: 0 0 15px 15px;
+    border-radius: 0 0 15px 15px;
+    background-image: -webkit-gradient(center bottom ,  rgb(175, 175, 175) 90%, rgb(82, 82, 82) 100%);
+    -webkit-box-shadow: 0 -10px 2px 0px #838383 none, 0 -60px 40px 10px rgb(158, 158, 158) inset;
+    background-image: -moz-linear-gradient(center bottom , rgb(175, 175, 175) 90%, rgb(82, 82, 82) 100%);
+    -moz-box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px rgb(158, 158, 158) inset;
+    background-image: -gradient(center bottom , rgb(175, 175, 175) 90%, rgb(82, 82, 82) 100%);
+    box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px rgb(158, 158, 158) inset;
+    top: 1px;    
 }
 
 .whiteKey {
     float: left;
     width: 66px;
-    height: 250px;
+    height: 230px;
     background-color: #F4F4F4;
     border: 1px solid #626262;
     position: relative;
@@ -58,7 +109,6 @@
     box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px #EEEEEE inset;
 }
 
-div.whiteKey:active,
 div.whiteKey.pressed {
   border: 1px solid #343434;
 	background-image: -webkit-gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
@@ -73,14 +123,14 @@ div.whiteKey.pressed {
 .blackKey {
 	float: left;
 	width: 36px;
-	height: 150px;
+	height: 138px;
 	background-color: #000000;
 	border-bottom: 2px solid #000;
 	border-left: 2px solid #000;
 	border-right: 2px solid #000;
 	position: absolute;
 	top: 6px;
-	z-index: 100;
+	z-index: 2;
 	-moz-border-radius: 0 0 5px 5px;
 	border-radius: 0 0 5px 5px;
 	border-top: 0px;
@@ -89,7 +139,6 @@ div.whiteKey.pressed {
 	box-shadow: 0 -9px 10px 9px #303030 inset, 0 -15px #F7F7F7 inset;
 }
 
-div.blackKey:active,
 div.blackKey.pressed {
   border: 1px solid #CECECE;
   border-top: 1px solid #626262;
