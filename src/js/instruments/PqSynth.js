@@ -1,6 +1,6 @@
 import Store from '../stroe';
-import { Instruments, keyFrequencies } from 'constants/Constants';
-import { isNullOrUndefined } from 'engine/Utils';
+import { Instruments, defaultKeysNames } from 'constants/Constants';
+import { isNullOrUndefined, noteToFrequency, MIDIToNote } from 'engine/Utils';
 
 class PqSynthVoice {
     constructor(freqyency, startTime) {
@@ -53,8 +53,7 @@ class PqSynth {
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let frequency = keyFrequencies[note];
-            let currVoice = new PqSynthVoice(frequency, startTime);
+            let currVoice = new PqSynthVoice(noteToFrequency(note), startTime);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;
@@ -67,6 +66,10 @@ class PqSynth {
             this.voices[note].stop(endTime);
             delete this.voices[note];
         }
+    }
+
+    getNoteName(note){
+        return defaultKeysNames[MIDIToNote(note)] + Math.ceil((MIDIToNote(note) - 2)/12);
     }
 
     connect(target) {

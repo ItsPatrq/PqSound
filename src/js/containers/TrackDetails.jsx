@@ -142,8 +142,7 @@ const mapStateToProps = (state) => {
         trackDetails: state.trackDetails,
         samplerInstruments: state.webAudio.samplerInstrumentsSounds.map(
             (value) => { return { name: value.name, loaded: value.loaded, id: value.id } }
-        ),
-        sound: state.webAudio.sound
+        )
     }
 }
 

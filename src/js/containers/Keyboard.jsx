@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { SoundOrigin, keyboardWidths } from 'constants/Constants';
-import { isNullOrUndefined } from 'engine/Utils';
+import { SoundOrigin, keyboardWidths, defaultKeysNames } from 'constants/Constants';
+import { isNullOrUndefined, getTrackByIndex, noteToMIDI } from 'engine/Utils';
 import * as Actions from 'actions/keyboardActions';
 import WhiteKey from 'components/Keyboard/WhiteKey';
 import BlackKey from 'components/Keyboard/BlackKey';
@@ -13,12 +13,277 @@ import { Row } from 'react-bootstrap';
 class Keyboard extends React.Component {
     constructor() {
         super();
-        // this.notesPlaying = new Array;
-        // window.onkeyup = function(e) {
-        //     console.log(e);
-        //  }
-    }
+        let that = this;
+        window.onkeydown = function (e) {
+            if (!e.ctrlKey && !e.altKey) {
+                switch (e.key) {
+                    case 'q': {
+                        that.handleKeyboardKeyDown(0);
+                        break;
+                    }
+                    case '2': {
+                        that.handleKeyboardKeyDown(1);
+                        break;
+                    }
+                    case 'w': {
+                        that.handleKeyboardKeyDown(2);
+                        break;
+                    }
+                    case 'e': {
+                        that.handleKeyboardKeyDown(3);
+                        break;
+                    }
+                    case '4': {
+                        that.handleKeyboardKeyDown(4);
+                        break;
+                    }
+                    case 'r': {
+                        that.handleKeyboardKeyDown(5);
+                        break;
+                    }
+                    case '5': {
+                        that.handleKeyboardKeyDown(6);
+                        break;
+                    }
+                    case 't': {
+                        that.handleKeyboardKeyDown(7);
+                        break;
+                    }
+                    case 'y': {
+                        that.handleKeyboardKeyDown(8);
+                        break;
+                    }
+                    case '7': {
+                        that.handleKeyboardKeyDown(9);
+                        break;
+                    }
+                    case 'u': {
+                        that.handleKeyboardKeyDown(10);
+                        break;
+                    }
+                    case '8': {
+                        that.handleKeyboardKeyDown(11);
+                        break;
+                    }
+                    case 'i': {
+                        that.handleKeyboardKeyDown(12);
+                        break;
+                    }
+                    case '9': {
+                        that.handleKeyboardKeyDown(13);
+                        break;
+                    }
+                    case 'o': {
+                        that.handleKeyboardKeyDown(14);
+                        break;
+                    }
+                    case 'z': {
+                        that.handleKeyboardKeyDown(15);
+                        break;
+                    }
+                    case 's': {
+                        that.handleKeyboardKeyDown(16);
+                        break;
+                    }
+                    case 'x': {
+                        that.handleKeyboardKeyDown(17);
+                        break;
+                    }
+                    case 'd': {
+                        that.handleKeyboardKeyDown(18);
+                        break;
+                    }
+                    case 'c': {
+                        that.handleKeyboardKeyDown(19);
+                        break;
+                    }
+                    case 'v': {
+                        that.handleKeyboardKeyDown(20);
+                        break;
+                    }
+                    case 'g': {
+                        that.handleKeyboardKeyDown(21);
+                        break;
+                    }
+                    case 'b': {
+                        that.handleKeyboardKeyDown(22);
+                        break;
+                    }
+                    case 'h': {
+                        that.handleKeyboardKeyDown(23);
+                        break;
+                    }
+                    case 'n': {
+                        that.handleKeyboardKeyDown(24);
+                        break;
+                    }
+                    case 'j': {
+                        that.handleKeyboardKeyDown(25);
+                        break;
+                    }
+                    case 'm': {
+                        that.handleKeyboardKeyDown(26);
+                        break;
+                    }
+                    case ',': {
+                        that.handleKeyboardKeyDown(27);
+                        break;
+                    }
+                    case 'l': {
+                        that.handleKeyboardKeyDown(28);
+                        break;
+                    }
+                    case '.': {
+                        that.handleKeyboardKeyDown(29);
+                        break;
+                    }
+                    case ';': {
+                        that.handleKeyboardKeyDown(30);
+                        break;
+                    }
+                    case '/': {
+                        that.handleKeyboardKeyDown(31);
+                        break;
+                    }
+                }
 
+            }
+        }
+        window.onkeyup = function (e) {
+            if (!e.altKey) {
+                switch (e.key) {
+                    case 'q': {
+                        that.handleKeyboardKeyUp(0);
+                        break;
+                    }
+                    case '2': {
+                        that.handleKeyboardKeyUp(1);
+                        break;
+                    }
+                    case 'w': {
+                        that.handleKeyboardKeyUp(2);
+                        break;
+                    }
+                    case 'e': {
+                        that.handleKeyboardKeyUp(3);
+                        break;
+                    }
+                    case '4': {
+                        that.handleKeyboardKeyUp(4);
+                        break;
+                    }
+                    case 'r': {
+                        that.handleKeyboardKeyUp(5);
+                        break;
+                    }
+                    case '5': {
+                        that.handleKeyboardKeyUp(6);
+                        break;
+                    }
+                    case 't': {
+                        that.handleKeyboardKeyUp(7);
+                        break;
+                    }
+                    case 'y': {
+                        that.handleKeyboardKeyUp(8);
+                        break;
+                    }
+                    case '7': {
+                        that.handleKeyboardKeyUp(9);
+                        break;
+                    }
+                    case 'u': {
+                        that.handleKeyboardKeyUp(10);
+                        break;
+                    }
+                    case '8': {
+                        that.handleKeyboardKeyUp(11);
+                        break;
+                    }
+                    case 'i': {
+                        that.handleKeyboardKeyUp(12);
+                        break;
+                    }
+                    case '9': {
+                        that.handleKeyboardKeyUp(13);
+                        break;
+                    }
+                    case 'o': {
+                        that.handleKeyboardKeyUp(14);
+                        break;
+                    }
+                    case 'z': {
+                        that.handleKeyboardKeyUp(15);
+                        break;
+                    }
+                    case 's': {
+                        that.handleKeyboardKeyUp(16);
+                        break;
+                    }
+                    case 'x': {
+                        that.handleKeyboardKeyUp(17);
+                        break;
+                    }
+                    case 'd': {
+                        that.handleKeyboardKeyUp(18);
+                        break;
+                    }
+                    case 'c': {
+                        that.handleKeyboardKeyUp(19);
+                        break;
+                    }
+                    case 'v': {
+                        that.handleKeyboardKeyUp(20);
+                        break;
+                    }
+                    case 'g': {
+                        that.handleKeyboardKeyUp(21);
+                        break;
+                    }
+                    case 'b': {
+                        that.handleKeyboardKeyUp(22);
+                        break;
+                    }
+                    case 'h': {
+                        that.handleKeyboardKeyUp(23);
+                        break;
+                    }
+                    case 'n': {
+                        that.handleKeyboardKeyUp(24);
+                        break;
+                    }
+                    case 'j': {
+                        that.handleKeyboardKeyUp(25);
+                        break;
+                    }
+                    case 'm': {
+                        that.handleKeyboardKeyUp(26);
+                        break;
+                    }
+                    case ',': {
+                        that.handleKeyboardKeyUp(27);
+                        break;
+                    }
+                    case 'l': {
+                        that.handleKeyboardKeyUp(28);
+                        break;
+                    }
+                    case '.': {
+                        that.handleKeyboardKeyUp(29);
+                        break;
+                    }
+                    case ';': {
+                        that.handleKeyboardKeyUp(30);
+                        break;
+                    }
+                    case '/': {
+                        that.handleKeyboardKeyUp(31);
+                        break;
+                    }
+                }
+            }
+        }
+    }
     getAllRecordingTracks() {
         let recordingTracksSounds = new Array;
         for (let i = 1; i < this.props.trackList.length; i++) {
@@ -33,12 +298,12 @@ class Keyboard extends React.Component {
         event.preventDefault();
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
-        if (this.props.keyboard.notesPlaying.length > 0) {
+        if (this.props.keyboard.notesPlaying.includes(note)) {
             let recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
                 this.props.sound.stop(recordingTracksSounds[i], note)
-                this.props.dispatch(Actions.removePlayingNote(note));
             }
+            this.props.dispatch(Actions.removePlayingNote(note));
         }
         return false;
     }
@@ -57,6 +322,52 @@ class Keyboard extends React.Component {
         return false;
     }
 
+    getKeyName(note) {
+        let recordingTracksSounds = this.getAllRecordingTracks();
+        if (recordingTracksSounds.length === 1) {
+            return getTrackByIndex(this.props.trackList, recordingTracksSounds[0]).instrument.getNoteName(note);
+        }
+    }
+
+    getDefaultKeyName(note) {
+        return defaultKeysNames[note] + Math.ceil((note - 2) / 12);
+    }
+
+    getBindingName(note) {
+        let name = '';
+        for (let i = 0; i < this.props.keyboard.keyBindings.length; i++) {
+            if (this.props.keyboard.keyBindings[i].MIDINote === noteToMIDI(note)) {
+                name = this.props.keyboard.keyBindings[i].keyboardKey;
+                break;
+            }
+        }
+        return name;
+    }
+
+    handleKeyboardKeyDown(note) {
+        if (!isNullOrUndefined(this.props.keyboard.keyBindings[note]) &&
+            !this.props.keyboard.notesPlaying.includes(this.props.keyboard.keyBindings[note].MIDINote)) {
+            let recordingTracksSounds = this.getAllRecordingTracks();
+            for (let i = 0; i < recordingTracksSounds.length; i++) {
+                this.props.sound.play(recordingTracksSounds[i], null, this.props.keyboard.keyBindings[note].MIDINote, SoundOrigin.pianoRollNote)
+            }
+            this.props.dispatch(Actions.addPlayingNote(this.props.keyboard.keyBindings[note].MIDINote))
+        }
+
+    }
+
+    handleKeyboardKeyUp(note) {
+        if (!isNullOrUndefined(this.props.keyboard.keyBindings[note]) &&
+            this.props.keyboard.notesPlaying.includes(this.props.keyboard.keyBindings[note].MIDINote)) {
+            let recordingTracksSounds = this.getAllRecordingTracks();
+            for (let i = 0; i < recordingTracksSounds.length; i++) {
+                this.props.sound.stop(recordingTracksSounds[i], this.props.keyboard.keyBindings[note].MIDINote)
+            }
+            this.props.dispatch(Actions.removePlayingNote(this.props.keyboard.keyBindings[note].MIDINote))
+        }
+
+    }
+
     changeKeyboardRange(direction) {
         let newFirstVisibleKey = this.props.keyboard.firstKey + direction;
         if (newFirstVisibleKey < 0) {
@@ -72,7 +383,14 @@ class Keyboard extends React.Component {
         while (keyboardWidths[newFirstVisibleKey].startWidth + this.props.keyboard.width - 122 > keyboardWidths[87].startWidth + 122) {
             newFirstVisibleKey--;
         }
-        if(newFirstVisibleKey !== this.props.keyboard.firstKey){
+        if (newFirstVisibleKey !== this.props.keyboard.firstKey) {
+            if (Math.floor(newFirstVisibleKey / 12) !== Math.floor(this.props.keyboard.firstKey / 12)) {
+                if (direction > 0) {
+                    this.props.dispatch(Actions.changeKeyBindings(12));
+                } else {
+                    this.props.dispatch(Actions.changeKeyBindings(-12));
+                }
+            }
             this.props.dispatch(Actions.changeFirstKeyboardKey(newFirstVisibleKey));
         }
     }
@@ -124,20 +442,28 @@ class Keyboard extends React.Component {
                     blackKeysToRender.push(
                         <BlackKey
                             key={currVisible}
-                            note={currVisible}
+                            note={noteToMIDI(currVisible)}
                             margin={keyboardWidths[currVisible].startWidth - keyboardWidths[firstVisibleKey].startWidth}
                             handleMouseOver={this.handleDown.bind(this)}
                             handleMouseLeave={this.handleUp.bind(this)}
-                            isPressed={this.props.keyboard.notesPlaying.includes(currVisible)}
+                            isPressed={this.props.keyboard.notesPlaying.includes(noteToMIDI(currVisible))}
+                            keyName={this.getDefaultKeyName(currVisible)}
+                            keyNameVisible={this.props.keyboard.keyNamesVisible}
+                            keyBindingVisible={this.props.keyboard.keyBindVisible}
+                            keyBind={this.getBindingName(currVisible)}
                         />)
                 } else {
                     whiteKeysToRender.push(
                         <WhiteKey
                             key={currVisible}
-                            note={currVisible}
+                            note={noteToMIDI(currVisible)}
                             handleMouseOver={this.handleDown.bind(this)}
                             handleMouseLeave={this.handleUp.bind(this)}
-                            isPressed={this.props.keyboard.notesPlaying.includes(currVisible)}
+                            isPressed={this.props.keyboard.notesPlaying.includes(noteToMIDI(currVisible))}
+                            keyName={this.getDefaultKeyName(currVisible)}
+                            keyNameVisible={this.props.keyboard.keyNamesVisible}
+                            keyBindingVisible={this.props.keyboard.keyBindVisible}
+                            keyBind={this.getBindingName(currVisible)}
                         />)
                 }
                 currVisible++

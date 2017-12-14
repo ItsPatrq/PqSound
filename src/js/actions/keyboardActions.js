@@ -39,3 +39,22 @@ export function removePlayingNote(note){
         payload: note
     }
 }
+
+export function changeKeyBindings(offset){
+    return {
+        type: 'CHANGE_KEY_BINDINGS',
+        payload: offset
+    }
+}
+
+export function switchKeyNameVisibility(){
+    return {
+        type: 'SWITCH_KEY_NAME_VISIBILITY'
+    }
+}
+
+export function switchKeyBindVisibility(){
+    return {
+        type: 'SWITCH_KEY_BIND_VISIBILITY'
+    }
+}

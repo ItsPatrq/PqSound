@@ -43,12 +43,6 @@
     display: inline-block;    
 }
 
-.octave {
-    position: relative;
-    /* float: left; */
-    display: inline-block; 
-}
-
 .keysRow{
     display: inline-flex;
     margin-left: 0px;
@@ -89,7 +83,7 @@
     -moz-box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px rgb(158, 158, 158) inset;
     background-image: -gradient(center bottom , rgb(175, 175, 175) 90%, rgb(82, 82, 82) 100%);
     box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px rgb(158, 158, 158) inset;
-    top: 1px;    
+    top: 1px;
 }
 
 .whiteKey {
@@ -107,6 +101,12 @@
     -moz-box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px #EEEEEE inset;
     background-image: -gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
     box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px #EEEEEE inset;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-align-content: center;
+    align-content: center;
 }
 
 div.whiteKey.pressed {
@@ -136,7 +136,7 @@ div.whiteKey.pressed {
 	border-top: 0px;
 	-moz-box-shadow: 0 -9px 10px 9px #303030 inset, 0 -15px #F7F7F7 inset;
 	-webkit-box-shadow: 0 -9px 10px 9px #303030 inset, 0 -15px #F7F7F7 inset;
-	box-shadow: 0 -9px 10px 9px #303030 inset, 0 -15px #F7F7F7 inset;
+    box-shadow: 0 -9px 10px 9px #303030 inset, 0 -15px #F7F7F7 inset;
 }
 
 div.blackKey.pressed {
@@ -165,4 +165,37 @@ div.flatKeys :nth-child(4) {
 }
 div.flatKeys :nth-child(5) {
 	margin-left: 379px;
+}
+
+.keyName {
+    font-size: 11px;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    overflow: hidden;
+    width: 100%;
+}
+
+.keyName.white {
+    color: rgb(80, 80, 80);
+}
+
+.keyName.black {
+    color: #9c9c9c
+}
+
+.keyBind {
+    font-size: 22px;
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    width: 100%;
+}
+
+.keyBind.white {
+    color: rgb(63, 63, 63);
+}
+
+.keyBind.black {
+    color: #cacaca
 }

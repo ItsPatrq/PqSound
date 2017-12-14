@@ -1,7 +1,7 @@
 import Store from '../stroe';
 import { Instruments } from 'constants/Constants';
 import { Presets } from 'constants/SamplerPresets';
-import { isNullOrUndefined } from 'engine/Utils';
+import { isNullOrUndefined, MIDIToNote } from 'engine/Utils';
 
 class SamplerVoice {
     constructor(buffer, startTime) {
@@ -68,6 +68,15 @@ class Sampler {
         }
     }
 
+    getNoteName(note){
+        if(!isNullOrUndefined(this.preset.content[MIDIToNote(note)])){
+            return this.preset.content[MIDIToNote(note)].name;
+        } else {
+            return 'No sample';
+        }
+    }
+
+
     connect(target) {
         this.output.connect(target);
     }
@@ -84,7 +93,7 @@ class Sampler {
         let samplerInstruments = Store.getState().webAudio.samplerInstrumentsSounds;
         for (let i = 0; i < samplerInstruments.length; i++) {
             if (samplerInstruments[i].name === this.preset.name) {
-                return samplerInstruments[i].buffer[note];
+                return samplerInstruments[i].buffer[MIDIToNote(note)];
             }
         }
     }

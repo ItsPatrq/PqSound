@@ -1,6 +1,6 @@
 import Store from '../stroe';
-import { Instruments, keyFrequencies } from 'constants/Constants';
-import { isNullOrUndefined, noteToFrequency } from 'engine/Utils';
+import { Instruments, defaultKeysNames } from 'constants/Constants';
+import { isNullOrUndefined, noteToFrequency, MIDIToNote } from 'engine/Utils';
 
 class MonotronVoise {
     constructor(frequency, startTime) {
@@ -64,8 +64,7 @@ class Monotron {
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let frequency = keyFrequencies[note];
-            let currVoice = new MonotronVoise(frequency, startTime);
+            let currVoice = new MonotronVoise(noteToFrequency(note), startTime);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;
@@ -78,6 +77,10 @@ class Monotron {
             this.voices[note].stop(endTime);
             delete this.voices[note];
         }
+    }
+
+    getNoteName(note){
+        return defaultKeysNames[MIDIToNote(note)] + Math.ceil((MIDIToNote(note) - 2)/12);
     }
 
     connect(target) {

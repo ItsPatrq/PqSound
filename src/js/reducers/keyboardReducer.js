@@ -1,10 +1,14 @@
 import * as Utils from 'engine/Utils';
+import {defaultKeyBindings} from 'constants/Constants';
 
 export default function reducer(state = {
     width: 0,
     firstKey: 0,
     show: false,
-    notesPlaying: new Array
+    notesPlaying: new Array,
+    keyNamesVisible: true,
+    keyBindings: defaultKeyBindings,
+    keyBindVisible: true
 }, action) {
     switch (action.type) {
         case 'CHANGE_OCTAVE_NUMBER': {
@@ -37,7 +41,7 @@ export default function reducer(state = {
                 firstKey: action.payload
             }
         }
-        case 'ADD_PLAYING_NOTE':{
+        case 'ADD_PLAYING_NOTE': {
             let newNotesPlaying = [...state.notesPlaying];
             newNotesPlaying.push(action.payload);
             return {
@@ -45,16 +49,38 @@ export default function reducer(state = {
                 notesPlaying: newNotesPlaying
             }
         }
-        case 'REMOVE_PLAYING_NOTE':{
+        case 'REMOVE_PLAYING_NOTE': {
             let newNotesPlaying = [...state.notesPlaying];
             newNotesPlaying = Utils.removeFirstFromArray(newNotesPlaying, (element/*, index*/) => {
-                if(element === action.payload) {
+                if (element === action.payload) {
                     return true;
                 }
             });
             return {
                 ...state,
                 notesPlaying: newNotesPlaying
+            }
+        }
+        case 'CHANGE_KEY_BINDINGS': {
+            let newKeyBindings = [...state.keyBindings];
+            for (let i = 0; i < newKeyBindings.length; i++) {
+                newKeyBindings[i].MIDINote = newKeyBindings[i].MIDINote + action.payload;
+            }
+            return {
+                ...state,
+                keyBindings: newKeyBindings
+            }
+        }
+        case 'SWITCH_KEY_NAME_VISIBILITY': {
+            return {
+                ...state,
+                keyNamesVisible: !state.keyNamesVisible
+            }
+        }
+        case 'SWITCH_KEY_BIND_VISIBILITY': {
+            return {
+                ...state,
+                keyBindVisible: !state.keyBindVisible
             }
         }
     }

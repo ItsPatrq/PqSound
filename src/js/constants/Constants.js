@@ -96,3 +96,53 @@ for(let i = 0; i < 7; i++){
 }
 keyboardWidths.push({sharp: false, startWidth: keyboardWidths[86].startWidth + 66});
 module.exports.keyboardWidths = keyboardWidths;
+
+
+/**
+ * List of strings representing each of 88 notes musical notation for displaying purpose
+ */
+let keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+let defaultKeysNames = ['A', 'A#', 'B'];
+for(let i = 0; i < 8; i++){
+for(let j = 0; j < keys.length; j++){
+    defaultKeysNames.push(keys[j]);
+}
+}
+defaultKeysNames.push('C');
+
+module.exports.defaultKeysNames = defaultKeysNames;
+
+module.exports.defaultKeyBindings = [
+    {MIDINote: 21, keyboardKey: 'q'},
+    {MIDINote: 22, keyboardKey: '2'},
+    {MIDINote: 23, keyboardKey: 'w'},
+    {MIDINote: 24, keyboardKey: 'e'},
+    {MIDINote: 25, keyboardKey: '4'},
+    {MIDINote: 26, keyboardKey: 'r'},
+    {MIDINote: 27, keyboardKey: '5'},
+    {MIDINote: 28, keyboardKey: 't'},
+    {MIDINote: 29, keyboardKey: 'y'},
+    {MIDINote: 30, keyboardKey: '7'},
+    {MIDINote: 31, keyboardKey: 'u'},
+    {MIDINote: 32, keyboardKey: '8'},
+    {MIDINote: 33, keyboardKey: 'i'},
+    {MIDINote: 34, keyboardKey: '9'},
+    {MIDINote: 35, keyboardKey: 'o'},
+    {MIDINote: 36, keyboardKey: 'z'},
+    {MIDINote: 37, keyboardKey: 's'},
+    {MIDINote: 38, keyboardKey: 'x'},
+    {MIDINote: 39, keyboardKey: 'd'},
+    {MIDINote: 40, keyboardKey: 'c'},
+    {MIDINote: 41, keyboardKey: 'v'},
+    {MIDINote: 42, keyboardKey: 'g'},
+    {MIDINote: 43, keyboardKey: 'b'},
+    {MIDINote: 44, keyboardKey: 'h'},
+    {MIDINote: 45, keyboardKey: 'n'},
+    {MIDINote: 46, keyboardKey: 'j'},
+    {MIDINote: 47, keyboardKey: 'm'},
+    {MIDINote: 48, keyboardKey: ','},
+    {MIDINote: 49, keyboardKey: 'l'},
+    {MIDINote: 50, keyboardKey: '.'},
+    {MIDINote: 51, keyboardKey: ';'},
+    {MIDINote: 52, keyboardKey: '/'}
+]

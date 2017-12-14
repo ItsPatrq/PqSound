@@ -50,3 +50,19 @@ module.exports.removeFirstFromArray = (array, condition) => {
 module.exports.noteToFrequency = (note) => {
     return Math.pow(2, (note - 69) / 12) * 440.0;
 }
+
+/**
+ * convert note number (0 representing A0, 1 representing A#0...) to MIDI index
+ * @param {*note number starting from 0 for A0} note
+ */
+module.exports.noteToMIDI = (note) => {
+    return note + 21;
+}
+
+/**
+ * convert MIDI note number to note (0 representing A0, 1 representing A#0...)
+ * @param {*MIDI note number} note
+ */
+module.exports.MIDIToNote = (note) => {
+    return note - 21;
+}

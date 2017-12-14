@@ -7,6 +7,21 @@ const WhiteKey = (props) => {
     } else {
         className = 'whiteKey';
     }
+    let names = new Array;
+    if (props.keyNameVisible) {
+        names.push(
+            <p className="keyName white" key={props.keyName + props.note}>
+                {props.keyName}
+            </p>
+        )
+    }
+    if (props.keyBindingVisible) {
+        names.push(
+            <p className="keyBind white" key={props.keyBind + props.note}>
+                {props.keyBind}
+            </p>
+        )
+    }
     return (
         <div
             className={className}
@@ -15,6 +30,7 @@ const WhiteKey = (props) => {
             onMouseLeave={(event) => props.handleMouseLeave(event, props.note)}
             onMouseUp={(event) => props.handleMouseLeave(event, props.note)}
         >
+            {names}
         </div>
     );
 }

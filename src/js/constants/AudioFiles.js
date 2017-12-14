@@ -3,14 +3,29 @@ let keys = ['C', 'Cs', 'D', 'Ds', 'E', 'F', 'Fs', 'G', 'Gs', 'A', 'As', 'B'];
 let baseURL = 'http://localhost:3000/api/samplerinstrument/';
 
 let DSKGrandPianoURL = baseURL + 'DSKGrandPiano/DSK_Grand_';
-let DSKGrandPiano = new Array;
-for(let i = 0; i < 8; i++)
-for(let j = 0; j < keys.length; j++){
-    DSKGrandPiano.push({
-        name: 'DSKGrandPiano' + keys[j] + i.toString(),
-        url: DSKGrandPianoURL + keys[j] + i + '.wav'
-    });
+let DSKGrandPiano = [
+    {
+        name: 'DSKGrandPiano' + 'A' + 0,
+        url: DSKGrandPianoURL + 'A' + 0 + '.wav'
+    },
+    {
+        name: 'DSKGrandPiano' + 'As' + 0,
+        url: DSKGrandPianoURL + 'As' + 0 + '.wav'
+    },
+    {
+        name: 'DSKGrandPiano' + 'B' + 0,
+        url: DSKGrandPianoURL + 'B' + 0 + '.wav'
+    }
+];
+for(let i = 1; i < 8; i++){
+    for(let j = 0; j < keys.length; j++){
+        DSKGrandPiano.push({
+            name: 'DSKGrandPiano' + keys[j] + i.toString(),
+            url: DSKGrandPianoURL + keys[j] + i + '.wav'
+        });
+    }
 }
+
 module.exports.DSKGrandPiano = DSKGrandPiano;
 
 let slingerlandKitURL = baseURL + 'SlingerlandKit/';

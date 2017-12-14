@@ -48,7 +48,7 @@ class Sequencer {
                 let currentNotesToPlay = notesToPlay(this.sixteenthPlaying, currTrackIndex);
                 if (!Utils.isNullUndefinedOrEmpty(currentNotesToPlay)) {
                     for (let j = 0; j < currentNotesToPlay.length; j++) {
-                        Store.getState().webAudio.sound.play(currTrackIndex, contextPlayTime, currentNotesToPlay[j].note,
+                        Store.getState().webAudio.sound.play(currTrackIndex, contextPlayTime, Utils.noteToMIDI(currentNotesToPlay[j].note),
                             SoundOrigin.composition, this.sixteenthPlaying +  currentNotesToPlay[j].durotian);
                     }
                 }

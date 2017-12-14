@@ -1,6 +1,6 @@
 import Store from '../stroe';
 import * as Utils from 'engine/Utils';
-import { TrackTypes } from 'constants/Constants';
+
 export default class Sound {
   constructor(newContext) {
     this.context = newContext;
@@ -44,6 +44,7 @@ export default class Sound {
     if (Utils.isNullOrUndefined(contextStopTime)) {
       contextStopTime = this.context.currentTime + 0.001;
     }
+    console.log(trackIndex, note, contextStopTime)
     let currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
     currTrack.instrument.noteOff(note, contextStopTime);
   }
