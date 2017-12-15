@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from 'components/Layout';
 import { connect } from 'react-redux';
 import { initializeWebAudio, fetchSamplerInstrument } from 'actions/webAudioActions';
-import {initInstrumentContext} from '../actions/trackListActions'
+import { initInstrumentContext } from 'actions/trackListActions';
 
 require('styles/reset.css');
 require('normalize.css/normalize.css');
@@ -21,6 +21,7 @@ class Main extends React.Component {
          * TODO: get rid of that. This is becaouse TrackList -> Instruments get initialized before whole Store, which makes Context unreachable
          */
         this.props.dispatch(initInstrumentContext(1));
+        this.props.control.midiController.init();
     }
 
     render() {
@@ -31,7 +32,8 @@ class Main extends React.Component {
 }
 const mapStateToProps = (state) => {
     return {
-        webAudio: state.webAudio
+        webAudio: state.webAudio,
+        control: state.control
     }
 }
 //REDUX connection

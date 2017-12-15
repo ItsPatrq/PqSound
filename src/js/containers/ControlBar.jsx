@@ -9,7 +9,9 @@ import ToolDropdown from 'components/ControlBar/ToolDropdown';
 import NoteDrawLengthDropdown from 'components/ControlBar/NoteDrawLengthDropdown';
 import RegionDrawLengthInput from 'components/ControlBar/RegionDrawLengthInput';
 import BitsInCompositionInput from 'components/ControlBar/BitsInCompositionInput';
-import TimeBox from 'components/ControlBar/TimeBox';
+// import TimeBox from 'components/ControlBar/TimeBox';
+import MIDIDeviceSelector from 'components/ControlBar/MIDIDeviceSelector';
+import { isNullOrUndefined } from 'engine/Utils';
 
 class ControlBar extends React.Component {
     constructor(props) {
@@ -95,36 +97,53 @@ class ControlBar extends React.Component {
         this.setState(() => { return { tempBitsInComposition: bitsInComposition }; });
     }
 
+    getMIDIDeviceSelectorDropDownTitle() {
+        console.log(this.props.controlState.midiController.MIDISupported)
+        if (this.props.controlState.midiController.MIDISupported) {
+            if (this.props.controlState.midiController.devices.input.length > 0) {
+                if (isNullOrUndefined(this.props.controlState.selectedInputDevice)){
+                    return 'Choose a MIDI device'
+                } else {
+                    this.props.controlState.selectedInputDevice.name;
+                }
+            } else {
+                return 'No devices detected!';
+            }
+        } else {
+            return 'Web MIDI Api not supported';
+        }
+    }
+
+    handleDeviceChange(){
+
+    }
+
     render() {
         return (
-            <Col xs={12} className="nopadding infoBar">
-                <Col xs={3}>
-                    BPM:
-                        <BPMInput changeBPM={this.handleBPMChange.bind(this)} changeTempBPM={this.handleTempBPMChange.bind(this)} BPM={this.state.tempBPM} />
-                </Col>
-                <Col xs={3}>
-                    <ToolDropdown id={'leftClickTools'} onToolChange={this.handleToolChange.bind(this)} />
-                    <NoteDrawLengthDropdown id={'noteDrawLength'} isVisible={this.props.showPianoRoll} onNoteDrawLengthChange={this.handleNoteDrawLengthChange.bind(this)} />
-                    <RegionDrawLengthInput id={'regionDrawLength'} isVisible={!this.props.showPianoRoll}
-                        regionDrawLength={this.state.tempRegionDrawLength} onRegionDrawLengthChange={this.handleRegionDrawLengthChange.bind(this)}
-                        onTempRegionDrawLengthChange={this.handleTempRegionDrawLengthChange.bind(this)}
-                    />
-                    <BitsInCompositionInput id={'birsInComposition'} onBitsInCompositionChange={this.handleBitsInCompositionChange.bind(this)}
-                        onTempBitsInCompositionChange={this.handleTempBitsInComposition.bind(this)} bitsInComposition={this.state.tempBitsInComposition}
-                    />
+            <Col xs={12} className="controlBar">
+                <BPMInput changeBPM={this.handleBPMChange.bind(this)} changeTempBPM={this.handleTempBPMChange.bind(this)} BPM={this.state.tempBPM} />
+                <ToolDropdown id={'leftClickTools'} onToolChange={this.handleToolChange.bind(this)} />
+                <NoteDrawLengthDropdown id={'noteDrawLength'} isVisible={this.props.showPianoRoll} onNoteDrawLengthChange={this.handleNoteDrawLengthChange.bind(this)} />
+                <RegionDrawLengthInput id={'regionDrawLength'} isVisible={!this.props.showPianoRoll}
+                    regionDrawLength={this.state.tempRegionDrawLength} onRegionDrawLengthChange={this.handleRegionDrawLengthChange.bind(this)}
+                    onTempRegionDrawLengthChange={this.handleTempRegionDrawLengthChange.bind(this)}
+                />
+                <BitsInCompositionInput id={'bitsInComposition'} onBitsInCompositionChange={this.handleBitsInCompositionChange.bind(this)}
+                    onTempBitsInCompositionChange={this.handleTempBitsInComposition.bind(this)} bitsInComposition={this.state.tempBitsInComposition}
+                />
+                <MIDIDeviceSelector
+                        devices={this.props.controlState.midiController.devices.input}
+                        dropDownTitle={this.getMIDIDeviceSelectorDropDownTitle()}
+                        onDeviceChange={this.handleDeviceChange.bind(this)}
+                />
+                <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play" /></Button>
+                <Button onClick={this.handlePause.bind(this)}><Glyphicon glyph="pause" /></Button>
+                <Button onClick={this.handleStop.bind(this)}><Glyphicon glyph="stop" /></Button>
+                *Time Signature: 4/4* <br />
+                *currenttime={this.props.controlState.sixteenthNotePlaying * 0.25 * (60 / this.props.controlState.BPM)}*
+                *current note playing: {this.props.controlState.sixteenthNotePlaying}*
+                TimeBox ms={this.props.controlState.sixteenthNotePlaying * 0.25 * (60 / this.props.controlState.BPM)} />
 
-                </Col>
-                <center>
-                    <p>
-                        <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play" /></Button>
-                        <Button onClick={this.handlePause.bind(this)}><Glyphicon glyph="pause" /></Button>
-                        <Button onClick={this.handleStop.bind(this)}><Glyphicon glyph="stop" /></Button>
-                        *Time Signature: 4/4* <br />
-                        *currenttime={this.props.controlState.sixteenthNotePlaying * 0.25 * (60 / this.props.controlState.BPM)}*
-                        *current note playing: {this.props.controlState.sixteenthNotePlaying}*
-                        <TimeBox ms={this.props.controlState.sixteenthNotePlaying * 0.25 * (60 / this.props.controlState.BPM)}/>
-                    </p>
-                </center>
             </Col>
         );
     }

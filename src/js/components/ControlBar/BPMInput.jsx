@@ -16,7 +16,12 @@ const BPMInput = (props) => {
     }
 
     return (
-        <FormControl value={props.BPM} onChange={_handleChange} onKeyDown={_handleKeyPress} onBlur={props.changeBPM} />
+        <div className="formControlBPM">
+            <p>
+                BPM:
+            </p>
+            <FormControl value={props.BPM} onChange={_handleChange} onKeyDown={_handleKeyPress} onBlur={props.changeBPM} />
+        </div>
     )
 }
 export default BPMInput;

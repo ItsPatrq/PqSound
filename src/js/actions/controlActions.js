@@ -38,3 +38,10 @@ export function updateCurrentTime(newSixteenthNotePlaying){
         payload: newSixteenthNotePlaying
     }
 }
+
+export function updateMidiController(midiController){
+    return {
+        type: 'UPDATE_MIDI_CONTROLLER',
+        payload: midiController
+    }
+}

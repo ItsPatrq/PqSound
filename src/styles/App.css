@@ -46,12 +46,6 @@ body {
   overflow: hidden;
 }
 
-.infoBar {
-  height: 50px;
-  background: rgb(129, 129, 129);
-  overflow: visible;
-}
-
 .regionDrawLengthInput {
   max-width: 50px;
   display: inline-block;

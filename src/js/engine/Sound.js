@@ -3,6 +3,7 @@ import * as Utils from 'engine/Utils';
 
 export default class Sound {
   constructor(newContext) {
+    console.log('sound constructor')
     this.context = newContext;
     this.playingSounds = [[], [], []]; // trackindex, note, origin, endindex
   }

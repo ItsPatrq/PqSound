@@ -16,7 +16,10 @@ const BitsInCompositionInput = (props) => {
     }
 
     return (
-        <FormControl value={props.bitsInComposition} onChange={_handleChange} onKeyDown={_handleKeyPress} onBlur={props.onBitsInCompositionChange} />
+        <div className="formControlBitsInComposition">
+            <p>Bits in composition:</p>
+            <FormControl value={props.bitsInComposition} onChange={_handleChange} onKeyDown={_handleKeyPress} onBlur={props.onBitsInCompositionChange} />
+        </div>
     )
 }
 export default BitsInCompositionInput;
