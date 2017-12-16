@@ -1,20 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Glyphicon } from 'react-bootstrap';
-import Track from 'components/Track';
+import Track from 'components/TrackList/Track';
 import * as trackListActions from 'actions/trackListActions';
 import * as compositionActions from 'actions/compositionActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
+import AddNewTrackModal from '../components/TrackList/AddNewTrackModal';
 
 class TrackList extends React.Component {
     constructor() {
         super();
     }
 
-    addTrack() {
-        this.props.dispatch(trackListActions.addTrack());
-        this.props.dispatch(trackListActions.initTrackSound())
+    addTrack(trackType) {
+        this.props.dispatch(trackListActions.addTrack(trackType));
     }
 
     removeTrack(index) {
@@ -27,6 +27,14 @@ class TrackList extends React.Component {
     handleRecordClick(index) {
         this.props.dispatch(trackListActions.changeRecordState(index));
         this.shouldFetchSamplerInstrument(index);
+    }
+
+    handleSoloButtonClicked(index) {
+        this.props.dispatch(trackListActions.changeSoloState(index));
+    }
+
+    handleMuteButtonClicked(index) {
+        this.props.dispatch(trackListActions.changeMuteState(index));
     }
 
     handleTrackNameChange(event, trackIndex){
@@ -55,6 +63,11 @@ class TrackList extends React.Component {
         }
     }
 
+    handleSwitchModalVisibility() {
+        this.props.dispatch(trackListActions.addNewTrackModalVisibilitySwitch());
+
+    }
+
     render() {
         let renderTrackList = new Array;
         /**
@@ -66,7 +79,9 @@ class TrackList extends React.Component {
                     trackDetails={this.props.trackList[i]}
                     handleRowClicked={this.changeSelectedTrack.bind(this)}
                     handleRemove={this.removeTrack.bind(this)}
-                    handleRecord={this.handleRecordClick.bind(this)}
+                    onRecordButtonClicked={this.handleRecordClick.bind(this)}
+                    onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
+                    onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
                     handleTrackNameChange={this.handleTrackNameChange.bind(this)}
                     selected={this.props.selected}
                 />
@@ -74,8 +89,13 @@ class TrackList extends React.Component {
         }
         return (
             <div className=" trackList">
-                <Button block={true} className="btn-block" bsStyle="primary" onClick={this.addTrack.bind(this)}><Glyphicon glyph="plus" /></Button>
+                <Button block={true} className="btn-block" bsStyle="primary" onClick={this.handleSwitchModalVisibility.bind(this)}><Glyphicon glyph="plus" /></Button>
                 {renderTrackList}
+                <AddNewTrackModal
+                    showModal={this.props.showModal}
+                    modalVisibilitySwitch={this.handleSwitchModalVisibility.bind(this)}
+                    onAddNewTrack={this.addTrack.bind(this)}
+                />
             </div>
         );
     }
@@ -91,7 +111,8 @@ const mapStateToProps = (state) => {
         trackList: state.tracks.trackList,
         selected: state.tracks.selected,
         samplerInstruments: samplerInstruments,
-        fetching: state.webAudio.fetching
+        fetching: state.webAudio.fetching,
+        showModal: state.tracks.showAddNewTrackModal
     }
 }
 

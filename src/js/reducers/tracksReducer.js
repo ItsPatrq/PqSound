@@ -32,21 +32,22 @@ export default function reducer(state = {
             output: 0,
             trackNode: new Track(1.0, 0)
         }],
-    selected: 1
+    selected: 1,
+    showAddNewTrackModal: false
 }, action) {
     switch (action.type) {
         case 'ADD_TRACK': {
             let newTrackList = [...state.trackList];
-            if (Utils.isNullUndefinedOrEmpty(action.payload)) {
                 newTrackList.push(
                     {
                         name: 'Default',
-                        trackType: TrackTypes.virtualInstrument,
-                        instrument: new Sampler(SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id)),
+                        trackType: action.payload.trackType,
+                        instrument: action.payload.trackType === TrackTypes.virtualInstrument ?
+                            new Sampler(SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id)) : null,
                         pluginList: new Array,
                         volume: 1.0,
                         pan: 0,
-                        record: false,
+                        record: action.payload.trackType === TrackTypes.virtualInstrument ? false : null,
                         mute: false,
                         solo: false,
                         index: state.trackList.length,
@@ -54,9 +55,7 @@ export default function reducer(state = {
                         trackNode: new Track(1.0, 0)
                     }
                 );
-            } else {
-                newTrackList.push(action.payload);
-            }
+
             return {
                 ...state,
                 trackList: newTrackList
@@ -88,6 +87,30 @@ export default function reducer(state = {
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
                     newTrackList[i].record = !newTrackList[i].record;
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
+        case 'CHANGE_TRACK_SOLO_STATE': {
+            let newTrackList = [...state.trackList];
+            for (let i = 0; i < newTrackList.length; i++) {
+                if (newTrackList[i].index === action.payload) {
+                    newTrackList[i].solo = !newTrackList[i].solo;
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
+        case 'CHANGE_TRACK_MUTE_STATE': {
+            let newTrackList = [...state.trackList];
+            for (let i = 0; i < newTrackList.length; i++) {
+                if (newTrackList[i].index === action.payload) {
+                    newTrackList[i].mute = !newTrackList[i].mute;
                 }
             }
             return {
@@ -185,6 +208,25 @@ export default function reducer(state = {
             return {
                 ...state,
                 trackList: newTrackList
+            }
+        }
+        case 'CHANGE_TRACK_OUTPUT':{
+            let newTrackList = [...state.trackList];
+            for(let i = 0; i < newTrackList.length; i++){
+                if(newTrackList[i].index === action.payload.index) {
+                    newTrackList[i].output = action.payload.outputIndex;
+                    break;
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
+        case 'ADD_NEW_TRACK_MODAL_VISIBILITY_SWITCH':{
+            return {
+                ...state,
+                showAddNewTrackModal: !state.showAddNewTrackModal
             }
         }
     }

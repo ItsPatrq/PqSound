@@ -6,11 +6,13 @@ import PanKnob from 'components/TrackDetails/PanKnob';
 import InstrumentInput from 'components/TrackDetails/InstrumentInput';
 import PluginsList from 'components/TrackDetails/PluginsList';
 import TrackName from 'components/TrackDetails/TrackName';
+import Output from 'components/TrackDetails/Output';
 import SoloMuteButtons from 'components/TrackDetails/SoloMuteButtons';
 import * as Actions from 'actions/trackDetailsActions';
-import { changeTrackPreset, changeTrackVolume, changeTrackInstrument } from 'actions/trackListActions';
+import { changeTrackPreset, changeTrackVolume, changeTrackInstrument, changeTrackOutput, changeSoloState, changeMuteState } from 'actions/trackListActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
+import { TrackTypes } from 'constants/Constants';
 
 class TrackDetails extends React.Component {
     constructor() {
@@ -60,53 +62,124 @@ class TrackDetails extends React.Component {
     }
 
     handleInstrumentChange(instrumentId) {
-        if(instrumentId !== this.getTrackInstrument(this.props.selected).id){
+        if (instrumentId !== this.getTrackInstrument(this.props.selected).id) {
             this.props.dispatch(changeTrackInstrument(instrumentId, this.props.selected));
         }
     }
 
     onVolumeChange(index, newVolume) {
         let parsedNewVolume = parseInt(newVolume) / parseInt(100);
-        if(!parsedNewVolume){
+        if (!parsedNewVolume) {
             parsedNewVolume = 0.0001;
         }
         this.props.dispatch(changeTrackVolume(index, parsedNewVolume));
     }
 
+    getAllAvailableAuxTracks() {
+        let auxTrackList = new Array;
+        for (let i = 0; i < this.props.trackList.length; i++) {
+            if (this.props.trackList[i].trackType === TrackTypes.aux &&
+                this.props.trackList[i].index !== this.props.selected) {
+                auxTrackList.push(this.props.trackList[i])
+            }
+        }
+        return auxTrackList;
+    }
+
+    getOutputName(trackIndex) {
+        for (let i = 0; i < this.props.trackList.length; i++) {
+            if (this.props.trackList[i].index === trackIndex) {
+                return this.props.trackList[i].name;
+            }
+        }
+    }
+
+    handleOutputChange(outputIndex) {
+        if (Utils.getTrackByIndex(this.props.trackList, this.props.selected).output !== outputIndex) {
+            this.props.dispatch(changeTrackOutput(this.props.selected, outputIndex));
+        }
+    }
+
+    handleSoloButtonClicked(index) {
+        this.props.dispatch(changeSoloState(index));
+    }
+
+    handleMuteButtonClicked(index) {
+        this.props.dispatch(changeMuteState(index));
+    }
+
+    getTypeNameByTrackId(trackId) {
+        switch (Utils.getTrackByIndex(this.props.trackList, trackId).trackType) {
+            case TrackTypes.virtualInstrument: {
+                return 'Virtual Instrument';
+            }
+            case TrackTypes.aux: {
+                return 'AUX';
+            }
+        }
+    }
+
     render() {
         if (!!this.props.selected) {
+            let instrumentComponent;
+            if (Utils.getTrackByIndex(this.props.trackList, this.props.selected).trackType === TrackTypes.virtualInstrument) {
+                instrumentComponent =
+                    <InstrumentInput
+                        instrumentModalVisibilitySwitch={this.instrumentModalVisibilitySwitch.bind(this)}
+                        showModal={this.props.trackDetails.showInstrumentModal}
+                        selectedTrack={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
+                        onSamplerPresetChange={this.handleSamplerPresetChange.bind(this)}
+                        onInstrumentChange={this.handleInstrumentChange.bind(this)}
+                    />;
+            } else {
+                instrumentComponent =
+                    <ButtonToolbar className="instrumentInput">
+                        <p>Track type: {this.getTypeNameByTrackId(this.props.selected)}</p>
+                    </ButtonToolbar>;
+            }
             return (
                 <div>
                     <Col xs={6} className="trackDetails">
-                        <InstrumentInput
-                            instrumentModalVisibilitySwitch={this.instrumentModalVisibilitySwitch.bind(this)}
-                            showModal={this.props.trackDetails.showInstrumentModal}
-                            selectedTrack={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
-                            onSamplerPresetChange={this.handleSamplerPresetChange.bind(this)}
-                            onInstrumentChange={this.handleInstrumentChange.bind(this)}
-                        />
+                        {instrumentComponent}
                         <PluginsList />
+                        <Output
+                            auxTracks={this.getAllAvailableAuxTracks()}
+                            dropDownTitle={this.getOutputName(Utils.getTrackByIndex(this.props.trackList, this.props.selected).output)}
+                            onOutputChange={this.handleOutputChange.bind(this)}
+                        />
                         <PanKnob />
                         <VolumeSlider
                             volume={Utils.getTrackByIndex(this.props.trackList, this.props.selected).volume}
                             onVolumeChange={this.onVolumeChange.bind(this)}
                             trackIndex={this.props.selected}
                         />
-                        <SoloMuteButtons />
+                        <SoloMuteButtons
+                            trackDetails={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
+                            onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
+                            onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
+                        />
                         <TrackName name={this.getTrackName(this.props.selected)} />
                     </Col>
                     <Col xs={6} className="trackDetails">
                         <ButtonToolbar className="instrumentInput">
-                            <p>wolna przestrzeń ;c </p>
+                            <p>Track type: {this.getTypeNameByTrackId(0)}</p>
                         </ButtonToolbar>
                         <PluginsList />
+                        <Output
+                            auxTracks={[]}
+                            dropDownTitle="Stereo out"
+                        />
                         <PanKnob />
                         <VolumeSlider
                             volume={Utils.getTrackByIndex(this.props.trackList, 0).volume}
                             onVolumeChange={this.onVolumeChange.bind(this)}
                             trackIndex={0}
                         />
-                        <SoloMuteButtons />
+                        <SoloMuteButtons
+                            trackDetails={Utils.getTrackByIndex(this.props.trackList, 0)}
+                            onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
+                            onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
+                        />
                         <TrackName name={this.getTrackName(0)} />
                     </Col>
                 </div>
@@ -120,12 +193,16 @@ class TrackDetails extends React.Component {
                     </Col>
                     <Col xs={6} className="trackDetails">
                         <ButtonToolbar className="instrumentInput">
-                            <p>wolna przestrzeń ;c </p>
+                            <p>{this.getTypeNameByTrackId(0)}</p>
                         </ButtonToolbar>
                         <PluginsList />
                         <PanKnob />
                         <VolumeSlider />
-                        <SoloMuteButtons />
+                        <SoloMuteButtons
+                            trackDetails={Utils.getTrackByIndex(this.props.trackList, 0)}
+                            onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
+                            onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
+                        />
                         <TrackName name={this.getTrackName(0)} />
                     </Col>
                 </div>

@@ -13,12 +13,23 @@ const Track = (props) => {
             return 'trackRow'
         }
     }
-    let buttonrecord;
+    let buttonRecord, buttonSolo, buttonMute;
     if(props.trackDetails.record){
-        buttonrecord = <Button bsSize="xsmall" bsStyle="danger" onClick={() => props.handleRecord(props.trackDetails.index)}>R</Button>;
+        buttonRecord = <Button bsSize="xsmall" bsStyle="danger" onClick={() => props.onRecordButtonClicked(props.trackDetails.index)}>R</Button>;
     } else {
-        buttonrecord = <Button bsSize="xsmall" onClick={() => props.handleRecord(props.trackDetails.index)}>R</Button>;
+        buttonRecord = <Button bsSize="xsmall" onClick={() => props.onRecordButtonClicked(props.trackDetails.index)}>R</Button>;
     }
+    if(props.trackDetails.solo){
+        buttonSolo = <Button bsSize="xsmall" bsStyle="warning" onClick={() => props.onSoloButtonClicked(props.trackDetails.index)}>S</Button>;
+    } else {
+        buttonSolo = <Button bsSize="xsmall" onClick={() => props.onSoloButtonClicked(props.trackDetails.index)}>S</Button>;
+    }
+    if(props.trackDetails.mute){
+        buttonMute = <Button bsSize="xsmall" bsStyle="info" onClick={() => props.onMuteButtonClicked(props.trackDetails.index)}>M</Button>;
+    } else {
+        buttonMute = <Button bsSize="xsmall" onClick={() => props.onMuteButtonClicked(props.trackDetails.index)}>M</Button>;
+    }
+    //TODO: text input not triggering piano
     return (
         <Row className={getTrackRowClassName()} onClick={() => props.handleRowClicked(props.trackDetails.index)}>
             <Col xs={2}>
@@ -29,9 +40,9 @@ const Track = (props) => {
             </Col>
             <Col xs={8}>
                 <ButtonGroup>
-                    <Button bsSize="xsmall">S</Button>
-                    <Button bsSize="xsmall">M</Button>
-                    {buttonrecord}
+                    {buttonSolo}
+                    {buttonMute}
+                    {buttonRecord}
                 </ButtonGroup>
                 <FormControl value={props.trackDetails.name} onChange={handleTrackNameChange}/>
                 <Button bsSize="xsmall"><Glyphicon glyph="remove" onClick={() => props.handleRemove(props.trackDetails.index)}/></Button>

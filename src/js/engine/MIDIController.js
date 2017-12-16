@@ -71,7 +71,7 @@ class MIDIController {
 
     onMidiStateChange = (e) => {
         // Print information about the (dis)connected MIDI controller
-        console.log('MIDI state changed', e.port.name, e.port.manufacturer, e.port.state);
+        //console.log('MIDI state changed', e.port.name, e.port.manufacturer, e.port.state);
         this.updateDevices();
     };
 

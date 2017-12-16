@@ -1,7 +1,9 @@
-export function addTrack(track) {
+export function addTrack(newTrackType) {
     return{
         type: 'ADD_TRACK',
-        payload: track
+        payload: {
+            trackType: newTrackType
+        }
     }
 }
 
@@ -78,5 +80,35 @@ export function changeTrackInstrument(newTrackInstrumentId, newIndex){
             index: newIndex,
             trackInstrumentId: newTrackInstrumentId
         }
+    }
+}
+
+export function changeTrackOutput(newIndex, newOutputIndex){
+    return {
+        type: 'CHANGE_TRACK_OUTPUT',
+        payload: {
+            index: newIndex,
+            outputIndex: newOutputIndex
+        }
+    }
+}
+
+export function addNewTrackModalVisibilitySwitch() {
+    return {
+        type: 'ADD_NEW_TRACK_MODAL_VISIBILITY_SWITCH'
+    }
+}
+
+export function changeSoloState(index) {
+    return {
+        type: 'CHANGE_TRACK_SOLO_STATE',
+        payload: index
+    }
+}
+
+export function changeMuteState(index) {
+    return {
+        type: 'CHANGE_TRACK_MUTE_STATE',
+        payload: index
     }
 }

@@ -18,3 +18,20 @@
 .trackRow.selected {
     background-color: #607D8B;
 }
+
+.trackTypeSelectDiv {
+    display: inline-flex;
+    margin-left: 0px;
+    align-content: flex-start;
+    width: 270px;
+}
+
+.trackTypeItemDiv {
+    width: 135px;
+    height: 50px;
+    font-size: 15px;
+    border-style: solid;
+    border-width: thin;
+    border-color: #212121;
+
+}

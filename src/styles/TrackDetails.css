@@ -24,7 +24,7 @@
 
 .pluginList{
     width: 100%;
-    height: calc(100% - 305.5px) ;
+    height: calc(100% - 335px) ;
     border-style: solid;
     border-width: thin;
     border-color: #212121;
@@ -46,6 +46,7 @@
     white-space: nowrap;
     width: 100%;
     padding: 0;
+    margin-left: 0px;
 }
 
 .panKnob{
@@ -59,4 +60,12 @@
 
 .instrumentModal{
     color: black;
+}
+
+.output {
+    background-color: rgb(82, 97, 102);    
+    display: inline-flex;
+    margin-left: 0px;
+    align-content: flex-start;
+    width: 100%;
 }
