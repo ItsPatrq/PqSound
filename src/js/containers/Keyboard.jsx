@@ -312,10 +312,11 @@ class Keyboard extends React.Component {
         event.preventDefault();
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
-        if (event.buttons == 1) {
+        if (event.buttons == 1 &&  //leftClick
+            !this.props.keyboard.notesPlaying.includes(note)) {
             let recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
-                this.props.sound.play(recordingTracksSounds[i], null, note, SoundOrigin.pianoRollNote)
+                this.props.sound.play(recordingTracksSounds[i], null, note, SoundOrigin.keyboard)
             }
             this.props.dispatch(Actions.addPlayingNote(note))
         }
@@ -349,7 +350,7 @@ class Keyboard extends React.Component {
             !this.props.keyboard.notesPlaying.includes(this.props.keyboard.keyBindings[note].MIDINote)) {
             let recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
-                this.props.sound.play(recordingTracksSounds[i], null, this.props.keyboard.keyBindings[note].MIDINote, SoundOrigin.pianoRollNote)
+                this.props.sound.play(recordingTracksSounds[i], null, this.props.keyboard.keyBindings[note].MIDINote, SoundOrigin.keyboard)
             }
             this.props.dispatch(Actions.addPlayingNote(this.props.keyboard.keyBindings[note].MIDINote))
         }

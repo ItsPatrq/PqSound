@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Button, Glyphicon } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Sequencer from 'engine/Sequencer';
-import * as actions from 'actions/controlActions';
+import * as Actions from 'actions/controlActions';
 import { changeBitsInComposition } from 'actions/compositionActions';
 import BPMInput from 'components/ControlBar/BPMInput';
 import ToolDropdown from 'components/ControlBar/ToolDropdown';
@@ -27,21 +27,21 @@ class ControlBar extends React.Component {
 
     handlePlay() {
         if (!this.props.controlState.playing) {
-            this.props.dispatch(actions.switchPlayState());
+            this.props.dispatch(Actions.switchPlayState());
             this.sequencer.handlePlay();
         }
     }
 
     handleStop() {
         if (this.props.controlState.playing) {
-            this.props.dispatch(actions.switchPlayState());
+            this.props.dispatch(Actions.switchPlayState());
         }
         this.sequencer.handleStop();
     }
 
     handlePause() {
         if (this.props.controlState.playing) {
-            this.props.dispatch(actions.switchPlayState());
+            this.props.dispatch(Actions.switchPlayState());
             this.sequencer.handlePause();
         }
     }
@@ -53,7 +53,7 @@ class ControlBar extends React.Component {
     handleBPMChange() {
         if (this.state.tempBPM >= this.props.controlState.minBPM && this.state.tempBPM <= this.props.controlState.maxBPM &&
             this.state.tempBPM !== this.props.controlState.BPM) {
-            this.props.dispatch(actions.changeBPM(this.state.tempBPM));
+            this.props.dispatch(Actions.changeBPM(this.state.tempBPM));
         } else {
             this.setState(() => { return { tempBPM: this.props.controlState.BPM }; });
         }
@@ -61,19 +61,19 @@ class ControlBar extends React.Component {
 
     handleToolChange(tool) {
         if (tool !== this.props.controlState.tool)
-            this.props.dispatch(actions.changeTool(tool));
+            this.props.dispatch(Actions.changeTool(tool));
     }
 
     handleNoteDrawLengthChange(length) {
         if (length !== this.props.controlState.noteDrawLength) {
-            this.props.dispatch(actions.changeNoteDrawLength(length));
+            this.props.dispatch(Actions.changeNoteDrawLength(length));
         }
     }
 
     handleRegionDrawLengthChange() {
         if (this.state.tempRegionDrawLength >= 1 && this.state.tempRegionDrawLength <= this.props.controlState.maxRegionDrawLength &&
             this.state.tempRegionDrawLength !== this.props.controlState.regionDrawLength) {
-            this.props.dispatch(actions.changeRegionDrawLength(this.state.tempRegionDrawLength));
+            this.props.dispatch(Actions.changeRegionDrawLength(this.state.tempRegionDrawLength));
         } else {
             this.setState(() => { return { tempRegionDrawLength: this.props.controlState.regionDrawLength }; });
         }
@@ -98,24 +98,27 @@ class ControlBar extends React.Component {
     }
 
     getMIDIDeviceSelectorDropDownTitle() {
-        console.log(this.props.controlState.midiController.MIDISupported)
         if (this.props.controlState.midiController.MIDISupported) {
             if (this.props.controlState.midiController.devices.input.length > 0) {
-                if (isNullOrUndefined(this.props.controlState.selectedInputDevice)){
+                if (isNullOrUndefined(this.props.controlState.midiController.selectedInputDevice)){
                     return 'Choose a MIDI device'
                 } else {
-                    this.props.controlState.selectedInputDevice.name;
+                    return this.props.controlState.midiController.selectedInputDevice.name;
                 }
             } else {
-                return 'No devices detected!';
+                return 'No devices detected';
             }
         } else {
             return 'Web MIDI Api not supported';
         }
     }
 
-    handleDeviceChange(){
-
+    handleDeviceChange(deviceId){
+        if( !(deviceId === null && isNullOrUndefined(this.props.controlState.midiController.selectedInputDevice)) &&
+            (isNullOrUndefined(this.props.controlState.midiController.selectedInputDevice) ||
+            deviceId !== this.props.controlState.midiController.selectedInputDevice.id)){
+                this.props.dispatch(Actions.changeMidiDevice(deviceId));
+        }
     }
 
     render() {

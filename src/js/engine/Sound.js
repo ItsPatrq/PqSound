@@ -3,7 +3,6 @@ import * as Utils from 'engine/Utils';
 
 export default class Sound {
   constructor(newContext) {
-    console.log('sound constructor')
     this.context = newContext;
     this.playingSounds = [[], [], []]; // trackindex, note, origin, endindex
   }
@@ -45,7 +44,6 @@ export default class Sound {
     if (Utils.isNullOrUndefined(contextStopTime)) {
       contextStopTime = this.context.currentTime + 0.001;
     }
-    console.log(trackIndex, note, contextStopTime)
     let currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
     currTrack.instrument.noteOff(note, contextStopTime);
   }

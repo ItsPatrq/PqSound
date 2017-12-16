@@ -12,9 +12,7 @@ export default function reducer(state = {
     regionDrawLength: 2,
     maxRegionDrawLength: 16,
     sixteenthNotePlaying: 0,
-    midiController: new MIDIController(),
-    selectedInputDevice: null,
-    selectedOutputDevice: null
+    midiController: new MIDIController()
 }, action) {
     switch (action.type) {
         case 'SWITCH_PLAY_STATE': {
@@ -57,6 +55,12 @@ export default function reducer(state = {
             return {
                 ...state,
                 midiController: action.payload
+            }
+        }
+        case 'CHANGE_MIDI_DEVICE':{
+            return {
+                ...state,
+                midiController: state.midiController.changeMidiDevice(action.payload)
             }
         }
     }

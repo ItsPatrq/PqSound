@@ -45,3 +45,10 @@ export function updateMidiController(midiController){
         payload: midiController
     }
 }
+
+export function changeMidiDevice(deviceId){
+    return {
+        type: 'CHANGE_MIDI_DEVICE',
+        payload: deviceId
+    }
+}

@@ -3,6 +3,15 @@ import { MenuItem, DropdownButton } from 'react-bootstrap';
 
 const MIDIDeviceSelector = (props) => {
     let availableDevices = new Array;
+    availableDevices.push(
+        <MenuItem
+            key='selectNoneMidiDevice'
+            eventKey='selectNoneMidiDevice'
+            onClick={() => { props.onDeviceChange(null) }}
+        >
+            None
+        </MenuItem>
+    )
     let isEnabled = props.devices.length > 0;
     for (let i = 0; i < props.devices.length; i++) {
         availableDevices.push(
