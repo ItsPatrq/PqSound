@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Col, Row, Button, ButtonGroup, Glyphicon, FormControl } from 'react-bootstrap';
+import { TrackTypes } from 'constants/Constants';
 
 const Track = (props) => {
     let handleTrackNameChange = (event) => {
@@ -14,10 +15,14 @@ const Track = (props) => {
         }
     }
     let buttonRecord, buttonSolo, buttonMute;
-    if(props.trackDetails.record){
-        buttonRecord = <Button bsSize="xsmall" bsStyle="danger" onClick={() => props.onRecordButtonClicked(props.trackDetails.index)}>R</Button>;
+    if(props.trackDetails.trackType !== TrackTypes.aux){
+        if(props.trackDetails.record){
+            buttonRecord = <Button bsSize="xsmall" bsStyle="danger" onClick={() => props.onRecordButtonClicked(props.trackDetails.index)}>R</Button>;
+        } else {
+            buttonRecord = <Button bsSize="xsmall" onClick={() => props.onRecordButtonClicked(props.trackDetails.index)}>R</Button>;
+        }
     } else {
-        buttonRecord = <Button bsSize="xsmall" onClick={() => props.onRecordButtonClicked(props.trackDetails.index)}>R</Button>;
+        buttonRecord = null;
     }
     if(props.trackDetails.solo){
         buttonSolo = <Button bsSize="xsmall" bsStyle="warning" onClick={() => props.onSoloButtonClicked(props.trackDetails.index)}>S</Button>;

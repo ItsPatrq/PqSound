@@ -1,6 +1,7 @@
 import React from 'react';
 import {Modal, Button} from 'react-bootstrap';
 import SamplerComponent from 'components/Instruments/Sampler';
+import MonotronComponent from 'components/Instruments/Monotron';
 
 const InstrumentModal = (props) => {
     let modalHeader = 'Track name: ' + props.track.name + ', instrument: ' + props.track.instrument.name;
@@ -12,6 +13,13 @@ const InstrumentModal = (props) => {
           onPresetChange={props.onSamplerPresetChange}
           />
             break;
+        }
+        case 'Monotron': {
+          modalBody = <MonotronComponent
+          instrument={props.track.instrument}
+          trackIndex={props.track.index}
+          />
+          break;
         }
     }
     return (
@@ -32,6 +40,7 @@ const InstrumentModal = (props) => {
             <Button onClick={() => props.modalVisibilitySwitch()}>Close</Button>
           </Modal.Footer>
         </Modal>
+        
     );
 }
 

@@ -112,3 +112,13 @@ export function changeMuteState(index) {
         payload: index
     }
 }
+
+export function updateInstrumentPreset(newPreset, newTrackIndex){
+    return {
+        type: 'UPDATE_INSTRUMENT_PRESET',
+        payload: {
+            index: newTrackIndex,
+            preset: newPreset
+        }
+    }
+}

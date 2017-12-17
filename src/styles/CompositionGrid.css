@@ -30,6 +30,17 @@
     border-color: #212121;
 }
 
+.auxTrackCompositionRow {
+    height: 50px;
+    width: fit-content;    
+    background-color: #3a3a3a;
+    white-space: nowrap;
+    border-style: solid;
+    border-top-width: thin;
+    border-bottom-width: thin;
+    border-color: #212121;
+}
+
 .trackCompositionBit {
     height: 50px;
     width: 25px;

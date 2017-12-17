@@ -229,6 +229,19 @@ export default function reducer(state = {
                 showAddNewTrackModal: !state.showAddNewTrackModal
             }
         }
+        case 'UPDATE_INSTRUMENT_PRESET':{
+            let newTrackList = [...state.trackList];
+            for(let i = 0; i < newTrackList.length; i++){
+                if(newTrackList[i].index === action.payload.index) {
+                    newTrackList[i].instrument.preset = action.payload.preset;
+                    break;
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
     }
     return state;
 }

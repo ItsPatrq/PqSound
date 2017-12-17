@@ -1,0 +1,130 @@
+#monotron {
+  background-color: #212121;
+  border-left: 1rem solid #eaeeef;
+  border-right: 1rem solid #eaeeef;
+  border-radius: 0.38196601065988556rem;
+  padding: 1.61803399rem;
+  font-family: "Source Sans Pro", Arial, sans-serif;
+  color: #eaeeef;
+  width: 40rem;
+  margin: auto;
+}
+
+#monotron h1,
+h2,
+h3 {
+  font-family: "Audiowide", Arial, sans-serif;
+  margin: 0;
+  font-weight: normal;
+  display: block;
+  font-size: 1.5em;
+  
+}
+
+#brand {
+  margin-bottom: 1.61803399rem;
+}
+
+#title {
+  font-size: 2.6180339927953202rem;
+  text-transform: lowercase;
+  letter-spacing: 0.05em;
+}
+
+#description {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+#controls {
+  display: "-webkit-flex";
+  display: "-ms-flexbox";
+  display: "-ms-flex";
+  display: flex;
+}
+
+#controls .panel {
+  background-color: #212121;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+#controls h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-family: "Audiowide", Arial, sans-serif;
+  font-weight: normal;
+  display: block;
+  font-size: 1.5em;
+}
+
+#controls label {
+  text-transform: lowercase;
+  font-weight: bold;
+}
+
+#controls .knobs {
+  display: "-webkit-flex";
+  display: "-ms-flexbox";
+  display: "-ms-flex";
+  display: flex;
+}
+
+#controls .knobs>.knob {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  text-align: center;
+}
+
+#controls .knobs>.knob>div {
+  text-align: center;
+  width: 100% !important;
+  margin-bottom: 1rem;
+}
+
+#controls .panel:first-child {
+  display: "-webkit-flex";
+  display: "-ms-flexbox";
+  display: "-ms-flex";
+  display: flex;
+  -webkit-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: flex-end;
+  -ms-align-items: flex-end;
+  align-items: flex-end;
+  border-right-color: white;
+}
+
+#controls .panel .radio:first-child {
+  margin-top: auto;
+}
+
+#controls .panel .radio label {
+  padding: 0;
+}
+
+#controls .panel:first-child select {
+  margin-bottom: 1rem;
+  color: #212121;
+}
+
+.p2 {
+  stroke: none;
+  fill: white;
+  stroke-width: .1;
+}
+
+.p2 path:first-child {
+  fill: #141414;
+}
+
+.p2 rect {
+  fill: white;
+}

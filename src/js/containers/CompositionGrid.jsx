@@ -101,6 +101,7 @@ class CompositionGrid extends React.Component {
                     bits={this.props.composition.bitsInComposition}
                     key={this.props.trackList[i].index}
                     trackIndex={this.props.trackList[i].index}
+                    trackType={this.props.trackList[i].trackType}
                     onEmptyBitClick={this.handleEmptyBitClicked.bind(this)}
                     onRegionClick={this.handleRegionClicked.bind(this)}
                 />)

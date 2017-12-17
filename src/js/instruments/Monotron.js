@@ -1,9 +1,10 @@
 import Store from '../stroe';
 import { Instruments, defaultKeysNames } from 'constants/Constants';
 import { isNullOrUndefined, noteToFrequency, MIDIToNote } from 'engine/Utils';
+import {updateInstrumentPreset} from 'actions/trackListActions';
 
 class MonotronVoise {
-    constructor(frequency, startTime) {
+    constructor(frequency, startTime, preset) {
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
             this.frequency = frequency;
@@ -16,12 +17,20 @@ class MonotronVoise {
             this.vco.connect(this.vcf);
             this.vcf.connect(this.output);
             this.lfo.connect(this.lfoGain);
-            this.lfoGain.connect(this.vcf.frequency);
+            if(preset.mod === 'pitch'){
+                this.lfoGain.connect(this.vco.frequency);
+            } else if(preset.mod === 'cutoff'){
+                this.lfoGain.connect(this.vcf.frequency);
+            }
 
             this.output.gain.setValueAtTime(0.0001, startTime || this.context.currentTime);
             this.vco.type = 'sawtooth'
             this.lfo.type = 'sawtooth'
-            this.vco.frequency.setValueAtTime(frequency, startTime || this.context.currentTime);
+            this.vco.frequency.setValueAtTime(frequency + preset.vco.pitch, startTime || this.context.currentTime);
+            this.lfo.frequency.setValueAtTime(preset.lfo.rate, startTime || this.context.currentTime);
+            this.lfoGain.gain.setValueAtTime(preset.lfo.int, startTime || this.context.currentTime);
+            this.vcf.frequency.setValueAtTime(preset.vcf.cutoff, startTime || this.context.currentTime);
+            this.vcf.Q.setValueAtTime(preset.vcf.peak, startTime || this.context.currentTime);
 
             this.vco.start(startTime || this.context.currentTime);
             this.lfo.start(startTime || this.context.currentTime);
@@ -30,12 +39,12 @@ class MonotronVoise {
 
     start(time) {
         time = time || this.context.currentTime;
-        this.output.gain.exponentialRampToValueAtTime(1.0, time + 0.01);
+        this.output.gain.exponentialRampToValueAtTime(0.7, time + 0.05);
     }
 
     stop(time) {
         time = time || this.context.currentTime;
-        this.output.gain.exponentialRampToValueAtTime(0.0001, time + 0.1);
+        this.output.gain.exponentialRampToValueAtTime(0.0001, time + 0.15);
         setTimeout(() => {
             this.vco.disconnect();
             this.lfo.disconnect();
@@ -46,6 +55,43 @@ class MonotronVoise {
 
     connect(target) {
         this.output.connect(target);
+    }
+
+    updatePreset(newValue, preset){
+        switch(preset){
+            case 'pitch':{
+                this.vco.frequency.setValueAtTime(this.frequency + newValue, this.context.currentTime);
+                break;
+            }
+            case 'rate':{
+                this.lfo.frequency.setValueAtTime(newValue, this.context.currentTime);
+                break;
+            }
+            case 'int':{
+                this.lfoGain.gain.setValueAtTime(newValue, this.context.currentTime);
+                break;
+            }
+            case 'cutoff':{
+                this.vcf.frequency.setValueAtTime(newValue, this.context.currentTime);
+                break;
+            }
+            case 'peak':{
+                this.vcf.Q.setValueAtTime(newValue, this.context.currentTime);
+                break;
+            }
+            case 'mod':{
+                if(newValue === 'pitch'){
+                    this.lfoGain.disconnect();
+                    this.lfoGain.connect(this.vco.frequency);
+                } else if(newValue === 'cutoff'){
+                    this.lfoGain.disconnect();
+                    this.lfoGain.connect(this.vcf.frequency);
+                } else {
+                    this.lfoGain.disconnect();
+                }
+                break;
+            }
+        }
     }
 }
 
@@ -59,12 +105,26 @@ class Monotron {
             this.output = this.context.createGain();
             this.voices = new Array;
         }
+        this.preset = {
+            vco: {
+                pitch: 57
+            },
+            lfo: {
+                rate: 450,
+                int: 450
+            },
+            vcf: {
+                cutoff: 600,
+                peak: 570
+            },
+            mod: 'pitch'
+        }
     }
 
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let currVoice = new MonotronVoise(noteToFrequency(note), startTime);
+            let currVoice = new MonotronVoise(noteToFrequency(note), startTime, this.preset);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;
@@ -85,6 +145,41 @@ class Monotron {
 
     connect(target) {
         this.output.connect(target);
+    }
+
+    updatePreset(newValue, preset, trackIndex){
+        switch(preset){
+            case 'pitch':{
+                this.preset.vco.pitch = newValue;
+                break;
+            }
+            case 'rate':{
+                this.preset.lfo.rate = newValue;
+                break;
+            }
+            case 'int':{
+                this.preset.lfo.int = newValue;
+                break;
+            }
+            case 'cutoff':{
+                this.preset.vcf.cutoff = newValue;
+                break;
+            }
+            case 'peak':{
+                this.preset.vcf.peak = newValue;
+                break;
+            }
+            case 'mod':{
+                this.preset.mod = newValue;
+                break;
+            }
+        }
+        for(let i = 0; i < this.voices.length; i++){
+            if(!isNullOrUndefined(this.voices[i])){
+                this.voices[i].updatePreset(newValue, preset);
+            }
+        }
+        Store.dispatch(updateInstrumentPreset(this.preset, trackIndex));
     }
 }
 
