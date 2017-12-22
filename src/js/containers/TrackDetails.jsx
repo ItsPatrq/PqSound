@@ -9,7 +9,7 @@ import TrackName from 'components/TrackDetails/TrackName';
 import Output from 'components/TrackDetails/Output';
 import SoloMuteButtons from 'components/TrackDetails/SoloMuteButtons';
 import * as Actions from 'actions/trackDetailsActions';
-import { changeTrackPreset, changeTrackVolume, changeTrackInstrument, changeTrackOutput, changeSoloState, changeMuteState } from 'actions/trackListActions';
+import { changeTrackPreset, changeTrackVolume, changeTrackInstrument, changeTrackOutput, changeSoloState, changeMuteState, changeTrackPan } from 'actions/trackListActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 import { TrackTypes } from 'constants/Constants';
@@ -119,6 +119,13 @@ class TrackDetails extends React.Component {
         }
     }
 
+    handlePanChange(index, value){
+        if(value === 0){
+            value = 0.0000001
+          }
+        this.props.dispatch(changeTrackPan(index, value));
+    }
+
     render() {
         if (!!this.props.selected) {
             let instrumentComponent;
@@ -147,7 +154,11 @@ class TrackDetails extends React.Component {
                             dropDownTitle={this.getOutputName(Utils.getTrackByIndex(this.props.trackList, this.props.selected).output)}
                             onOutputChange={this.handleOutputChange.bind(this)}
                         />
-                        <PanKnob />
+                        <PanKnob
+                            pan={Utils.getTrackByIndex(this.props.trackList, this.props.selected).pan}
+                            onPanChange={this.handlePanChange.bind(this)}
+                            trackIndex={this.props.selected}
+                        />
                         <VolumeSlider
                             volume={Utils.getTrackByIndex(this.props.trackList, this.props.selected).volume}
                             onVolumeChange={this.onVolumeChange.bind(this)}
@@ -169,7 +180,11 @@ class TrackDetails extends React.Component {
                             auxTracks={[]}
                             dropDownTitle="Stereo out"
                         />
-                        <PanKnob />
+                        <PanKnob
+                            pan={Utils.getTrackByIndex(this.props.trackList, 0).pan}
+                            onPanChange={this.handlePanChange.bind(this)}
+                            trackIndex={0}
+                        />
                         <VolumeSlider
                             volume={Utils.getTrackByIndex(this.props.trackList, 0).volume}
                             onVolumeChange={this.onVolumeChange.bind(this)}

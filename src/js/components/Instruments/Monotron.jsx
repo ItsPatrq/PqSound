@@ -4,9 +4,6 @@ import { Knob, Ui } from 'engine/Knob';
 require('styles/Monotron.css');
 
 class Monotron extends React.Component {
-    constructor() {
-        super();
-    }
     params = {
         rate: {
             min: 0.001,
@@ -152,9 +149,7 @@ class Monotron extends React.Component {
                                     type="range"
                                     min="0"
                                     max="100"
-                                    value="25"
                                     ref={(input) => { this.initKnob(input); }}
-                                    onChange={(e) => this.onChange(e, 'cutoff')}
                                 />
                                 <label>Pitch</label>
                             </div>
@@ -170,7 +165,6 @@ class Monotron extends React.Component {
                                     min="0"
                                     max="100"
                                     ref={(input) => { this.initKnob(input); }}
-                                    onChange={(e) => this.onChange(e, 'cutoff')}
                                 />
                                 <label>Rate</label>
                             </div>
@@ -181,7 +175,6 @@ class Monotron extends React.Component {
                                     min="0"
                                     max="100"
                                     ref={(input) => { this.initKnob(input); }}
-                                    onChange={(e) => this.onChange(e, 'cutoff')}
                                 />
                                 <label>Int.</label>
                             </div>
@@ -197,7 +190,6 @@ class Monotron extends React.Component {
                                     min="0"
                                     max="100"
                                     ref={(input) => { this.initKnob(input); }}
-                                    onChange={(e) => this.onChange(e, 'cutoff')}
                                 />
                                 <label>Cutoff</label>
                             </div>
@@ -208,7 +200,6 @@ class Monotron extends React.Component {
                                     min="0"
                                     max="100"
                                     ref={(input) => { this.initKnob(input); }}
-                                    onChange={(e) => this.onChange(e, 'cutoff')}
                                 />
                                 <label>Peak</label>
                             </div>

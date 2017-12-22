@@ -19,7 +19,6 @@ export default function reducer(state = {
             volume: 1.0,
             pan: 0,
             mute: false,
-            solo: false,
             index: 0,
             trackNode: new Track(newMasterPluginList)
             //output: context.destination
@@ -39,6 +38,8 @@ export default function reducer(state = {
             trackNode: new Track(newTrackPluginList, firstInstrument, 0)
         }],
     selected: 1,
+    anyVirtualInstrumentSolo: false,
+    anyAuxSolo: false,
     showAddNewTrackModal: false
 }, action) {
     switch (action.type) {
@@ -104,14 +105,37 @@ export default function reducer(state = {
         }
         case 'CHANGE_TRACK_SOLO_STATE': {
             let newTrackList = [...state.trackList];
-            for (let i = 0; i < newTrackList.length; i++) {
+            let newAnyVirtualInstrumentSolo = false;
+            let newAnyAuxSolo = false;
+            for (let i = 1; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
                     newTrackList[i].solo = !newTrackList[i].solo;
                 }
+                if(newTrackList[i].solo){
+                    if(newTrackList[i].trackType === TrackTypes.virtualInstrument){
+                        newAnyVirtualInstrumentSolo = true;
+                    } else if(newTrackList[i].trackType === TrackTypes.aux){
+                        newAnyAuxSolo = true;
+                    }
+                }
+            }
+            for (let i = 1; i < newTrackList.length; i++) {
+                if(newTrackList[i].trackType === TrackTypes.virtualInstrument){
+                    if(newAnyAuxSolo && newTrackList[i].output === 0){
+                        newTrackList[i].trackNode.updateSoloState(false, true);
+                    } else {
+                        newTrackList[i].trackNode.updateSoloState(newTrackList[i].solo, newAnyVirtualInstrumentSolo);
+                    }
+                } else if(newTrackList[i].trackType === TrackTypes.aux){
+                    newTrackList[i].trackNode.updateSoloState(newTrackList[i].solo, newAnyAuxSolo);
+                }
+                
             }
             return {
                 ...state,
-                trackList: newTrackList
+                trackList: newTrackList,
+                anyVirtualInstrumentSolo: newAnyVirtualInstrumentSolo,
+                anyAuxSolo: newAnyAuxSolo
             }
         }
         case 'CHANGE_TRACK_MUTE_STATE': {
@@ -119,6 +143,8 @@ export default function reducer(state = {
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
                     newTrackList[i].mute = !newTrackList[i].mute;
+                    newTrackList[i].trackNode.updateMuteState();
+                    break;
                 }
             }
             return {
@@ -205,6 +231,19 @@ export default function reducer(state = {
                 trackList: newTrackList
             }
         }
+        case 'CHANGE_TRACK_PAN': {
+            let newTrackList = [...state.trackList];
+            for (let i = 0; i < newTrackList.length; i++) {
+                if (newTrackList[i].index === action.payload.index) {
+                    newTrackList[i].pan = action.payload.pan;
+                    newTrackList[i].trackNode.changePan(action.payload.pan);
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
         case 'CHANGE_TRACK_INSTRUMENT':{
             let newTrackList = [...state.trackList];
             for(let i = 0; i < newTrackList.length; i++){
@@ -246,6 +285,34 @@ export default function reducer(state = {
                 if(newTrackList[i].index === action.payload.index) {
                     newTrackList[i].instrument.preset = action.payload.preset;
                     break;
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
+        case 'TRACK_INDEX_UP':{
+            let newTrackList = [...state.trackList];
+            for(let i = 0; i < newTrackList.length; i++){
+                if(newTrackList[i].index === action.payload) {
+                    ++newTrackList[i].index;
+                } else if(newTrackList[i].index === action.payload + 1){
+                    --newTrackList[i].index;
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
+        case 'TRACK_INDEX_DOWN':{
+            let newTrackList = [...state.trackList];
+            for(let i = 0; i < newTrackList.length; i++){
+                if(newTrackList[i].index === action.payload) {
+                    --newTrackList[i].index;
+                } else if(newTrackList[i].index === action.payload - 1){
+                    ++newTrackList[i].index;
                 }
             }
             return {

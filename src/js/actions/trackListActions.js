@@ -73,6 +73,16 @@ export function changeTrackVolume(newIndex, newVolume){
     }
 }
 
+export function changeTrackPan(newIndex, newPan){
+    return{
+        type: 'CHANGE_TRACK_PAN',
+        payload: {
+            index: newIndex,
+            pan: newPan
+        }
+    }
+}
+
 export function changeTrackInstrument(newTrackInstrumentId, newIndex){
     return {
         type: 'CHANGE_TRACK_INSTRUMENT',
@@ -120,5 +130,19 @@ export function updateInstrumentPreset(newPreset, newTrackIndex){
             index: newTrackIndex,
             preset: newPreset
         }
+    }
+}
+
+export function trackIndexUp(newIndex){
+    return {
+        type: 'TRACK_INDEX_UP',
+        payload: newIndex
+    }
+}
+
+export function trackIndexDown(newIndex){
+    return {
+        type: 'TRACK_INDEX_DOWN',
+        payload: newIndex
     }
 }

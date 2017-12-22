@@ -1,36 +1,57 @@
 import React from 'react';
 import { Knob, Ui } from 'engine/Knob';
+import * as Utils from 'engine/Utils';
 
-const PanKnob = (props) => {
+class PanKnob extends React.Component {
+    knob = null;
+    inputs = [];
+    initKnob(input) {
+        if (!Utils.isNullOrUndefined(input)) {
+            let exists = false;
+            for (let i = 0; i < this.inputs.length; i++) {
+                if (this.inputs[i] === input.id) {
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                this.inputs.push(input.id);
+                input.setAttribute('data-width', 40);
+                input.setAttribute('data-height', 40);
+                input.setAttribute('data-angleOffset', 220);
+                input.setAttribute('data-angleRange', 280);
 
-    let initKnob = (input) => {
-        if(input){
-        input.setAttribute('data-width', 40);
-        input.setAttribute('data-height', 40);
-        input.setAttribute('data-angleOffset', 220);
-        input.setAttribute('data-angleRange', 280);
-
-        let knopf = new Knob(input, new Ui.P2());
+                let knopf = new Knob(input, new Ui.P2());
+                this.knob = knopf;
+                input.addEventListener('change', (e) => { this.onChange(e, input.id, knopf) });
+            } else{
+                let pan = this.props.pan < 0.001 && this.props.pan > -0.001 ? 0  : this.props.pan;
+                if(Number(this.knob.value) !== pan){
+                    this.knob.update(this.props.pan);
+                } 
+            }
         }
     }
 
-    let change = () => {}
+    onChange(event, id, knopf) {
+        this.props.onPanChange(this.props.trackIndex, Number(knopf.value));
+    }
 
-    return (
-        <div className="panKnobDiv">
-            <p>Pan: {props.pan}</p>
-            <input
-                id="pitch"
-                type="range"
-                min="0"
-                max="100"
-                value="25"
-                ref={(input) => { initKnob(input); }}
-                onChange={(e) => onChange(e, 'cutoff')}
-            />
-            <label>Pitch</label>
-        </div>
-    );
+    render() {
+        return (
+            <div className="panKnobDiv">
+                <p>Pan: {this.props.pan < 0.001 && this.props.pan > -0.001 ? 0 : this.props.pan}</p>
+                <input
+                    id="pan"
+                    type="range"
+                    min="-1"
+                    max="1"
+                    step="0.05"
+                    ref={(input) => { this.initKnob(input); }}
+                />
+            </div>
+        );
+    }
 }
 
 export default PanKnob;

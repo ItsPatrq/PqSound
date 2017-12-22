@@ -7,9 +7,13 @@ class Track {
     this.instrument = newInstrument;
     newVolume = newVolume || 1.0;
     newPan = newPan || 0.0;
+    this.solo = false;
+    this.mute = false;
+    this.anySolo = false;
     if (!isNullOrUndefined(Store)) {
       this.context = Store.getState().webAudio.context;
       this.gainNode = this.context.createGain();
+      this.muteNode = this.context.createGain();
       this.panNode = this.context.createStereoPanner();
 
       this.gainNode.connect(this.panNode);
@@ -17,6 +21,7 @@ class Track {
       this.output = this.panNode;
 
       this.gainNode.gain.setValueAtTime(newVolume, this.context.currentTime);
+      this.muteNode.gain.setValueAtTime(0.000001, this.context.currentTime);
       this.panNode.pan.setValueAtTime(newPan, this.context.currentTime);
       if (isNullOrUndefined(this.outputTrackIndex)) {
         this.panNode.connect(this.context.destination);
@@ -48,20 +53,20 @@ class Track {
 
     this.outputTrackIndex = isNullOrUndefined(newOutputTrackIndex) ? this.outputTrackIndex : newOutputTrackIndex;
 
-    if (this.pluginNodeList.length > 0) {
-      let pluginChain = this.getPluginChainNode();
-      this.panNode.connect(pluginChain.input);
-      this.output = pluginChain.output;
-    } else {
-      this.output = this.panNode;
+    if (!this.mute) {
+      if (this.pluginNodeList.length > 0) {
+        let pluginChain = this.getPluginChainNode();
+        this.panNode.connect(pluginChain.input);
+        this.output = pluginChain.output;
+      } else {
+        this.output = this.panNode;
+      }
+      if (isNullOrUndefined(this.outputTrackIndex)) {
+        this.output.connect(this.context.destination);
+      } else if (this.anySolo && this.solo || !this.anySolo) {
+        this.output.connect(getTrackByIndex(Store.getState().tracks.trackList, this.outputTrackIndex).trackNode.input);
+      }
     }
-
-    if (isNullOrUndefined(this.outputTrackIndex)) {
-      this.output.connect(this.context.destination);
-    } else {
-      this.output.connect(getTrackByIndex(Store.getState().tracks.trackList, this.outputTrackIndex).trackNode.input);
-    }
-
   }
 
   updateInstrument(newInstrument) {
@@ -77,7 +82,7 @@ class Track {
 
   changePan(newPan, changeTime) {
     changeTime = changeTime || this.context.currentTime;
-    this.panNode.pan.exponentialRampToValueAtTime(newPan, changeTime);
+    this.panNode.pan.setValueAtTime(newPan, changeTime);
   }
 
   getTrackNode() {
@@ -87,6 +92,17 @@ class Track {
   addAsLastToChain(node) {
     node.connect(this.input);
     return this.output;
+  }
+
+  updateSoloState(soloState, anySolo) {
+    this.solo = soloState;
+    this.anySolo = anySolo;
+    this.updateTrackNode(null)
+  }
+
+  updateMuteState() {
+    this.mute = !this.mute;
+    this.updateTrackNode()
   }
 
   /**

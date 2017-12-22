@@ -13,6 +13,9 @@ const SoloMuteButtons = (props) => {
     } else {
         buttonSolo = <Button block={true} className="btn-block" onClick={() => props.onSoloButtonClicked(props.trackDetails.index)}>S</Button>;
     }
+    if(props.trackDetails.index === 0){
+        buttonSolo = null;
+    }
     return (
         <div className="soloMuteButtons">
             <ButtonGroup justified>

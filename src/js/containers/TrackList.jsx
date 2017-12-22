@@ -6,7 +6,8 @@ import * as trackListActions from 'actions/trackListActions';
 import * as compositionActions from 'actions/compositionActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
-import AddNewTrackModal from '../components/TrackList/AddNewTrackModal';
+import AddNewTrackModal from 'components/TrackList/AddNewTrackModal';
+import TrackListButtons from 'components/TrackList/TrackListButtons';
 
 class TrackList extends React.Component {
     constructor() {
@@ -68,6 +69,26 @@ class TrackList extends React.Component {
 
     }
 
+    handleSoloAllClicked() {
+        if(this.props.anyActive){
+            for(let i = 0; i < this.props.trackList.length; i++){
+                if(this.props.trackList[i].solo){
+                    this.handleSoloButtonClicked(this.props.trackList[i].index);
+                }
+            }
+        } else {
+            this.handleSoloButtonClicked(this.props.selected);
+        }
+    }
+
+    handleIndexUp(index){
+        this.props.dispatch(trackListActions.trackIndexUp(index));
+    }
+
+    handleIndexDown(index){
+        this.props.dispatch(trackListActions.trackIndexDown(index));
+    }
+
     render() {
         let renderTrackList = new Array;
         /**
@@ -77,6 +98,9 @@ class TrackList extends React.Component {
             renderTrackList.push(
                 <Track key={i.toString()}
                     trackDetails={this.props.trackList[i]}
+                    trackListLength={this.props.trackList.length}
+                    onIndexUp={this.handleIndexUp.bind(this)}
+                    onIndexDown={this.handleIndexDown.bind(this)}
                     handleRowClicked={this.changeSelectedTrack.bind(this)}
                     handleRemove={this.removeTrack.bind(this)}
                     onRecordButtonClicked={this.handleRecordClick.bind(this)}
@@ -87,9 +111,14 @@ class TrackList extends React.Component {
                 />
             );
         }
+        renderTrackList.sort((a,b) => {return a.props.trackDetails.index - b.props.trackDetails.index});
         return (
             <div className=" trackList">
-                <Button block={true} className="btn-block" bsStyle="primary" onClick={this.handleSwitchModalVisibility.bind(this)}><Glyphicon glyph="plus" /></Button>
+            <TrackListButtons
+                onAddNewTrack={this.handleSwitchModalVisibility.bind(this)}
+                onSoloAllClicked={this.handleSoloAllClicked.bind(this)}
+                isAnySolo={this.props.anyActive}
+            />
                 {renderTrackList}
                 <AddNewTrackModal
                     showModal={this.props.showModal}
@@ -110,6 +139,7 @@ const mapStateToProps = (state) => {
     return {
         trackList: state.tracks.trackList,
         selected: state.tracks.selected,
+        anyActive: state.tracks.anyAuxSolo || state.tracks.anyVirtualInstrumentSolo,
         samplerInstruments: samplerInstruments,
         fetching: state.webAudio.fetching,
         showModal: state.tracks.showAddNewTrackModal

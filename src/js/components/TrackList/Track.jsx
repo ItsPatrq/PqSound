@@ -8,15 +8,15 @@ const Track = (props) => {
         props.handleTrackNameChange(event, props.trackDetails.index);
     }
     let getTrackRowClassName = () => {
-        if(props.selected === props.trackDetails.index){
+        if (props.selected === props.trackDetails.index) {
             return 'trackRow selected'
         } else {
             return 'trackRow'
         }
     }
-    let buttonRecord, buttonSolo, buttonMute;
-    if(props.trackDetails.trackType !== TrackTypes.aux){
-        if(props.trackDetails.record){
+    let buttonRecord, buttonSolo, buttonMute, buttonIndexUp, buttonIndexDown;
+    if (props.trackDetails.trackType !== TrackTypes.aux) {
+        if (props.trackDetails.record) {
             buttonRecord = <Button bsSize="xsmall" bsStyle="danger" onClick={() => props.onRecordButtonClicked(props.trackDetails.index)}>R</Button>;
         } else {
             buttonRecord = <Button bsSize="xsmall" onClick={() => props.onRecordButtonClicked(props.trackDetails.index)}>R</Button>;
@@ -24,15 +24,25 @@ const Track = (props) => {
     } else {
         buttonRecord = null;
     }
-    if(props.trackDetails.solo){
+    if (props.trackDetails.solo) {
         buttonSolo = <Button bsSize="xsmall" bsStyle="warning" onClick={() => props.onSoloButtonClicked(props.trackDetails.index)}>S</Button>;
     } else {
         buttonSolo = <Button bsSize="xsmall" onClick={() => props.onSoloButtonClicked(props.trackDetails.index)}>S</Button>;
     }
-    if(props.trackDetails.mute){
+    if (props.trackDetails.mute) {
         buttonMute = <Button bsSize="xsmall" bsStyle="info" onClick={() => props.onMuteButtonClicked(props.trackDetails.index)}>M</Button>;
     } else {
         buttonMute = <Button bsSize="xsmall" onClick={() => props.onMuteButtonClicked(props.trackDetails.index)}>M</Button>;
+    }
+    if (props.trackDetails.index > 1) {
+        buttonIndexDown = <Button bsSize="xsmall" onClick={() => props.onIndexDown(props.trackDetails.index)}>
+            <Glyphicon glyph="arrow-up" />
+        </Button>;
+    }
+    if (props.trackDetails.index + 1 < props.trackListLength) {
+        buttonIndexUp = <Button bsSize="xsmall" onClick={() => props.onIndexUp(props.trackDetails.index)}>
+            <Glyphicon glyph="arrow-down" />
+        </Button>;
     }
     //TODO: text input not triggering piano
     return (
@@ -48,9 +58,11 @@ const Track = (props) => {
                     {buttonSolo}
                     {buttonMute}
                     {buttonRecord}
+                    {buttonIndexDown}
+                    {buttonIndexUp}
                 </ButtonGroup>
-                <FormControl value={props.trackDetails.name} onChange={handleTrackNameChange}/>
-                <Button bsSize="xsmall"><Glyphicon glyph="remove" onClick={() => props.handleRemove(props.trackDetails.index)}/></Button>
+                <FormControl value={props.trackDetails.name} onChange={handleTrackNameChange} />
+                <Button bsSize="xsmall"><Glyphicon glyph="remove" onClick={() => props.handleRemove(props.trackDetails.index)} /></Button>
             </Col>
         </Row>
     );
