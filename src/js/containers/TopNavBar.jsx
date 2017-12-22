@@ -11,16 +11,16 @@ class TopNavBar extends React.Component {
         let that = this;
         window.addEventListener('keydown', function (e) {
             if (e.altKey) {
-                switch (e.key) {
-                    case 'p': {
+                switch (e.keyCode) {
+                    case 80: {
                         that.handleSwitchKeyboardVisibility();
                         break;
                     }
-                    case 'b': {
+                    case 78: {
                         that.handleSwitchKeyBindVisibility();
                         break;
                     }
-                    case 'n':{
+                    case 66:{
                         that.handleSwitchKeyNameVisibility();
                         break;
                     }
@@ -67,12 +67,17 @@ class TopNavBar extends React.Component {
         let showHideKeyboard = this.props.keyboardVisible ? 'Hide keyboard' : 'Show keyboard';
         let showHideKeyNames = this.props.keyNamesVisible ? 'Hide key names' : 'Show key names';
         let showHideBindNames = this.props.keyBindVisible ? 'Hide key bindings' : 'Show key bindings';
-        showHideKeyNames = this.props.keyboardVisible ? showHideKeyNames : null;
-        showHideBindNames = this.props.keyboardVisible ? showHideBindNames : null;
+        let showHideKeyNamesMenuItem = this.props.keyboardVisible ?
+        <MenuItem eventKey={3.2} onClick={() => this.handleSwitchKeyNameVisibility()}>{showHideKeyNames}</MenuItem> :
+        null;
+        let showHideBindNamesMenuItem = this.props.keyboardVisible ?
+        <MenuItem eventKey={3.3} onClick={() => this.handleSwitchKeyBindVisibility()}>{showHideBindNames}</MenuItem> :        
+        null;
         let showHidePianoroll = this.props.pianoRollVisible ? 'Hide pianoroll' : 'Show pianoroll';
-        if(Utils.isNullOrUndefined(this.props.pianoRollRegion)){
-            showHidePianoroll = null;
-        }
+        let showHidePianorollMenuItem = !Utils.isNullOrUndefined(this.props.pianoRollRegion) ?
+        <MenuItem eventKey={3.4} onClick={() => this.handleSwitchPianoRollVisibility()}>{showHidePianoroll}</MenuItem> :
+        null;
+
         return (
             <Navbar inverse fixedTop collapseOnSelect fluid>
                 <Navbar.Header>
@@ -87,9 +92,9 @@ class TopNavBar extends React.Component {
                         <NavItem eventKey={2} href='#'>About</NavItem>
                         <NavDropdown eventKey={3} title='Show' id='basic-nav-dropdown'>
                             <MenuItem eventKey={3.1} onClick={() => this.handleSwitchKeyboardVisibility()}>{showHideKeyboard}</MenuItem>
-                            <MenuItem eventKey={3.2} onClick={() => this.handleSwitchKeyNameVisibility()}>{showHideKeyNames}</MenuItem>
-                            <MenuItem eventKey={3.3} onClick={() => this.handleSwitchKeyBindVisibility()}>{showHideBindNames}</MenuItem>
-                            <MenuItem eventKey={3.4} onClick={() => this.handleSwitchPianoRollVisibility()}>{showHidePianoroll}</MenuItem>
+                            {showHideKeyNamesMenuItem}
+                            {showHideBindNamesMenuItem}
+                            {showHidePianorollMenuItem}
                             <MenuItem eventKey={3.5}>Something strange might be here</MenuItem>
                             <MenuItem divider />
                             <MenuItem eventKey={3.6}>This thing shall be separated</MenuItem>

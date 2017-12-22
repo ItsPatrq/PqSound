@@ -31,12 +31,7 @@ export default class Sound {
     this.playingSounds[origin].push({ trackIndex: trackIndex, note: note, origin: origin, endIndex: endIndex });
 
     let currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
-
-    let auxChain = this.getAuxChainNode(trackIndex);
-
-    auxChain.output.connect(this.context.destination);
-
-    currTrack.instrument.connect(auxChain.input);
+    
     currTrack.instrument.noteOn(note, contextPlayTime);
   }
 

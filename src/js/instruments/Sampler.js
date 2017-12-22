@@ -78,7 +78,12 @@ class Sampler {
 
 
     connect(target) {
+        this.output.disconnect();
         this.output.connect(target);
+    }
+
+    disconnect(){
+        this.output.disconnect();
     }
 
     /**
@@ -87,6 +92,10 @@ class Sampler {
     initContext() {
         this.context = Store.getState().webAudio.context;
         this.constructor();
+    }
+
+    loadPreset(newPreset){
+        this.preset = newPreset;
     }
 
     getBuffers(note) {

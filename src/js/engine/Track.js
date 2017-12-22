@@ -1,7 +1,10 @@
 import Store from '../stroe';
-import { isNullOrUndefined } from 'engine/Utils';
+import { isNullOrUndefined, getTrackByIndex } from 'engine/Utils';
 class Track {
-  constructor(newVolume, newPan) {
+  constructor(newPluginList, newInstrument, newOutputTrackIndex, newVolume, newPan) {
+    this.pluginNodeList = newPluginList;
+    this.outputTrackIndex = newOutputTrackIndex;
+    this.instrument = newInstrument;
     newVolume = newVolume || 1.0;
     newPan = newPan || 0.0;
     if (!isNullOrUndefined(Store)) {
@@ -15,7 +18,56 @@ class Track {
 
       this.gainNode.gain.setValueAtTime(newVolume, this.context.currentTime);
       this.panNode.pan.setValueAtTime(newPan, this.context.currentTime);
+      if (isNullOrUndefined(this.outputTrackIndex)) {
+        this.panNode.connect(this.context.destination);
+      } else {
+        this.panNode.connect(getTrackByIndex(Store.getState().tracks.trackList, this.outputTrackIndex).trackNode.input);
+      }
+      if (!isNullOrUndefined(newInstrument)) {
+        newInstrument.connect(this.input);
+      }
     }
+  }
+
+  getPluginChainNode() {
+    let firstPluginInChain = this.pluginNodeList[0].getPluginNode();
+    let lastPluginInChain = firstPluginInChain;
+    for (let i = 1; i < this.pluginNodeList.length; i++) {
+      let curPluginNode = this.pluginNodeList[i].getPluginNode();
+      lastPluginInChain.output.connect(curPluginNode.input);
+      lastPluginInChain = curPluginNode;
+    }
+    return { input: firstPluginInChain.input, output: lastPluginInChain.output };
+  }
+
+  updateTrackNode(newOutputTrackIndex) {
+    for (let i = 0; i < this.pluginNodeList.length; i++) {
+      this.pluginNodeList.output.disconnect();
+    }
+    this.panNode.disconnect();
+
+    this.outputTrackIndex = isNullOrUndefined(newOutputTrackIndex) ? this.outputTrackIndex : newOutputTrackIndex;
+
+    if (this.pluginNodeList.length > 0) {
+      let pluginChain = this.getPluginChainNode();
+      this.panNode.connect(pluginChain.input);
+      this.output = pluginChain.output;
+    } else {
+      this.output = this.panNode;
+    }
+
+    if (isNullOrUndefined(this.outputTrackIndex)) {
+      this.output.connect(this.context.destination);
+    } else {
+      this.output.connect(getTrackByIndex(Store.getState().tracks.trackList, this.outputTrackIndex).trackNode.input);
+    }
+
+  }
+
+  updateInstrument(newInstrument) {
+    this.instrument.disconnect();
+    this.instrument = newInstrument;
+    this.instrument.connect(this.input);
   }
 
   changeVolume(newVolume, changeTime) {
@@ -32,7 +84,7 @@ class Track {
     return { input: this.input, output: this.output }
   }
 
-  addAsLastToChain(node){
+  addAsLastToChain(node) {
     node.connect(this.input);
     return this.output;
   }
@@ -41,9 +93,9 @@ class Track {
   * due to initializing web audio api at start of application and sampler is the default instrument
   */
   initContext() {
-    if(isNullOrUndefined(this.context)){
+    if (isNullOrUndefined(this.context)) {
       this.context = Store.getState().webAudio.context;
-      this.constructor();
+      this.constructor(this.pluginNodeList, this.instrument, this.outputTrackIndex);
     }
   }
 }

@@ -107,15 +107,20 @@ class Monotron {
         }
         this.preset = {
             vco: {
-                pitch: 57
+                pitch: 33.3,
+                knobPitch: 57
             },
             lfo: {
-                rate: 450,
-                int: 450
+                rate: 5.2,
+                int: 432,
+                knobRate: 46,
+                knobInt: 97
             },
             vcf: {
-                cutoff: 600,
-                peak: 570
+                cutoff: 393.3,
+                peak: 16.6,
+                knobCutoff: 72,
+                knobPeak: 57
             },
             mod: 'pitch'
         }
@@ -144,29 +149,39 @@ class Monotron {
     }
 
     connect(target) {
+        this.output.disconnect();
         this.output.connect(target);
     }
 
-    updatePreset(newValue, preset, trackIndex){
+    disconnect(){
+        this.output.disconnect();
+    }
+
+    updatePreset(newValue, newKnobValue, preset, trackIndex){
         switch(preset){
             case 'pitch':{
                 this.preset.vco.pitch = newValue;
+                this.preset.vco.knobPitch = newKnobValue;
                 break;
             }
             case 'rate':{
                 this.preset.lfo.rate = newValue;
+                this.preset.lfo.knobRate = newKnobValue;
                 break;
             }
             case 'int':{
                 this.preset.lfo.int = newValue;
+                this.preset.lfo.knobInt = newKnobValue;
                 break;
             }
             case 'cutoff':{
                 this.preset.vcf.cutoff = newValue;
+                this.preset.vcf.knobCutoff = newKnobValue;
                 break;
             }
             case 'peak':{
                 this.preset.vcf.peak = newValue;
+                this.preset.vcf.knobPeak = newKnobValue;
                 break;
             }
             case 'mod':{

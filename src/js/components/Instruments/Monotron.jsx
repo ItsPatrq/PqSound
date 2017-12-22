@@ -54,29 +54,28 @@ class Monotron extends React.Component {
                 let knopf = new Knob(input, new Ui.P2());
                 switch (input.id) {
                     case 'pitch': {
-                        knopf.update(57);
+                        knopf.update(this.props.instrument.preset.vco.knobPitch);
                         break;
                     }
                     case 'rate': {
-                        knopf.update(46);
+                        knopf.update(this.props.instrument.preset.lfo.knobRate);
                         break;
                     }
                     case 'int': {
-                        knopf.update(97);
+                        knopf.update(this.props.instrument.preset.lfo.knobInt);
                         break;
                     }
                     case 'cutoff': {
-                        knopf.update(72);
+                        knopf.update(this.props.instrument.preset.vcf.knobCutoff);
                         break;
                     }
                     case 'peak': {
-                        knopf.update(57);
+                        knopf.update(this.props.instrument.preset.vcf.knobPeak);
                         break;
                     }
                 }
                 this.knobs.push(knopf);
                 input.addEventListener('change', (e) => { this.onChange(e, input.id, knopf) })
-                this.onChange(null, input.id, knopf);
             }
         }
     }
@@ -87,11 +86,11 @@ class Monotron extends React.Component {
             scale = param.scale != null ? param.scale : 1.05;
             ratio = Math.pow(scale, parseInt(knopf.value)) / Math.pow(scale, knopf.settings.max);
             value = ratio * (param.max - param.min) + param.min;
-            this.props.instrument.updatePreset(value, id, this.props.trackIndex)
+            this.props.instrument.updatePreset(value, knopf.value, id, this.props.trackIndex)
         }
     }
     onModChange(event) {
-        this.props.instrument.updatePreset(event.target.value, 'mod', this.props.trackIndex)
+        this.props.instrument.updatePreset(event.target.value, null, 'mod', this.props.trackIndex)
     }
     render() {
         return (
