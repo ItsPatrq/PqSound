@@ -21,12 +21,8 @@ const Layout = (/*props*/) => {
                         <TrackDetails />
                     </Col>
                     <Col xs={10} className="nopadding" id="ComposingCol">
-                        <Col xs={2} className="nopadding">
                             <TrackList />
-                        </Col>
-                        <Col xs={10} className="nopadding">
                             <CompositionGrid />
-                        </Col>
                         <Col className="keyboard">
                             <Keyboard />
                         </Col>

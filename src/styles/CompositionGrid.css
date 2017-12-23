@@ -1,26 +1,66 @@
 .timeBar {
     height: 34px;
     background-color: #212121;
+    top: 0;
+    right: 0;
+    left: 0;
+    position: absolute;
+    z-index: 0;
+    margin: 0 !important;
+    overflow: hidden;
 }
 
-.timeBarSpikes {
-    height: 50%;
+.pianoRollTimeBar {
+    height: 34px;
+    background-color: #212121;
+    top: 0;
+    right: 0;
+    left: 100px;
+    position: absolute;
+    z-index: 0;
+    margin: 0 !important;
+    overflow: hidden;
 }
 
-.timeBarNumbers {
-    height: 50%;
+.timeBarBeat {
+    width: 50px;
+    position: absolute;
+    display: flex;
+    top: 0;
+    bottom: 0;
+    margin-left: -25px;
+    align-items: center;
+    justify-content: center;
+    opacity: .5;
+}
+
+.timeBarBeat:nth-child(4n+1){
+    opacity: 100;
+    font-weight: 800;
 }
 
 .compositionPanel {
-    height: calc(100vh - 134px);
+    height: calc(100vh - 100px);
     background-color: #3a3a3a;
-    overflow: scroll;
-    overflow-x: scroll;
     overflow-y: scroll;
+    overflow-x: scroll;
+    margin-left: 0;
+}
+
+.compositionPanelPianoRoll {
+    height: calc(100vh - 100px);
+    background-color: #3a3a3a;
+    overflow-y: scroll;
+    overflow-x: hide;
+    margin-left: 0;
+}
+
+.compositionRowList {
+    margin-top: 34px;
 }
 
 .trackCompositionRow {
-    height: 50px;
+    height: 60px;
     width: fit-content;    
     background-color: #9E9E9E;
     white-space: nowrap;
@@ -31,7 +71,7 @@
 }
 
 .auxTrackCompositionRow {
-    height: 50px;
+    height: 60px;
     width: fit-content;    
     background-color: #3a3a3a;
     white-space: nowrap;
@@ -42,8 +82,8 @@
 }
 
 .trackCompositionBit {
-    height: 50px;
-    width: 25px;
+    height: 60px;
+    width: 50px;
     border-style: solid;
     border-right-width: thin;
     border-color: #212121;
@@ -99,6 +139,49 @@
 
 .sixteenthNote.noRightBorder {
     border-right: 0;
+}
+.pianoRollKeyboard {
+    top: 34px;
+    width: 100px;
+    position: absolute;
+    z-index: 2;
+    left: 0;
+}
+
+.pianRollKeyRows{
+    top: 34px;
+    position: relative;
+    left: 100px;
+    overflow: scroll;
+}
+
+.pianoRollKey {
+    height: 30px;
+    box-sizing: border-box;
+    background-image: linear-gradient(90deg,#888,#eee);
+    position: relative;
+    overflow: hidden;
+    border-bottom-width: thin;
+    border-bottom-color: rgb(177, 175, 175);
+    border-style: solid;
+}
+
+.pianoRollKey.long {
+    height: 40px;
+}
+
+.pianoRollKey.short {
+    height: 30px;
+}
+
+.pianoRollKey.sharp {
+    position: absolute;
+    z-index: 1;
+    width: 65%;
+    margin-top: -20px;
+    border-radius: 0 .1em .1em 0;
+    background-image: linear-gradient(90deg,#111,#444);
+    height: 20px;
 }
 
 .pianoRow {

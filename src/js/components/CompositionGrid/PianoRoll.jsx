@@ -22,8 +22,11 @@ const PianoRoll = (props) => {
             </Row>
         );
     }
+    let handleScroll = (e)=>{
+        console.log(e.target.scroll)
+    }
     return (
-        <div >
+        <div className="pianRollKeyRows" onScroll={handleScroll}>
             {keyRows}
         </div>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Glyphicon } from 'react-bootstrap';
+import { Button, Glyphicon, Col } from 'react-bootstrap';
 import Track from 'components/TrackList/Track';
 import * as trackListActions from 'actions/trackListActions';
 import * as compositionActions from 'actions/compositionActions';
@@ -38,7 +38,7 @@ class TrackList extends React.Component {
         this.props.dispatch(trackListActions.changeMuteState(index));
     }
 
-    handleTrackNameChange(event, trackIndex){
+    handleTrackNameChange(event, trackIndex) {
         this.props.dispatch(trackListActions.changeTrackName(event.target.value, trackIndex));
     }
 
@@ -50,8 +50,8 @@ class TrackList extends React.Component {
                 for (let j = 0; j < this.props.samplerInstruments.length; j++) {
                     if (this.props.trackList[i].instrument.preset === this.props.samplerInstruments[j].name &&
                         !this.props.samplerInstruments[j].loaded && !this.props.fetching) {
-                            this.props.dispatch(fetchSamplerInstrument(this.props.trackList[i].instrument.preset));
-                        }
+                        this.props.dispatch(fetchSamplerInstrument(this.props.trackList[i].instrument.preset));
+                    }
                 }
 
             }
@@ -59,7 +59,7 @@ class TrackList extends React.Component {
     }
 
     changeSelectedTrack(index) {
-        if(this.props.selected !== index) {
+        if (this.props.selected !== index) {
             this.props.dispatch(trackListActions.changeSelectedTrack(index));
         }
     }
@@ -70,9 +70,9 @@ class TrackList extends React.Component {
     }
 
     handleSoloAllClicked() {
-        if(this.props.anyActive){
-            for(let i = 0; i < this.props.trackList.length; i++){
-                if(this.props.trackList[i].solo){
+        if (this.props.anyActive) {
+            for (let i = 0; i < this.props.trackList.length; i++) {
+                if (this.props.trackList[i].solo) {
                     this.handleSoloButtonClicked(this.props.trackList[i].index);
                 }
             }
@@ -81,11 +81,11 @@ class TrackList extends React.Component {
         }
     }
 
-    handleIndexUp(index){
+    handleIndexUp(index) {
         this.props.dispatch(trackListActions.trackIndexUp(index));
     }
 
-    handleIndexDown(index){
+    handleIndexDown(index) {
         this.props.dispatch(trackListActions.trackIndexDown(index));
     }
 
@@ -94,39 +94,43 @@ class TrackList extends React.Component {
         /**
          * start iteration from i = 1 because i = 0 is the master track
          */
-        for (let i = 1; i < this.props.trackList.length; i++) {
-            renderTrackList.push(
-                <Track key={i.toString()}
-                    trackDetails={this.props.trackList[i]}
-                    trackListLength={this.props.trackList.length}
-                    onIndexUp={this.handleIndexUp.bind(this)}
-                    onIndexDown={this.handleIndexDown.bind(this)}
-                    handleRowClicked={this.changeSelectedTrack.bind(this)}
-                    handleRemove={this.removeTrack.bind(this)}
-                    onRecordButtonClicked={this.handleRecordClick.bind(this)}
-                    onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
-                    onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
-                    handleTrackNameChange={this.handleTrackNameChange.bind(this)}
-                    selected={this.props.selected}
-                />
+        if (this.props.pianoRollVisible) {
+            return null;
+        } else {
+            for (let i = 1; i < this.props.trackList.length; i++) {
+                renderTrackList.push(
+                    <Track key={i.toString()}
+                        trackDetails={this.props.trackList[i]}
+                        trackListLength={this.props.trackList.length}
+                        onIndexUp={this.handleIndexUp.bind(this)}
+                        onIndexDown={this.handleIndexDown.bind(this)}
+                        handleRowClicked={this.changeSelectedTrack.bind(this)}
+                        handleRemove={this.removeTrack.bind(this)}
+                        onRecordButtonClicked={this.handleRecordClick.bind(this)}
+                        onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
+                        onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
+                        handleTrackNameChange={this.handleTrackNameChange.bind(this)}
+                        selected={this.props.selected}
+                    />
+                );
+            }
+            renderTrackList.sort((a, b) => { return a.props.trackDetails.index - b.props.trackDetails.index });
+            return (
+                <Col xs={2} className="trackList">
+                    <TrackListButtons
+                        onAddNewTrack={this.handleSwitchModalVisibility.bind(this)}
+                        onSoloAllClicked={this.handleSoloAllClicked.bind(this)}
+                        isAnySolo={this.props.anyActive}
+                    />
+                    {renderTrackList}
+                    <AddNewTrackModal
+                        showModal={this.props.showModal}
+                        modalVisibilitySwitch={this.handleSwitchModalVisibility.bind(this)}
+                        onAddNewTrack={this.addTrack.bind(this)}
+                    />
+                </Col>
             );
         }
-        renderTrackList.sort((a,b) => {return a.props.trackDetails.index - b.props.trackDetails.index});
-        return (
-            <div className=" trackList">
-            <TrackListButtons
-                onAddNewTrack={this.handleSwitchModalVisibility.bind(this)}
-                onSoloAllClicked={this.handleSoloAllClicked.bind(this)}
-                isAnySolo={this.props.anyActive}
-            />
-                {renderTrackList}
-                <AddNewTrackModal
-                    showModal={this.props.showModal}
-                    modalVisibilitySwitch={this.handleSwitchModalVisibility.bind(this)}
-                    onAddNewTrack={this.addTrack.bind(this)}
-                />
-            </div>
-        );
     }
 }
 
@@ -142,7 +146,8 @@ const mapStateToProps = (state) => {
         anyActive: state.tracks.anyAuxSolo || state.tracks.anyVirtualInstrumentSolo,
         samplerInstruments: samplerInstruments,
         fetching: state.webAudio.fetching,
-        showModal: state.tracks.showAddNewTrackModal
+        showModal: state.tracks.showAddNewTrackModal,
+        pianoRollVisible: state.composition.showPianoRoll
     }
 }
 

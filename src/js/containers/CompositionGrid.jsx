@@ -1,12 +1,15 @@
 import React from 'react';
-import { Row } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import TrackCompositionRow from 'components/CompositionGrid/TrackCompositionRow';
 import PianoRoll from 'components/CompositionGrid/PianoRoll';
+import TimeBar from 'components/CompositionGrid/TimeBar';
+import PianoRollKeyboard from 'components/CompositionGrid/PianoRollKeyboard';
 import { showPianoRoll, addRegion, removeRegion, addNote, removeNote } from 'actions/compositionActions';
 import { getRegionIdByBitIndex, getRegionByRegionId } from 'engine/CompositionParser';
-import { tools } from 'constants/Constants'
-
+import { tools, SoundOrigin } from 'constants/Constants'
+import {getTrackByIndex} from 'engine/Utils';
+import * as KeyboardActions from 'actions/keyboardActions';
 class CompositionGrid extends React.Component {
     constructor() {
         super();
@@ -86,12 +89,48 @@ class CompositionGrid extends React.Component {
         }
     }
 
+    handleUp(event, note) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.nativeEvent.stopImmediatePropagation();
+        if (this.props.keyboard.notesPlaying.includes(note)) {
+            let currTrackIndex = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).trackIndex;
+            this.props.sound.stop(currTrackIndex, note)
+            this.props.dispatch(KeyboardActions.removePlayingNote(note));
+        }
+        return false;
+    }
+
+    handleDown(event, note) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.nativeEvent.stopImmediatePropagation();
+        if (event.buttons == 1 &&  //leftClick
+            !this.props.keyboard.notesPlaying.includes(note)) {
+            let currTrackIndex = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).trackIndex;
+            this.props.sound.play(currTrackIndex, null, note, SoundOrigin.pianoRollNote)
+            this.props.dispatch(KeyboardActions.addPlayingNote(note))
+        }
+        return false;
+    }
+
     render() {
         let trackCompositionRowList = new Array;
         let pianoRoll;
         if (this.props.composition.showPianoRoll) {
-            let bitsNumber = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).regionLength;
-            pianoRoll = <PianoRoll bitsNumber={bitsNumber} onNoteClick={this.handleNoteClicked.bind(this)} />
+            let currRegion = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList);
+            let bitsNumber = currRegion.regionLength;
+            let currTrackIndex = currRegion.trackIndex;
+            return (
+                <Col xs={12} className="nopadding compositionPanelPianoRoll">
+                    <PianoRollKeyboard
+                        instrument={getTrackByIndex(this.props.trackList, currTrackIndex).instrument}
+                        onDown={this.handleDown.bind(this)}
+                        onUp={this.handleUp.bind(this)}
+                    />
+                    <PianoRoll bitsNumber={bitsNumber} onNoteClick={this.handleNoteClicked.bind(this)} />
+                </Col>
+            );
         } else {
             /**
              * start iteration from i = 1 because i = 0 is the master track
@@ -106,23 +145,16 @@ class CompositionGrid extends React.Component {
                     onRegionClick={this.handleRegionClicked.bind(this)}
                 />)
             }
+            trackCompositionRowList.sort((a,b) => {return a.props.trackIndex - b.props.trackIndex});
+            return (
+                <Col xs={10} className="nopadding compositionPanel">
+                        <TimeBar bits={this.props.composition.bitsInComposition} />
+                        <div className="compositionRowList">
+                            {trackCompositionRowList}
+                        </div>
+                </Col>
+            );
         }
-        return (
-            <div className="nopadding">
-                <Row className="nopadding timeBar">
-                    <Row className="nopadding timeBarNumbers">
-                        1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-                    </Row>
-                    <Row className="npadding timeBarSpikes">
-                        | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
-                    </Row>
-                </Row>
-                <Row className="nopadding compositionPanel">
-                    {trackCompositionRowList}
-                    {pianoRoll}
-                </Row>
-            </div>
-        );
     }
 }
 
@@ -133,7 +165,9 @@ const mapStateToProps = (state) => {
         composition: state.composition,
         selectedTool: state.control.tool,
         regionDrawLength: state.control.regionDrawLength,
-        noteDrawLength: state.control.noteDrawLength
+        noteDrawLength: state.control.noteDrawLength,
+        keyboard: state.keyboard,
+        sound: state.webAudio.sound
     }
 }
 
