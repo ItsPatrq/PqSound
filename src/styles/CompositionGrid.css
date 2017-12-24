@@ -163,6 +163,7 @@
     top: 34px;
     position: relative;
     left: 100px;
+    width: calc(100% - 100px);
 }
 
 .pianoRollKeyRowsContent{
