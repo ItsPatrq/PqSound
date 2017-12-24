@@ -5,14 +5,19 @@ import TrackCompositionRow from 'components/CompositionGrid/TrackCompositionRow'
 import PianoRoll from 'components/CompositionGrid/PianoRoll';
 import TimeBar from 'components/CompositionGrid/TimeBar';
 import PianoRollKeyboard from 'components/CompositionGrid/PianoRollKeyboard';
+import PianoRollTimeBar from 'components/CompositionGrid/PianoRollTimeBar';
 import { showPianoRoll, addRegion, removeRegion, addNote, removeNote } from 'actions/compositionActions';
-import { getRegionIdByBitIndex, getRegionByRegionId } from 'engine/CompositionParser';
+import { getRegionIdByBitIndex, getRegionByRegionId, notesToDrawParser } from 'engine/CompositionParser';
 import { tools, SoundOrigin } from 'constants/Constants'
-import {getTrackByIndex} from 'engine/Utils';
+import { getTrackByIndex, isNullOrUndefined } from 'engine/Utils';
 import * as KeyboardActions from 'actions/keyboardActions';
 class CompositionGrid extends React.Component {
     constructor() {
         super();
+        this.state = {
+            scrollPianoRollY: 0,
+            scrollPianoRollX: 0
+        }
     }
 
     handleEmptyBitClicked(trackIndex, bitIndex, bitsToDraw) {
@@ -47,7 +52,7 @@ class CompositionGrid extends React.Component {
         }
     }
 
-    handleNoteClicked(noteNumber, sixteenthNumber, notesToDraw) {
+    handleNoteClicked(noteNumber, sixteenthNumber) {
         let noteLength;
         switch (this.props.noteDrawLength) {
             case 0: {
@@ -67,6 +72,7 @@ class CompositionGrid extends React.Component {
                 break;
             }
         }
+        let notesToDraw = notesToDrawParser(noteNumber);
         switch (this.props.selectedTool) {
             case tools.draw.id: {
                 let canDraw = sixteenthNumber + noteLength <= notesToDraw.length ? true : false;
@@ -114,6 +120,19 @@ class CompositionGrid extends React.Component {
         return false;
     }
 
+    updateScroll(scroll) {
+        if (!isNullOrUndefined(scroll.pianoRollX) && scroll.pianoRollX !== this.state.scrollPianoRollX) {
+            this.setState(previousState => {
+                return { scrollPianoRollX: scroll.pianoRollX };
+            });
+        }
+        if (!isNullOrUndefined(scroll.pianoRollY) && scroll.pianoRollY !== this.state.scrollPianoRollY) {
+            this.setState(previousState => {
+                return { scrollPianoRollY: scroll.pianoRollY };
+            });
+        }
+    }
+
     render() {
         let trackCompositionRowList = new Array;
         let pianoRoll;
@@ -123,12 +142,22 @@ class CompositionGrid extends React.Component {
             let currTrackIndex = currRegion.trackIndex;
             return (
                 <Col xs={12} className="nopadding compositionPanelPianoRoll">
+                    <PianoRollTimeBar
+                        bits={bitsNumber}
+                        scroll={this.state.scrollPianoRollX}
+                    />
                     <PianoRollKeyboard
                         instrument={getTrackByIndex(this.props.trackList, currTrackIndex).instrument}
                         onDown={this.handleDown.bind(this)}
                         onUp={this.handleUp.bind(this)}
+                        scroll={this.state.scrollPianoRollY}
                     />
-                    <PianoRoll bitsNumber={bitsNumber} onNoteClick={this.handleNoteClicked.bind(this)} />
+                    <PianoRoll
+                        bitsNumber={bitsNumber}
+                        onNoteClick={this.handleNoteClicked.bind(this)}
+                        notes={getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).notes}
+                        onScroll={this.updateScroll.bind(this)}
+                    />
                 </Col>
             );
         } else {
@@ -145,13 +174,13 @@ class CompositionGrid extends React.Component {
                     onRegionClick={this.handleRegionClicked.bind(this)}
                 />)
             }
-            trackCompositionRowList.sort((a,b) => {return a.props.trackIndex - b.props.trackIndex});
+            trackCompositionRowList.sort((a, b) => { return a.props.trackIndex - b.props.trackIndex });
             return (
                 <Col xs={10} className="nopadding compositionPanel">
-                        <TimeBar bits={this.props.composition.bitsInComposition} />
-                        <div className="compositionRowList">
-                            {trackCompositionRowList}
-                        </div>
+                    <TimeBar bits={this.props.composition.bitsInComposition} />
+                    <div className="compositionRowList">
+                        {trackCompositionRowList}
+                    </div>
                 </Col>
             );
         }

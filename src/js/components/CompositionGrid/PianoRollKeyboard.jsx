@@ -1,7 +1,10 @@
 import React from 'react';
-import { keyboardWidths, defaultKeysNames } from 'constants/Constants';
+import { keyboardWidths, defaultKeysNamesNoOctaveNumber } from 'constants/Constants';
 import { noteToMIDI } from 'engine/Utils';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { isNullOrUndefined } from 'engine/Utils';
+import {notesToDrawParser} from 'engine/CompositionParser';
+
 
 const PianoRollKeyboard = (props) => {
     let getTooltip = (index) => {
@@ -10,7 +13,6 @@ const PianoRollKeyboard = (props) => {
         )
     }
     let keys = new Array;
-    console.log(props)
     for (let i = 87; i > 0; i--) {
         if (keyboardWidths[i].sharp) {
             keys.push(
@@ -25,7 +27,7 @@ const PianoRollKeyboard = (props) => {
                 </OverlayTrigger>
             );
         } else {
-            if (['F', 'E', 'B', 'C'].includes(defaultKeysNames[i])) {
+            if (['F', 'E', 'B', 'C'].includes(defaultKeysNamesNoOctaveNumber[i])) {
                 keys.push(
                     <OverlayTrigger key={i.toString()} placement="right" overlay={getTooltip(noteToMIDI(i))} delayShow={500}>
                         <div
@@ -64,8 +66,13 @@ const PianoRollKeyboard = (props) => {
             />
         </OverlayTrigger>)
     return (
-        <div className="pianoRollKeyboard">
-            {keys}
+        <div className="pianoRollKeyboard" >
+            <div
+                className="pianoRollKeyboardContent"
+                ref={(div) => { if(!isNullOrUndefined(div)){ div.style.marginTop = -props.scroll + 'px' }}}
+            >
+                {keys}
+            </div>
         </div>
     );
 }

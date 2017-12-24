@@ -84,17 +84,17 @@ module.exports.SoundOrigin = {
 /**
  * widths in pixels for every piano key to determine if need to be displayed
  */
-let keyboardWidths = [  {sharp: false, startWidth: 0}, {sharp: true, startWidth: 47}, {sharp: false, startWidth: 66}];
-let octaveKeysWidth = [ {sharp: false, startWidth: 0}, {sharp: true, startWidth: 55}, {sharp: false, startWidth: 66},
-                        {sharp: true, startWidth: 123}, {sharp: false, startWidth: 122}, {sharp: false, startWidth: 198},
-                        {sharp: true, startWidth: 254}, {sharp: false, startWidth: 264}, {sharp: true, startWidth: 322},
-                        {sharp: false, startWidth: 330}, {sharp: true, startWidth: 389}, {sharp: false, startWidth: 396}]
-for(let i = 0; i < 7; i++){
-    for(let j = 0; j < 12; j++){
-        keyboardWidths.push({sharp: octaveKeysWidth[j].sharp, startWidth: octaveKeysWidth[j].startWidth + 122 + i * 462});
+let keyboardWidths = [{ sharp: false, startWidth: 0 }, { sharp: true, startWidth: 47 }, { sharp: false, startWidth: 66 }];
+let octaveKeysWidth = [{ sharp: false, startWidth: 0 }, { sharp: true, startWidth: 55 }, { sharp: false, startWidth: 66 },
+{ sharp: true, startWidth: 123 }, { sharp: false, startWidth: 122 }, { sharp: false, startWidth: 198 },
+{ sharp: true, startWidth: 254 }, { sharp: false, startWidth: 264 }, { sharp: true, startWidth: 322 },
+{ sharp: false, startWidth: 330 }, { sharp: true, startWidth: 389 }, { sharp: false, startWidth: 396 }]
+for (let i = 0; i < 7; i++) {
+    for (let j = 0; j < 12; j++) {
+        keyboardWidths.push({ sharp: octaveKeysWidth[j].sharp, startWidth: octaveKeysWidth[j].startWidth + 122 + i * 462 });
     }
 }
-keyboardWidths.push({sharp: false, startWidth: keyboardWidths[86].startWidth + 66});
+keyboardWidths.push({ sharp: false, startWidth: keyboardWidths[86].startWidth + 66 });
 module.exports.keyboardWidths = keyboardWidths;
 
 
@@ -102,47 +102,56 @@ module.exports.keyboardWidths = keyboardWidths;
  * List of strings representing each of 88 notes musical notation for displaying purpose
  */
 let keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-let defaultKeysNames = ['A', 'A#', 'B'];
-for(let i = 0; i < 8; i++){
-for(let j = 0; j < keys.length; j++){
-    defaultKeysNames.push(keys[j]);
+let defaultKeysNames = ['A0', 'A#0', 'B0'];
+for (let i = 0; i < 7; i++) {
+    for (let j = 0; j < keys.length; j++) {
+        defaultKeysNames.push(keys[j] + (i + 1).toString());
+    }
 }
-}
-defaultKeysNames.push('C');
-
+defaultKeysNames.push('C8');
 module.exports.defaultKeysNames = defaultKeysNames;
 
+let defaultKeysNamesNoOctaveNumber = ['A', 'A#', 'B'];
+for (let i = 0; i < 7; i++) {
+    for (let j = 0; j < keys.length; j++) {
+        defaultKeysNamesNoOctaveNumber.push(keys[j]);
+    }
+}
+defaultKeysNamesNoOctaveNumber.push('C');
+
+module.exports.defaultKeysNamesNoOctaveNumber = defaultKeysNamesNoOctaveNumber;
+
 module.exports.defaultKeyBindings = [
-    {MIDINote: 21, keyboardKey: 'q'},
-    {MIDINote: 22, keyboardKey: '2'},
-    {MIDINote: 23, keyboardKey: 'w'},
-    {MIDINote: 24, keyboardKey: 'e'},
-    {MIDINote: 25, keyboardKey: '4'},
-    {MIDINote: 26, keyboardKey: 'r'},
-    {MIDINote: 27, keyboardKey: '5'},
-    {MIDINote: 28, keyboardKey: 't'},
-    {MIDINote: 29, keyboardKey: 'y'},
-    {MIDINote: 30, keyboardKey: '7'},
-    {MIDINote: 31, keyboardKey: 'u'},
-    {MIDINote: 32, keyboardKey: '8'},
-    {MIDINote: 33, keyboardKey: 'i'},
-    {MIDINote: 34, keyboardKey: '9'},
-    {MIDINote: 35, keyboardKey: 'o'},
-    {MIDINote: 36, keyboardKey: 'z'},
-    {MIDINote: 37, keyboardKey: 's'},
-    {MIDINote: 38, keyboardKey: 'x'},
-    {MIDINote: 39, keyboardKey: 'd'},
-    {MIDINote: 40, keyboardKey: 'c'},
-    {MIDINote: 41, keyboardKey: 'v'},
-    {MIDINote: 42, keyboardKey: 'g'},
-    {MIDINote: 43, keyboardKey: 'b'},
-    {MIDINote: 44, keyboardKey: 'h'},
-    {MIDINote: 45, keyboardKey: 'n'},
-    {MIDINote: 46, keyboardKey: 'j'},
-    {MIDINote: 47, keyboardKey: 'm'},
-    {MIDINote: 48, keyboardKey: ','},
-    {MIDINote: 49, keyboardKey: 'l'},
-    {MIDINote: 50, keyboardKey: '.'},
-    {MIDINote: 51, keyboardKey: ';'},
-    {MIDINote: 52, keyboardKey: '/'}
+    { MIDINote: 21, keyboardKey: 'q' },
+    { MIDINote: 22, keyboardKey: '2' },
+    { MIDINote: 23, keyboardKey: 'w' },
+    { MIDINote: 24, keyboardKey: 'e' },
+    { MIDINote: 25, keyboardKey: '4' },
+    { MIDINote: 26, keyboardKey: 'r' },
+    { MIDINote: 27, keyboardKey: '5' },
+    { MIDINote: 28, keyboardKey: 't' },
+    { MIDINote: 29, keyboardKey: 'y' },
+    { MIDINote: 30, keyboardKey: '7' },
+    { MIDINote: 31, keyboardKey: 'u' },
+    { MIDINote: 32, keyboardKey: '8' },
+    { MIDINote: 33, keyboardKey: 'i' },
+    { MIDINote: 34, keyboardKey: '9' },
+    { MIDINote: 35, keyboardKey: 'o' },
+    { MIDINote: 36, keyboardKey: 'z' },
+    { MIDINote: 37, keyboardKey: 's' },
+    { MIDINote: 38, keyboardKey: 'x' },
+    { MIDINote: 39, keyboardKey: 'd' },
+    { MIDINote: 40, keyboardKey: 'c' },
+    { MIDINote: 41, keyboardKey: 'v' },
+    { MIDINote: 42, keyboardKey: 'g' },
+    { MIDINote: 43, keyboardKey: 'b' },
+    { MIDINote: 44, keyboardKey: 'h' },
+    { MIDINote: 45, keyboardKey: 'n' },
+    { MIDINote: 46, keyboardKey: 'j' },
+    { MIDINote: 47, keyboardKey: 'm' },
+    { MIDINote: 48, keyboardKey: ',' },
+    { MIDINote: 49, keyboardKey: 'l' },
+    { MIDINote: 50, keyboardKey: '.' },
+    { MIDINote: 51, keyboardKey: ';' },
+    { MIDINote: 52, keyboardKey: '/' }
 ]
