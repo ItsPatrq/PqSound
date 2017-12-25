@@ -1,5 +1,5 @@
 import React from 'react';
-import { keyboardWidths, defaultKeysNamesNoOctaveNumber } from 'constants/Constants';
+import { keyboardWidths, defaultKeysNamesNoOctaveNumber, defaultKeysNames } from 'constants/Constants';
 import { noteToMIDI } from 'engine/Utils';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { isNullOrUndefined } from 'engine/Utils';
@@ -36,7 +36,7 @@ const PianoRollKeyboard = (props) => {
                             onMouseDown={(event) => props.onDown(event, noteToMIDI(i))}
                             onMouseLeave={(event) => props.onUp(event, noteToMIDI(i))}
                             onMouseUp={(event) => props.onUp(event, noteToMIDI(i))}
-                        />
+                        >{defaultKeysNamesNoOctaveNumber[i] === 'C' ? defaultKeysNames[i] : null}</div>
                     </OverlayTrigger>
                 )
             } else {

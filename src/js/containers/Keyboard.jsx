@@ -331,7 +331,7 @@ class Keyboard extends React.Component {
     }
 
     getDefaultKeyName(note) {
-        return defaultKeysNames[note] + Math.ceil((note - 2) / 12);
+        return defaultKeysNames[note];
     }
 
     getBindingName(note) {

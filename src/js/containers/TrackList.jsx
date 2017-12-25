@@ -122,7 +122,11 @@ class TrackList extends React.Component {
                         onSoloAllClicked={this.handleSoloAllClicked.bind(this)}
                         isAnySolo={this.props.anyActive}
                     />
-                    {renderTrackList}
+                    <div className="trackListContent">
+                        <div className="trackListContentList">
+                            {renderTrackList}
+                        </div>
+                    </div>
                     <AddNewTrackModal
                         showModal={this.props.showModal}
                         modalVisibilitySwitch={this.handleSwitchModalVisibility.bind(this)}

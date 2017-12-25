@@ -2,9 +2,18 @@
     border-style: solid;
     border-width: thin;
     height: calc(100vh - 100px);
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     z-index: 1;
+    padding: 0px;
+}
+
+.trackListContent {
+    height: calc(100vh - 134px);
+    overflow: hidden;
+}
+
+.trackListButtons {
+    height: 34px;
 }
 
 .trackRow {

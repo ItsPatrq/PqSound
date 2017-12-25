@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
 import { keyNotes, defaultKeysNames } from 'constants/Constants';
-import { isNullOrUndefined } from 'engine/Utils';
+import { isNullOrUndefined, noteToMIDI } from 'engine/Utils';
 
 const PianoRoll = (props) => {
     let keyRows = new Array;
@@ -40,6 +40,10 @@ const PianoRoll = (props) => {
                 key={'pianRollKeyRow' + i}
                 onClick={(e) => handleRowClicked(i, e)}
                 style={{ width: props.bitsNumber * 16 * 30 + 'px' }}
+                onMouseEnter={(event) => props.onDown(event, noteToMIDI(i))}
+                onMouseDown={(event) => props.onDown(event, noteToMIDI(i))}
+                onMouseLeave={(event) => props.onUp(event, noteToMIDI(i))}
+                onMouseUp={(event) => props.onUp(event, noteToMIDI(i))}
             >
                 {notes}
             </Row>

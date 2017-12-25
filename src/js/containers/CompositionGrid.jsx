@@ -16,7 +16,9 @@ class CompositionGrid extends React.Component {
         super();
         this.state = {
             scrollPianoRollY: 0,
-            scrollPianoRollX: 0
+            scrollPianoRollX: 0,
+            scrollCompositionX: 0,
+            scrollCompositionY: 0
         }
     }
 
@@ -131,6 +133,18 @@ class CompositionGrid extends React.Component {
                 return { scrollPianoRollY: scroll.pianoRollY };
             });
         }
+        if (!isNullOrUndefined(scroll.compositionX) && scroll.compositionX !== this.state.scrollCompositionX) {
+            this.setState(previousState => {
+                return { scrollCompositionX: scroll.compositionX };
+            });
+        }
+        if (!isNullOrUndefined(scroll.compositionY) && scroll.compositionY !== this.state.scrollCompositionY) {
+            this.setState(previousState => {
+                return { scrollCompositionY: scroll.compositionY };
+            });
+            document.getElementsByClassName('trackListContentList')[0].style.marginTop = -this.state.scrollCompositionY + 'px';
+        } 
+
     }
 
     render() {
@@ -145,6 +159,8 @@ class CompositionGrid extends React.Component {
                     <PianoRollTimeBar
                         bits={bitsNumber}
                         scroll={this.state.scrollPianoRollX}
+                        sixteenthNotePlaying={this.props.sixteenthPlaying}
+                        beatStart={currRegion.start}
                     />
                     <PianoRollKeyboard
                         instrument={getTrackByIndex(this.props.trackList, currTrackIndex).instrument}
@@ -157,7 +173,12 @@ class CompositionGrid extends React.Component {
                         onNoteClick={this.handleNoteClicked.bind(this)}
                         notes={getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).notes}
                         onScroll={this.updateScroll.bind(this)}
+                        onDown={this.handleDown.bind(this)}
+                        onUp={this.handleUp.bind(this)}
                     />
+                    <svg className="svgContainer" style={{left: this.props.sixteenthPlaying*30 - this.state.scrollPianoRollX + 100 - (currRegion.start * 30 * 16) + 'px'}}>
+                        <rect className="currTimeLine" > </rect>
+                    </svg>
                 </Col>
             );
         } else {
@@ -177,10 +198,24 @@ class CompositionGrid extends React.Component {
             trackCompositionRowList.sort((a, b) => { return a.props.trackIndex - b.props.trackIndex });
             return (
                 <Col xs={10} className="nopadding compositionPanel">
-                    <TimeBar bits={this.props.composition.bitsInComposition} />
-                    <div className="compositionRowList">
+                    <TimeBar
+                        bits={this.props.composition.bitsInComposition}
+                        scroll={this.state.scrollCompositionX}
+                        sixteenthNotePlaying={this.props.sixteenthPlaying} 
+                    />
+                    
+                    <div className="compositionRowList" onScroll={(e) => this.updateScroll(
+                        {
+                            compositionX: e.target.scrollLeft,
+                            compositionY: e.target.scrollTop
+                        }
+                    )}
+                    >
                         {trackCompositionRowList}
                     </div>
+                    <svg className="svgContainer" style={{left: this.props.sixteenthPlaying * 50 / 16 - this.state.scrollCompositionX + 'px'}}>
+                        <rect className="currTimeLine" > </rect>
+                    </svg>
                 </Col>
             );
         }
@@ -196,7 +231,8 @@ const mapStateToProps = (state) => {
         regionDrawLength: state.control.regionDrawLength,
         noteDrawLength: state.control.noteDrawLength,
         keyboard: state.keyboard,
-        sound: state.webAudio.sound
+        sound: state.webAudio.sound,
+        sixteenthPlaying: state.control.sixteenthNotePlaying
     }
 }
 
