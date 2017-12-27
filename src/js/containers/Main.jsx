@@ -12,6 +12,7 @@ require('styles/Keyboard.css');
 require('styles/CompositionGrid.css');
 require('styles/TrackDetails.css');
 require('styles/ControlBar.css');
+require('styles/Fonts.css');
 
 class Main extends React.Component {
     componentDidMount() {

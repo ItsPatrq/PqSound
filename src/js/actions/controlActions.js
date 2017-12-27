@@ -18,6 +18,13 @@ export function changeTool(tool){
     }
 }
 
+export function changeSecoundaryTool(tool){
+    return{
+        type: 'CHANGE_SECOUNDARY_TOOL',
+        payload: tool
+    }
+}
+
 export function changeRegionDrawLength(length){
     return {
         type: 'CHANGE_REGION_DRAW_LENGTH',
@@ -50,5 +57,11 @@ export function changeMidiDevice(deviceId){
     return {
         type: 'CHANGE_MIDI_DEVICE',
         payload: deviceId
+    }
+}
+
+export function switchAltKey(){
+    return {
+        type: 'SWITCH_ALT_KEY'
     }
 }

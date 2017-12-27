@@ -2,8 +2,8 @@ import * as Utils from 'engine/Utils';
 import * as compositionParser from 'engine/CompositionParser';
 
 export default function reducer(state = {
-    bitsInComposition: 48,
-    maxBitsInComposition: 1000,
+    barsInComposition: 48,
+    maxBarsInComposition: 1000,
     showPianoRoll: false,
     pianoRollRegion: null,
     regionList: new Array,
@@ -81,7 +81,7 @@ export default function reducer(state = {
         case 'CHANGE_BITS_NUMBER': {
             return {
                 ...state,
-                bitsInComposition: action.payload
+                barsInComposition: action.payload
             }
         }
         case 'SHOW_PIANO_ROLL': {
@@ -107,10 +107,10 @@ export default function reducer(state = {
                 showPianoRoll: show
             }
         }
-        case 'CHANGE_BITS_IN_COMPOSITION': {
+        case 'CHANGE_BARS_IN_COMPOSITION': {
             return {
                 ...state,
-                bitsInComposition: action.payload
+                barsInComposition: action.payload
             }
         }
     }

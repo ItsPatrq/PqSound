@@ -3,6 +3,7 @@ import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { switchKeyboardVisibility, updateWidth, switchKeyNameVisibility, switchKeyBindVisibility } from 'actions/keyboardActions';
 import { switchPianorollVisibility } from 'actions/compositionActions';
+import {switchAltKey} from 'actions/controlActions'
 import * as Utils from 'engine/Utils';
 
 class TopNavBar extends React.Component {
@@ -24,6 +25,16 @@ class TopNavBar extends React.Component {
                         that.handleSwitchKeyNameVisibility();
                         break;
                     }
+                    case 18:{
+                        that.props.dispatch(switchAltKey());
+                    }
+                }
+            }
+        }, false);
+        window.addEventListener('keyup', function (e){
+            switch(e.keyCode){
+                case 18: {
+                    that.props.dispatch(switchAltKey());
                 }
             }
         }, false);

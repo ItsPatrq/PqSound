@@ -233,12 +233,12 @@
     width: 20px;
     height: 10px;
     bottom: 0px;
-    fill: #fdfd70;
+    fill: #f4f4f4;
     margin-left: -10px;
 }
 
 .svgContainer{
-    width: 2px;
+    width: 3px;
     height: 100%;
     top: 34px;
     position: absolute;
@@ -246,10 +246,10 @@
 
 .currTimeLine{
     display: block;
-    fill: #fdfd70;
-    stroke: #fdfd70;
+    fill: #f4f4f4;
+    stroke: #f4f4f4;
     stroke-opacity: .2;
     stroke-width: 2px;
     height: 100%;
-    width: 0.5px;
+    width: 1px;
 }

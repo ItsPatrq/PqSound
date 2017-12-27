@@ -3,13 +3,9 @@ import { Col, Button, Glyphicon } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Sequencer from 'engine/Sequencer';
 import * as Actions from 'actions/controlActions';
-import { changeBitsInComposition } from 'actions/compositionActions';
-import BPMInput from 'components/ControlBar/BPMInput';
-import ToolDropdown from 'components/ControlBar/ToolDropdown';
-import NoteDrawLengthDropdown from 'components/ControlBar/NoteDrawLengthDropdown';
-import RegionDrawLengthInput from 'components/ControlBar/RegionDrawLengthInput';
-import BitsInCompositionInput from 'components/ControlBar/BitsInCompositionInput';
-// import TimeBox from 'components/ControlBar/TimeBox';
+import { changeBarsInComposition } from 'actions/compositionActions';
+import ToolsSelector from 'components/ControlBar/ToolsSelector';
+import ProjectInfoBox from 'components/ControlBar/ProjectInfoBox';
 import MIDIDeviceSelector from 'components/ControlBar/MIDIDeviceSelector';
 import { isNullOrUndefined } from 'engine/Utils';
 
@@ -21,7 +17,7 @@ class ControlBar extends React.Component {
         this.state = {
             tempBPM: props.controlState.BPM,
             tempRegionDrawLength: props.controlState.regionDrawLength,
-            tempBitsInComposition: props.bitsInComposition
+            tempBarsInComposition: props.barsInComposition
         };
     }
 
@@ -64,6 +60,11 @@ class ControlBar extends React.Component {
             this.props.dispatch(Actions.changeTool(tool));
     }
 
+    handleSecoundaryToolChange(tool) {
+        if (tool !== this.props.controlState.secoundaryTool)
+            this.props.dispatch(Actions.changeSecoundaryTool(tool));
+    }
+
     handleNoteDrawLengthChange(length) {
         if (length !== this.props.controlState.noteDrawLength) {
             this.props.dispatch(Actions.changeNoteDrawLength(length));
@@ -83,25 +84,25 @@ class ControlBar extends React.Component {
         this.setState(() => { return { tempRegionDrawLength: regionDrawLength }; });
     }
 
-    handleBitsInCompositionChange() {
+    handleBarsInCompositionChange() {
         //TODO: Delete regions on lowering bits in coposition
-        if (this.state.tempBitsInComposition >= 48 && this.state.tempBitsInComposition <= this.props.maxBitsInComposition &&
-            this.state.tempBitsInComposition !== this.props.bitsInComposition) {
-            this.props.dispatch(changeBitsInComposition(this.state.tempBitsInComposition));
+        if (this.state.tempBarsInComposition >= 48 && this.state.tempBarsInComposition <= this.props.maxBarsInComposition &&
+            this.state.tempBarsInComposition !== this.props.BarsInComposition) {
+            this.props.dispatch(changeBarsInComposition(this.state.tempBarsInComposition));
         } else {
-            this.setState(() => { return { tempBitsInComposition: this.props.bitsInComposition }; });
+            this.setState(() => { return { tempBarsInComposition: this.props.barsInComposition }; });
         }
     }
 
-    handleTempBitsInComposition(bitsInComposition) {
-        this.setState(() => { return { tempBitsInComposition: bitsInComposition }; });
+    handleTempBarsInComposition(barsInComposition) {
+        this.setState(() => { return { tempBarsInComposition: barsInComposition }; });
     }
 
     getMIDIDeviceSelectorDropDownTitle() {
         if (this.props.controlState.midiController.MIDISupported) {
             if (this.props.controlState.midiController.devices.input.length > 0) {
-                if (isNullOrUndefined(this.props.controlState.midiController.selectedInputDevice)){
-                    return 'Choose a MIDI device'
+                if (isNullOrUndefined(this.props.controlState.midiController.selectedInputDevice)) {
+                    return 'No device selected'
                 } else {
                     return this.props.controlState.midiController.selectedInputDevice.name;
                 }
@@ -113,40 +114,52 @@ class ControlBar extends React.Component {
         }
     }
 
-    handleDeviceChange(deviceId){
-        if( !(deviceId === null && isNullOrUndefined(this.props.controlState.midiController.selectedInputDevice)) &&
+    handleDeviceChange(deviceId) {
+        if (!(deviceId === null && isNullOrUndefined(this.props.controlState.midiController.selectedInputDevice)) &&
             (isNullOrUndefined(this.props.controlState.midiController.selectedInputDevice) ||
-            deviceId !== this.props.controlState.midiController.selectedInputDevice.id)){
-                this.props.dispatch(Actions.changeMidiDevice(deviceId));
+                deviceId !== this.props.controlState.midiController.selectedInputDevice.id)) {
+            this.props.dispatch(Actions.changeMidiDevice(deviceId));
         }
     }
 
     render() {
         return (
             <Col xs={12} className="controlBar">
-                <BPMInput changeBPM={this.handleBPMChange.bind(this)} changeTempBPM={this.handleTempBPMChange.bind(this)} BPM={this.state.tempBPM} />
-                <ToolDropdown id={'leftClickTools'} onToolChange={this.handleToolChange.bind(this)} />
-                <NoteDrawLengthDropdown id={'noteDrawLength'} isVisible={this.props.showPianoRoll} onNoteDrawLengthChange={this.handleNoteDrawLengthChange.bind(this)} />
-                <RegionDrawLengthInput id={'regionDrawLength'} isVisible={!this.props.showPianoRoll}
-                    regionDrawLength={this.state.tempRegionDrawLength} onRegionDrawLengthChange={this.handleRegionDrawLengthChange.bind(this)}
-                    onTempRegionDrawLengthChange={this.handleTempRegionDrawLengthChange.bind(this)}
-                />
-                <BitsInCompositionInput id={'bitsInComposition'} onBitsInCompositionChange={this.handleBitsInCompositionChange.bind(this)}
-                    onTempBitsInCompositionChange={this.handleTempBitsInComposition.bind(this)} bitsInComposition={this.state.tempBitsInComposition}
-                />
-                <MIDIDeviceSelector
+                <Col xs={2}>
+                    <MIDIDeviceSelector
                         devices={this.props.controlState.midiController.devices.input}
                         dropDownTitle={this.getMIDIDeviceSelectorDropDownTitle()}
                         onDeviceChange={this.handleDeviceChange.bind(this)}
+                    />
+                </Col>
+                <Col xs={2} className="controlButtons">
+                    <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play" /></Button>
+                    <Button onClick={this.handlePause.bind(this)}><Glyphicon glyph="pause" /></Button>
+                    <Button onClick={this.handleStop.bind(this)}><Glyphicon glyph="stop" /></Button>
+                </Col>
+                
+                <ProjectInfoBox
+                    changeBPM={this.handleBPMChange.bind(this)}
+                    changeTempBPM={this.handleTempBPMChange.bind(this)}
+                    BPM={this.state.tempBPM}
+                    currSixteenth={this.props.controlState.sixteenthNotePlaying}
+                    onBarsInCompositionChange={this.handleBarsInCompositionChange.bind(this)}
+                    onTempBarsInCompositionChange={this.handleTempBarsInComposition.bind(this)}
+                    barsInComposition={this.state.tempBarsInComposition}
                 />
-                <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play" /></Button>
-                <Button onClick={this.handlePause.bind(this)}><Glyphicon glyph="pause" /></Button>
-                <Button onClick={this.handleStop.bind(this)}><Glyphicon glyph="stop" /></Button>
-                *Time Signature: 4/4* <br />
-                *currenttime={this.props.controlState.sixteenthNotePlaying * 0.25 * (60 / this.props.controlState.BPM)}*
-                *current note playing: {this.props.controlState.sixteenthNotePlaying}*
-                TimeBox ms={this.props.controlState.sixteenthNotePlaying * 0.25 * (60 / this.props.controlState.BPM)} />
-
+                <Col xs={2}>
+                    <ToolsSelector
+                        handleToolChange={this.handleToolChange.bind(this)}
+                        handleSecoundaryToolChange={this.handleSecoundaryToolChange.bind(this)}
+                        pianoRollVIsible={this.props.showPianoRoll}
+                        hangleNoteDrawLengthChange={this.handleNoteDrawLengthChange.bind(this)}
+                        regionDrawLength={this.state.tempRegionDrawLength}
+                        handleRegionDrawLengthChange={this.handleRegionDrawLengthChange.bind(this)}
+                        handleTempRegionDrawLengthChange={this.handleTempRegionDrawLengthChange.bind(this)}
+                        tool={this.props.controlState.tool}
+                        secoundaryTool={this.props.controlState.secoundaryTool}
+                    />
+                </Col>
             </Col>
         );
     }
@@ -157,8 +170,8 @@ const mapStateToProps = (state) => {
     return {
         controlState: state.control,
         showPianoRoll: state.composition.showPianoRoll,
-        bitsInComposition: state.composition.bitsInComposition,
-        maxBitsInComposition: state.composition.maxBitsInComposition
+        barsInComposition: state.composition.barsInComposition,
+        maxBarsInComposition: state.composition.maxBarsInComposition
     }
 }
 

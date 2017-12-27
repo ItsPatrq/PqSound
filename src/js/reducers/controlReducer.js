@@ -8,10 +8,12 @@ export default function reducer(state = {
     playing: false,
     show: false,
     tool: Constants.tools.draw.id,
+    secoundaryTool: Constants.tools.select.id,
     noteDrawLength: 2,
     regionDrawLength: 2,
     maxRegionDrawLength: 16,
     sixteenthNotePlaying: 0,
+    altClicked: false,
     midiController: new MIDIController()
 }, action) {
     switch (action.type) {
@@ -31,6 +33,12 @@ export default function reducer(state = {
             return {
                 ...state,
                 tool: action.payload
+            }
+        }
+        case 'CHANGE_SECOUNDARY_TOOL':{
+            return {
+                ...state,
+                secoundaryTool: action.payload
             }
         }
         case 'CHANGE_REGION_DRAW_LENGTH':{
@@ -61,6 +69,12 @@ export default function reducer(state = {
             return {
                 ...state,
                 midiController: state.midiController.changeMidiDevice(action.payload)
+            }
+        }
+        case 'SWITCH_ALT_KEY':{
+            return {
+                ...state,
+                altClicked: !state.altClicked
             }
         }
     }

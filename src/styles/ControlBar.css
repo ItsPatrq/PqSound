@@ -6,23 +6,242 @@
     background: rgb(129, 129, 129);
     overflow: visible;
     display: flex;
-    display: -webkit-flex;
+    overflow: auto;
+}
+
+.midiDeviceSelectorBox {
+    display: inline-flex;
+    height: 100%;
+    width: 180px;
+    border-radius: 2px;
+    color: rgb(239, 248, 255);
+    padding: 5px;
+    box-shadow: 0px 1px 1px inset;
+    margin-left: 10px;
+    margin-right: 10px;
+    background: rgb(98, 96, 104);
+}
+
+.midiDeviceSelectorName {
+    position: absolute;
+    font-size: x-small; 
+    width: inherit;
+    text-align: center;
+    top: 8px;
+    cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.midiDeviceSelectorDropDown {
+    background: transparent;
+    padding-top: 13px;
+    padding-bottom: 0;
+    width: 170px;
+    border-color: transparent;
+    text-shadow: transparent;
+    box-shadow: transparent;
+    color: rgb(239, 248, 255);
+}
+
+.midiDeviceSelectorDropDown:focus {
+    
+    color: rgb(239, 248, 255);
+}
+.midiDeviceSelectorDropDown:hover {
+    color: rgb(239, 248, 255);
+}
+
+.projectInfoBox {
+    display: inline-flex;
+    height: auto;
+    width: fit-content;
+    border-radius: 5px;
+    background-color: rgb(27, 30, 43);
+    color: rgb(176, 203, 224);
+    padding: 5px;
+    box-shadow: 0px 1px 1px inset;
+    font-family: digital, sans-serif;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .formControlBPM {
-    display: inline-flex;
+    display: flex;
     margin-left: 0px;
     align-content: flex-start;
+    width: 45px;
+    text-align: center;
+    overflow: hidden;
 }
 
-.formControlBitsInComposition {
+.formControlBarsInComposition {
     display: inline-flex;
     margin-left: 0px;
     align-content: flex-start;
+    width: 45px;
+    text-align: center;
+    overflow: hidden;
 }
 
-.midiDeviceSelector {
-    display: inline-flex;
+.formControlTimeSignature {
+    display: flex;
     margin-left: 0px;
     align-content: flex-start;
+    width: 45px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.projectInfoBoxPropertyName {
+    position: absolute;
+    font-size: x-small; 
+    width: inherit;
+    bottom: 6px;
+    cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.toolDropdownLabel{
+    position: absolute;
+    font-size: x-small; 
+    width: inherit;
+    bottom: -3px;
+    cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: center;
+}
+
+.toolsContainer {
+    width: 190px;
+}
+
+.bpmDisplay {
+    font-size: x-large;
+    width: 45px;
+}
+
+.barsInCompositionDisplay {
+    font-size: x-large;
+    width: 45px;
+}
+
+.barsInCompositionDisplay:hover{
+    background-color: rgb(45, 49, 68);
+}
+
+.timeSignatureDisplay {
+    font-size: x-large;
+    width: 45px;
+}
+
+.bpmDisplay:hover{
+    background-color: rgb(45, 49, 68);
+}
+
+.projectInfoBoxBreak {
+    margin-left: 5px;
+    margin-right: 5px;
+    position: relative;
+    width: 1px;
+    height: auto;
+    background-color: rgb(176, 203, 224);
+    margin-top: -5px;
+    margin-bottom: -5px;
+}
+
+.bpmInput{
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    text-align: center;
+    font-family: digital, sans-serif;
+}
+
+.barsInCompositionInput{
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    text-align: center;
+    font-family: digital, sans-serif;
+}
+
+.clockWrap {
+    width: fit-content;
+    display: inline-flex;
+    text-align: center;
+}
+
+.clockNumber {
+    width: 15px;
+    font-size: x-large;
+}
+
+.clockBars {
+    width: 45px;
+    display: inline-flex;
+    text-align: center;
+    margin-right: 15px;
+}
+
+.clockBeats {
+    width: 20px;
+    display: inline-flex;
+    text-align: center;
+    margin-right: 15px;
+}
+
+.clockSixteenth {
+    width: 20px;
+    display: inline-flex;
+    text-align: center;
+}
+
+.clockTime {
+    width: 40px;
+    display: inline-flex;
+    text-align: center;
+    margin-right: 15px;
+}
+
+.clockTimeCs {
+    width: 20px;
+    display: inline-flex;
+    text-align: center;
+}
+
+.ToolsSelectorBox {
+    display: -webkit-inline-box;
+    height: 100%;
+    width: fit-content;
+    color: rgb(239, 248, 255);
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.toolInput {
+    width: 90px;
+    height: 30px;
+    border-radius: 5px;
+    background: rgb(73, 73, 73);
+    color: rgb(239, 248, 255);
+    margin-right: 2px;
+    margin-left: 2px;
+}
+
+.toolInput:hover {
+    color: rgb(239, 248, 255);
+    background: rgb(73, 73, 73);
+}
+.toolInput:focus {
+    color: rgb(239, 248, 255);
+    background: rgb(73, 73, 73);
+}
+
+.controlButtons {
+    display: inline-flex;
 }

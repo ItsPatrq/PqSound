@@ -8,7 +8,7 @@ const PianoRoll = (props) => {
     let handleRowClicked = (note, event) => {
         let el = event.target.className === 'note' ? event.target.parentElement : event.target;
         let sixteenth = Math.floor((event.clientX - el.getClientRects()[0].left) / 30);
-        props.onNoteClick(note, sixteenth);
+        props.onNoteClick(event, note, sixteenth);
     }
     for (let i = 87; i >= 0; i--) {
         let rowClassName;

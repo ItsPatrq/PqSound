@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Col, Row, Button, ButtonGroup, Glyphicon, FormControl } from 'react-bootstrap';
-import { TrackTypes } from 'constants/Constants';
+import { TrackTypes, samplerIcon, virtualInstrumentIcon, auxIcon  } from 'constants/Constants';
 
 const Track = (props) => {
     let handleTrackNameChange = (event) => {
@@ -44,31 +44,49 @@ const Track = (props) => {
             <Glyphicon glyph="arrow-down" />
         </Button>;
     }
+    let getIcon = () => {
+        switch(props.trackDetails.trackType ){
+            case TrackTypes.aux:{
+                return auxIcon;
+            }
+            case TrackTypes.virtualInstrument:{
+                if(props.trackDetails.instrument.name === "Sampler"){
+                    return samplerIcon;
+                } else {
+                    return virtualInstrumentIcon;
+                }
+            }
+        }
+    }
     //TODO: text input not triggering piano
     return (
-        <Row className={getTrackRowClassName()} onClick={() => props.handleRowClicked(props.trackDetails.index)}>
-            <Col xs={2}>
+        <Row
+            className={getTrackRowClassName()}
+            onClick={() => props.handleRowClicked(props.trackDetails.index)}
+            style={{ marginLeft: 0, marginRight: 0 }}
+        >
+            <Col xs={2} className="nopadding">
                 <p> {props.trackDetails.index} </p>
+                {buttonIndexDown}
+                {buttonIndexUp}
             </Col>
-            <Col xs={2}>
-                <Glyphicon glyph="picture" />
+            <Col xs={2} className="nopadding">
+                <img src={getIcon()} />
             </Col>
-            <Col xs={8}>
-                <ButtonGroup>
-                    {buttonSolo}
-                    {buttonMute}
-                    {buttonRecord}
-                    {buttonIndexDown}
-                    {buttonIndexUp}
-                </ButtonGroup>
-                <FormControl value={props.trackDetails.name} onChange={handleTrackNameChange} />
-                <Button bsSize="xsmall"><Glyphicon glyph="remove" onClick={() => props.handleRemove(props.trackDetails.index)} /></Button>
-            </Col>
+            <Col xs={8} className="nopadding">
+                    <ButtonGroup style={{ display: 'flex-inline', position: 'absolute', right: '0' }}>
+                        {buttonSolo}
+                        {buttonMute}
+                        {buttonRecord}
+                        <Button bsSize="xsmall"><Glyphicon glyph="remove" onClick={() => props.handleRemove(props.trackDetails.index)} /></Button>
+                    </ButtonGroup>
+                    <FormControl className="trackNameFormControl" value={props.trackDetails.name} onChange={handleTrackNameChange} />
+                </Col>
         </Row>
-    );
+            );
 }
 Track.propTypes = {
-    trackDetails: PropTypes.object.isRequired
+                trackDetails: PropTypes.object.isRequired
 }
 
 export default Track;

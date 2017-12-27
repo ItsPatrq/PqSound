@@ -1,6 +1,7 @@
 .trackList {
     border-style: solid;
     border-width: thin;
+    border-color: #212121;
     height: calc(100vh - 100px);
     overflow: hidden;
     z-index: 1;
@@ -44,4 +45,16 @@
     border-width: thin;
     border-color: #212121;
 
+}
+
+.trackNameFormControl {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #212121;
+    margin-top: 25px;
 }

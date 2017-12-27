@@ -39,7 +39,9 @@ class TrackList extends React.Component {
     }
 
     handleTrackNameChange(event, trackIndex) {
-        this.props.dispatch(trackListActions.changeTrackName(event.target.value, trackIndex));
+        if(event.target.value.length > 0){
+            this.props.dispatch(trackListActions.changeTrackName(event.target.value, trackIndex));
+        }
     }
 
     //Sprawdzanie czy wybrany jest sampler i czy ma załadowane sample TODO: zmienic nazwe tej metody?

@@ -11,7 +11,7 @@ const InstrumentInput = (props) => {
                 <MenuItem
                     key={(Instruments[property].id + 1).toString()}
                     eventKey={(Instruments[property].id + 1).toString()}
-                    onClick={() => {props.onInstrumentChange(Instruments[property].id)}}
+                    onClick={() => { props.onInstrumentChange(Instruments[property].id) }}
                 >
                     {Instruments[property].name}
                 </MenuItem>
@@ -19,17 +19,19 @@ const InstrumentInput = (props) => {
         }
     }
     return (
-        <ButtonToolbar className="instrumentInput">
-            <SplitButton bsStyle="info" title={props.selectedTrack.instrument.name} id="split-button-instrument-input" onClick={() => props.instrumentModalVisibilitySwitch()}>
-                {availableInstruments}
-            </SplitButton>
-            <InstrumentModal
-                modalVisibilitySwitch={props.instrumentModalVisibilitySwitch}
-                showModal={props.showModal}
-                track={props.selectedTrack}
-                onSamplerPresetChange={props.onSamplerPresetChange}
-            />
-        </ButtonToolbar>
+        <div className="instrumentInputContainer">
+            <ButtonToolbar className="instrumentInput">
+                <SplitButton bsStyle="info" title={props.selectedTrack.instrument.name} id="split-button-instrument-input" onClick={() => props.instrumentModalVisibilitySwitch()}>
+                    {availableInstruments}
+                </SplitButton>
+                <InstrumentModal
+                    modalVisibilitySwitch={props.instrumentModalVisibilitySwitch}
+                    showModal={props.showModal}
+                    track={props.selectedTrack}
+                    onSamplerPresetChange={props.onSamplerPresetChange}
+                />
+            </ButtonToolbar>
+        </div>
     );
 }
 

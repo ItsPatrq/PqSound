@@ -76,9 +76,9 @@ export function removeNote (newRegionId, newNoteNumber, newSixteenthNumber, newN
     }
 }
 
-export function changeBitsInComposition (newBitsInComposition){
+export function changeBarsInComposition (newBarsInComposition){
     return{
-        type: 'CHANGE_BITS_IN_COMPOSITION',
-        payload: newBitsInComposition
+        type: 'CHANGE_BARS_IN_COMPOSITION',
+        payload: newBarsInComposition
     }
 }

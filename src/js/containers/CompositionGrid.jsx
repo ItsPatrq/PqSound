@@ -8,7 +8,7 @@ import PianoRollKeyboard from 'components/CompositionGrid/PianoRollKeyboard';
 import PianoRollTimeBar from 'components/CompositionGrid/PianoRollTimeBar';
 import { showPianoRoll, addRegion, removeRegion, addNote, removeNote } from 'actions/compositionActions';
 import { getRegionIdByBitIndex, getRegionByRegionId, notesToDrawParser } from 'engine/CompositionParser';
-import { tools, SoundOrigin } from 'constants/Constants'
+import { tools, SoundOrigin, pencilIcon, eraserIcon, copyIcon } from 'constants/Constants'
 import { getTrackByIndex, isNullOrUndefined } from 'engine/Utils';
 import * as KeyboardActions from 'actions/keyboardActions';
 class CompositionGrid extends React.Component {
@@ -22,12 +22,12 @@ class CompositionGrid extends React.Component {
         }
     }
 
-    handleEmptyBitClicked(trackIndex, bitIndex, bitsToDraw) {
-        switch (this.props.selectedTool) {
+    handleEmptyBarClicked(event, trackIndex, bitIndex, bitsToDraw) {
+        switch (event.altKey ? this.props.selectedSecoundaryTool : this.props.selectedTool) {
             case tools.draw.id: {
                 let canDraw = true;
                 for (let i = 0; i < this.props.regionDrawLength; i++) {
-                    if (bitsToDraw[bitIndex + i] || bitIndex + i >= this.props.composition.bitsInComposition) {
+                    if (bitsToDraw[bitIndex + i] || bitIndex + i >= this.props.composition.BarsInComposition) {
                         canDraw = false;
                         break;
                     }
@@ -40,9 +40,10 @@ class CompositionGrid extends React.Component {
         }
     }
 
-    handleRegionClicked(trackIndex, bitIndex) {
+    handleRegionClicked(event, trackIndex, bitIndex) {
         let regionIndex = getRegionIdByBitIndex(trackIndex, bitIndex);
-        switch (this.props.selectedTool) {
+
+        switch (event.altKey ? this.props.selectedSecoundaryTool : this.props.selectedTool) {
             case tools.select.id: {
                 this.props.dispatch(showPianoRoll(trackIndex, regionIndex));
                 break;
@@ -54,7 +55,7 @@ class CompositionGrid extends React.Component {
         }
     }
 
-    handleNoteClicked(noteNumber, sixteenthNumber) {
+    handleNoteClicked(event, noteNumber, sixteenthNumber) {
         let noteLength;
         switch (this.props.noteDrawLength) {
             case 0: {
@@ -75,7 +76,7 @@ class CompositionGrid extends React.Component {
             }
         }
         let notesToDraw = notesToDrawParser(noteNumber);
-        switch (this.props.selectedTool) {
+        switch (event.altKey ? this.props.selectedSecoundaryTool : this.props.selectedTool) {
             case tools.draw.id: {
                 let canDraw = sixteenthNumber + noteLength <= notesToDraw.length ? true : false;
                 for (let i = 0; i < noteLength && canDraw; i++) {
@@ -147,6 +148,20 @@ class CompositionGrid extends React.Component {
 
     }
 
+    getCursor(){
+        switch (this.props.altClicked ? this.props.selectedSecoundaryTool : this.props.selectedTool) {
+            case tools.draw.id: {
+                return pencilIcon+',auto';
+            }
+            case tools.remove.id: {
+                return eraserIcon+',auto';
+            }
+            case tools.select.id :{
+                return 'default';
+            }
+        }
+    }
+
     render() {
         let trackCompositionRowList = new Array;
         let pianoRoll;
@@ -168,6 +183,7 @@ class CompositionGrid extends React.Component {
                         onUp={this.handleUp.bind(this)}
                         scroll={this.state.scrollPianoRollY}
                     />
+                    <div style={{cursor:this.getCursor()}}>
                     <PianoRoll
                         bitsNumber={bitsNumber}
                         onNoteClick={this.handleNoteClicked.bind(this)}
@@ -176,6 +192,7 @@ class CompositionGrid extends React.Component {
                         onDown={this.handleDown.bind(this)}
                         onUp={this.handleUp.bind(this)}
                     />
+                    </div>
                     <svg className="svgContainer" style={{left: this.props.sixteenthPlaying*30 - this.state.scrollPianoRollX + 100 - (currRegion.start * 30 * 16) + 'px'}}>
                         <rect className="currTimeLine" > </rect>
                     </svg>
@@ -187,11 +204,11 @@ class CompositionGrid extends React.Component {
              */
             for (let i = 1; i < this.props.trackList.length; i++) {
                 trackCompositionRowList.push(<TrackCompositionRow
-                    bits={this.props.composition.bitsInComposition}
+                    bits={this.props.composition.barsInComposition}
                     key={this.props.trackList[i].index}
                     trackIndex={this.props.trackList[i].index}
                     trackType={this.props.trackList[i].trackType}
-                    onEmptyBitClick={this.handleEmptyBitClicked.bind(this)}
+                    onEmptyBarClick={this.handleEmptyBarClicked.bind(this)}
                     onRegionClick={this.handleRegionClicked.bind(this)}
                 />)
             }
@@ -199,17 +216,20 @@ class CompositionGrid extends React.Component {
             return (
                 <Col xs={10} className="nopadding compositionPanel">
                     <TimeBar
-                        bits={this.props.composition.bitsInComposition}
+                        bits={this.props.composition.barsInComposition}
                         scroll={this.state.scrollCompositionX}
                         sixteenthNotePlaying={this.props.sixteenthPlaying} 
                     />
                     
-                    <div className="compositionRowList" onScroll={(e) => this.updateScroll(
+                    <div 
+                    className="compositionRowList" 
+                    onScroll={(e) => this.updateScroll(
                         {
                             compositionX: e.target.scrollLeft,
                             compositionY: e.target.scrollTop
                         }
                     )}
+                    style={{cursor:this.getCursor()}}
                     >
                         {trackCompositionRowList}
                     </div>
@@ -228,11 +248,13 @@ const mapStateToProps = (state) => {
         trackList: state.tracks.trackList,
         composition: state.composition,
         selectedTool: state.control.tool,
+        selectedSecoundaryTool: state.control.secoundaryTool,
         regionDrawLength: state.control.regionDrawLength,
         noteDrawLength: state.control.noteDrawLength,
         keyboard: state.keyboard,
         sound: state.webAudio.sound,
-        sixteenthPlaying: state.control.sixteenthNotePlaying
+        sixteenthPlaying: state.control.sixteenthNotePlaying,
+        altClicked: state.control.altClicked
     }
 }
 

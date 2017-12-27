@@ -25,9 +25,15 @@ const MIDIDeviceSelector = (props) => {
         );
     }
     return (
-        <div className="midiDeviceSelector">
-            <p>MIDI device </p>
-            <DropdownButton disabled={!isEnabled} bsStyle="default" className="drop-down" title={props.dropDownTitle} id="MidiDeviceSelectorDropDown" >
+        <div className="midiDeviceSelectorBox">
+            <div className="midiDeviceSelectorName">MIDI device</div>
+            <DropdownButton
+                disabled={!isEnabled}
+                bsStyle="link"
+                className="drop-down midiDeviceSelectorDropDown"
+                title={props.dropDownTitle}
+                id="MidiDeviceSelectorDropDown"
+                >
                 {availableDevices}
             </DropdownButton>
         </div>

@@ -140,7 +140,7 @@ class TrackDetails extends React.Component {
                     />;
             } else {
                 instrumentComponent =
-                    <ButtonToolbar className="instrumentInput">
+                    <ButtonToolbar className="instrumentInputContainer">
                         <p>Track type: {this.getTypeNameByTrackId(this.props.selected)}</p>
                     </ButtonToolbar>;
             }
@@ -172,8 +172,7 @@ class TrackDetails extends React.Component {
                         <TrackName name={this.getTrackName(this.props.selected)} />
                     </Col>
                     <Col xs={6} className="trackDetails">
-                        <ButtonToolbar className="instrumentInput">
-                            <p>Track type: {this.getTypeNameByTrackId(0)}</p>
+                        <ButtonToolbar className="instrumentInputContainer">
                         </ButtonToolbar>
                         <PluginsList />
                         <Output
@@ -207,8 +206,7 @@ class TrackDetails extends React.Component {
                         <p>No track selected</p>
                     </Col>
                     <Col xs={6} className="trackDetails">
-                        <ButtonToolbar className="instrumentInput">
-                            <p>{this.getTypeNameByTrackId(0)}</p>
+                        <ButtonToolbar className="instrumentInputContainer">
                         </ButtonToolbar>
                         <PluginsList />
                         <PanKnob />
