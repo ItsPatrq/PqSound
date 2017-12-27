@@ -65,3 +65,17 @@ export function switchAltKey(){
         type: 'SWITCH_ALT_KEY'
     }
 }
+
+export function initSequencer(sequencer){
+    return {
+        type: 'INIT_SEQUENCER',
+        payload: sequencer
+    }
+}
+
+export function changeCurrentTime(newSixteenthNotePlaying){
+    return {
+        type: 'CHANGE_CURRENT_TIME',
+        payload: newSixteenthNotePlaying
+    }
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 const TimeMeter = (props) => {
     let getMin = () => {
-        let minutes = props.currSixteenth * 0.25 * (60 / props.bpm) / 600;
+        let minutes = Math.floor(props.currSixteenth * 0.25 * (60 / props.bpm) / 60);
         if (minutes < 10) {
             return '0' + minutes;
         } else {

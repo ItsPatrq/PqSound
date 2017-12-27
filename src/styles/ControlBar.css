@@ -4,9 +4,8 @@
     padding-top: 5px;
     padding-bottom: 5px;
     background: rgb(129, 129, 129);
-    overflow: visible;
     display: flex;
-    overflow: auto;
+    overflow: visible;
 }
 
 .midiDeviceSelectorBox {

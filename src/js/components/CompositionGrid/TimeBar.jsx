@@ -5,7 +5,12 @@ const TimeBar = (props) => {
     let beats = new Array;
     for (let i = 0; i <= props.bits; i++) {
         beats.push(
-            <div className="timeBarBeat" style={{ left: i * 50 - props.scroll + 'px' }} key={i.toString()}>
+            <div
+                className="timeBarBeat"
+                style={{ left: i * 50 - props.scroll + 'px' }}
+                key={i.toString()}
+                onClick={() => props.changeCurrSixteenth(i*16)}
+            >
                 {i}
             </div>
         );

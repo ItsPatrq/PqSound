@@ -7,6 +7,7 @@ import TimeBar from 'components/CompositionGrid/TimeBar';
 import PianoRollKeyboard from 'components/CompositionGrid/PianoRollKeyboard';
 import PianoRollTimeBar from 'components/CompositionGrid/PianoRollTimeBar';
 import { showPianoRoll, addRegion, removeRegion, addNote, removeNote } from 'actions/compositionActions';
+import {changeCurrentTime} from 'actions/controlActions';
 import { getRegionIdByBitIndex, getRegionByRegionId, notesToDrawParser } from 'engine/CompositionParser';
 import { tools, SoundOrigin, pencilIcon, eraserIcon, copyIcon } from 'constants/Constants'
 import { getTrackByIndex, isNullOrUndefined } from 'engine/Utils';
@@ -162,6 +163,10 @@ class CompositionGrid extends React.Component {
         }
     }
 
+    handleChangeCurrentSixteenth(sixteenth){
+        this.props.dispatch(changeCurrentTime(sixteenth));
+    }
+
     render() {
         let trackCompositionRowList = new Array;
         let pianoRoll;
@@ -176,6 +181,7 @@ class CompositionGrid extends React.Component {
                         scroll={this.state.scrollPianoRollX}
                         sixteenthNotePlaying={this.props.sixteenthPlaying}
                         beatStart={currRegion.start}
+                        changeCurrSixteenth={this.handleChangeCurrentSixteenth.bind(this)}
                     />
                     <PianoRollKeyboard
                         instrument={getTrackByIndex(this.props.trackList, currTrackIndex).instrument}
@@ -219,6 +225,7 @@ class CompositionGrid extends React.Component {
                         bits={this.props.composition.barsInComposition}
                         scroll={this.state.scrollCompositionX}
                         sixteenthNotePlaying={this.props.sixteenthPlaying} 
+                        changeCurrSixteenth={this.handleChangeCurrentSixteenth.bind(this)}
                     />
                     
                     <div 

@@ -14,14 +14,14 @@ export default function reducer(state = {
     maxRegionDrawLength: 16,
     sixteenthNotePlaying: 0,
     altClicked: false,
+    sequencer: null,
     midiController: new MIDIController()
 }, action) {
     switch (action.type) {
         case 'SWITCH_PLAY_STATE': {
             return {
                 ...state,
-                playing: !state.playing
-            }
+                playing: !state.playing            }
         }
         case 'CHANGE_BPM':{
             return {
@@ -59,6 +59,13 @@ export default function reducer(state = {
                 sixteenthNotePlaying: action.payload
             }
         }
+        case 'CHANGE_CURRENT_TIME':{
+            state.sequencer.sixteenthPlaying = action.payload;
+            return {
+                ...state,
+                sixteenthNotePlaying: action.payload
+            }
+        }
         case 'UPDATE_MIDI_CONTROLLER':{
             return {
                 ...state,
@@ -75,6 +82,12 @@ export default function reducer(state = {
             return {
                 ...state,
                 altClicked: !state.altClicked
+            }
+        }
+        case 'INIT_SEQUENCER':{
+            return {
+                ...state,
+                sequencer: action.payload
             }
         }
     }

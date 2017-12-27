@@ -12,8 +12,9 @@ import { isNullOrUndefined } from 'engine/Utils';
 class ControlBar extends React.Component {
     constructor(props) {
         super();
-        this.sequencer = new Sequencer();
-        this.sequencer.init();
+        let sequencer = new Sequencer();
+        sequencer.init();
+        props.dispatch(Actions.initSequencer(sequencer))
         this.state = {
             tempBPM: props.controlState.BPM,
             tempRegionDrawLength: props.controlState.regionDrawLength,
@@ -24,7 +25,7 @@ class ControlBar extends React.Component {
     handlePlay() {
         if (!this.props.controlState.playing) {
             this.props.dispatch(Actions.switchPlayState());
-            this.sequencer.handlePlay();
+            this.props.controlState.sequencer.handlePlay();
         }
     }
 
@@ -32,13 +33,13 @@ class ControlBar extends React.Component {
         if (this.props.controlState.playing) {
             this.props.dispatch(Actions.switchPlayState());
         }
-        this.sequencer.handleStop();
+        this.props.controlState.sequencer.handleStop();
     }
 
     handlePause() {
         if (this.props.controlState.playing) {
             this.props.dispatch(Actions.switchPlayState());
-            this.sequencer.handlePause();
+            this.props.controlState.sequencer.handlePause();
         }
     }
 
