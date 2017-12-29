@@ -1,20 +1,35 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import EqualizerComponent from 'components/Plugins/Equalizer';
+import CompressorComponent from 'components/Plugins/Compressor';
+import DistortionComponent from 'components/Plugins/Distortion';
 import { isNullOrUndefined } from 'engine/Utils';
-import {PluginsEnum} from 'constants/Constants';
+import { PluginsEnum } from 'constants/Constants';
 
 const InstrumentModal = (props) => {
     if (!isNullOrUndefined(props.trackName) && !isNullOrUndefined(props.plugin)) {
         let modalHeader = 'Track: ' + props.trackName + ' Plugin: ' + props.plugin.name;
         let modalBody;
         switch (props.plugin.id) {
-            case PluginsEnum.Equalizer.id:{
+            case PluginsEnum.Equalizer.id: {
                 modalBody = <EqualizerComponent
                     plugin={props.plugin}
                     onPresetChange={props.onPresetChange}
                 />
                 break;
+            }
+            case PluginsEnum.Compressor.id: {
+                modalBody = <CompressorComponent
+                    plugin={props.plugin}
+                    onPresetChange={props.onPresetChange}
+                />
+                break;
+            }
+            case PluginsEnum.Distortion.id: {
+                modalBody = <DistortionComponent
+                    plugin={props.plugin}
+                    onPresetChange={props.onPresetChange}
+                />
             }
         }
         return (

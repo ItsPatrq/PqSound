@@ -53,14 +53,14 @@ module.exports.Instruments = {
 }
 
 module.exports.PluginsEnum = {
-    Compresor: { name: 'Compresor', id: 0},
+    Compressor: { name: 'Compressor', id: 0},
     Equalizer: { name: 'Equalizer', id: 1},
     Distortion: {name: 'Distortion', id: 2}
 }
 
 module.exports.Plugins = [
     {
-        name: 'Compresor',
+        name: 'Compressor',
         id: 0
     },
     {

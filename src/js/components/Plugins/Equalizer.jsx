@@ -2,9 +2,9 @@ import React from 'react';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 import SamplerPresets from 'constants/SamplerPresets';
 
-require('styles/Equalizer.css');
+require('styles/Plugins/Equalizer.css');
 
-const EqualizerComponent = (props) => {
+const Equalizer = (props) => {
     let handleChange = (newLow, newMid, newHigh) => {
         props.onPresetChange({
             lowFilterGain: newLow ? Number(newLow) : props.plugin.preset.lowFilterGain,
@@ -15,7 +15,7 @@ const EqualizerComponent = (props) => {
     return (
         <div>
             <div className="equalizerModal">
-                <div className="gainControl">
+                <div className="equalizerControlRow">
                     <label>Low Gain: {props.plugin.preset.lowFilterGain}</label>
                     <input
                         type="range"
@@ -26,7 +26,7 @@ const EqualizerComponent = (props) => {
                         onChange={(event) => handleChange(event.target.value, null, null)}
                     />
                 </div>
-                <div className="gainControl">
+                <div className="equalizerControlRow">
                     <label>Mid Gain: {props.plugin.preset.midFilterGain}</label>
                     <input type="range"
                         value={props.plugin.preset.midFilterGain}
@@ -36,7 +36,7 @@ const EqualizerComponent = (props) => {
                         onChange={(event) => handleChange(null, event.target.value, null)}
                     />
                 </div>
-                <div className="gainControl">
+                <div className="equalizerControlRow">
                     <label>High Gain: {props.plugin.preset.highFilterGain}</label>
                     <input
                         type="range"
@@ -52,4 +52,4 @@ const EqualizerComponent = (props) => {
         </div>
     );
 }
-export default EqualizerComponent;
+export default Equalizer;

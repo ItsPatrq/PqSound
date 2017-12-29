@@ -1,0 +1,13 @@
+.distortionModal {
+    background-color: #3d0202;
+    font-family: "Source Sans Pro", Arial, sans-serif;
+    color: #eaeeef;
+    width: 100%;
+    margin: auto;
+    padding: 8px;
+}
+
+.distortionControlRow {
+    margin-top: 5px;
+    font-size: small;
+}

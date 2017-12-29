@@ -1,12 +1,9 @@
 import { PluginsEnum } from 'constants/Constants';
-import Store from '../stroe';
+import Plugin from './Plugin';
 
-class Equalizer {
+class Equalizer extends Plugin {
     constructor(index) {
-        this.name = PluginsEnum.Equalizer.name;
-        this.id = PluginsEnum.Equalizer.id;
-        this.index = index;
-        this.context = Store.getState().webAudio.context;
+        super(PluginsEnum.Equalizer, index)
         this.preset = {
             lowFilterGain: 1.0,
             midFilterGain: 1.0,
@@ -60,17 +57,15 @@ class Equalizer {
         this.input = this.inputGain;
         this.output = this.sum;
     }
-    updatePreset(newPreset) {
-        this.preset = { ...this.preset, ...newPreset };
-        this.lGain.gain.setValueAtTime(this.preset.lowFilterGain, this.context.currentTime);
-        this.mGain.gain.setValueAtTime(this.preset.midFilterGain, this.context.currentTime);
-        this.hGain.gain.setValueAtTime(this.preset.highFilterGain, this.context.currentTime);        
-    }
 
-    getPluginNode(){
-        return {input: this.input, output: this.output}
+    updateNodes(){
+        this.lGain.gain.setValueAtTime(this.preset.lowFilterGain ? 
+            this.preset.lowFilterGain : 0.000001, this.context.currentTime);
+        this.mGain.gain.setValueAtTime(this.preset.midFilterGain ? 
+            this.preset.midFilterGain : 0.000001, this.context.currentTime);
+        this.hGain.gain.setValueAtTime(this.preset.highFilterGain ? 
+            this.preset.highFilterGain : 0.000001, this.context.currentTime);       
     }
-
 }
 
 export default Equalizer;

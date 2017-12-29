@@ -1,5 +1,5 @@
 
-import Compresor from './Compresor';
+import Compressor from './Compressor';
 import Equalizer from './Equalizer';
 import Distortion from './Distortion';
 import { PluginsEnum } from 'constants/Constants'
@@ -7,8 +7,8 @@ let Utils = {};
 
 Utils.getNewPluginByIndex = (id, index) => {
     switch (id) {
-        case PluginsEnum.Compresor.id: {
-            return new Compresor(index);
+        case PluginsEnum.Compressor.id: {
+            return new Compressor(index);
         }
         case PluginsEnum.Equalizer.id: {
             return new Equalizer(index);
@@ -20,7 +20,7 @@ Utils.getNewPluginByIndex = (id, index) => {
 }
 
 module.exports = {
-    Compresor,
+    Compressor,
     Equalizer,
     Distortion,
     Utils

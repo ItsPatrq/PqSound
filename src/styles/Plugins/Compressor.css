@@ -1,13 +1,13 @@
-.equalizerModal {
-    background-color: #212121;
+.compressorModal{
     font-family: "Source Sans Pro", Arial, sans-serif;
-    color: #eaeeef;
+    color: #212121;
     width: 100%;
     margin: auto;
     padding: 8px;
 }
 
-.gainControl {
+
+.compressorControlRow {
     margin-top: 5px;
     font-size: small;
 }
