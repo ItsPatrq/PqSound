@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuItem, DropdownButton } from 'react-bootstrap';
+import { MenuItem, DropdownButton, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const Output = (props) => {
     let availableAuxTracks = new Array;
@@ -16,11 +16,23 @@ const Output = (props) => {
         );
     }
     return (
+
         <div className="output">
-        <p> Output: </p>
-            <DropdownButton disabled={!isEnabled} bsStyle="default" className="drop-down" title={props.dropDownTitle} id="OutputSelectorDropDown" >
-                {availableAuxTracks}
-            </DropdownButton>
+            <OverlayTrigger placement="bottom" overlay={
+                <Tooltip id={'tooltipTimeSignature'}>{'Output AUX'}</Tooltip>
+            } delayShow={500}>
+            <div style={{margin: 'auto'}}>
+                <DropdownButton
+                    disabled={!isEnabled}
+                    bsStyle="link"
+                    className="drop-down outputSelectorDropDown"
+                    title={props.dropDownTitle}
+                    id="OutputSelectorDropDown"
+                >
+                    {availableAuxTracks}
+                </DropdownButton>
+                </div>
+            </OverlayTrigger>
         </div>
     );
 }

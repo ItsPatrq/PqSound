@@ -1,12 +1,10 @@
 import Store from '../stroe';
 import { isNullOrUndefined, getTrackByIndex } from 'engine/Utils';
 class Track {
-  constructor(newPluginList, newInstrument, newOutputTrackIndex, newVolume, newPan) {
+  constructor(newPluginList, newInstrument, newOutputTrackIndex, newVolume = 1.0, newPan = 0.0) {
     this.pluginNodeList = newPluginList;
     this.outputTrackIndex = newOutputTrackIndex;
     this.instrument = newInstrument;
-    newVolume = newVolume || 1.0;
-    newPan = newPan || 0.0;
     this.solo = false;
     this.mute = false;
     this.anySolo = false;
@@ -16,23 +14,56 @@ class Track {
       this.muteNode = this.context.createGain();
       this.panNode = this.context.createStereoPanner();
 
+      this.leftAnalyserNode = this.context.createAnalyser();
+      this.rightAnalyserNode = this.context.createAnalyser();
+      this.splitter = this.context.createChannelSplitter(2);
+
       this.gainNode.connect(this.panNode);
       this.input = this.gainNode;
+      this.panNode.connect(this.splitter);
       this.output = this.panNode;
+      this.splitter.connect(this.leftAnalyserNode,0,0);
+      this.splitter.connect(this.rightAnalyserNode,1,0);
 
       this.gainNode.gain.setValueAtTime(newVolume, this.context.currentTime);
       this.muteNode.gain.setValueAtTime(0.000001, this.context.currentTime);
       this.panNode.pan.setValueAtTime(newPan, this.context.currentTime);
+
+      this.leftAnalyserNode.smoothingTimeConstant = 0.3;
+      this.leftAnalyserNode.fftSize = 1024;
+      this.rightAnalyserNode.smoothingTimeConstant = 0.3;
+      this.rightAnalyserNode.fftSize = 1024;
+
+
       if (isNullOrUndefined(this.outputTrackIndex)) {
-        this.panNode.connect(this.context.destination);
+        this.output.connect(this.context.destination);
       } else {
-        this.panNode.connect(getTrackByIndex(Store.getState().tracks.trackList, this.outputTrackIndex).trackNode.input);
+        this.output.connect(getTrackByIndex(Store.getState().tracks.trackList, this.outputTrackIndex).trackNode.input);
       }
       if (!isNullOrUndefined(newInstrument)) {
         newInstrument.connect(this.input);
       }
     }
   }
+getAverageVolume(){
+  let leftArray =  new Uint8Array(this.leftAnalyserNode.frequencyBinCount);
+  let rightArray =  new Uint8Array(this.leftAnalyserNode.frequencyBinCount);
+  this.leftAnalyserNode.getByteFrequencyData(leftArray);
+  this.rightAnalyserNode.getByteFrequencyData(rightArray);
+
+  let leftValues = 0;
+  let rightValues = 0;
+
+  var length = leftArray.length;
+
+  // get all the frequency amplitudes
+  for (var i = 0; i < length; i++) {
+    leftValues += leftArray[i];
+    rightValues += rightArray[i];
+  }
+  
+  return {left: leftValues / length, right: rightValues / length};
+}
 
   getPluginChainNode() {
     let firstPluginInChain = this.pluginNodeList[0].getPluginNode();
@@ -56,10 +87,11 @@ class Track {
     if (!this.mute) {
       if (this.pluginNodeList.length > 0) {
         let pluginChain = this.getPluginChainNode();
-        this.panNode.connect(pluginChain.input);
-        this.output = pluginChain.output;
+        this.output = this.panNode.connect(pluginChain.input);
+        this.pluginChain.output.connect(this.splitter);
       } else {
         this.output = this.panNode;
+        this.panNode.connect(this.splitter);
       }
       if (isNullOrUndefined(this.outputTrackIndex)) {
         this.output.connect(this.context.destination);
@@ -115,5 +147,6 @@ class Track {
     }
   }
 }
+
 
 export default Track;

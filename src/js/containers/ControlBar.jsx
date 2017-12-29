@@ -133,22 +133,7 @@ class ControlBar extends React.Component {
                         onDeviceChange={this.handleDeviceChange.bind(this)}
                     />
                 </Col>
-                <Col xs={2} className="controlButtons">
-                    <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play" /></Button>
-                    <Button onClick={this.handlePause.bind(this)}><Glyphicon glyph="pause" /></Button>
-                    <Button onClick={this.handleStop.bind(this)}><Glyphicon glyph="stop" /></Button>
-                </Col>
-                
-                <ProjectInfoBox
-                    changeBPM={this.handleBPMChange.bind(this)}
-                    changeTempBPM={this.handleTempBPMChange.bind(this)}
-                    BPM={this.state.tempBPM}
-                    currSixteenth={this.props.controlState.sixteenthNotePlaying}
-                    onBarsInCompositionChange={this.handleBarsInCompositionChange.bind(this)}
-                    onTempBarsInCompositionChange={this.handleTempBarsInComposition.bind(this)}
-                    barsInComposition={this.state.tempBarsInComposition}
-                />
-                <Col xs={2}>
+                <Col xs={3}>
                     <ToolsSelector
                         handleToolChange={this.handleToolChange.bind(this)}
                         handleSecoundaryToolChange={this.handleSecoundaryToolChange.bind(this)}
@@ -160,6 +145,22 @@ class ControlBar extends React.Component {
                         tool={this.props.controlState.tool}
                         secoundaryTool={this.props.controlState.secoundaryTool}
                     />
+                </Col>
+                <div style={{ width: 41.666667 + '%' }}>
+                    <ProjectInfoBox
+                        changeBPM={this.handleBPMChange.bind(this)}
+                        changeTempBPM={this.handleTempBPMChange.bind(this)}
+                        BPM={this.state.tempBPM}
+                        currSixteenth={this.props.controlState.sixteenthNotePlaying}
+                        onBarsInCompositionChange={this.handleBarsInCompositionChange.bind(this)}
+                        onTempBarsInCompositionChange={this.handleTempBarsInComposition.bind(this)}
+                        barsInComposition={this.state.tempBarsInComposition}
+                    />
+                </div>
+                <Col xs={2} className="controlButtons">
+                    <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play" /></Button>
+                    <Button onClick={this.handlePause.bind(this)}><Glyphicon glyph="pause" /></Button>
+                    <Button onClick={this.handleStop.bind(this)}><Glyphicon glyph="stop" /></Button>
                 </Col>
             </Col>
         );

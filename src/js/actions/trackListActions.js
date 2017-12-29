@@ -146,3 +146,23 @@ export function trackIndexDown(newIndex){
         payload: newIndex
     }
 }
+
+export function addNewPlugin(newIndex, newPluginId){
+    return {
+        type: 'ADD_NEW_PLUGIN',
+        payload: {
+            index: newIndex,
+            pluginId: newPluginId
+        }
+    }
+}
+
+export function removePlugin(newTrackIndex, newPluginIndex){
+    return {
+        type: 'REMOVE_PLUGIN',
+        payload: {
+            index: newTrackIndex,
+            pluginIndex: newPluginIndex
+        }
+    }
+}

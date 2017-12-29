@@ -9,7 +9,7 @@ import TrackName from 'components/TrackDetails/TrackName';
 import Output from 'components/TrackDetails/Output';
 import SoloMuteButtons from 'components/TrackDetails/SoloMuteButtons';
 import * as Actions from 'actions/trackDetailsActions';
-import { changeTrackPreset, changeTrackVolume, changeTrackInstrument, changeTrackOutput, changeSoloState, changeMuteState, changeTrackPan } from 'actions/trackListActions';
+import { changeTrackPreset, changeTrackVolume, changeTrackInstrument, changeTrackOutput, changeSoloState, changeMuteState, changeTrackPan, addNewPlugin, removePlugin } from 'actions/trackListActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 import { TrackTypes } from 'constants/Constants';
@@ -119,11 +119,19 @@ class TrackDetails extends React.Component {
         }
     }
 
-    handlePanChange(index, value){
-        if(value === 0){
+    handlePanChange(index, value) {
+        if (value === 0) {
             value = 0.0000001
-          }
+        }
         this.props.dispatch(changeTrackPan(index, value));
+    }
+
+    handleAddPlugin(trackIndex, pluginId){
+        this.props.dispatch(addNewPlugin(trackIndex, pluginId));
+    }
+
+    handleRemovePlugin(trackIndex, pluginIndex){
+        this.props.dispatch(removePlugin(trackIndex, pluginIndex));
     }
 
     render() {
@@ -140,15 +148,18 @@ class TrackDetails extends React.Component {
                     />;
             } else {
                 instrumentComponent =
-                    <ButtonToolbar className="instrumentInputContainer">
-                        <p>Track type: {this.getTypeNameByTrackId(this.props.selected)}</p>
-                    </ButtonToolbar>;
+                    <div className="instrumentInputContainer" />
             }
             return (
                 <div>
-                    <Col xs={6} className="trackDetails">
+                    <Col xs={6} className="trackDetailsContainer">
                         {instrumentComponent}
-                        <PluginsList />
+                        <PluginsList
+                            pluginList={Utils.getTrackByIndex(this.props.trackList, this.props.selected).pluginList}
+                            onPluginAdd={this.handleAddPlugin.bind(this)}
+                            trackIndex={this.props.selected}
+                            onPluginRemove={this.handleRemovePlugin.bind(this)}
+                        />
                         <Output
                             auxTracks={this.getAllAvailableAuxTracks()}
                             dropDownTitle={this.getOutputName(Utils.getTrackByIndex(this.props.trackList, this.props.selected).output)}
@@ -163,6 +174,7 @@ class TrackDetails extends React.Component {
                             volume={Utils.getTrackByIndex(this.props.trackList, this.props.selected).volume}
                             onVolumeChange={this.onVolumeChange.bind(this)}
                             trackIndex={this.props.selected}
+                            trackNode={Utils.getTrackByIndex(this.props.trackList, this.props.selected).trackNode}
                         />
                         <SoloMuteButtons
                             trackDetails={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
@@ -171,10 +183,14 @@ class TrackDetails extends React.Component {
                         />
                         <TrackName name={this.getTrackName(this.props.selected)} />
                     </Col>
-                    <Col xs={6} className="trackDetails">
-                        <ButtonToolbar className="instrumentInputContainer">
-                        </ButtonToolbar>
-                        <PluginsList />
+                    <Col xs={6} className="trackDetailsContainer">
+                        <div className="instrumentInputContainer" />
+                        <PluginsList
+                            pluginList={Utils.getTrackByIndex(this.props.trackList, 0).pluginList}
+                            onPluginAdd={this.handleAddPlugin.bind(this)}
+                            trackIndex={0}
+                            onPluginRemove={this.handleRemovePlugin.bind(this)}
+                        />
                         <Output
                             auxTracks={[]}
                             dropDownTitle="Stereo out"
@@ -188,6 +204,7 @@ class TrackDetails extends React.Component {
                             volume={Utils.getTrackByIndex(this.props.trackList, 0).volume}
                             onVolumeChange={this.onVolumeChange.bind(this)}
                             trackIndex={0}
+                            trackNode={Utils.getTrackByIndex(this.props.trackList, 0).trackNode}
                         />
                         <SoloMuteButtons
                             trackDetails={Utils.getTrackByIndex(this.props.trackList, 0)}
@@ -202,15 +219,25 @@ class TrackDetails extends React.Component {
         else {
             return (
                 <div>
-                    <Col xs={6} className="trackDetails">
+                    <Col xs={6} className="trackDetailsContainer">
                         <p>No track selected</p>
                     </Col>
-                    <Col xs={6} className="trackDetails">
+                    <Col xs={6} className="trackDetailsContainer">
                         <ButtonToolbar className="instrumentInputContainer">
                         </ButtonToolbar>
-                        <PluginsList />
+                        <PluginsList
+                            pluginList={Utils.getTrackByIndex(this.props.trackList, 0).pluginList}
+                            onPluginAdd={this.handleAddPlugin.bind(this)}
+                            trackIndex={0}
+                            onPluginRemove={this.handleRemovePlugin.bind(this)}
+                        />
                         <PanKnob />
-                        <VolumeSlider />
+                        <VolumeSlider
+                            volume={Utils.getTrackByIndex(this.props.trackList, 0).volume}
+                            onVolumeChange={this.onVolumeChange.bind(this)}
+                            trackIndex={0}
+                            trackNode={Utils.getTrackByIndex(this.props.trackList, 0).trackNode}
+                        />
                         <SoloMuteButtons
                             trackDetails={Utils.getTrackByIndex(this.props.trackList, 0)}
                             onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}

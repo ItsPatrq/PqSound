@@ -52,6 +52,27 @@ module.exports.Instruments = {
     Monotron: { name: 'Monotron', id: 2 }
 }
 
+module.exports.PluginsEnum = {
+    Compresor: { name: 'Compresor', id: 0},
+    Equalizer: { name: 'Equalizer', id: 1},
+    Distortion: {name: 'Distortion', id: 2}
+}
+
+module.exports.Plugins = [
+    {
+        name: 'Compresor',
+        id: 0
+    },
+    {
+        name: 'Equalizer',
+        id: 1
+    },
+    {
+        name: 'Distortion',
+        id: 2
+    }
+]
+
 /**
  * enum of update actions
  */

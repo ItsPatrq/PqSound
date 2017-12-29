@@ -22,5 +22,6 @@ Utils.getNewInstrumentByIndex = (id, preset) => {
 module.exports = {
     Sampler,
     PqSynth,
+    Monotron,
     Utils
 }

@@ -4,7 +4,6 @@
     border-color: #212121;
     height: calc(100vh - 100px);
     overflow: hidden;
-    z-index: 1;
     padding: 0px;
 }
 

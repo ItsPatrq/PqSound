@@ -2,6 +2,7 @@ import * as Utils from 'engine/Utils';
 import Sound from 'engine/Sound';
 import Track from 'engine/Track';
 import { Sampler, Utils as InstrumentsUtils } from 'instruments';
+import { Utils as PluginsUtils } from 'plugins';
 import {TrackTypes} from 'constants/Constants';
 import {Utils as SamplerPresetsUtils, Presets as SamplerPresets }  from 'constants/SamplerPresets';
 /**
@@ -313,6 +314,34 @@ export default function reducer(state = {
                     --newTrackList[i].index;
                 } else if(newTrackList[i].index === action.payload - 1){
                     ++newTrackList[i].index;
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
+        case 'ADD_NEW_PLUGIN':{
+            let newTrackList = [...state.trackList];
+            let currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
+            currTrack.pluginList.push(
+                PluginsUtils.getNewPluginByIndex(action.payload.pluginId, currTrack.pluginList.length)
+            );
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
+        case 'REMOVE_PLUGIN':{
+            let newTrackList = [...state.trackList];
+            let currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
+            for(let i = 0; i < currTrack.pluginList.length; i++){
+                if (currTrack.pluginList[i].index === action.payload.pluginIndex) {
+                    currTrack.pluginList.splice(i, 1);
+                    for (let j = i; j < currTrack.pluginList.length; j++) {
+                        currTrack.pluginList[j].index = j;
+                    }
+                    break;
                 }
             }
             return {

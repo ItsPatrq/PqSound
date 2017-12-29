@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonToolbar, MenuItem, SplitButton } from 'react-bootstrap';
+import { ButtonToolbar, MenuItem, SplitButton, DropdownButton } from 'react-bootstrap';
 import { Instruments } from 'constants/Constants';
 import InstrumentModal from './InstrumentModal';
 
@@ -20,17 +20,24 @@ const InstrumentInput = (props) => {
     }
     return (
         <div className="instrumentInputContainer">
-            <ButtonToolbar className="instrumentInput">
-                <SplitButton bsStyle="info" title={props.selectedTrack.instrument.name} id="split-button-instrument-input" onClick={() => props.instrumentModalVisibilitySwitch()}>
-                    {availableInstruments}
-                </SplitButton>
-                <InstrumentModal
-                    modalVisibilitySwitch={props.instrumentModalVisibilitySwitch}
-                    showModal={props.showModal}
-                    track={props.selectedTrack}
-                    onSamplerPresetChange={props.onSamplerPresetChange}
-                />
-            </ButtonToolbar>
+            <DropdownButton
+                bsStyle="link"
+                title=""
+                className="drop-down outputSelectorDropDown"
+                id="OutputSelectorDropDown"
+            >
+                {availableInstruments}
+            </DropdownButton>
+            <div className="instrumentDetailsInput" onClick={() => props.instrumentModalVisibilitySwitch()}>
+                {props.selectedTrack.instrument.name}
+            </div>
+
+            <InstrumentModal
+                modalVisibilitySwitch={props.instrumentModalVisibilitySwitch}
+                showModal={props.showModal}
+                track={props.selectedTrack}
+                onSamplerPresetChange={props.onSamplerPresetChange}
+            />
         </div>
     );
 }

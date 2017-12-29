@@ -12,7 +12,7 @@ const Layout = (/*props*/) => {
     return (
         <div className="layout">
             <TopNavBar />
-            <Grid fluid>
+            <Grid fluid style={{overflow: 'hidden'}}>
                 <Row>
                     <ControlBar />
                 </Row>

@@ -32,15 +32,6 @@ body {
   
 }
 
-.trackDetails {
-  padding: 0;
-  border-style: solid;
-  border-width: thin;
-  border-color: #212121;
-  height: calc(100vh - 100px);
-  overflow: hidden;
-}
-
 .nopadding {
   padding: 0 !important;
   margin: 0 !important;

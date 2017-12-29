@@ -75,6 +75,10 @@ class PqSynth {
     connect(target) {
         this.output.connect(target);
     }
+
+    disconnect(){
+        this.output.disconnect();
+    }
 }
 
 export default PqSynth;

@@ -23,6 +23,7 @@ module.exports = {
       engine: `${defaultSettings.srcPath}/js/engine/`,
       constants: `${defaultSettings.srcPath}/js/constants`,
       instruments: `${defaultSettings.srcPath}/js/instruments`,
+      plugins: `${defaultSettings.srcPath}/js/plugins`,
       styles: `${defaultSettings.srcPath}/styles/`,
       config: `${defaultSettings.srcPath}/config/` + process.env.REACT_WEBPACK_ENV,
       'react/lib/ReactMount': 'react-dom/lib/ReactMount'
