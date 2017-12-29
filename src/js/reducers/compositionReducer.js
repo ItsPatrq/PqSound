@@ -113,6 +113,11 @@ export default function reducer(state = {
                 barsInComposition: action.payload
             }
         }
+        case 'LOAD_COMPOSITION_STATE': {
+            return {
+                ...action.payload
+            }
+        }
     }
 
     return state;

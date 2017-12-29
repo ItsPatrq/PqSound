@@ -365,6 +365,11 @@ export default function reducer(state = {
                 trackList: newTrackList
             }
         }
+        case 'LOAD_TRACK_STATE':{
+            return {
+                ...action.payload
+            }
+        }
     }
     return state;
 }

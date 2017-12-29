@@ -2,9 +2,11 @@ import React from 'react';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { switchKeyboardVisibility, updateWidth, switchKeyNameVisibility, switchKeyBindVisibility } from 'actions/keyboardActions';
-import { switchPianorollVisibility } from 'actions/compositionActions';
-import {switchAltKey} from 'actions/controlActions'
+import { switchPianorollVisibility, loadCompositionState } from 'actions/compositionActions';
+import { switchAltKey, switchUploadModalVisibility, loadControlState } from 'actions/controlActions'
+import { loadTrackState } from 'actions/trackListActions';
 import * as Utils from 'engine/Utils';
+import FileUploadModal from 'components/FileUploadModal';
 
 class TopNavBar extends React.Component {
     constructor() {
@@ -21,18 +23,18 @@ class TopNavBar extends React.Component {
                         that.handleSwitchKeyBindVisibility();
                         break;
                     }
-                    case 66:{
+                    case 66: {
                         that.handleSwitchKeyNameVisibility();
                         break;
                     }
-                    case 18:{
+                    case 18: {
                         that.props.dispatch(switchAltKey());
                     }
                 }
             }
         }, false);
-        window.addEventListener('keyup', function (e){
-            switch(e.keyCode){
+        window.addEventListener('keyup', function (e) {
+            switch (e.keyCode) {
                 case 18: {
                     that.props.dispatch(switchAltKey());
                 }
@@ -50,11 +52,11 @@ class TopNavBar extends React.Component {
         this.props.dispatch(switchKeyboardVisibility());
     }
 
-    handleSwitchKeyNameVisibility(){
+    handleSwitchKeyNameVisibility() {
         this.props.dispatch(switchKeyNameVisibility());
     }
 
-    handleSwitchKeyBindVisibility(){
+    handleSwitchKeyBindVisibility() {
         this.props.dispatch(switchKeyBindVisibility());
     }
 
@@ -66,11 +68,63 @@ class TopNavBar extends React.Component {
     }
 
     homeClicked() {
-        if(this.props.keyboardVisible){
+        if (this.props.keyboardVisible) {
             this.props.dispatch(switchKeyboardVisibility(false));
         }
-        if(this.props.pianoRollVisible){
+        if (this.props.pianoRollVisible) {
             this.props.dispatch(switchPianorollVisibility(false));
+        }
+    }
+
+    getExportData() {
+        let tempControl = { ...this.props.control };
+        delete tempControl['midiController'];
+        delete tempControl['sequencer'];
+        let obj = {
+            tracks: this.props.tracks,
+            control: tempControl,
+            composition: this.props.composition
+        };
+        console.log(obj)
+
+        return encodeURIComponent(JSON.stringify(obj));
+    }
+
+    import() {
+        let fileInput = document.getElementById('fileUpload');
+        console.log(fileInput)
+        fileInput.click();
+    }
+
+    export() {
+        let linkElement = document.createElement('a');
+        let dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(this.getExportData());
+
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', 'PqSoundComposition.json');
+        linkElement.click();
+    }
+
+    fileUploadModalVisibilitySwitch() {
+        this.props.dispatch(switchUploadModalVisibility())
+    }
+
+    handleFileUpload(accepted, rejected){
+        if(accepted.length > 0){
+            const reader = new FileReader();
+            reader.onload = () => {
+                const fileAsBinaryString = reader.result;
+                let loadedState = JSON.parse(decodeURIComponent(fileAsBinaryString));
+                this.props.dispatch(loadTrackState(loadedState.tracks));
+                this.props.dispatch(loadControlState(loadedState.control));
+                this.props.dispatch(loadCompositionState(loadedState.composition))
+            };
+            reader.onabort = () => console.log('file reading was aborted');
+            reader.onerror = () => console.log('file reading has failed');
+    
+            reader.readAsBinaryString(accepted[0]);    
+        } else {
+            console.log('rejected')
         }
     }
 
@@ -79,15 +133,15 @@ class TopNavBar extends React.Component {
         let showHideKeyNames = this.props.keyNamesVisible ? 'Hide key names' : 'Show key names';
         let showHideBindNames = this.props.keyBindVisible ? 'Hide key bindings' : 'Show key bindings';
         let showHideKeyNamesMenuItem = this.props.keyboardVisible ?
-        <MenuItem eventKey={3.2} onClick={() => this.handleSwitchKeyNameVisibility()}>{showHideKeyNames}</MenuItem> :
-        null;
+            <MenuItem eventKey={3.2} onClick={() => this.handleSwitchKeyNameVisibility()}>{showHideKeyNames}</MenuItem> :
+            null;
         let showHideBindNamesMenuItem = this.props.keyboardVisible ?
-        <MenuItem eventKey={3.3} onClick={() => this.handleSwitchKeyBindVisibility()}>{showHideBindNames}</MenuItem> :        
-        null;
+            <MenuItem eventKey={3.3} onClick={() => this.handleSwitchKeyBindVisibility()}>{showHideBindNames}</MenuItem> :
+            null;
         let showHidePianoroll = this.props.pianoRollVisible ? 'Hide pianoroll' : 'Show pianoroll';
         let showHidePianorollMenuItem = !Utils.isNullOrUndefined(this.props.pianoRollRegion) ?
-        <MenuItem eventKey={3.4} onClick={() => this.handleSwitchPianoRollVisibility()}>{showHidePianoroll}</MenuItem> :
-        null;
+            <MenuItem eventKey={3.4} onClick={() => this.handleSwitchPianoRollVisibility()}>{showHidePianoroll}</MenuItem> :
+            null;
 
         return (
             <Navbar inverse fixedTop collapseOnSelect fluid>
@@ -106,12 +160,19 @@ class TopNavBar extends React.Component {
                             {showHideKeyNamesMenuItem}
                             {showHideBindNamesMenuItem}
                             {showHidePianorollMenuItem}
-                            <MenuItem eventKey={3.5}>Something strange might be here</MenuItem>
-                            <MenuItem divider />
-                            <MenuItem eventKey={3.6}>This thing shall be separated</MenuItem>
                         </NavDropdown>
+                        <NavItem eventKey={4} onClick={this.fileUploadModalVisibilitySwitch.bind(this)}>
+                            Import
+                        </NavItem>
+                        <NavItem eventKey={5} onClick={this.export.bind(this)}>Export</NavItem>
+                        <NavItem eventKey={6} >Load demo</NavItem>
                     </Nav>
                 </Navbar.Collapse>
+                <FileUploadModal
+                    showModal={this.props.control.showUploadModal}
+                    modalVisibilitySwitch={this.fileUploadModalVisibilitySwitch.bind(this)}
+                    onFileUpload={this.handleFileUpload.bind(this)}
+                />
             </Navbar>
         );
     }
@@ -126,7 +187,10 @@ const mapStateToProps = (state) => {
         keyboardWidth: state.keyboard.width,
         keyboardFirstKey: state.keyboard.firstKey,
         pianoRollVisible: state.composition.showPianoRoll,
-        pianoRollRegion: state.composition.pianoRollRegion
+        pianoRollRegion: state.composition.pianoRollRegion,
+        composition: state.composition,
+        tracks: state.tracks,
+        control: state.control
     }
 }
 

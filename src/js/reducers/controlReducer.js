@@ -15,6 +15,7 @@ export default function reducer(state = {
     sixteenthNotePlaying: 0,
     altClicked: false,
     sequencer: null,
+    showUploadModal: false,
     midiController: new MIDIController()
 }, action) {
     switch (action.type) {
@@ -88,6 +89,18 @@ export default function reducer(state = {
             return {
                 ...state,
                 sequencer: action.payload
+            }
+        }
+        case 'SWITCH_UPLOAD_MODAL_VISIBILITY':{
+            return {
+                ...state,
+                showUploadModal: !state.showUploadModal
+            }
+        }
+        case 'LOAD_CONTROL_STATE':{
+            return {
+                ...state,
+                ...action.payload
             }
         }
     }

@@ -177,3 +177,10 @@ export function changePluginPreset(newTrackIndex, newPluginIndex, newPreset){
         }
     }
 }
+
+export function loadTrackState(newState){
+    return {
+        type: 'LOAD_TRACK_STATE',
+        payload: newState
+    }
+}

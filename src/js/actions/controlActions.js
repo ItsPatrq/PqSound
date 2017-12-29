@@ -79,3 +79,16 @@ export function changeCurrentTime(newSixteenthNotePlaying){
         payload: newSixteenthNotePlaying
     }
 }
+
+export function switchUploadModalVisibility(){
+    return {
+        type: 'SWITCH_UPLOAD_MODAL_VISIBILITY'
+    }
+}
+
+export function loadControlState(newState){
+    return {
+        type: 'LOAD_CONTROL_STATE',
+        payload: newState
+    }
+}

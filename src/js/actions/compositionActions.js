@@ -82,3 +82,10 @@ export function changeBarsInComposition (newBarsInComposition){
         payload: newBarsInComposition
     }
 }
+
+export function loadCompositionState (newState){
+    return {
+        type: 'LOAD_COMPOSITION_STATE',
+        payload: newState
+    }
+}
