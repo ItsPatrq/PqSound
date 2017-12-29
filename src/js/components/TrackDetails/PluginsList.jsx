@@ -8,11 +8,16 @@ const PluginList = (props) => {
         pluginList.push(
             <div className="pluginRow"
                 key={i}>
-                <div className="pluginRowName">
+                <div
+                    className="pluginRowName"
+                    onClick={() => {props.onPluginModalVisibilitySwitch(props.pluginList[i].index, props.trackIndex)}}
+                >
                     {props.pluginList[i].name}
                 </div>
-                <div className="pluginRowRemove"
-                    onClick={() => {props.onPluginRemove(props.trackIndex, props.pluginList[i].index)}}>
+                <div
+                    className="pluginRowRemove"
+                    onClick={() => { props.onPluginRemove(props.trackIndex, props.pluginList[i].index) }}
+                >
                     <Glyphicon glyph="remove" />
                 </div>
             </div>

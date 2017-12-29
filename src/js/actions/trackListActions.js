@@ -166,3 +166,14 @@ export function removePlugin(newTrackIndex, newPluginIndex){
         }
     }
 }
+
+export function changePluginPreset(newTrackIndex, newPluginIndex, newPreset){
+    return {
+        type: 'CHANGE_PLUGIN_PRESET',
+        payload: {
+            index: newTrackIndex,
+            pluginIndex: newPluginIndex,
+            preset: newPreset
+        }
+    }
+}

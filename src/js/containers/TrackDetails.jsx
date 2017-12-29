@@ -8,8 +8,9 @@ import PluginsList from 'components/TrackDetails/PluginsList';
 import TrackName from 'components/TrackDetails/TrackName';
 import Output from 'components/TrackDetails/Output';
 import SoloMuteButtons from 'components/TrackDetails/SoloMuteButtons';
+import PluginModal from 'components/TrackDetails/PluginModal';
 import * as Actions from 'actions/trackDetailsActions';
-import { changeTrackPreset, changeTrackVolume, changeTrackInstrument, changeTrackOutput, changeSoloState, changeMuteState, changeTrackPan, addNewPlugin, removePlugin } from 'actions/trackListActions';
+import { changeTrackPreset, changeTrackVolume, changeTrackInstrument, changeTrackOutput, changeSoloState, changeMuteState, changeTrackPan, addNewPlugin, removePlugin, changePluginPreset } from 'actions/trackListActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 import { TrackTypes } from 'constants/Constants';
@@ -20,9 +21,11 @@ class TrackDetails extends React.Component {
     }
 
     getTrackName(index) {
-        for (let i = 0; i < this.props.trackList.length; i++) {
-            if (this.props.trackList[i].index === index) {
-                return this.props.trackList[i].name;
+        if (!Utils.isNullOrUndefined(index)) {
+            for (let i = 0; i < this.props.trackList.length; i++) {
+                if (this.props.trackList[i].index === index) {
+                    return this.props.trackList[i].name;
+                }
             }
         }
     }
@@ -126,12 +129,31 @@ class TrackDetails extends React.Component {
         this.props.dispatch(changeTrackPan(index, value));
     }
 
-    handleAddPlugin(trackIndex, pluginId){
+    handleAddPlugin(trackIndex, pluginId) {
         this.props.dispatch(addNewPlugin(trackIndex, pluginId));
     }
 
-    handleRemovePlugin(trackIndex, pluginIndex){
+    handleRemovePlugin(trackIndex, pluginIndex) {
         this.props.dispatch(removePlugin(trackIndex, pluginIndex));
+    }
+
+    handlePluginModalVisibilitySwitch(pluginIndex, trackIndex) {
+        this.props.dispatch(Actions.pluginModalVisibilitySwitch(pluginIndex, trackIndex));
+    }
+
+    getSelectedPlugin() {
+        if (!Utils.isNullOrUndefined(this.props.trackDetails.selectedPluginTrackIndex) &&
+            !Utils.isNullOrUndefined(this.props.trackDetails.selectedPluginIndex))
+            return Utils.getTrackByIndex(this.props.trackList, this.props.trackDetails.selectedPluginTrackIndex).pluginList[this.props.trackDetails.selectedPluginIndex];
+
+    }
+
+    handlePluginPresetChange(newPreset){
+        this.props.dispatch(changePluginPreset(
+            this.props.trackDetails.selectedPluginTrackIndex,
+            this.props.trackDetails.selectedPluginIndex,
+            newPreset
+        ))
     }
 
     render() {
@@ -159,6 +181,7 @@ class TrackDetails extends React.Component {
                             onPluginAdd={this.handleAddPlugin.bind(this)}
                             trackIndex={this.props.selected}
                             onPluginRemove={this.handleRemovePlugin.bind(this)}
+                            onPluginModalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
                         />
                         <Output
                             auxTracks={this.getAllAvailableAuxTracks()}
@@ -190,6 +213,7 @@ class TrackDetails extends React.Component {
                             onPluginAdd={this.handleAddPlugin.bind(this)}
                             trackIndex={0}
                             onPluginRemove={this.handleRemovePlugin.bind(this)}
+                            onPluginModalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
                         />
                         <Output
                             auxTracks={[]}
@@ -213,6 +237,13 @@ class TrackDetails extends React.Component {
                         />
                         <TrackName name={this.getTrackName(0)} />
                     </Col>
+                    <PluginModal
+                        modalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
+                        showModal={this.props.trackDetails.showPluginModal}
+                        plugin={this.getSelectedPlugin()}
+                        trackName={this.getTrackName(this.props.trackDetails.selectedPluginTrackIndex)}
+                        onPresetChange={this.handlePluginPresetChange.bind(this)}
+                    />
                 </div>
             );
         }
@@ -230,6 +261,7 @@ class TrackDetails extends React.Component {
                             onPluginAdd={this.handleAddPlugin.bind(this)}
                             trackIndex={0}
                             onPluginRemove={this.handleRemovePlugin.bind(this)}
+                            onPluginModalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
                         />
                         <PanKnob />
                         <VolumeSlider
@@ -245,6 +277,13 @@ class TrackDetails extends React.Component {
                         />
                         <TrackName name={this.getTrackName(0)} />
                     </Col>
+                    <PluginModal
+                        modalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
+                        showModal={this.props.trackDetails.showPluginModal}
+                        plugin={this.getSelectedPlugin()}
+                        trackName={this.getTrackName(this.props.trackDetails.selectedPluginTrackIndex)}
+                        onPresetChange={this.handlePluginPresetChange.bind(this)}
+                    />
                 </div>
             );
         }

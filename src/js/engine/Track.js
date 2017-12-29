@@ -67,7 +67,7 @@ getAverageVolume(){
 
   getPluginChainNode() {
     let firstPluginInChain = this.pluginNodeList[0].getPluginNode();
-    let lastPluginInChain = firstPluginInChain;
+    let lastPluginInChain = this.pluginNodeList[0].getPluginNode();
     for (let i = 1; i < this.pluginNodeList.length; i++) {
       let curPluginNode = this.pluginNodeList[i].getPluginNode();
       lastPluginInChain.output.connect(curPluginNode.input);
@@ -78,7 +78,7 @@ getAverageVolume(){
 
   updateTrackNode(newOutputTrackIndex) {
     for (let i = 0; i < this.pluginNodeList.length; i++) {
-      this.pluginNodeList.output.disconnect();
+      this.pluginNodeList[i].output.disconnect();
     }
     this.panNode.disconnect();
 
@@ -87,8 +87,9 @@ getAverageVolume(){
     if (!this.mute) {
       if (this.pluginNodeList.length > 0) {
         let pluginChain = this.getPluginChainNode();
-        this.output = this.panNode.connect(pluginChain.input);
-        this.pluginChain.output.connect(this.splitter);
+        this.panNode.connect(pluginChain.input);
+        this.output = pluginChain.output;
+        pluginChain.output.connect(this.splitter);
       } else {
         this.output = this.panNode;
         this.panNode.connect(this.splitter);

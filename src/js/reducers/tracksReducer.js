@@ -327,6 +327,7 @@ export default function reducer(state = {
             currTrack.pluginList.push(
                 PluginsUtils.getNewPluginByIndex(action.payload.pluginId, currTrack.pluginList.length)
             );
+            currTrack.trackNode.updateTrackNode();
             return {
                 ...state,
                 trackList: newTrackList
@@ -341,6 +342,21 @@ export default function reducer(state = {
                     for (let j = i; j < currTrack.pluginList.length; j++) {
                         currTrack.pluginList[j].index = j;
                     }
+                    break;
+                }
+            }
+            currTrack.trackNode.updateTrackNode();
+            return {
+                ...state,
+                trackList: newTrackList
+            }
+        }
+        case 'CHANGE_PLUGIN_PRESET':{
+            let newTrackList = [...state.trackList];
+            let currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
+            for(let i = 0; i < currTrack.pluginList.length; i++){
+                if (currTrack.pluginList[i].index === action.payload.pluginIndex) {
+                    currTrack.pluginList[i].updatePreset(action.payload.preset);
                     break;
                 }
             }

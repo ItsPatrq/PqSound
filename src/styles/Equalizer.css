@@ -1,0 +1,13 @@
+.equalizerModal {
+    background-color: #212121;
+    font-family: "Source Sans Pro", Arial, sans-serif;
+    color: #eaeeef;
+    width: 100%;
+    margin: auto;
+    padding: 8px;
+}
+
+.gainControl {
+    margin-top: 5px;
+    font-size: small;
+}
