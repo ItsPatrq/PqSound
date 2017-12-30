@@ -115,6 +115,7 @@ class TopNavBar extends React.Component {
             reader.onload = () => {
                 const fileAsBinaryString = reader.result;
                 let loadedState = JSON.parse(decodeURIComponent(fileAsBinaryString));
+                console.log(loadedState)
                 this.props.dispatch(loadTrackState(loadedState.tracks));
                 this.props.dispatch(loadControlState(loadedState.control));
                 this.props.dispatch(loadCompositionState(loadedState.composition))
