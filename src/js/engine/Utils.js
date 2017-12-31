@@ -1,22 +1,22 @@
 module.exports.isNullOrUndefined = (value) => {
-    return typeof(value) === 'undefined' || value === null;
+    return typeof (value) === 'undefined' || value === null;
 }
 
 module.exports.isNullUndefinedOrEmpty = (value) => {
-    return typeof(value) === 'undefined' || value === null || value.length === 0 || (value.constructor === Object && Object.keys(value).length === 0);
+    return typeof (value) === 'undefined' || value === null || value.length === 0 || (value.constructor === Object && Object.keys(value).length === 0);
 }
 
 module.exports.getTrackByIndex = (trackList, index) => {
-    for (let i = 0; i < trackList.length; i++){
-        if(trackList[i].index === index){
+    for (let i = 0; i < trackList.length; i++) {
+        if (trackList[i].index === index) {
             return trackList[i];
         }
     }
 }
 
 module.exports.getRegionsByTrackIndex = (regionsByTrack, index) => {
-    for(let i = 0; i < regionsByTrack.length; i++){
-        if(regionsByTrack[i].trackIndex === index){
+    for (let i = 0; i < regionsByTrack.length; i++) {
+        if (regionsByTrack[i].trackIndex === index) {
             return regionsByTrack[i].regions;
         }
     }
@@ -24,8 +24,8 @@ module.exports.getRegionsByTrackIndex = (regionsByTrack, index) => {
 
 module.exports.removeAllFromArray = (array, condition) => {
     let newArray = [...array];
-    for(let i = newArray.lengt - 1; i >=0; i--){
-        if(condition(newArray[i])){
+    for (let i = newArray.lengt - 1; i >= 0; i--) {
+        if (condition(newArray[i])) {
             newArray.splice(i, 1);
         }
     }
@@ -34,8 +34,8 @@ module.exports.removeAllFromArray = (array, condition) => {
 
 module.exports.removeFirstFromArray = (array, condition) => {
     let newArray = [...array];
-    for(let i = 0; i < newArray.length; i++){
-        if(condition(newArray[i], i)){
+    for (let i = 0; i < newArray.length; i++) {
+        if (condition(newArray[i], i)) {
             newArray.splice(i, 1);
             break;
         }
@@ -66,3 +66,19 @@ module.exports.noteToMIDI = (note) => {
 module.exports.MIDIToNote = (note) => {
     return note - 21;
 }
+
+let copy = (data) => {
+    if (!(data instanceof AudioContext)) {
+        var output, v, key;
+        output = Array.isArray(data) ? [] : {};
+        for (key in data) {
+            v = data[key];
+            output[key] = (typeof v === "object") ? copy(v) : v;
+        }
+        return output;
+    } else {
+        return null;
+    }
+}
+
+module.exports.copy = copy;

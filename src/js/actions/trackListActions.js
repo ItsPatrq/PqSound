@@ -32,16 +32,6 @@ export function changeTrackName(newName, newIndex) {
     }
 }
 
-export function changeTrackPreset(newPresetId, newIndex) {
-    return {
-        type: 'CHANGE_TRACK_PRESET',
-        payload: {
-            index: newIndex,
-            presetId: newPresetId
-        }
-    }
-}
-
 export function changeSelectedTrack(newIndex){
     return{
         type: 'CHANGE_SELECTED_TRACK',
@@ -182,5 +172,11 @@ export function loadTrackState(newState){
     return {
         type: 'LOAD_TRACK_STATE',
         payload: newState
+    }
+}
+
+export function updateAllTrackNodes(){
+    return {
+        type: 'UPDATE_ALL_TRACK_NODES'
     }
 }

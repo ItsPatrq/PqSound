@@ -1,13 +1,12 @@
 import SamplerPresets from 'constants/SamplerPresets';
 import BufferLoader from 'engine/BufferLoader';
 import Sound from 'engine/Sound';
-
+import * as Utils from 'engine/Utils';
 export default function reducer(state = {
     context: null,
     sound: null,
     bufferLoader: null,
-    samplerInstrumentsSounds: new Array,
-    fetching: false
+    samplerInstrumentsSounds: new Array
 }, action) {
     switch (action.type) {
         case 'INIT_WEB_AUDIO': {
@@ -31,6 +30,7 @@ export default function reducer(state = {
                         name: SamplerPresets[i].presets[j].name,
                         id: SamplerPresets[i].presets[j].id,
                         loaded: false,
+                        fetching: false,
                         buffer: new Array
                     })
                 }
@@ -45,6 +45,7 @@ export default function reducer(state = {
         }
         case 'NEED_TO_FETCH_SAMPLER_INSTRUMENT': {
             let newBufferLoader = { ...state.bufferLoader };
+            let newSamplerInstrumentsSounds = [...state.samplerInstrumentsSounds]
             for (let i = 0; i < SamplerPresets.length; i++) {
                 for (let j = 0; j < SamplerPresets[i].presets.length; j++) {
                     if (SamplerPresets[i].presets[j].id === action.payload.instrumentId) {
@@ -53,12 +54,19 @@ export default function reducer(state = {
                     }
                 }
             }
+            for (let i = 0; i < newSamplerInstrumentsSounds.length; i++) {
+                if (newSamplerInstrumentsSounds[i].id === action.payload.instrumentId) {
+                    newSamplerInstrumentsSounds[i].fetching = true;
+                    break;
+                }
+
+            }
             newBufferLoader.onload = action.payload.callback;
             newBufferLoader.load();
             return {
                 ...state,
                 bufferLoader: newBufferLoader,
-                fetching: true
+                samplerInstrumentsSounds: newSamplerInstrumentsSounds
             }
         }
         case 'FETCHED_SAMPLER_INSTRUMENT': {
@@ -76,11 +84,11 @@ export default function reducer(state = {
                 newSamplerInstrumentsSounds[instrumentIndex].buffer.push(state.bufferLoader.bufferList[i]);
             }
             newSamplerInstrumentsSounds[instrumentIndex].loaded = true;
+            newSamplerInstrumentsSounds[instrumentIndex].fetching = false;
 
             return {
                 ...state,
                 samplerInstrumentsSounds: newSamplerInstrumentsSounds,
-                fetching: false,
                 bufferLoader: new BufferLoader(state.context)
             }
         }

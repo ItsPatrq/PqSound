@@ -4,9 +4,11 @@ import { connect } from 'react-redux';
 import { switchKeyboardVisibility, updateWidth, switchKeyNameVisibility, switchKeyBindVisibility } from 'actions/keyboardActions';
 import { switchPianorollVisibility, loadCompositionState } from 'actions/compositionActions';
 import { switchAltKey, switchUploadModalVisibility, loadControlState } from 'actions/controlActions'
-import { loadTrackState } from 'actions/trackListActions';
+import { loadTrackState, updateAllTrackNodes } from 'actions/trackListActions';
 import * as Utils from 'engine/Utils';
 import FileUploadModal from 'components/FileUploadModal';
+import { TrackTypes } from 'constants/Constants'
+import { fetchSamplerInstrument } from 'actions/webAudioActions';
 
 class TopNavBar extends React.Component {
     constructor() {
@@ -77,23 +79,34 @@ class TopNavBar extends React.Component {
     }
 
     getExportData() {
-        let tempControl = { ...this.props.control };
+        let tempControl = Utils.copy(this.props.control);
         delete tempControl['midiController'];
         delete tempControl['sequencer'];
+        let tempTracks = Utils.copy(this.props.tracks);
+        for (let i = 0; i < tempTracks.trackList.length; i++) {
+            delete tempTracks.trackList[i]['trackNode'];
+            if (tempTracks.trackList.trackType === TrackTypes.virtualInstrument) {
+                tempTracks.trackList[i].instrument = {
+                    preset: tempTracks.trackList[i].instrument.preset,
+                    id: tempTracks.trackList[i].instrument.id,
+                    index: tempTracks.trackList[i].instrument.index
+                }
+            }
+            for (let j = 0; j < tempTracks.trackList[i].pluginList.length; j++) {
+                tempTracks.trackList[i].pluginList[j] = {
+                    preset: tempTracks.trackList[i].pluginList[j].preset,
+                    id: tempTracks.trackList[i].pluginList[j].id,
+                    index: tempTracks.trackList[i].pluginList[j].index
+                }
+            }
+        }
         let obj = {
-            tracks: this.props.tracks,
+            tracks: tempTracks,
             control: tempControl,
             composition: this.props.composition
         };
-        console.log(obj)
 
         return encodeURIComponent(JSON.stringify(obj));
-    }
-
-    import() {
-        let fileInput = document.getElementById('fileUpload');
-        console.log(fileInput)
-        fileInput.click();
     }
 
     export() {
@@ -109,23 +122,37 @@ class TopNavBar extends React.Component {
         this.props.dispatch(switchUploadModalVisibility())
     }
 
-    handleFileUpload(accepted, rejected){
-        if(accepted.length > 0){
+    handleFileUpload(accepted, rejected) {
+        if (accepted.length > 0) {
             const reader = new FileReader();
             reader.onload = () => {
                 const fileAsBinaryString = reader.result;
                 let loadedState = JSON.parse(decodeURIComponent(fileAsBinaryString));
-                console.log(loadedState)
                 this.props.dispatch(loadTrackState(loadedState.tracks));
                 this.props.dispatch(loadControlState(loadedState.control));
                 this.props.dispatch(loadCompositionState(loadedState.composition))
+                this.props.dispatch(updateAllTrackNodes());
+                /**
+                 * loading all required samples
+                 */
+                for(let i = 1; i < this.props.tracks.trackList.length; i++){
+                    for (let j = 0; j < this.props.samplerInstruments.length; j++) {
+                        if (this.props.tracks.trackList[i].instrument.id === 0 &&
+                            this.props.samplerInstruments[j].id === this.props.tracks.trackList[i].instrument.preset.id) {
+                            if (!this.props.samplerInstruments[j].loaded && !this.props.samplerInstruments[j].fetching) {
+                                this.props.dispatch(fetchSamplerInstrument(this.props.tracks.trackList[i].instrument.preset.id));
+                            }
+                        }
+                    }
+                }
             };
             reader.onabort = () => console.log('file reading was aborted');
             reader.onerror = () => console.log('file reading has failed');
-    
-            reader.readAsBinaryString(accepted[0]);    
-        } else {
-            console.log('rejected')
+
+            reader.readAsBinaryString(accepted[0]);
+        }
+        if (rejected.length > 0) {
+            console.log(rejected)
         }
     }
 
@@ -191,7 +218,10 @@ const mapStateToProps = (state) => {
         pianoRollRegion: state.composition.pianoRollRegion,
         composition: state.composition,
         tracks: state.tracks,
-        control: state.control
+        control: state.control,
+        samplerInstruments: state.webAudio.samplerInstrumentsSounds.map(
+            (value) => { return { name: value.name, loaded: value.loaded, id: value.id } }
+        )
     }
 }
 

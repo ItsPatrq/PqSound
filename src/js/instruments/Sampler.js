@@ -2,6 +2,7 @@ import Store from '../stroe';
 import { Instruments } from 'constants/Constants';
 import { Presets } from 'constants/SamplerPresets';
 import { isNullOrUndefined, MIDIToNote } from 'engine/Utils';
+import Instrument from './Instrument';
 
 class SamplerVoice {
     constructor(buffer, startTime) {
@@ -37,10 +38,9 @@ class SamplerVoice {
     }
 }
 
-class Sampler {
+class Sampler extends Instrument{
     constructor(preset = Presets.DSKGrandPiano) {
-        this.name = Instruments.Sampler.name;
-        this.id = Instruments.Sampler.id;
+        super(Instruments.Sampler);
         this.preset = preset;
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
@@ -96,6 +96,10 @@ class Sampler {
 
     loadPreset(newPreset){
         this.preset = newPreset;
+    }
+
+    updateNodes(){
+        
     }
 
     getBuffers(note) {

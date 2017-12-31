@@ -1,6 +1,7 @@
 import React from 'react';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 import SamplerPresets from 'constants/SamplerPresets';
+import { Utils as SamplerPresetsUtils } from 'constants/SamplerPresets';
 
 const Sampler = (props) => {
     let allPresets = new Array;
@@ -11,7 +12,10 @@ const Sampler = (props) => {
                 <MenuItem
                     key={SamplerPresets[i].presets[j].id.toString()}
                     eventKey={SamplerPresets[i].presets[j].id.toString()}
-                    onClick={() => props.onPresetChange(SamplerPresets[i].presets[j].id)}
+                    onClick={() => props.onPresetChange(
+                        SamplerPresetsUtils.getPresetById(SamplerPresets[i].presets[j].id)
+                    )
+                    }
                 >
                     {SamplerPresets[i].presets[j].name}
                 </MenuItem>

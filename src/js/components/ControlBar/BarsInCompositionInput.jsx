@@ -14,7 +14,6 @@ const BarsInCompositionInput = (props) => {
             props.onBarsInCompositionChange();
         }
     }
-    console.log(props)
     return (
         <div className="formControlBarsInComposition">
             <OverlayTrigger placement="bottom" overlay={

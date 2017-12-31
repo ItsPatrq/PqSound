@@ -10,7 +10,7 @@ import Output from 'components/TrackDetails/Output';
 import SoloMuteButtons from 'components/TrackDetails/SoloMuteButtons';
 import PluginModal from 'components/TrackDetails/PluginModal';
 import * as Actions from 'actions/trackDetailsActions';
-import { changeTrackPreset, changeTrackVolume, changeTrackInstrument, changeTrackOutput, changeSoloState, changeMuteState, changeTrackPan, addNewPlugin, removePlugin, changePluginPreset } from 'actions/trackListActions';
+import { changeTrackPreset, changeTrackVolume, changeTrackInstrument, changeTrackOutput, changeSoloState, changeMuteState, changeTrackPan, addNewPlugin, removePlugin, changePluginPreset, updateInstrumentPreset } from 'actions/trackListActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 import { TrackTypes } from 'constants/Constants';
@@ -50,13 +50,13 @@ class TrackDetails extends React.Component {
         this.props.dispatch(Actions.instrumentModalVisibilitySwitch());
     }
 
-    handleSamplerPresetChange(newPresetId) {
-        if (this.getTrackPreset(this.props.selected).id !== newPresetId) {
-            this.props.dispatch(changeTrackPreset(newPresetId, this.props.selected));
+    handleSamplerPresetChange(newPreset) {
+        if (this.getTrackPreset(this.props.selected).id !== newPreset.id) {
+            this.props.dispatch(updateInstrumentPreset(newPreset, this.props.selected));
             for (let i = 0; i < this.props.samplerInstruments.length; i++) {
-                if (this.props.samplerInstruments[i].id === newPresetId) {
-                    if (!this.props.samplerInstruments[i].loaded) {
-                        this.props.dispatch(fetchSamplerInstrument(newPresetId));
+                if (this.props.samplerInstruments[i].id === newPreset.id) {
+                    if (!this.props.samplerInstruments[i].loaded && !this.props.samplerInstruments[i].fetching) {
+                        this.props.dispatch(fetchSamplerInstrument(newPreset.id));
                     }
                     break;
                 }
@@ -156,6 +156,10 @@ class TrackDetails extends React.Component {
         ))
     }
 
+    handleInstrumentPresetChange(newPreset){
+        this.props.dispatch(updateInstrumentPreset(newPreset, this.props.selected));
+    }
+
     render() {
         if (!!this.props.selected) {
             let instrumentComponent;
@@ -167,6 +171,7 @@ class TrackDetails extends React.Component {
                         selectedTrack={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
                         onSamplerPresetChange={this.handleSamplerPresetChange.bind(this)}
                         onInstrumentChange={this.handleInstrumentChange.bind(this)}
+                        onInstrumentPresetChange={this.handleInstrumentPresetChange.bind(this)}
                     />;
             } else {
                 instrumentComponent =

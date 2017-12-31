@@ -36,10 +36,8 @@ class Distortion extends Plugin {
             x = i * 2 / n_samples - 1;
             curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
         }
-        console.log(curve)
         return curve;
     }
-
 }
 
 export default Distortion;

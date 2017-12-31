@@ -83,11 +83,44 @@ class Monotron extends React.Component {
             scale = param.scale != null ? param.scale : 1.05;
             ratio = Math.pow(scale, parseInt(knopf.value)) / Math.pow(scale, knopf.settings.max);
             value = ratio * (param.max - param.min) + param.min;
-            this.props.instrument.updatePreset(value, knopf.value, id, this.props.trackIndex)
+            switch(id){
+                case 'pitch':{
+                    this.props.onPresetChange({vco: {pitch: value, knobPitch: knopf.value}});
+                    break;
+                }
+                case 'rate':{
+                    this.props.onPresetChange({lfo: {
+                        rate: value, knobRate: knopf.value,
+                        int: this.props.instrument.preset.lfo.int, knobInt: this.props.instrument.preset.lfo.knobInt
+                    }});
+                    break;
+                }
+                case 'int':{
+                    this.props.onPresetChange({lfo: {
+                        int: value, knobInt: knopf.value,
+                        rate: this.props.instrument.preset.lfo.rate, knobInt: this.props.instrument.preset.lfo.knobRate
+                    }});
+                    break;
+                }
+                case 'cutoff':{
+                    this.props.onPresetChange({vcf: {
+                        cutoff: value, knobCutoff: knopf.value,
+                        peak: this.props.instrument.preset.vcf.peak, knobPeak: this.props.instrument.preset.vcf.knobPeak
+                        }});
+                    break;
+                }
+                case 'peak':{
+                    this.props.onPresetChange({vcf: {
+                        peak: value, knobPeak: knopf.value,
+                        cutoff: this.props.instrument.preset.vcf.cutoff, knobPeak: this.props.instrument.preset.vcf.knobCutoff
+                    }});
+                    break;
+                }
+            }
         }
     }
     onModChange(event) {
-        this.props.instrument.updatePreset(event.target.value, null, 'mod', this.props.trackIndex)
+        this.props.onPresetChange({mod: event.target.value});
     }
     render() {
         return (

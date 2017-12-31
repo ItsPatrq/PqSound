@@ -14,7 +14,6 @@ const Compressor = (props) => {
             release: newRelease ? Number(newRelease) : props.plugin.preset.release            
         })
     }
-    console.log(props.plugin.preset)
     return (
         <div>
             <div className="compressorModal">

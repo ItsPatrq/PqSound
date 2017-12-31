@@ -18,6 +18,7 @@ const InstrumentModal = (props) => {
           modalBody = <MonotronComponent
           instrument={props.track.instrument}
           trackIndex={props.track.index}
+          onPresetChange={props.onInstrumentPresetChange}
           />
           break;
         }

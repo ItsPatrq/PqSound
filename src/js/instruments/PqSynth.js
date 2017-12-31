@@ -1,6 +1,7 @@
 import Store from '../stroe';
 import { Instruments, defaultKeysNames } from 'constants/Constants';
 import { isNullOrUndefined, noteToFrequency, MIDIToNote } from 'engine/Utils';
+import Instrument from './Instrument';
 
 class PqSynthVoice {
     constructor(freqyency, startTime) {
@@ -38,10 +39,9 @@ class PqSynthVoice {
     }
 }
 
-class PqSynth {
+class PqSynth extends Instrument{
     constructor(preset = null) {
-        this.name = Instruments.PqSynth.name;
-        this.id = Instruments.PqSynth.id;
+        super(Instruments.PqSynth)
         this.preset = preset;
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
@@ -66,10 +66,6 @@ class PqSynth {
             this.voices[note].stop(endTime);
             delete this.voices[note];
         }
-    }
-
-    getNoteName(note){
-        return defaultKeysNames[MIDIToNote(note)] + Math.ceil((MIDIToNote(note) - 2)/12);
     }
 
     connect(target) {

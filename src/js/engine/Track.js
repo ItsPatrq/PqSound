@@ -38,7 +38,7 @@ class Track {
       if (isNullOrUndefined(this.outputTrackIndex)) {
         this.output.connect(this.context.destination);
       } else {
-        this.output.connect(getTrackByIndex(Store.getState().tracks.trackList, this.outputTrackIndex).trackNode.input);
+        this.output.connect(getTrackByIndex(Store.getState().tracks.trackList, 0).trackNode.input);
       }
       if (!isNullOrUndefined(newInstrument)) {
         newInstrument.connect(this.input);
@@ -130,7 +130,7 @@ getAverageVolume(){
   updateSoloState(soloState, anySolo) {
     this.solo = soloState;
     this.anySolo = anySolo;
-    this.updateTrackNode(null)
+    this.updateTrackNode()
   }
 
   updateMuteState() {

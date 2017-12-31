@@ -19,6 +19,7 @@ export default function reducer(state = {
             pluginList: newMasterPluginList,
             volume: 1.0,
             pan: 0,
+            record: false,
             mute: false,
             index: 0,
             output: null, //output: context.destination
@@ -57,7 +58,7 @@ export default function reducer(state = {
                     pluginList: newPluginList,
                     volume: 1.0,
                     pan: 0,
-                    record: action.payload.trackType === TrackTypes.virtualInstrument ? false : null,
+                    record: false,
                     mute: false,
                     solo: false,
                     index: state.trackList.length,
@@ -171,18 +172,6 @@ export default function reducer(state = {
                 selected: action.payload
             }
         }
-        case 'CHANGE_TRACK_PRESET': {
-            let newTrackList = [...state.trackList];
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload.index) {
-                    newTrackList[i].instrument.loadPreset(SamplerPresetsUtils.getPresetById(action.payload.presetId));
-                }
-            }
-            return {
-                ...state,
-                trackList: newTrackList
-            }
-        }
         case 'INIT_TRACK_SOUND': {
             let newTrackList = [...state.trackList];
             if (Utils.isNullOrUndefined(action.payload)) {
@@ -284,7 +273,7 @@ export default function reducer(state = {
             let newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
-                    newTrackList[i].instrument.preset = action.payload.preset;
+                    newTrackList[i].instrument.updatePreset(action.payload.preset);
                     break;
                 }
             }
@@ -366,10 +355,11 @@ export default function reducer(state = {
             }
         }
         case 'LOAD_TRACK_STATE': {
-            let newState = { ...action.payload }
+            let newState = Utils.copy(action.payload);
             for (let i = 1; i < newState.trackList.length; i++) {
                 if (newState.trackList[i].trackType === TrackTypes.virtualInstrument) {
-                    let newInstrument = InstrumentsUtils.getNewInstrumentByIndex(newState.trackList[i].instrument.id);
+                    let newInstrument = InstrumentsUtils.getNewInstrumentByIndex(action.payload.trackList[i].instrument.id);
+                    newInstrument.updatePreset(action.payload.trackList[i].instrument.preset);
                     newState.trackList[i].instrument = newInstrument;
                     let newPluginList = new Array;
                     for (let j = 0; j < newState.trackList[i].pluginList.length; j++) {
@@ -396,6 +386,7 @@ export default function reducer(state = {
                     newState.trackList[i].trackNode = new Track(
                         newState.trackList[i].pluginList, null, newState.trackList[i].output, newState.trackList[i].volume, newState.trackList[i].pan)
                 }
+                newState.trackList[i].index = newState.trackList[i].index;
             }
             let newPluginList = new Array;
             for (let j = 0; j < newState.trackList[0].pluginList.length; j++) {
@@ -410,8 +401,31 @@ export default function reducer(state = {
             newState.trackList[0].trackNode = state.trackList[0].trackNode;
             newState.trackList[0].trackNode.pluginNodeList = newPluginList;
             newState.trackList[0].trackNode.updateTrackNode();
+            
             return {
-                ...action.payload
+                ...newState
+            }
+        }
+        case 'UPDATE_ALL_TRACK_NODES': {
+            let newTrackList = [...state.trackList];
+            
+            for(let i = 0; i < newTrackList.length; i++){
+                if(newTrackList[i].mute){
+                    newTrackList[i].trackNode.updateMuteState();
+                }
+                if (newTrackList[i].trackType === TrackTypes.virtualInstrument) {
+                    if (state.anyAuxSolo && newTrackList[i].output === 0) {
+                        newTrackList[i].trackNode.updateSoloState(false, true);
+                    } else {
+                        newTrackList[i].trackNode.updateSoloState(newTrackList[i].solo, state.anyVirtualInstrumentSolo);
+                    }
+                } else if (newTrackList[i].trackType === TrackTypes.aux) {
+                    newTrackList[i].trackNode.updateSoloState(newTrackList[i].solo, state.anyAuxSolo);
+                }
+            }
+            return {
+                ...state,
+                trackList: newTrackList
             }
         }
     }

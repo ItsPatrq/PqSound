@@ -37,6 +37,7 @@ const InstrumentInput = (props) => {
                 showModal={props.showModal}
                 track={props.selectedTrack}
                 onSamplerPresetChange={props.onSamplerPresetChange}
+                onInstrumentPresetChange={props.onInstrumentPresetChange}
             />
         </div>
     );

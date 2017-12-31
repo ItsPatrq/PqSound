@@ -51,7 +51,7 @@ class TrackList extends React.Component {
                 this.props.trackList[i].instrument.name === 'Sampler') {
                 for (let j = 0; j < this.props.samplerInstruments.length; j++) {
                     if (this.props.trackList[i].instrument.preset === this.props.samplerInstruments[j].name &&
-                        !this.props.samplerInstruments[j].loaded && !this.props.fetching) {
+                        !this.props.samplerInstruments[j].loaded && !this.props.samplerInstruments[j].fetching) {
                         this.props.dispatch(fetchSamplerInstrument(this.props.trackList[i].instrument.preset));
                     }
                 }
@@ -151,7 +151,6 @@ const mapStateToProps = (state) => {
         selected: state.tracks.selected,
         anyActive: state.tracks.anyAuxSolo || state.tracks.anyVirtualInstrumentSolo,
         samplerInstruments: samplerInstruments,
-        fetching: state.webAudio.fetching,
         showModal: state.tracks.showAddNewTrackModal,
         pianoRollVisible: state.composition.showPianoRoll
     }
