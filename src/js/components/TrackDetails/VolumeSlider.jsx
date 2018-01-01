@@ -27,7 +27,7 @@ class VolumeSlider extends React.Component {
     }
     update() {
         let newVolumes = this.props.trackNode.getAverageVolume();
-        this.setState((state) => ({ volumes: newVolumes }))
+        this.setState((/*state*/) => ({ volumes: newVolumes }))
         this.canvasContext.clearRect(0, 0, 52, 150);
         this.canvasContext.fillStyle = this.gradient;
         this.canvasContext.fillRect(5, 150 - this.state.volumes.left, 20, 150);

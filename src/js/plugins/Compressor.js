@@ -19,15 +19,15 @@ class Compressor extends Plugin{
         this.output = this.compressorNode;
     }
     updateNodes(){
-        this.compressorNode.threshold.setValueAtTime(this.preset.threashold ? 
+        this.compressorNode.threshold.setValueAtTime(this.preset.threashold ?
             this.preset.threashold : -0.000001, this.context.currentTime);
-        this.compressorNode.knee.setValueAtTime(this.preset.knee ? 
+        this.compressorNode.knee.setValueAtTime(this.preset.knee ?
             this.preset.knee : 0.000001, this.context.currentTime);
-        this.compressorNode.ratio.setValueAtTime(this.preset.ratio ? 
+        this.compressorNode.ratio.setValueAtTime(this.preset.ratio ?
             this.preset.ratio : 0.000001, this.context.currentTime);
-        this.compressorNode.attack.setValueAtTime(this.preset.attack ? 
+        this.compressorNode.attack.setValueAtTime(this.preset.attack ?
             this.preset.attack : 0.000001, this.context.currentTime);
-        this.compressorNode.release.setValueAtTime(this.preset.release ? 
+        this.compressorNode.release.setValueAtTime(this.preset.release ?
             this.preset.release : 0.000001, this.context.currentTime);
     }
 }

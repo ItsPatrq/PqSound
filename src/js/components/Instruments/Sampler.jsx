@@ -12,10 +12,12 @@ const Sampler = (props) => {
                 <MenuItem
                     key={SamplerPresets[i].presets[j].id.toString()}
                     eventKey={SamplerPresets[i].presets[j].id.toString()}
-                    onClick={() => props.onPresetChange(
-                        SamplerPresetsUtils.getPresetById(SamplerPresets[i].presets[j].id)
-                    )
-                    }
+                    onClick={() => {
+                        let newPreset = SamplerPresetsUtils.getPresetById(SamplerPresets[i].presets[j].id);
+                        newPreset.attack = props.instrument.preset.attack;
+                        newPreset.release = props.instrument.preset.release;
+                        props.onPresetChange(newPreset);
+                    }}
                 >
                     {SamplerPresets[i].presets[j].name}
                 </MenuItem>
@@ -27,13 +29,40 @@ const Sampler = (props) => {
             </DropdownButton>
         )
     }
+    let handleChange = (newAttack, newRelease) => {
+        props.onPresetChange({
+            ...props.instrument.preset,
+            attack: newAttack ? Number(newAttack) : props.instrument.preset.attack,
+            release: newRelease ? Number(newRelease) : props.instrument.preset.release
+        })
+    }
     return (
-        <div className="samplerInstrument">
+        <div className="samplerContainer">
             <p>Preset: </p>
-            <div className="instrumentInput">
+            <div className="samplerPresetInstrument">
                 <DropdownButton id="preset-main-drop-down" bsStyle="default" className="drop-down" title={props.instrument.preset.name} >
                     {allPresets}
                 </DropdownButton>
+            </div>
+            <div className="samplerSliderContainer">
+            <label>Attack: {props.instrument.preset.attack}</label>
+                    <input type="range"
+                        value={props.instrument.preset.attack}
+                        step="0.02"
+                        min="0"
+                        max="4"
+                        onChange={(event) => handleChange(event.target.value)}
+                    />
+            </div>
+            <div className="samplerSliderContainer">
+            <label>Release: {props.instrument.preset.release}</label>
+                    <input type="range"
+                        value={props.instrument.preset.release}
+                        step="0.02"
+                        min="0"
+                        max="4"
+                        onChange={(event) => handleChange(null, event.target.value)}
+                    />
             </div>
         </div>
     );

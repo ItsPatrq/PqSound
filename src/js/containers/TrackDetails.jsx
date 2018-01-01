@@ -51,8 +51,8 @@ class TrackDetails extends React.Component {
     }
 
     handleSamplerPresetChange(newPreset) {
+        this.props.dispatch(updateInstrumentPreset(newPreset, this.props.selected));
         if (this.getTrackPreset(this.props.selected).id !== newPreset.id) {
-            this.props.dispatch(updateInstrumentPreset(newPreset, this.props.selected));
             for (let i = 0; i < this.props.samplerInstruments.length; i++) {
                 if (this.props.samplerInstruments[i].id === newPreset.id) {
                     if (!this.props.samplerInstruments[i].loaded && !this.props.samplerInstruments[i].fetching) {

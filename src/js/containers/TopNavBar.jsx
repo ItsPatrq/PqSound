@@ -30,7 +30,9 @@ class TopNavBar extends React.Component {
                         break;
                     }
                     case 18: {
-                        that.props.dispatch(switchAltKey());
+                        if(!that.props.control.altClicked){
+                            that.props.dispatch(switchAltKey());
+                        }
                     }
                 }
             }

@@ -13,21 +13,22 @@ class SamplerVoice {
             this.output = this.context.createGain();
             
             this.source.connect(this.output);
-            this.output.gain.setValueAtTime(0.0001, startTime || this.context.currentTime);
             this.source.buffer = buffer;
             
-            this.source.start(startTime || this.context.currentTime)
+            this.source.start(this.context.currentTime)
         }
     }
 
     start(time) {
         time = time || this.context.currentTime;
-        this.output.gain.exponentialRampToValueAtTime(1.0, time + 0.01);
+        this.output.gain.setValueAtTime(0.001, this.context.currentTime);
+        this.output.gain.linearRampToValueAtTime(1.0, time);
     }
 
     stop(time) {
         time = time || this.context.currentTime;
-        this.output.gain.exponentialRampToValueAtTime(0.0001, time + 0.1);
+        this.output.gain.setValueAtTime(1, this.context.currentTime);
+        this.output.gain.linearRampToValueAtTime(0.0001, time);
         setTimeout(() => {
             this.source.disconnect();
         }, Math.floor((time - this.context.currentTime) * 1000));
@@ -42,6 +43,8 @@ class Sampler extends Instrument{
     constructor(preset = Presets.DSKGrandPiano) {
         super(Instruments.Sampler);
         this.preset = preset;
+        this.preset.attack = 0;
+        this.preset.release = 0;
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
 
@@ -52,7 +55,7 @@ class Sampler extends Instrument{
 
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
-            startTime = startTime || this.context.currentTime;
+            startTime = (startTime || this.context.currentTime) + this.preset.attack;
             let currVoice = new SamplerVoice(this.getBuffers(note), startTime);
             currVoice.connect(this.output);
             currVoice.start(startTime);
@@ -62,7 +65,7 @@ class Sampler extends Instrument{
 
     noteOff(note, endTime) {
         if (!isNullOrUndefined(this.voices[note])) {
-            endTime = endTime || this.context.currentTime;
+            endTime = (endTime || this.context.currentTime) + this.preset.release;
             this.voices[note].stop(endTime);
             delete this.voices[note];
         }

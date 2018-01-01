@@ -33,11 +33,9 @@
     flex-direction: column;
     height: 100%;
     height: -webkit-fill-available;
-    overflow: auto;
+    overflow: hidden;
 }
-.pluginRowList {
-    overflow-y: auto;
-}
+
 #TrackDetailsCol {
     height: calc(100vh - 100px);
 

@@ -110,7 +110,7 @@ getAverageVolume(){
 
   changeVolume(newVolume, changeTime) {
     changeTime = changeTime || this.context.currentTime;
-    this.gainNode.gain.exponentialRampToValueAtTime(newVolume, changeTime);
+    this.gainNode.gain.setValueAtTime(newVolume, changeTime);
   }
 
   changePan(newPan, changeTime) {

@@ -11,7 +11,7 @@ const Compressor = (props) => {
             knee: newKnee ? Number(newKnee) : props.plugin.preset.knee,
             ratio: newRatio ? Number(newRatio) : props.plugin.preset.ratio,
             attack: newAttack ? Number(newAttack) : props.plugin.preset.attack,
-            release: newRelease ? Number(newRelease) : props.plugin.preset.release            
+            release: newRelease ? Number(newRelease) : props.plugin.preset.release
         })
     }
     return (

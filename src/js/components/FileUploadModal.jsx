@@ -1,11 +1,6 @@
 import React from 'react';
 import Dropzone from 'react-dropzone'
 import { Modal, Button } from 'react-bootstrap';
-import EqualizerComponent from 'components/Plugins/Equalizer';
-import CompressorComponent from 'components/Plugins/Compressor';
-import DistortionComponent from 'components/Plugins/Distortion';
-import { isNullOrUndefined } from 'engine/Utils';
-import { PluginsEnum } from 'constants/Constants';
 
 const FileUploadModal = (props) => {
 
@@ -22,8 +17,8 @@ const FileUploadModal = (props) => {
             </Modal.Header>
             <Modal.Body>
                 <Dropzone
-                    accept="application/json"
-                    onDrop={props.onFileUpload} 
+                    accept=".json"
+                    onDrop={props.onFileUpload}
                 >
                     <p>Drag or click to upload your exported composition</p>
                 </Dropzone>
