@@ -4,6 +4,7 @@ import EqualizerComponent from 'components/Plugins/Equalizer';
 import CompressorComponent from 'components/Plugins/Compressor';
 import DistortionComponent from 'components/Plugins/Distortion';
 import DelayComponent from 'components/Plugins/Delay';
+import ReverbComponent from 'components/Plugins/Reverb';
 import { isNullOrUndefined } from 'engine/Utils';
 import { PluginsEnum } from 'constants/Constants';
 
@@ -37,6 +38,12 @@ const InstrumentModal = (props) => {
                     plugin={props.plugin}
                     onPresetChange={props.onPresetChange}
                 />
+            }
+            case PluginsEnum.Reverb.id: {
+                modalBody = <ReverbComponent
+                plugin={props.plugin}
+                onPresetChange={props.onPresetChange}
+            />
             }
         }
         return (

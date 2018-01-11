@@ -1,0 +1,27 @@
+.reverbModal {
+    background-color: #0f270c;
+    font-family: "Source Sans Pro", Arial, sans-serif;
+    color: #e8e8ff;
+    width: 100%;
+    margin: auto;
+    padding: 10px;
+    border: #212121 solid thick;
+}
+
+.reverbControlRow {
+    margin-top: 8px;
+    padding-left: 4px;
+    padding-right: 4px;    
+    font-size: small;
+}
+
+.reverbControlRow:first-child{
+    border-left: #55d145 solid thin;
+    border-right: #55d145 solid thin;
+    border-top: #55d145 solid thick;    
+}
+.reverbControlRow:last-child{
+    border-left: #55d145 solid thin;
+    border-right: #55d145 solid thin;
+    border-bottom: #55d145 solid thick;
+}
