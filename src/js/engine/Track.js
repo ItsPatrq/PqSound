@@ -115,7 +115,7 @@ getAverageVolume(){
 
   changePan(newPan, changeTime) {
     changeTime = changeTime || this.context.currentTime;
-    this.panNode.pan.setValueAtTime(newPan, changeTime);
+    this.panNode.pan.setValueAtTime(newPan/100, changeTime);
   }
 
   getTrackNode() {

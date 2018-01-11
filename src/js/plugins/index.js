@@ -2,6 +2,7 @@
 import Compressor from './Compressor';
 import Equalizer from './Equalizer';
 import Distortion from './Distortion';
+import Delay from './Delay';
 import { PluginsEnum } from 'constants/Constants'
 let Utils = {};
 
@@ -15,6 +16,9 @@ Utils.getNewPluginByIndex = (id, index) => {
         }
         case PluginsEnum.Distortion.id: {
             return new Distortion(index);
+        }
+        case PluginsEnum.Delay.id:{
+            return new Delay(index);
         }
     }
 }

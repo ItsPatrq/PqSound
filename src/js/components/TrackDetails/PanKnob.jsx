@@ -44,9 +44,8 @@ class PanKnob extends React.Component {
                 <input
                     id="pan"
                     type="range"
-                    min="-1"
-                    max="1"
-                    step="0.05"
+                    min="-100"
+                    max="100"
                     ref={(input) => { this.initKnob(input); }}
                 />
             </div>

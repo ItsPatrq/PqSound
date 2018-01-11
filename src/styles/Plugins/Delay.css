@@ -1,0 +1,18 @@
+.delayModal {
+    background-color: #091f49;
+    font-family: "Source Sans Pro", Arial, sans-serif;
+    color: #e8e8ff;
+    width: 100%;
+    margin: auto;
+    padding: 10px;
+    border: #212121 solid thick;
+}
+
+.delayControlRow {
+    margin-top: 8px;
+    padding-left: 4px;
+    padding-right: 4px;    
+    font-size: small;
+    border-left: #4576d1 solid thin;
+    border-right: #4576d1 solid thin;
+}

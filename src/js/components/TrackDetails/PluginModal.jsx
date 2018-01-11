@@ -3,6 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 import EqualizerComponent from 'components/Plugins/Equalizer';
 import CompressorComponent from 'components/Plugins/Compressor';
 import DistortionComponent from 'components/Plugins/Distortion';
+import DelayComponent from 'components/Plugins/Delay';
 import { isNullOrUndefined } from 'engine/Utils';
 import { PluginsEnum } from 'constants/Constants';
 
@@ -27,6 +28,12 @@ const InstrumentModal = (props) => {
             }
             case PluginsEnum.Distortion.id: {
                 modalBody = <DistortionComponent
+                    plugin={props.plugin}
+                    onPresetChange={props.onPresetChange}
+                />
+            }
+            case PluginsEnum.Delay.id: {
+                modalBody = <DelayComponent
                     plugin={props.plugin}
                     onPresetChange={props.onPresetChange}
                 />

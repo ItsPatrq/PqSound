@@ -77,6 +77,7 @@ class Monotron extends React.Component {
         }
     }
     onChange = (event, id, knopf) => {
+        console.log(knopf.value)
         let ratio, scale, value;
         let param = this.params[id];
         if (!Utils.isNullOrUndefined(param)) {

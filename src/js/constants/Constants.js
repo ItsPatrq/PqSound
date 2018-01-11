@@ -55,7 +55,8 @@ module.exports.Instruments = {
 module.exports.PluginsEnum = {
     Compressor: { name: 'Compressor', id: 0},
     Equalizer: { name: 'Equalizer', id: 1},
-    Distortion: {name: 'Distortion', id: 2}
+    Distortion: {name: 'Distortion', id: 2},
+    Delay: { name: 'Delay', id: 3 }
 }
 
 module.exports.Plugins = [
@@ -70,6 +71,10 @@ module.exports.Plugins = [
     {
         name: 'Distortion',
         id: 2
+    },
+    {
+        name: 'Delay',
+        id: 3
     }
 ]
 

@@ -1,6 +1,4 @@
 import React from 'react';
-import { MenuItem, DropdownButton } from 'react-bootstrap';
-import SamplerPresets from 'constants/SamplerPresets';
 
 require('styles/Plugins/Equalizer.css');
 
