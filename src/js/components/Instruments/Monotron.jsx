@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Utils from 'engine/Utils';
 import { Knob, Ui } from 'engine/Knob';
-require('styles/Monotron.css');
+require('styles/Instruments/Monotron.css');
 
 class Monotron extends React.Component {
     params = {

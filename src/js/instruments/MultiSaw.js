@@ -17,7 +17,7 @@ class MultiSawVoice {
                 let saw = this.context.createOscillator();
                 saw.type = 'sawtooth';
                 saw.frequency.setValueAtTime(freqyency, this.context.currentTime);
-                saw.detune.setValueAtTime(-preset.detune + i * 2 * preset.detune / (preset.sawNumber - 1), this.context.currentTime);
+                saw.detune.setValueAtTime((-preset.detune + i * 2 * preset.detune / (preset.sawNumber - 1) | 0), this.context.currentTime);
                 saw.start(this.context.currentTime);
                 saw.connect(this.output);
                 this.saws.push(saw);
@@ -32,7 +32,8 @@ class MultiSawVoice {
 
     stop(time) {
         time = time || this.context.currentTime;
-        this.output.gain.linearRampToValueAtTime(0.0001, time + this.preset.release);
+        this.output.gain.setValueAtTime(this.maxGain, this.context.currentTime);
+        this.output.gain.linearRampToValueAtTime(0.0001, time);
         setTimeout(() => {
             for(let i = 0; i < this.saws.length; i++){
                 this.saws[i].disconnect();
@@ -57,7 +58,7 @@ class MultiSaw extends Instrument{
             sawNumber: 3,
             detune: 12,
             attack: 0,
-            release: 0
+            decay: 1
         }
     }
 
@@ -73,7 +74,7 @@ class MultiSaw extends Instrument{
 
     noteOff(note, endTime) {
         if (!isNullOrUndefined(this.voices[note])) {
-            endTime = endTime || this.context.currentTime;
+            endTime = (endTime || this.context.currentTime) + this.preset.decay;
             this.voices[note].stop(endTime);
             delete this.voices[note];
         }
