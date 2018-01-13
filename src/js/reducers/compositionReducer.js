@@ -25,9 +25,9 @@ export default function reducer(state = {
             }
         }
         case 'ADD_REGION': {
-            let newRegionsList = JSON.parse(JSON.stringify(state.regionList));
+            let newRegionList = JSON.parse(JSON.stringify(state.regionList));
             let newRegionLastId = state.regionLastId;
-            newRegionsList.push({
+            newRegionList.push({
                 id: ++newRegionLastId,
                 trackIndex: action.payload.trackIndex,
                 regionLength: action.payload.length,
@@ -37,7 +37,25 @@ export default function reducer(state = {
             });
             return {
                 ...state,
-                regionList: newRegionsList,
+                regionList: newRegionList,
+                regionLastId: newRegionLastId
+            }
+        }
+        case 'PASTE_REGION': {
+            let newRegionList = JSON.parse(JSON.stringify(state.regionList));
+            let newRegionLastId = state.regionLastId;
+            let copiedRegion =  compositionParser.getRegionByRegionId(action.payload.copiedRegion, newRegionList);
+            newRegionList.push({
+                id: ++newRegionLastId,
+                trackIndex: action.payload.trackIndex,
+                regionLength: copiedRegion.regionLength,
+                start: action.payload.start,
+                end: action.payload.start + copiedRegion.regionLength - 1,
+                notes: JSON.parse(JSON.stringify(copiedRegion.notes))
+            });
+            return {
+                ...state,
+                regionList: newRegionList,
                 regionLastId: newRegionLastId
             }
         }

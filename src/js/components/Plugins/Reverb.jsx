@@ -3,9 +3,9 @@ import React from 'react';
 require('styles/Plugins/Reverb.css');
 
 const Reverb = (props) => {
-    let handleChange = (newSeconds, newDecay, newReverse, newWet, newDry) => {
+    let handleChange = (newSustain, newDecay, newReverse, newWet, newDry) => {
         props.onPresetChange({
-            seconds: newSeconds ? Number(newSeconds) : props.plugin.preset.seconds,
+            sustain: newSustain ? Number(newSustain) : props.plugin.preset.sustain,
             decay: newDecay ? Number(newDecay) : props.plugin.preset.decay,
             reverse: newReverse ? Number(newReverse) : props.plugin.preset.reverse,
             wet: newWet ? Number(newWet) : props.plugin.preset.wet,
@@ -17,9 +17,9 @@ const Reverb = (props) => {
         <div>
             <div className="reverbModal">
                 <div className="reverbControlRow">
-                    <label>Seconds: {props.plugin.preset.seconds}</label>
+                    <label>Sustain: {props.plugin.preset.sustain}</label>
                     <input type="range"
-                        value={props.plugin.preset.seconds}
+                        value={props.plugin.preset.sustain}
                         step="0.02"
                         min="0"
                         max="10"

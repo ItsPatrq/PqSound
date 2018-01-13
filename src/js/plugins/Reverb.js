@@ -5,7 +5,7 @@ class Reverb extends Plugin {
     constructor(index) {
         super(PluginsEnum.Reverb, index)
         this.preset = {
-            seconds: 1,
+            sustain: 1,
             decay: 2,
             reverse: 0,
             dry: 0.3,
@@ -31,7 +31,7 @@ class Reverb extends Plugin {
 
     updateNodes(){
         let rate = this.context.sampleRate,
-            length = rate * this.preset.seconds,
+            length = rate * this.preset.sustain,
             decay = this.preset.decay,
             impulse = this.context.createBuffer(2,length ? length : 1,rate),
             impulseL = impulse.getChannelData(0),

@@ -8,6 +8,7 @@ import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 import AddNewTrackModal from 'components/TrackList/AddNewTrackModal';
 import TrackListButtons from 'components/TrackList/TrackListButtons';
+import {textInputFocusedSwitch} from 'actions/controlActions';
 
 class TrackList extends React.Component {
     constructor() {
@@ -91,6 +92,10 @@ class TrackList extends React.Component {
         this.props.dispatch(trackListActions.trackIndexDown(index));
     }
 
+    handleInputFocusSwitch(){
+        this.props.dispatch(textInputFocusedSwitch());
+    }
+
     render() {
         let renderTrackList = new Array;
         /**
@@ -113,6 +118,7 @@ class TrackList extends React.Component {
                         onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
                         handleTrackNameChange={this.handleTrackNameChange.bind(this)}
                         selected={this.props.selected}
+                        onInputFocusSwitch={this.handleInputFocusSwitch.bind(this)}
                     />
                 );
             }

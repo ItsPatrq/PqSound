@@ -90,12 +90,16 @@
 }
 
 .region {
-    background-color: rebeccapurple;
+    background-color: rgb(85, 95, 189);
+    border-bottom-width: thin;
 }
 
 .region.noRightBorder {
-    background-color: rebeccapurple;
     border-right: 0;
+}
+
+.region.copied {
+    background-color: rgb(118, 129, 223);
 }
 
 .keyRow {
@@ -109,42 +113,42 @@
 }
 
 .keyRow.white {
-    background: repeating-linear-gradient(90deg,#9E9E9E,#9E9E9E 29px, #545454 30px,#9E9E9E 30px,
-                                        #9E9E9E 59px, #545454 60px,#9E9E9E 60px,
-                                        #9E9E9E 89px, #545454 90px, #9E9E9E 90px,
+    background: repeating-linear-gradient(90deg,#9E9E9E,#9E9E9E 29px, #545454 29px, #545454 30px, #9E9E9E 30px,
+                                        #9E9E9E 59px, #545454 59px, #545454 60px,#9E9E9E 60px,
+                                        #9E9E9E 89px, #545454 89px, #545454 90px, #9E9E9E 90px,
                                         #9E9E9E 118px,#4b4b4b 118px, #4b4b4b 120px, #9E9E9E 120px,
-                                        #9E9E9E 149px,#545454 150px, #9E9E9E 150px,
-                                        #9E9E9E 179px,#545454 180px, #9E9E9E 180px,
-                                        #9E9E9E 209px,#545454 210px, #9E9E9E 210px,
+                                        #9E9E9E 149px,#545454 149px, #545454 150px, #9E9E9E 150px,
+                                        #9E9E9E 179px,#545454 179px, #545454 180px, #9E9E9E 180px,
+                                        #9E9E9E 209px,#545454 209px, #545454 210px, #9E9E9E 210px,
                                         #9E9E9E 238px,#4b4b4b 238px, #4b4b4b 240px, #9E9E9E 240px,
-                                        #9E9E9E 269px,#545454 270px, #9E9E9E 270px,
-                                        #9E9E9E 299px,#545454 300px, #9E9E9E 300px,
-                                        #9E9E9E 329px,#545454 330px, #9E9E9E 330px,
+                                        #9E9E9E 269px,#545454 269px, #545454 270px, #9E9E9E 270px,
+                                        #9E9E9E 299px,#545454 299px, #545454 300px, #9E9E9E 300px,
+                                        #9E9E9E 329px,#545454 329px, #545454 330px, #9E9E9E 330px,
                                         #9E9E9E 358px,#4b4b4b 358px, #4b4b4b 360px, #9E9E9E 360px,
-                                        #9E9E9E 389px,#545454 390px, #9E9E9E 390px,
-                                        #9E9E9E 419px,#545454 420px, #9E9E9E 420px,
-                                        #9E9E9E 449px,#545454 450px, #9E9E9E 450px,
+                                        #9E9E9E 389px,#545454 389px, #545454 390px, #9E9E9E 390px,
+                                        #9E9E9E 419px,#545454 419px, #545454 420px, #9E9E9E 420px,
+                                        #9E9E9E 449px,#545454 449px, #545454 450px, #9E9E9E 450px,
                                         #9E9E9E 477px,#212121 477px, #212121 480px, #9E9E9E 480px
                                         );
 
 }
 
 .keyRow.black {
-    background: repeating-linear-gradient(90deg,#616161,#616161 29px, #4d4d4d 30px,#616161 30px,
-                                        #616161 59px, #4d4d4d 60px,#616161 60px,
-                                        #616161 89px, #4d4d4d 90px, #616161 90px,
+    background: repeating-linear-gradient(90deg,#616161,#616161 29px, #4d4d4d 29px, #4d4d4d 30px, #616161 30px,
+                                        #616161 59px, #4d4d4d 59px,#4d4d4d 60px, #616161 60px,
+                                        #616161 89px, #4d4d4d 89px, #4d4d4d 90px, #616161 90px,
                                         #616161 118px,#3c3c3c 118px, #3c3c3c 120px, #616161 120px,
-                                        #616161 149px,#4d4d4d 150px, #616161 150px,
-                                        #616161 179px,#4d4d4d 180px, #616161 180px,
-                                        #616161 209px,#4d4d4d 210px, #616161 210px,
+                                        #616161 149px,#4d4d4d 149px, #4d4d4d 150px, #616161 150px,
+                                        #616161 179px,#4d4d4d 179px, #4d4d4d 180px, #616161 180px,
+                                        #616161 209px,#4d4d4d 209px, #4d4d4d 210px, #616161 210px,
                                         #616161 238px,#3c3c3c 238px, #3c3c3c 240px, #616161 240px,
-                                        #616161 269px,#4d4d4d 270px, #616161 270px,
-                                        #616161 299px,#4d4d4d 300px, #616161 300px,
-                                        #616161 329px,#4d4d4d 330px, #616161 330px,
+                                        #616161 269px,#4d4d4d 269px, #4d4d4d 270px, #616161 270px,
+                                        #616161 299px,#4d4d4d 299px, #4d4d4d 300px, #616161 300px,
+                                        #616161 329px,#4d4d4d 329px, #4d4d4d 330px, #616161 330px,
                                         #616161 358px,#3c3c3c 358px, #3c3c3c 360px, #616161 360px,
-                                        #616161 389px,#4d4d4d 390px, #616161 390px,
-                                        #616161 419px,#4d4d4d 420px, #616161 420px,
-                                        #616161 449px,#4d4d4d 450px, #616161 450px,
+                                        #616161 389px,#4d4d4d 389px, #4d4d4d 390px, #616161 390px,
+                                        #616161 419px,#4d4d4d 419px, #4d4d4d 420px, #616161 420px,
+                                        #616161 449px,#4d4d4d 449px, #4d4d4d 450px, #616161 450px,
                                         #616161 477px,#212121 477px, #212121 480px, #616161 480px
     );}
 

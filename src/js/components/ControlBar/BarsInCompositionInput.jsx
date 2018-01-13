@@ -26,7 +26,8 @@ const BarsInCompositionInput = (props) => {
                         value={props.barsInComposition}
                         onChange={_handleChange}
                         onKeyDown={_handleKeyPress}
-                        onBlur={props.onBarsInCompositionChange}
+                        onBlur={() => {props.onBarsInCompositionChange(); props.onInputFocusSwitch();}}
+                        onFocus={props.onInputFocusSwitch}
                     />
                 </div>
             </OverlayTrigger>

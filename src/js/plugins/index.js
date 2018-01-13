@@ -31,5 +31,7 @@ module.exports = {
     Compressor,
     Equalizer,
     Distortion,
+    Delay,
+    Reverb,
     Utils
 }

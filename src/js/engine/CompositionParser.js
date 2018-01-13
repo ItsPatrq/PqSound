@@ -1,18 +1,26 @@
 import Store from '../stroe';
 import * as Utils from 'engine/Utils';
 
-module.exports.regionToDrawParser = (trackIndex, bits) => {
+module.exports.regionToDrawParser = (trackIndex, bits, copiedRegion) => {
     let trackRegionList = module.exports.getRegionsByTrackIndex(trackIndex);
     let bitsToDraw = new Array;
     for (let i = 0; i < bits; i++) {
         bitsToDraw.push(0);
     }
     for (let i = 0; i < trackRegionList.length; i++) {
-        bitsToDraw[trackRegionList[i].start] = 1; //For applying different CSS for first and last bit in region
-        for (let j = trackRegionList[i].start + 1; j < trackRegionList[i].end; j++) {
-            bitsToDraw[j] = 2;
+        if (trackRegionList[i].id !== copiedRegion) {
+            bitsToDraw[trackRegionList[i].start] = 1; //For applying different CSS for first and last bit in region
+            for (let j = trackRegionList[i].start + 1; j < trackRegionList[i].end; j++) {
+                bitsToDraw[j] = 2;
+            }
+            bitsToDraw[trackRegionList[i].end] = 3; //For applying different CSS for first and last bit in region
+        } else {
+            bitsToDraw[trackRegionList[i].start] = 4; //For applying different CSS for first and last bit in region
+            for (let j = trackRegionList[i].start + 4; j < trackRegionList[i].end; j++) {
+                bitsToDraw[j] = 5;
+            }
+            bitsToDraw[trackRegionList[i].end] = 6; //For applying different CSS for first and last bit in region
         }
-        bitsToDraw[trackRegionList[i].end] = 3; //For applying different CSS for first and last bit in region
     }
     return bitsToDraw;
 }
@@ -41,11 +49,11 @@ module.exports.getRegionByRegionId = (regionId, regionList) => {
 
 module.exports.getRegionsByTrackIndex = (trackIndex, allRegions) => {
     let regionsByTrackIndex = new Array;
-    if(Utils.isNullOrUndefined(allRegions)){
+    if (Utils.isNullOrUndefined(allRegions)) {
         allRegions = Store.getState().composition.regionList;
     }
-    for(let i = 0; i < allRegions.length; i++){
-        if(allRegions[i].trackIndex === trackIndex){
+    for (let i = 0; i < allRegions.length; i++) {
+        if (allRegions[i].trackIndex === trackIndex) {
             regionsByTrackIndex.push(allRegions[i]);
         }
     }
@@ -73,22 +81,22 @@ module.exports.notesToDrawParser = (pianoRollNote) => {
 
 module.exports.notesToPlay = (sixteenthPlaying, trackIndex) => {
     let regions = module.exports.getRegionsByTrackIndex(trackIndex);
-    if(!Utils.isNullUndefinedOrEmpty(regions)){
+    if (!Utils.isNullUndefinedOrEmpty(regions)) {
         let notesToPlay = new Array;
-        for(let i = 0; i < regions.length; i++){
-            if(regions[i].start * 16 <= sixteenthPlaying && (regions[i].end + 1) * 16 >= sixteenthPlaying){
+        for (let i = 0; i < regions.length; i++) {
+            if (regions[i].start * 16 <= sixteenthPlaying && (regions[i].end + 1) * 16 >= sixteenthPlaying) {
                 let currRegion = regions[i];
-                for(let j = 0; j < currRegion.notes.length; j++){
-                    if(!Utils.isNullUndefinedOrEmpty(currRegion.notes[j])){
-                        for(let z = 0; z < currRegion.notes[j].length; z++){
-                            if(currRegion.notes[j][z].sixteenthNumber + currRegion.start * 16 === sixteenthPlaying){
-                                notesToPlay.push({note: j, durotian: currRegion.notes[j][z].length});
+                for (let j = 0; j < currRegion.notes.length; j++) {
+                    if (!Utils.isNullUndefinedOrEmpty(currRegion.notes[j])) {
+                        for (let z = 0; z < currRegion.notes[j].length; z++) {
+                            if (currRegion.notes[j][z].sixteenthNumber + currRegion.start * 16 === sixteenthPlaying) {
+                                notesToPlay.push({ note: j, durotian: currRegion.notes[j][z].length });
                             }
                         }
                     }
                 }
             }
         }
-        return(notesToPlay);
+        return (notesToPlay);
     }
 }

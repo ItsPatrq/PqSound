@@ -92,3 +92,16 @@ export function loadControlState(newState){
         payload: newState
     }
 }
+
+export function textInputFocusedSwitch(){
+    return {
+        type: 'TEXT_INPUT_FOCUSED_SWITCH'
+    }
+}
+
+export function copyRegion(regionIndex){
+    return {
+        type: 'COPY_REGION',
+        payload: regionIndex
+    }
+}

@@ -1,6 +1,5 @@
-import Store from '../stroe';
-import { Instruments, defaultKeysNames } from 'constants/Constants';
-import { isNullOrUndefined, noteToFrequency, MIDIToNote } from 'engine/Utils';
+import { defaultKeysNames } from 'constants/Constants';
+import { MIDIToNote } from 'engine/Utils';
 
 class Instrument {
     constructor(currEnum){

@@ -32,18 +32,21 @@ const InstrumentModal = (props) => {
                     plugin={props.plugin}
                     onPresetChange={props.onPresetChange}
                 />
+                break;
             }
             case PluginsEnum.Delay.id: {
                 modalBody = <DelayComponent
                     plugin={props.plugin}
                     onPresetChange={props.onPresetChange}
                 />
+                break;
             }
             case PluginsEnum.Reverb.id: {
                 modalBody = <ReverbComponent
-                plugin={props.plugin}
-                onPresetChange={props.onPresetChange}
-            />
+                    plugin={props.plugin}
+                    onPresetChange={props.onPresetChange}
+                />
+                break;
             }
         }
         return (

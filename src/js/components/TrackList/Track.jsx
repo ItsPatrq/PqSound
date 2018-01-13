@@ -80,7 +80,7 @@ const Track = (props) => {
                         {buttonRecord}
                         <Button bsSize="xsmall"><Glyphicon glyph="remove" onClick={() => props.handleRemove(props.trackDetails.index)} /></Button>
                     </ButtonGroup>
-                    <FormControl className="trackNameFormControl" value={props.trackDetails.name} onChange={handleTrackNameChange} />
+                    <FormControl className="trackNameFormControl" value={props.trackDetails.name} onChange={handleTrackNameChange} onFocus={props.onInputFocusSwitch} onBlur={props.onInputFocusSwitch}/>
                 </Col>
         </Row>
             );

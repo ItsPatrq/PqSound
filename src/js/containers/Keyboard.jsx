@@ -346,27 +346,30 @@ class Keyboard extends React.Component {
     }
 
     handleKeyboardKeyDown(note) {
-        if (!isNullOrUndefined(this.props.keyboard.keyBindings[note]) &&
-            !this.props.keyboard.notesPlaying.includes(this.props.keyboard.keyBindings[note].MIDINote)) {
-            let recordingTracksSounds = this.getAllRecordingTracks();
-            for (let i = 0; i < recordingTracksSounds.length; i++) {
-                this.props.sound.play(recordingTracksSounds[i], null, this.props.keyboard.keyBindings[note].MIDINote, SoundOrigin.keyboard)
+        if (!this.props.textInputFocused) {
+            if (!isNullOrUndefined(this.props.keyboard.keyBindings[note]) &&
+                !this.props.keyboard.notesPlaying.includes(this.props.keyboard.keyBindings[note].MIDINote)) {
+                let recordingTracksSounds = this.getAllRecordingTracks();
+                for (let i = 0; i < recordingTracksSounds.length; i++) {
+                    this.props.sound.play(recordingTracksSounds[i], null, this.props.keyboard.keyBindings[note].MIDINote, SoundOrigin.keyboard)
+                }
+                this.props.dispatch(Actions.addPlayingNote(this.props.keyboard.keyBindings[note].MIDINote))
             }
-            this.props.dispatch(Actions.addPlayingNote(this.props.keyboard.keyBindings[note].MIDINote))
         }
 
     }
 
     handleKeyboardKeyUp(note) {
-        if (!isNullOrUndefined(this.props.keyboard.keyBindings[note]) &&
-            this.props.keyboard.notesPlaying.includes(this.props.keyboard.keyBindings[note].MIDINote)) {
-            let recordingTracksSounds = this.getAllRecordingTracks();
-            for (let i = 0; i < recordingTracksSounds.length; i++) {
-                this.props.sound.stop(recordingTracksSounds[i], this.props.keyboard.keyBindings[note].MIDINote)
+        if (!this.props.textInputFocused) {
+            if (!isNullOrUndefined(this.props.keyboard.keyBindings[note]) &&
+                this.props.keyboard.notesPlaying.includes(this.props.keyboard.keyBindings[note].MIDINote)) {
+                let recordingTracksSounds = this.getAllRecordingTracks();
+                for (let i = 0; i < recordingTracksSounds.length; i++) {
+                    this.props.sound.stop(recordingTracksSounds[i], this.props.keyboard.keyBindings[note].MIDINote)
+                }
+                this.props.dispatch(Actions.removePlayingNote(this.props.keyboard.keyBindings[note].MIDINote))
             }
-            this.props.dispatch(Actions.removePlayingNote(this.props.keyboard.keyBindings[note].MIDINote))
         }
-
     }
 
     changeKeyboardRange(direction) {
@@ -494,7 +497,8 @@ const mapStateToProps = (state) => {
     return {
         keyboard: state.keyboard,
         trackList: state.tracks.trackList,
-        sound: state.webAudio.sound
+        sound: state.webAudio.sound,
+        textInputFocused: state.control.textInputFocused
     }
 }
 

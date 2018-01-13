@@ -40,7 +40,8 @@ module.exports.noteLengths = {
 module.exports.tools = {
     draw: { name: 'Draw', id: 0 },
     select: { name: 'Select', id: 1 },
-    remove: { name: 'Remove', id: 2 }
+    remove: { name: 'Remove', id: 2 },
+    copyPaste: { name: 'Copy / Paste', id: 3 }
 }
 
 /**
@@ -49,7 +50,8 @@ module.exports.tools = {
 module.exports.Instruments = {
     Sampler: { name: 'Sampler', id: 0 },
     PqSynth: { name: 'PqSynth', id: 1 },
-    Monotron: { name: 'Monotron', id: 2 }
+    Monotron: { name: 'Monotron', id: 2 },
+    MultiSaw: {name: 'MultiSaw Synth', id: 3}
 }
 
 module.exports.PluginsEnum = {

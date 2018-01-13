@@ -44,7 +44,9 @@ class ControlBar extends React.Component {
     }
 
     handleTempBPMChange(BPM) {
-        this.setState(() => { return { tempBPM: BPM }; });
+        if (BPM < 10000 && BPM >= 0) {
+            this.setState(() => { return { tempBPM: BPM }; });
+        }
     }
 
     handleBPMChange() {
@@ -82,7 +84,9 @@ class ControlBar extends React.Component {
     }
 
     handleTempRegionDrawLengthChange(regionDrawLength) {
-        this.setState(() => { return { tempRegionDrawLength: regionDrawLength }; });
+        if (regionDrawLength < 1000 && regionDrawLength >= 0) {
+            this.setState(() => { return { tempRegionDrawLength: regionDrawLength }; });
+        }
     }
 
     handleBarsInCompositionChange() {
@@ -96,7 +100,9 @@ class ControlBar extends React.Component {
     }
 
     handleTempBarsInComposition(barsInComposition) {
-        this.setState(() => { return { tempBarsInComposition: barsInComposition }; });
+        if (barsInComposition < 10000 && barsInComposition >= 0) {
+            this.setState(() => { return { tempBarsInComposition: barsInComposition }; });
+        }
     }
 
     getMIDIDeviceSelectorDropDownTitle() {
@@ -122,6 +128,11 @@ class ControlBar extends React.Component {
             this.props.dispatch(Actions.changeMidiDevice(deviceId));
         }
     }
+
+    handleInputFocusSwitch() {
+        this.props.dispatch(Actions.textInputFocusedSwitch());
+    }
+
 
     render() {
         return (
@@ -155,6 +166,7 @@ class ControlBar extends React.Component {
                         onBarsInCompositionChange={this.handleBarsInCompositionChange.bind(this)}
                         onTempBarsInCompositionChange={this.handleTempBarsInComposition.bind(this)}
                         barsInComposition={this.state.tempBarsInComposition}
+                        onInputFocusSwitch={this.handleInputFocusSwitch.bind(this)}
                     />
                 </div>
                 <Col xs={2} className="controlButtons">

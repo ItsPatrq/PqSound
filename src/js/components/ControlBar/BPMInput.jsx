@@ -27,7 +27,8 @@ const BPMInput = (props) => {
                         type="text"
                         onChange={_handleChange}
                         onKeyDown={_handleKeyPress}
-                        onBlur={props.changeBPM}
+                        onBlur={() => {props.changeBPM(); props.onInputFocusSwitch();}}
+                        onFocus={props.onInputFocusSwitch}
                     />
                 </div>
             </OverlayTrigger>

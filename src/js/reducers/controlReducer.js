@@ -9,6 +9,7 @@ export default function reducer(state = {
     show: false,
     tool: Constants.tools.draw.id,
     secoundaryTool: Constants.tools.select.id,
+    copiedRegion: null,
     noteDrawLength: 2,
     regionDrawLength: 2,
     maxRegionDrawLength: 16,
@@ -16,13 +17,15 @@ export default function reducer(state = {
     altClicked: false,
     sequencer: null,
     showUploadModal: false,
+    textInputFocused: false,
     midiController: new MIDIController()
 }, action) {
     switch (action.type) {
         case 'SWITCH_PLAY_STATE': {
             return {
                 ...state,
-                playing: !state.playing            }
+                playing: !state.playing
+            }
         }
         case 'CHANGE_BPM':{
             return {
@@ -101,6 +104,18 @@ export default function reducer(state = {
             return {
                 ...state,
                 ...action.payload
+            }
+        }
+        case 'TEXT_INPUT_FOCUSED_SWITCH':{
+            return {
+                ...state,
+                textInputFocused: !state.textInputFocused
+            }
+        }
+        case 'COPY_REGION':{
+            return {
+                ...state,
+                copiedRegion: action.payload
             }
         }
     }

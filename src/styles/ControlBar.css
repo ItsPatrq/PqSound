@@ -230,6 +230,8 @@
     color: rgb(239, 248, 255);
     margin-right: 2px;
     margin-left: 2px;
+    padding: 0;
+    font-size: 12px;
 }
 
 .toolInput:hover {

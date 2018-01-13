@@ -89,3 +89,14 @@ export function loadCompositionState (newState){
         payload: newState
     }
 }
+
+export function pasteRegion(newTrackIndex, newStart, newCopiedRegion) {
+    return {
+        type: 'PASTE_REGION',
+        payload: {
+            trackIndex: newTrackIndex,
+            start: newStart,
+            copiedRegion: newCopiedRegion
+        }
+    }
+}

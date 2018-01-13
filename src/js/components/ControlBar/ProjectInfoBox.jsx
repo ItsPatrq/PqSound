@@ -12,12 +12,14 @@ const ProjectInfoBox = (props) => {
                 onBarsInCompositionChange={props.onBarsInCompositionChange}
                 onTempBarsInCompositionChange={props.onTempBarsInCompositionChange}
                 barsInComposition={props.barsInComposition}
+                onInputFocusSwitch={props.onInputFocusSwitch}
                 />
             <div className="projectInfoBoxBreak"/>
                 <BPMInput
                     changeBPM={props.changeBPM}
                     changeTempBPM={props.changeTempBPM}
                     BPM={props.BPM}
+                    onInputFocusSwitch={props.onInputFocusSwitch}
                 />
             <div className="projectInfoBoxBreak"/>
             <TimeSignature/>
