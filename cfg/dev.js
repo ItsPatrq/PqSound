@@ -38,8 +38,8 @@ config.module.rules.push(            {
     test: /\.(js|jsx)$/,
     exclude: /node_modules/,
     use: [
-        'babel-loader',
-    ],
+        'babel-loader'
+    ]
 });
 
 module.exports = config;

@@ -109,7 +109,7 @@ Knob.prototype = {
   triggerChange: function  () {
     if (document.createEventObject) {
       var evt = document.createEventObject();
-      this.input.fireEvent("onchange", evt);
+      this.input.fireEvent('onchange', evt);
     } else {
       this.input.dispatchEvent(new Event('change'));
     }
@@ -195,9 +195,9 @@ Ui.prototype = {
 
   createElement: function(parentEl) {
     this.el = new Ui.El(this.width, this.height);
-    this.el.create("svg", {
-      version: "1.2",
-      baseProfile: "tiny",
+    this.el.create('svg', {
+      version: '1.2',
+      baseProfile: 'tiny',
       width: this.width,
       height: this.height
     });
@@ -267,7 +267,7 @@ Ui.Scale.prototype.createElement = function(parentEl) {
   this.el = new Ui.El(this.width, this.height);
   this.startAngle = this.options.angleoffset || 0;
   this.options.radius || (this.options.radius = this.height / 2.5);
-  this.el.create("g");
+  this.el.create('g');
   this.el.addClassName('scale');
   if (this.options.drawScale) {
     if(!this.options.labels){
@@ -357,7 +357,7 @@ Ui.Text.prototype.update = function(percent, value) {
 Ui.El = function() {};
 
 Ui.El.prototype = {
-  svgNS: "http://www.w3.org/2000/svg",
+  svgNS: 'http://www.w3.org/2000/svg',
 
   init: function(width, height, x, y) {
     this.width = width;
@@ -377,7 +377,7 @@ Ui.El.prototype = {
   },
 
   rotate: function(angle, x, y) {
-    this.attr("transform", "rotate(" + angle + " " + (x || this.x) + " " + (y || this.y ) + ")");
+    this.attr('transform', 'rotate(' + angle + ' ' + (x || this.x) + ' ' + (y || this.y ) + ')');
   },
 
   attr: function(attributeName, value) {
@@ -396,7 +396,7 @@ Ui.El.prototype = {
 
 Ui.El.Triangle = function() {
   this.init.apply(this, arguments);
-  this.create("polygon", {
+  this.create('polygon', {
     'points': this.left + ',' + this.bottom + ' ' + this.x + ',' + this.top + ' ' + this.right + ',' + this.bottom
   });
 };
@@ -405,7 +405,7 @@ Ui.El.Triangle.prototype = Object.create(Ui.El.prototype);
 
 Ui.El.Rect = function() {
   this.init.apply(this, arguments);
-  this.create("rect", {
+  this.create('rect', {
     x: this.x - this.width / 2,
     y: this.y,
     width: this.width,
@@ -421,7 +421,7 @@ Ui.El.Circle = function(radius, x, y) {
     y = arguments[3];
   }
   this.init(radius * 2, radius * 2, x, y);
-  this.create("circle", {
+  this.create('circle', {
     cx: this.x,
     cy: this.y,
     r: radius

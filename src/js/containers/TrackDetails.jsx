@@ -10,7 +10,7 @@ import Output from 'components/TrackDetails/Output';
 import SoloMuteButtons from 'components/TrackDetails/SoloMuteButtons';
 import PluginModal from 'components/TrackDetails/PluginModal';
 import * as Actions from 'actions/trackDetailsActions';
-import { changeTrackPreset, changeTrackVolume, changeTrackInstrument, changeTrackOutput, changeSoloState, changeMuteState, changeTrackPan, addNewPlugin, removePlugin, changePluginPreset, updateInstrumentPreset } from 'actions/trackListActions';
+import { changeTrackVolume, changeTrackInstrument, changeTrackOutput, changeSoloState, changeMuteState, changeTrackPan, addNewPlugin, removePlugin, changePluginPreset, updateInstrumentPreset } from 'actions/trackListActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 import { TrackTypes } from 'constants/Constants';

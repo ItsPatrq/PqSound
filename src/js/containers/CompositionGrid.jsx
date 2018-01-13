@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import TrackCompositionRow from 'components/CompositionGrid/TrackCompositionRow';
 import PianoRoll from 'components/CompositionGrid/PianoRoll';
@@ -135,22 +135,22 @@ class CompositionGrid extends React.Component {
 
     updateScroll(scroll) {
         if (!isNullOrUndefined(scroll.pianoRollX) && scroll.pianoRollX !== this.state.scrollPianoRollX) {
-            this.setState(previousState => {
+            this.setState(() => {
                 return { scrollPianoRollX: scroll.pianoRollX };
             });
         }
         if (!isNullOrUndefined(scroll.pianoRollY) && scroll.pianoRollY !== this.state.scrollPianoRollY) {
-            this.setState(previousState => {
+            this.setState(() => {
                 return { scrollPianoRollY: scroll.pianoRollY };
             });
         }
         if (!isNullOrUndefined(scroll.compositionX) && scroll.compositionX !== this.state.scrollCompositionX) {
-            this.setState(previousState => {
+            this.setState(() => {
                 return { scrollCompositionX: scroll.compositionX };
             });
         }
         if (!isNullOrUndefined(scroll.compositionY) && scroll.compositionY !== this.state.scrollCompositionY) {
-            this.setState(previousState => {
+            this.setState(() => {
                 return { scrollCompositionY: scroll.compositionY };
             });
             document.getElementsByClassName('trackListContentList')[0].style.marginTop = -this.state.scrollCompositionY + 'px';

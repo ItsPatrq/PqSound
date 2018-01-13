@@ -73,7 +73,7 @@ let copy = (data) => {
         output = Array.isArray(data) ? [] : {};
         for (key in data) {
             v = data[key];
-            output[key] = (typeof v === "object") ? copy(v) : v;
+            output[key] = (typeof v === 'object') ? copy(v) : v;
         }
         return output;
     } else {

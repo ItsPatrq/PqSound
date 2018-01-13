@@ -1,7 +1,7 @@
 import SamplerPresets from 'constants/SamplerPresets';
 import BufferLoader from 'engine/BufferLoader';
 import Sound from 'engine/Sound';
-import * as Utils from 'engine/Utils';
+
 export default function reducer(state = {
     context: null,
     sound: null,

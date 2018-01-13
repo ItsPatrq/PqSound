@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonToolbar, MenuItem, SplitButton, DropdownButton } from 'react-bootstrap';
+import { MenuItem, DropdownButton } from 'react-bootstrap';
 import { Instruments } from 'constants/Constants';
 import InstrumentModal from './InstrumentModal';
 

@@ -11,9 +11,9 @@ class Equalizer extends Plugin {
             lowBandSplit: 360,
             highBandSplit: 3600,
             gainDb: -40.0
-        };        
+        };
         this.hBand = this.context.createBiquadFilter();
-        this.hBand.type = "lowshelf";
+        this.hBand.type = 'lowshelf';
         this.hBand.frequency.setValueAtTime(this.preset.lowBandSplit, this.context.currentTime);
         this.hBand.gain.setValueAtTime(this.preset.gainDb, this.context.currentTime);
 
@@ -23,7 +23,7 @@ class Equalizer extends Plugin {
         this.mBand = this.context.createGain();
 
         this.lBand = this.context.createBiquadFilter();
-        this.lBand.type = "highshelf";
+        this.lBand.type = 'highshelf';
         this.lBand.frequency.setValueAtTime(this.preset.highBandSplit, this.context.currentTime);
         this.lBand.gain.setValueAtTime(this.preset.gainDb, this.context.currentTime);
 
@@ -43,7 +43,7 @@ class Equalizer extends Plugin {
         this.inputGain = this.context.createGain();
         this.inputGain.connect(this.lBand);
         this.inputGain.connect(this.mBand);
-        this.inputGain.connect(this.hBand);        
+        this.inputGain.connect(this.hBand);
 
         this.lBand.connect(this.lGain);
         this.mBand.connect(this.mGain);
@@ -59,12 +59,12 @@ class Equalizer extends Plugin {
     }
 
     updateNodes(){
-        this.lGain.gain.setValueAtTime(this.preset.lowFilterGain ? 
+        this.lGain.gain.setValueAtTime(this.preset.lowFilterGain ?
             this.preset.lowFilterGain : 0.000001, this.context.currentTime);
-        this.mGain.gain.setValueAtTime(this.preset.midFilterGain ? 
+        this.mGain.gain.setValueAtTime(this.preset.midFilterGain ?
             this.preset.midFilterGain : 0.000001, this.context.currentTime);
-        this.hGain.gain.setValueAtTime(this.preset.highFilterGain ? 
-            this.preset.highFilterGain : 0.000001, this.context.currentTime);       
+        this.hGain.gain.setValueAtTime(this.preset.highFilterGain ?
+            this.preset.highFilterGain : 0.000001, this.context.currentTime);
     }
 }
 

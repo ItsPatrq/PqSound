@@ -1,7 +1,7 @@
 import React from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-const TimeSignature = (props) => {
+const TimeSignature = () => {
 
     return (
         <div className="formControlTimeSignature">

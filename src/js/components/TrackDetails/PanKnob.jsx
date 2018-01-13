@@ -28,7 +28,7 @@ class PanKnob extends React.Component {
                 let pan = this.props.pan < 0.001 && this.props.pan > -0.001 ? 0  : this.props.pan;
                 if(Number(this.knob.value) !== pan){
                     this.knob.update(this.props.pan);
-                } 
+                }
             }
         }
     }

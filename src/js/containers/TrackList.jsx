@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Glyphicon, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import Track from 'components/TrackList/Track';
 import * as trackListActions from 'actions/trackListActions';
 import * as compositionActions from 'actions/compositionActions';

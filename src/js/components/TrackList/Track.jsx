@@ -50,7 +50,7 @@ const Track = (props) => {
                 return auxIcon;
             }
             case TrackTypes.virtualInstrument:{
-                if(props.trackDetails.instrument.name === "Sampler"){
+                if(props.trackDetails.instrument.name === 'Sampler'){
                     return samplerIcon;
                 } else {
                     return virtualInstrumentIcon;

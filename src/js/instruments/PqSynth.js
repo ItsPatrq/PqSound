@@ -1,6 +1,6 @@
 import Store from '../stroe';
-import { Instruments, defaultKeysNames } from 'constants/Constants';
-import { isNullOrUndefined, noteToFrequency, MIDIToNote } from 'engine/Utils';
+import { Instruments } from 'constants/Constants';
+import { isNullOrUndefined, noteToFrequency } from 'engine/Utils';
 import Instrument from './Instrument';
 
 class PqSynthVoice {

@@ -18,8 +18,8 @@ let ExtractTextPlugin = require('extract-text-webpack-plugin');
 function getDefaultModules() {
     return {
         rules: [
-            {            
-                enforce: 'pre',            
+            {
+                enforce: 'pre',
                 test: /\.(js|jsx)$/,
                 include: srcPath,
                 exclude: /node_modules/,
@@ -31,14 +31,14 @@ function getDefaultModules() {
             }, {
                 test: /\.css$/,
                 loader: ExtractTextPlugin.extract({
-                    use: 'css-loader',
-                }),
+                    use: 'css-loader'
+                })
             },
             {
                 test: /\.(png|jpg|gif)$/,
                 use: [
-                    'file-loader',
-                ],
+                    'file-loader'
+                ]
             }
         ]
     };

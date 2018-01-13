@@ -5,7 +5,7 @@ import { isNullOrUndefined, MIDIToNote } from 'engine/Utils';
 import Instrument from './Instrument';
 
 class SamplerVoice {
-    constructor(buffer, startTime) {
+    constructor(buffer) {
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
 

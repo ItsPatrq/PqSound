@@ -1,6 +1,5 @@
 import React from 'react';
 import { regionToDrawParser } from 'engine/CompositionParser';
-import { getTrackByIndex } from 'engine/Utils';
 import { TrackTypes } from 'constants/Constants';
 
 const TrackCompositionRow = (props) => {

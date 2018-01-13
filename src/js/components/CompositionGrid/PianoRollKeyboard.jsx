@@ -3,7 +3,6 @@ import { keyboardWidths, defaultKeysNamesNoOctaveNumber, defaultKeysNames } from
 import { noteToMIDI } from 'engine/Utils';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { isNullOrUndefined } from 'engine/Utils';
-import {notesToDrawParser} from 'engine/CompositionParser';
 
 
 const PianoRollKeyboard = (props) => {
@@ -69,7 +68,7 @@ const PianoRollKeyboard = (props) => {
         <div className="pianoRollKeyboard" >
             <div
                 className="pianoRollKeyboardContent"
-                ref={(div) => { if(!isNullOrUndefined(div)){ div.style.marginTop = -props.scroll + 'px' }}}
+                ref={(div) => { if (!isNullOrUndefined(div)) { div.style.marginTop = -props.scroll + 'px' } }}
             >
                 {keys}
             </div>

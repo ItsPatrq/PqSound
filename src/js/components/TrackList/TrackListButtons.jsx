@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Glyphicon } from 'react-bootstrap';
-import { TrackTypes } from 'constants/Constants';
 
 const TrackListButtons = (props) => {
     return (

@@ -9,7 +9,7 @@ const
     webpackHotMiddleware = require('webpack-hot-middleware'),
     config = require('./webpack.config.js'),
     compiler = webpack(config),
-    open = require('open'),
+    //open = require('open'),
     isDeveloping = process.env.NODE_ENV !== 'dist',
     routes = require('./api/routes/Pq.Routes'),
 
@@ -49,7 +49,7 @@ if (isDeveloping) {
     });
 }
 
-routes(app); 
+routes(app);
 
 app.use(function(req, res) {
     res.status(404).send({url: req.originalUrl + ' not found'})

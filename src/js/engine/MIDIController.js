@@ -69,7 +69,7 @@ class MIDIController {
         Store.dispatch(updateMidiController(this));
     }
 
-    onMidiStateChange = (e) => {
+    onMidiStateChange = (/*e*/) => {
         // Print information about the (dis)connected MIDI controller
         //console.log('MIDI state changed', e.port.name, e.port.manufacturer, e.port.state);
         this.updateDevices();
@@ -104,7 +104,7 @@ class MIDIController {
         note = data[1],
         velocity = data[2];
         // with pressure and tilt off
-        // note off: 128, cmd: 8 
+        // note off: 128, cmd: 8
         // note on: 144, cmd: 9
         // pressure / tilt on
         // pressure: 176, cmd 11:

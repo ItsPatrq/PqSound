@@ -1,7 +1,4 @@
 import React from 'react';
-import { MenuItem, DropdownButton } from 'react-bootstrap';
-import SamplerPresets from 'constants/SamplerPresets';
-import { Utils as SamplerPresetsUtils } from 'constants/SamplerPresets';
 
 const MultiSaw = (props) => {
     let handleChange = (newAttack, newRelease) => {
