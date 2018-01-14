@@ -100,3 +100,17 @@ export function pasteRegion(newTrackIndex, newStart, newCopiedRegion) {
         }
     }
 }
+
+export function trackIndexUp(newIndex){
+    return {
+        type: 'REGION_TRACK_INDEX_UP',
+        payload: newIndex
+    }
+}
+
+export function trackIndexDown(newIndex){
+    return {
+        type: 'REGION_TRACK_INDEX_DOWN',
+        payload: newIndex
+    }
+}

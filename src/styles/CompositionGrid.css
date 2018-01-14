@@ -59,7 +59,7 @@
 }
 
 .trackCompositionRow {
-    height: 60px;
+    height: 65px;
     width: fit-content;    
     background-color: #9E9E9E;
     white-space: nowrap;
@@ -70,7 +70,7 @@
 }
 
 .auxTrackCompositionRow {
-    height: 60px;
+    height: 65px;
     width: fit-content;    
     background-color: #3a3a3a;
     white-space: nowrap;
@@ -81,7 +81,7 @@
 }
 
 .trackCompositionBit {
-    height: 60px;
+    height: 64px;
     width: 50px;
     border-style: solid;
     border-right-width: thin;

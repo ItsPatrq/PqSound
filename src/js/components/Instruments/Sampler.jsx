@@ -15,7 +15,7 @@ const Sampler = (props) => {
                     onClick={() => {
                         let newPreset = SamplerPresetsUtils.getPresetById(SamplerPresets[i].presets[j].id);
                         newPreset.attack = props.instrument.preset.attack;
-                        newPreset.release = props.instrument.preset.release;
+                        newPreset.decay = props.instrument.preset.decay;
                         props.onPresetChange(newPreset);
                     }}
                 >
@@ -29,11 +29,11 @@ const Sampler = (props) => {
             </DropdownButton>
         )
     }
-    let handleChange = (newAttack, newRelease) => {
+    let handleChange = (newAttack, newDecay) => {
         props.onPresetChange({
             ...props.instrument.preset,
             attack: newAttack ? Number(newAttack) : props.instrument.preset.attack,
-            release: newRelease ? Number(newRelease) : props.instrument.preset.release
+            decay: newDecay ? Number(newDecay) : props.instrument.preset.decay
         })
     }
     return (
@@ -55,9 +55,9 @@ const Sampler = (props) => {
                     />
             </div>
             <div className="samplerSliderContainer">
-            <label>Release: {props.instrument.preset.release}</label>
+            <label>Decay: {props.instrument.preset.decay}</label>
                     <input type="range"
-                        value={props.instrument.preset.release}
+                        value={props.instrument.preset.decay}
                         step="0.02"
                         min="0"
                         max="4"

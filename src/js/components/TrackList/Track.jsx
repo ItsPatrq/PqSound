@@ -17,30 +17,32 @@ const Track = (props) => {
     let buttonRecord, buttonSolo, buttonMute, buttonIndexUp, buttonIndexDown;
     if (props.trackDetails.trackType !== TrackTypes.aux) {
         if (props.trackDetails.record) {
-            buttonRecord = <Button bsSize="xsmall" bsStyle="danger" onClick={() => props.onRecordButtonClicked(props.trackDetails.index)}>R</Button>;
+            buttonRecord = <Button bsSize="xsmall" bsStyle="danger" onClick={(e) => {props.onRecordButtonClicked(props.trackDetails.index); e.stopPropagation();}}>R</Button>;
         } else {
-            buttonRecord = <Button bsSize="xsmall" onClick={() => props.onRecordButtonClicked(props.trackDetails.index)}>R</Button>;
+            buttonRecord = <Button bsSize="xsmall" onClick={(e) => {props.onRecordButtonClicked(props.trackDetails.index); e.stopPropagation();}}>R</Button>;
         }
     } else {
         buttonRecord = null;
     }
     if (props.trackDetails.solo) {
-        buttonSolo = <Button bsSize="xsmall" bsStyle="warning" onClick={() => props.onSoloButtonClicked(props.trackDetails.index)}>S</Button>;
+        buttonSolo = <Button bsSize="xsmall" bsStyle="warning" onClick={(e) => {props.onSoloButtonClicked(props.trackDetails.index); e.stopPropagation();}}>S</Button>;
     } else {
-        buttonSolo = <Button bsSize="xsmall" onClick={() => props.onSoloButtonClicked(props.trackDetails.index)}>S</Button>;
+        buttonSolo = <Button bsSize="xsmall" onClick={(e) => {props.onSoloButtonClicked(props.trackDetails.index); e.stopPropagation();}}>S</Button>;
     }
     if (props.trackDetails.mute) {
-        buttonMute = <Button bsSize="xsmall" bsStyle="info" onClick={() => props.onMuteButtonClicked(props.trackDetails.index)}>M</Button>;
+        buttonMute = <Button bsSize="xsmall" bsStyle="info" onClick={(e) => {props.onMuteButtonClicked(props.trackDetails.index); e.stopPropagation();}}>M</Button>;
     } else {
-        buttonMute = <Button bsSize="xsmall" onClick={() => props.onMuteButtonClicked(props.trackDetails.index)}>M</Button>;
+        buttonMute = <Button bsSize="xsmall" onClick={(e) => {props.onMuteButtonClicked(props.trackDetails.index); e.stopPropagation();}}>M</Button>;
     }
     if (props.trackDetails.index > 1) {
-        buttonIndexDown = <Button bsSize="xsmall" onClick={() => props.onIndexDown(props.trackDetails.index)}>
+        buttonIndexDown =
+        <Button bsSize="xsmall" onClick={(e) => {props.onIndexDown(props.trackDetails.index); e.stopPropagation();}}>
             <Glyphicon glyph="arrow-up" />
         </Button>;
     }
     if (props.trackDetails.index + 1 < props.trackListLength) {
-        buttonIndexUp = <Button bsSize="xsmall" onClick={() => props.onIndexUp(props.trackDetails.index)}>
+        buttonIndexUp =
+        <Button bsSize="xsmall" onClick={(e) => {props.onIndexUp(props.trackDetails.index); e.stopPropagation();}}>
             <Glyphicon glyph="arrow-down" />
         </Button>;
     }
@@ -74,7 +76,7 @@ const Track = (props) => {
                 <img src={getIcon()} />
             </Col>
             <Col xs={8} className="nopadding">
-                    <ButtonGroup style={{ display: 'flex-inline', position: 'absolute', right: '0' }}>
+                    <ButtonGroup style={{ display: 'inline-flex', position: 'absolute', right: '0' }}>
                         {buttonSolo}
                         {buttonMute}
                         {buttonRecord}

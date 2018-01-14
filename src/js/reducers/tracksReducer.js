@@ -167,8 +167,32 @@ export default function reducer(state = {
             }
         }
         case 'CHANGE_SELECTED_TRACK': {
+            let newTrackList = [...state.trackList];
+            let recording = 0;
+            for(let i = 0; i < newTrackList.length; i++){
+                if(newTrackList[i].record){
+                    recording++;
+                }
+            }
+            if(recording === 1){
+                for(let i = 0; i < newTrackList.length; i++){
+                    if(newTrackList[i].record){
+                        newTrackList[i].record = false;
+                    }
+                    if(newTrackList[i].index === action.payload){
+                        newTrackList[i].record = true;
+                    }
+                }
+            } else {
+                for(let i = 0; i < newTrackList.length; i++){
+                    if(newTrackList[i].index === action.payload){
+                        newTrackList[i].record = true;
+                    }
+                }
+            }
             return {
                 ...state,
+                trackList: newTrackList,                
                 selected: action.payload
             }
         }

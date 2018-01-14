@@ -85,10 +85,22 @@ class TrackList extends React.Component {
     }
 
     handleIndexUp(index) {
+        if(this.props.selected === index){
+            this.props.dispatch(trackListActions.changeSelectedTrack(index + 1));
+        } else if(this.props.selected === index + 1){
+            this.props.dispatch(trackListActions.changeSelectedTrack(index));
+        }
+        this.props.dispatch(compositionActions.trackIndexUp(index));
         this.props.dispatch(trackListActions.trackIndexUp(index));
     }
 
     handleIndexDown(index) {
+        if(this.props.selected === index){
+            this.props.dispatch(trackListActions.changeSelectedTrack(index - 1));
+        } else if(this.props.selected === index - 1){
+            this.props.dispatch(trackListActions.changeSelectedTrack(index));
+        }
+        this.props.dispatch(compositionActions.trackIndexDown(index));
         this.props.dispatch(trackListActions.trackIndexDown(index));
     }
 

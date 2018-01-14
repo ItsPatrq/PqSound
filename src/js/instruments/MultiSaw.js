@@ -11,34 +11,34 @@ class MultiSawVoice {
             this.maxGain = 1 / preset.sawNumber;
             this.saws = new Array;
             this.output = this.context.createGain();
-            this.output.gain.setValueAtTime(0.0001, this.context.currentTime);
 
             for(let i = 0; i < preset.sawNumber; i++){
                 let saw = this.context.createOscillator();
                 saw.type = 'sawtooth';
                 saw.frequency.setValueAtTime(freqyency, this.context.currentTime);
                 saw.detune.setValueAtTime((-preset.detune + i * 2 * preset.detune / (preset.sawNumber - 1) | 0), this.context.currentTime);
-                saw.start(this.context.currentTime);
+                saw.start(startTime);
                 saw.connect(this.output);
                 this.saws.push(saw);
             }
         }
     }
 
-    start(time) {
+    start(time, attack) {
         time = time || this.context.currentTime;
-        this.output.gain.linearRampToValueAtTime(this.maxGain, time + this.preset.attack);
+        this.output.gain.setValueAtTime(0.0001, time);
+        this.output.gain.linearRampToValueAtTime(this.maxGain, time + attack);
     }
 
-    stop(time) {
+    stop(time, decay) {
         time = time || this.context.currentTime;
-        this.output.gain.setValueAtTime(this.maxGain, this.context.currentTime);
-        this.output.gain.linearRampToValueAtTime(0.0001, time);
+        this.output.gain.setValueAtTime(this.maxGain, time);
+        this.output.gain.linearRampToValueAtTime(0.0001, time + decay);
         setTimeout(() => {
             for(let i = 0; i < this.saws.length; i++){
                 this.saws[i].disconnect();
             }
-        }, Math.floor((time - this.context.currentTime) * 1000));
+        }, Math.floor((time + decay - this.context.currentTime) * 1000));
     }
 
     connect(target) {
@@ -58,7 +58,7 @@ class MultiSaw extends Instrument{
             sawNumber: 3,
             detune: 12,
             attack: 0,
-            decay: 1
+            decay: 0.5
         }
     }
 
@@ -67,15 +67,15 @@ class MultiSaw extends Instrument{
             startTime = startTime || this.context.currentTime;
             let currVoice = new MultiSawVoice(noteToFrequency(note), startTime, this.preset);
             currVoice.connect(this.output);
-            currVoice.start(startTime);
+            currVoice.start(startTime, this.preset.attack);
             this.voices[note] = currVoice;
         }
     }
 
     noteOff(note, endTime) {
         if (!isNullOrUndefined(this.voices[note])) {
-            endTime = (endTime || this.context.currentTime) + this.preset.decay;
-            this.voices[note].stop(endTime);
+            endTime = endTime || this.context.currentTime;
+            this.voices[note].stop(endTime, this.preset.decay);
             delete this.voices[note];
         }
     }

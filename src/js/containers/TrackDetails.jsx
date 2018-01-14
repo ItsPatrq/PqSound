@@ -51,7 +51,6 @@ class TrackDetails extends React.Component {
     }
 
     handleSamplerPresetChange(newPreset) {
-        this.props.dispatch(updateInstrumentPreset(newPreset, this.props.selected));
         if (this.getTrackPreset(this.props.selected).id !== newPreset.id) {
             for (let i = 0; i < this.props.samplerInstruments.length; i++) {
                 if (this.props.samplerInstruments[i].id === newPreset.id) {
@@ -62,6 +61,7 @@ class TrackDetails extends React.Component {
                 }
             }
         }
+        this.props.dispatch(updateInstrumentPreset(newPreset, this.props.selected));        
     }
 
     handleInstrumentChange(instrumentId) {
@@ -268,7 +268,11 @@ class TrackDetails extends React.Component {
                             onPluginRemove={this.handleRemovePlugin.bind(this)}
                             onPluginModalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
                         />
-                        <PanKnob />
+                        <PanKnob
+                            pan={Utils.getTrackByIndex(this.props.trackList, 0).pan}
+                            onPanChange={this.handlePanChange.bind(this)}
+                            trackIndex={0}
+                         />
                         <VolumeSlider
                             volume={Utils.getTrackByIndex(this.props.trackList, 0).volume}
                             onVolumeChange={this.onVolumeChange.bind(this)}

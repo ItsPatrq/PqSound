@@ -19,19 +19,19 @@ class SamplerVoice {
         }
     }
 
-    start(time) {
+    start(time, attack) {
         time = time || this.context.currentTime;
-        this.output.gain.setValueAtTime(0.001, this.context.currentTime);
-        this.output.gain.linearRampToValueAtTime(1.0, time);
+        this.output.gain.setValueAtTime(0.00001, time);
+        this.output.gain.linearRampToValueAtTime(1.0, time + attack);
     }
 
-    stop(time) {
+    stop(time, decay) {
         time = time || this.context.currentTime;
-        this.output.gain.setValueAtTime(1, this.context.currentTime);
-        this.output.gain.linearRampToValueAtTime(0.0001, time);
+        this.output.gain.setValueAtTime(1, time);
+        this.output.gain.linearRampToValueAtTime(0.00001, time + decay);
         setTimeout(() => {
             this.source.disconnect();
-        }, Math.floor((time - this.context.currentTime) * 1000));
+        }, Math.floor((time + decay - this.context.currentTime) * 1000));
     }
 
     connect(target) {
@@ -44,7 +44,7 @@ class Sampler extends Instrument{
         super(Instruments.Sampler);
         this.preset = preset;
         this.preset.attack = 0;
-        this.preset.release = 0;
+        this.preset.decay = 0;
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
 
@@ -55,18 +55,18 @@ class Sampler extends Instrument{
 
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
-            startTime = (startTime || this.context.currentTime) + this.preset.attack;
-            let currVoice = new SamplerVoice(this.getBuffers(note), startTime);
+            startTime = startTime || this.context.currentTime;
+            let currVoice = new SamplerVoice(this.getBuffers(note));
             currVoice.connect(this.output);
-            currVoice.start(startTime);
+            currVoice.start(startTime, this.preset.attack);
             this.voices[note] = currVoice;
         }
     }
 
     noteOff(note, endTime) {
         if (!isNullOrUndefined(this.voices[note])) {
-            endTime = (endTime || this.context.currentTime) + this.preset.release;
-            this.voices[note].stop(endTime);
+            endTime = endTime || this.context.currentTime;
+            this.voices[note].stop(endTime, this.preset.decay);
             delete this.voices[note];
         }
     }

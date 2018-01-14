@@ -44,20 +44,23 @@ export default function reducer(state = {
         case 'PASTE_REGION': {
             let newRegionList = JSON.parse(JSON.stringify(state.regionList));
             let newRegionLastId = state.regionLastId;
-            let copiedRegion =  compositionParser.getRegionByRegionId(action.payload.copiedRegion, newRegionList);
-            newRegionList.push({
-                id: ++newRegionLastId,
-                trackIndex: action.payload.trackIndex,
-                regionLength: copiedRegion.regionLength,
-                start: action.payload.start,
-                end: action.payload.start + copiedRegion.regionLength - 1,
-                notes: JSON.parse(JSON.stringify(copiedRegion.notes))
-            });
+            let copiedRegion = compositionParser.getRegionByRegionId(action.payload.copiedRegion, newRegionList);
+            if (!Utils.isNullOrUndefined(copiedRegion)) {
+                newRegionList.push({
+                    id: ++newRegionLastId,
+                    trackIndex: action.payload.trackIndex,
+                    regionLength: copiedRegion.regionLength,
+                    start: action.payload.start,
+                    end: action.payload.start + copiedRegion.regionLength - 1,
+                    notes: JSON.parse(JSON.stringify(copiedRegion.notes))
+                });
+            }
             return {
                 ...state,
                 regionList: newRegionList,
                 regionLastId: newRegionLastId
             }
+
         }
         case 'REMOVE_REGION': {
             return {
@@ -134,6 +137,34 @@ export default function reducer(state = {
         case 'LOAD_COMPOSITION_STATE': {
             return {
                 ...action.payload
+            }
+        }
+        case 'REGION_TRACK_INDEX_UP': {
+            let newRegionsList = JSON.parse(JSON.stringify(state.regionList));
+            for (let i = 0; i < newRegionsList.length; i++) {
+                if (newRegionsList[i].trackIndex === action.payload) {
+                    ++newRegionsList[i].trackIndex;
+                } else if (newRegionsList[i].trackIndex === action.payload + 1) {
+                    --newRegionsList[i].trackIndex;
+                }
+            }
+            return {
+                ...state,
+                regionList: newRegionsList
+            }
+        }
+        case 'REGION_TRACK_INDEX_DOWN': {
+            let newRegionsList = JSON.parse(JSON.stringify(state.regionList));
+            for (let i = 0; i < newRegionsList.length; i++) {
+                if (newRegionsList[i].trackIndex === action.payload) {
+                    --newRegionsList[i].trackIndex;
+                } else if (newRegionsList[i].trackIndex === action.payload - 1) {
+                    ++newRegionsList[i].trackIndex;
+                }
+            }
+            return {
+                ...state,
+                regionList: newRegionsList
             }
         }
     }
