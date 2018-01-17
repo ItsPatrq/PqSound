@@ -22,18 +22,17 @@ class VolumeSlider extends React.Component {
             this.gradient.addColorStop(0.25, '#ffff00');
             this.gradient.addColorStop(0, '#ffffff');
             this.canvasContext.fillStyle = this.gradient;
-            requestAnimationFrame(this.update.bind(this));
+            requestAnimationFrame(this.updateVolumeAnimation.bind(this));
         }
     }
-    update() {
+    updateVolumeAnimation() {
         let newVolumes = this.props.trackNode.getAverageVolume();
         this.setState((/*state*/) => ({ volumes: newVolumes }))
         this.canvasContext.clearRect(0, 0, 52, 150);
         this.canvasContext.fillStyle = this.gradient;
         this.canvasContext.fillRect(5, 150 - this.state.volumes.left, 20, 150);
         this.canvasContext.fillRect(27, 150 - this.state.volumes.right, 20, 150);
-
-        requestAnimationFrame(this.update.bind(this));
+        requestAnimationFrame(this.updateVolumeAnimation.bind(this));
     }
     render() {
         return (

@@ -23,6 +23,7 @@ export default function reducer(state = {
             mute: false,
             index: 0,
             output: null, //output: context.destination
+            input: [1],
             trackNode: new Track(newMasterPluginList)
         },
         {
@@ -37,6 +38,7 @@ export default function reducer(state = {
             solo: false,
             index: 1,
             output: 0,
+            input: new Array,
             trackNode: new Track(newTrackPluginList, firstInstrument, 0)
         }],
     selected: 1,
@@ -48,6 +50,7 @@ export default function reducer(state = {
         case 'ADD_TRACK': {
             let newTrackList = [...state.trackList];
             let newPluginList = new Array;
+            newTrackList[0].input.push(state.trackList.length);
             let newInstrument = action.payload.trackType === TrackTypes.virtualInstrument ?
                 new Sampler(SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id)) : null;
             newTrackList.push(
@@ -63,6 +66,7 @@ export default function reducer(state = {
                     solo: false,
                     index: state.trackList.length,
                     output: 0,
+                    input: new Array,
                     trackNode: new Track(newPluginList, newInstrument, 0, 1.0, 0)
                 }
             );
@@ -78,11 +82,33 @@ export default function reducer(state = {
             for (let i = 1; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
                     if (newTrackList[i].index === selected) {
-                        selected = null
+                        selected = newTrackList[i].index === newTrackList.length - 1 ?
+                            --selected : selected;
+                    }
+                    let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
+                    for(let j = 0; j < newTrackList[i].input.length; j++){
+                        Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output = newTrackList[i].output;
+                        currOutput.input.push(newTrackList[i].input[j]);
+                    }
+                    for(let j = 0; j < currOutput.input.length; j++){
+                        if(currOutput.input[j] === action.payload){
+                            currOutput.input.splice(j, 1);
+                            break;
+                        }
                     }
                     newTrackList.splice(i, 1);
                     for (let j = i; j < newTrackList.length; j++) {
+                        for(let k = 0; k < newTrackList[j].input.length; k++){
+                            Utils.getTrackByIndex(newTrackList, newTrackList[j].input[k]).output = j;
+                        }
                         newTrackList[j].index = j;
+                    }
+                    for(let j = 0; j < newTrackList.length; j++){
+                        for(let k = 0; k < newTrackList[j].input.length; k++){
+                            if(newTrackList[j].input[k] >= i){
+                                newTrackList[j].input[k]++;
+                            }
+                        }
                     }
                     break;
                 }
@@ -192,7 +218,7 @@ export default function reducer(state = {
             }
             return {
                 ...state,
-                trackList: newTrackList,                
+                trackList: newTrackList,
                 selected: action.payload
             }
         }
@@ -277,7 +303,15 @@ export default function reducer(state = {
             let newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
+                    let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
+                    for(let j = 0; j < currOutput.input.length; j++){
+                        if(currOutput.input[j] === action.payload.index){
+                            currOutput.input.splice(j, 1);
+                            break;
+                        }
+                    }
                     newTrackList[i].output = action.payload.outputIndex;
+                    Utils.getTrackByIndex(newTrackList, action.payload.outputIndex).input.push(action.payload.index);
                     newTrackList[i].trackNode.updateTrackNode(action.payload.outputIndex);
                     break;
                 }
@@ -310,11 +344,32 @@ export default function reducer(state = {
             let newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
+                    for(let j = 0; j < newTrackList[i].input.length; j++){
+                        Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output++;
+                    }
+                    let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
+                    for(let j = 0; j < currOutput.input.length; j++){
+                        if(currOutput.input[j] === newTrackList[i].index){
+                            currOutput.input[j]++;
+                            break;
+                        }
+                    }
                     ++newTrackList[i].index;
                 } else if (newTrackList[i].index === action.payload + 1) {
+                    for(let j = 0; j < newTrackList[i].input.length; j++){
+                        Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output--;
+                    }
+                    let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
+                    for(let j = 0; j < currOutput.input.length; j++){
+                        if(currOutput.input[j] === newTrackList[i].index){
+                            currOutput.input[j]--;
+                            break;
+                        }
+                    }
                     --newTrackList[i].index;
                 }
             }
+            newTrackList.sort((a, b) => { return a.index - b.index });
             return {
                 ...state,
                 trackList: newTrackList
@@ -324,11 +379,32 @@ export default function reducer(state = {
             let newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
+                    for(let j = 0; j < newTrackList[i].input.length; j++){
+                        Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output--;
+                    }
+                    let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
+                    for(let j = 0; j < currOutput.input.length; j++){
+                        if(currOutput.input[j] === newTrackList[i].index){
+                            currOutput.input[j]--;
+                            break;
+                        }
+                    }
                     --newTrackList[i].index;
                 } else if (newTrackList[i].index === action.payload - 1) {
+                    for(let j = 0; j < newTrackList[i].input.length; j++){
+                        Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output++;
+                    }
+                    let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
+                    for(let j = 0; j < currOutput.input.length; j++){
+                        if(currOutput.input[j] === newTrackList[i].index){
+                            currOutput.input[j]++;
+                            break;
+                        }
+                    }
                     ++newTrackList[i].index;
                 }
             }
+            newTrackList.sort((a, b) => { return a.index - b.index });
             return {
                 ...state,
                 trackList: newTrackList

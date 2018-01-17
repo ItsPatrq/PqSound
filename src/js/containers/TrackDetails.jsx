@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, ButtonToolbar } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import VolumeSlider from 'components/TrackDetails/VolumeSlider';
 import PanKnob from 'components/TrackDetails/PanKnob';
@@ -61,7 +61,7 @@ class TrackDetails extends React.Component {
                 }
             }
         }
-        this.props.dispatch(updateInstrumentPreset(newPreset, this.props.selected));        
+        this.props.dispatch(updateInstrumentPreset(newPreset, this.props.selected));
     }
 
     handleInstrumentChange(instrumentId) {
@@ -78,11 +78,22 @@ class TrackDetails extends React.Component {
         this.props.dispatch(changeTrackVolume(index, parsedNewVolume));
     }
 
-    getAllAvailableAuxTracks() {
+    addInputsToArray(currTrack, usedAuxList) {
+        for (let i = 0; i < currTrack.input.length; i++) {
+            usedAuxList.push(currTrack.input[i]);
+            this.addInputsToArray(Utils.getTrackByIndex(this.props.trackList, currTrack.input[i]), usedAuxList);
+        }
+    }
+
+    getAvailableAuxTracks() {
         let auxTrackList = new Array;
+        let currTrack = Utils.getTrackByIndex(this.props.trackList, this.props.selected);
+        let usedAuxList = new Array;
+        this.addInputsToArray(currTrack, usedAuxList);
         for (let i = 0; i < this.props.trackList.length; i++) {
             if (this.props.trackList[i].trackType === TrackTypes.aux &&
-                this.props.trackList[i].index !== this.props.selected) {
+                this.props.trackList[i].index !== this.props.selected &&
+                !usedAuxList.includes(this.props.trackList[i].index)) {
                 auxTrackList.push(this.props.trackList[i])
             }
         }
@@ -148,7 +159,7 @@ class TrackDetails extends React.Component {
 
     }
 
-    handlePluginPresetChange(newPreset){
+    handlePluginPresetChange(newPreset) {
         this.props.dispatch(changePluginPreset(
             this.props.trackDetails.selectedPluginTrackIndex,
             this.props.trackDetails.selectedPluginIndex,
@@ -156,146 +167,100 @@ class TrackDetails extends React.Component {
         ))
     }
 
-    handleInstrumentPresetChange(newPreset){
+    handleInstrumentPresetChange(newPreset) {
         this.props.dispatch(updateInstrumentPreset(newPreset, this.props.selected));
     }
 
     render() {
-        if (!!this.props.selected) {
-            let instrumentComponent;
-            if (Utils.getTrackByIndex(this.props.trackList, this.props.selected).trackType === TrackTypes.virtualInstrument) {
-                instrumentComponent =
-                    <InstrumentInput
-                        instrumentModalVisibilitySwitch={this.instrumentModalVisibilitySwitch.bind(this)}
-                        showModal={this.props.trackDetails.showInstrumentModal}
-                        selectedTrack={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
-                        onSamplerPresetChange={this.handleSamplerPresetChange.bind(this)}
-                        onInstrumentChange={this.handleInstrumentChange.bind(this)}
-                        onInstrumentPresetChange={this.handleInstrumentPresetChange.bind(this)}
-                    />;
-            } else {
-                instrumentComponent =
+        let instrumentComponent;
+        if (Utils.getTrackByIndex(this.props.trackList, this.props.selected).trackType === TrackTypes.virtualInstrument) {
+            instrumentComponent =
+                <InstrumentInput
+                    instrumentModalVisibilitySwitch={this.instrumentModalVisibilitySwitch.bind(this)}
+                    showModal={this.props.trackDetails.showInstrumentModal}
+                    selectedTrack={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
+                    onSamplerPresetChange={this.handleSamplerPresetChange.bind(this)}
+                    onInstrumentChange={this.handleInstrumentChange.bind(this)}
+                    onInstrumentPresetChange={this.handleInstrumentPresetChange.bind(this)}
+                />;
+        } else {
+            instrumentComponent =
+                <div className="instrumentInputContainer" />
+        }
+        return (
+            <div>
+                <Col xs={6} className="trackDetailsContainer">
+                    {instrumentComponent}
+                    <PluginsList
+                        pluginList={Utils.getTrackByIndex(this.props.trackList, this.props.selected).pluginList}
+                        onPluginAdd={this.handleAddPlugin.bind(this)}
+                        trackIndex={this.props.selected}
+                        onPluginRemove={this.handleRemovePlugin.bind(this)}
+                        onPluginModalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
+                    />
+                    <Output
+                        auxTracks={this.getAvailableAuxTracks()}
+                        dropDownTitle={this.getOutputName(Utils.getTrackByIndex(this.props.trackList, this.props.selected).output)}
+                        onOutputChange={this.handleOutputChange.bind(this)}
+                    />
+                    <PanKnob
+                        pan={Utils.getTrackByIndex(this.props.trackList, this.props.selected).pan}
+                        onPanChange={this.handlePanChange.bind(this)}
+                        trackIndex={this.props.selected}
+                    />
+                    <VolumeSlider
+                        volume={Utils.getTrackByIndex(this.props.trackList, this.props.selected).volume}
+                        onVolumeChange={this.onVolumeChange.bind(this)}
+                        trackIndex={this.props.selected}
+                        trackNode={Utils.getTrackByIndex(this.props.trackList, this.props.selected).trackNode}
+                    />
+                    <SoloMuteButtons
+                        trackDetails={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
+                        onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
+                        onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
+                    />
+                    <TrackName name={this.getTrackName(this.props.selected)} />
+                </Col>
+                <Col xs={6} className="trackDetailsContainer">
                     <div className="instrumentInputContainer" />
-            }
-            return (
-                <div>
-                    <Col xs={6} className="trackDetailsContainer">
-                        {instrumentComponent}
-                        <PluginsList
-                            pluginList={Utils.getTrackByIndex(this.props.trackList, this.props.selected).pluginList}
-                            onPluginAdd={this.handleAddPlugin.bind(this)}
-                            trackIndex={this.props.selected}
-                            onPluginRemove={this.handleRemovePlugin.bind(this)}
-                            onPluginModalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
-                        />
-                        <Output
-                            auxTracks={this.getAllAvailableAuxTracks()}
-                            dropDownTitle={this.getOutputName(Utils.getTrackByIndex(this.props.trackList, this.props.selected).output)}
-                            onOutputChange={this.handleOutputChange.bind(this)}
-                        />
-                        <PanKnob
-                            pan={Utils.getTrackByIndex(this.props.trackList, this.props.selected).pan}
-                            onPanChange={this.handlePanChange.bind(this)}
-                            trackIndex={this.props.selected}
-                        />
-                        <VolumeSlider
-                            volume={Utils.getTrackByIndex(this.props.trackList, this.props.selected).volume}
-                            onVolumeChange={this.onVolumeChange.bind(this)}
-                            trackIndex={this.props.selected}
-                            trackNode={Utils.getTrackByIndex(this.props.trackList, this.props.selected).trackNode}
-                        />
-                        <SoloMuteButtons
-                            trackDetails={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
-                            onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
-                            onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
-                        />
-                        <TrackName name={this.getTrackName(this.props.selected)} />
-                    </Col>
-                    <Col xs={6} className="trackDetailsContainer">
-                        <div className="instrumentInputContainer" />
-                        <PluginsList
-                            pluginList={Utils.getTrackByIndex(this.props.trackList, 0).pluginList}
-                            onPluginAdd={this.handleAddPlugin.bind(this)}
-                            trackIndex={0}
-                            onPluginRemove={this.handleRemovePlugin.bind(this)}
-                            onPluginModalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
-                        />
-                        <Output
-                            auxTracks={[]}
-                            dropDownTitle="Stereo out"
-                        />
-                        <PanKnob
-                            pan={Utils.getTrackByIndex(this.props.trackList, 0).pan}
-                            onPanChange={this.handlePanChange.bind(this)}
-                            trackIndex={0}
-                        />
-                        <VolumeSlider
-                            volume={Utils.getTrackByIndex(this.props.trackList, 0).volume}
-                            onVolumeChange={this.onVolumeChange.bind(this)}
-                            trackIndex={0}
-                            trackNode={Utils.getTrackByIndex(this.props.trackList, 0).trackNode}
-                        />
-                        <SoloMuteButtons
-                            trackDetails={Utils.getTrackByIndex(this.props.trackList, 0)}
-                            onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
-                            onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
-                        />
-                        <TrackName name={this.getTrackName(0)} />
-                    </Col>
-                    <PluginModal
-                        modalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
-                        showModal={this.props.trackDetails.showPluginModal}
-                        plugin={this.getSelectedPlugin()}
-                        trackName={this.getTrackName(this.props.trackDetails.selectedPluginTrackIndex)}
-                        onPresetChange={this.handlePluginPresetChange.bind(this)}
+                    <PluginsList
+                        pluginList={Utils.getTrackByIndex(this.props.trackList, 0).pluginList}
+                        onPluginAdd={this.handleAddPlugin.bind(this)}
+                        trackIndex={0}
+                        onPluginRemove={this.handleRemovePlugin.bind(this)}
+                        onPluginModalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
                     />
-                </div>
-            );
-        }
-        else {
-            return (
-                <div>
-                    <Col xs={6} className="trackDetailsContainer">
-                        <p>No track selected</p>
-                    </Col>
-                    <Col xs={6} className="trackDetailsContainer">
-                        <ButtonToolbar className="instrumentInputContainer">
-                        </ButtonToolbar>
-                        <PluginsList
-                            pluginList={Utils.getTrackByIndex(this.props.trackList, 0).pluginList}
-                            onPluginAdd={this.handleAddPlugin.bind(this)}
-                            trackIndex={0}
-                            onPluginRemove={this.handleRemovePlugin.bind(this)}
-                            onPluginModalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
-                        />
-                        <PanKnob
-                            pan={Utils.getTrackByIndex(this.props.trackList, 0).pan}
-                            onPanChange={this.handlePanChange.bind(this)}
-                            trackIndex={0}
-                         />
-                        <VolumeSlider
-                            volume={Utils.getTrackByIndex(this.props.trackList, 0).volume}
-                            onVolumeChange={this.onVolumeChange.bind(this)}
-                            trackIndex={0}
-                            trackNode={Utils.getTrackByIndex(this.props.trackList, 0).trackNode}
-                        />
-                        <SoloMuteButtons
-                            trackDetails={Utils.getTrackByIndex(this.props.trackList, 0)}
-                            onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
-                            onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
-                        />
-                        <TrackName name={this.getTrackName(0)} />
-                    </Col>
-                    <PluginModal
-                        modalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
-                        showModal={this.props.trackDetails.showPluginModal}
-                        plugin={this.getSelectedPlugin()}
-                        trackName={this.getTrackName(this.props.trackDetails.selectedPluginTrackIndex)}
-                        onPresetChange={this.handlePluginPresetChange.bind(this)}
+                    <Output
+                        auxTracks={[]}
+                        dropDownTitle="Stereo out"
                     />
-                </div>
-            );
-        }
+                    <PanKnob
+                        pan={Utils.getTrackByIndex(this.props.trackList, 0).pan}
+                        onPanChange={this.handlePanChange.bind(this)}
+                        trackIndex={0}
+                    />
+                    <VolumeSlider
+                        volume={Utils.getTrackByIndex(this.props.trackList, 0).volume}
+                        onVolumeChange={this.onVolumeChange.bind(this)}
+                        trackIndex={0}
+                        trackNode={Utils.getTrackByIndex(this.props.trackList, 0).trackNode}
+                    />
+                    <SoloMuteButtons
+                        trackDetails={Utils.getTrackByIndex(this.props.trackList, 0)}
+                        onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
+                        onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
+                    />
+                    <TrackName name={this.getTrackName(0)} />
+                </Col>
+                <PluginModal
+                    modalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
+                    showModal={this.props.trackDetails.showPluginModal}
+                    plugin={this.getSelectedPlugin()}
+                    trackName={this.getTrackName(this.props.trackDetails.selectedPluginTrackIndex)}
+                    onPresetChange={this.handlePluginPresetChange.bind(this)}
+                />
+            </div>
+        );
     }
 }
 
