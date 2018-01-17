@@ -13,14 +13,13 @@ class SamplerVoice {
             this.output = this.context.createGain();
             
             this.source.connect(this.output);
-            this.source.buffer = buffer;
-            
-            this.source.start(this.context.currentTime)
+            this.source.buffer = buffer;            
         }
     }
 
     start(time, attack) {
         time = time || this.context.currentTime;
+        this.source.start(time)        
         this.output.gain.setValueAtTime(0.00001, time);
         this.output.gain.linearRampToValueAtTime(1.0, time + attack);
     }
@@ -28,7 +27,7 @@ class SamplerVoice {
     stop(time, decay) {
         time = time || this.context.currentTime;
         this.output.gain.setValueAtTime(1, time);
-        this.output.gain.linearRampToValueAtTime(0.00001, time + decay);
+        this.output.gain.linearRampToValueAtTime(0.00001, time + decay + 0.001);
         setTimeout(() => {
             this.source.disconnect();
         }, Math.floor((time + decay - this.context.currentTime) * 1000));

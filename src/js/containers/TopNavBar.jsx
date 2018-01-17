@@ -9,6 +9,7 @@ import * as Utils from 'engine/Utils';
 import FileUploadModal from 'components/FileUploadModal';
 import { TrackTypes } from 'constants/Constants'
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
+import Demo from 'constants/Demo';
 
 class TopNavBar extends React.Component {
     constructor() {
@@ -124,29 +125,37 @@ class TopNavBar extends React.Component {
         this.props.dispatch(switchUploadModalVisibility())
     }
 
+    loadDemo() {
+        this.loadComposition(Demo);
+    }
+
+    loadComposition(binaryString){
+        let loadedState = JSON.parse(decodeURIComponent(binaryString));
+        this.props.dispatch(loadTrackState(loadedState.tracks));
+        this.props.dispatch(loadControlState(loadedState.control));
+        this.props.dispatch(loadCompositionState(loadedState.composition))
+        this.props.dispatch(updateAllTrackNodes());
+        /**
+         * loading all required samples
+         */
+        for(let i = 1; i < this.props.tracks.trackList.length; i++){
+            for (let j = 0; j < this.props.samplerInstruments.length; j++) {
+                if (this.props.tracks.trackList[i].instrument.id === 0 &&
+                    this.props.samplerInstruments[j].id === this.props.tracks.trackList[i].instrument.preset.id) {
+                    if (!this.props.samplerInstruments[j].loaded && !this.props.samplerInstruments[j].fetching) {
+                        this.props.dispatch(fetchSamplerInstrument(this.props.tracks.trackList[i].instrument.preset.id));
+                    }
+                }
+            }
+        }
+    }
+
     handleFileUpload(accepted, rejected) {
         if (accepted.length > 0) {
             const reader = new FileReader();
             reader.onload = () => {
                 const fileAsBinaryString = reader.result;
-                let loadedState = JSON.parse(decodeURIComponent(fileAsBinaryString));
-                this.props.dispatch(loadTrackState(loadedState.tracks));
-                this.props.dispatch(loadControlState(loadedState.control));
-                this.props.dispatch(loadCompositionState(loadedState.composition))
-                this.props.dispatch(updateAllTrackNodes());
-                /**
-                 * loading all required samples
-                 */
-                for(let i = 1; i < this.props.tracks.trackList.length; i++){
-                    for (let j = 0; j < this.props.samplerInstruments.length; j++) {
-                        if (this.props.tracks.trackList[i].instrument.id === 0 &&
-                            this.props.samplerInstruments[j].id === this.props.tracks.trackList[i].instrument.preset.id) {
-                            if (!this.props.samplerInstruments[j].loaded && !this.props.samplerInstruments[j].fetching) {
-                                this.props.dispatch(fetchSamplerInstrument(this.props.tracks.trackList[i].instrument.preset.id));
-                            }
-                        }
-                    }
-                }
+                this.loadComposition(fileAsBinaryString);
             };
             reader.onabort = () => console.log('file reading was aborted');
             reader.onerror = () => console.log('file reading has failed');
@@ -195,7 +204,7 @@ class TopNavBar extends React.Component {
                             Import
                         </NavItem>
                         <NavItem eventKey={5} onClick={this.export.bind(this)}>Export</NavItem>
-                        <NavItem eventKey={6} >Load demo</NavItem>
+                        <NavItem eventKey={6} onClick={this.loadDemo.bind(this)}>Load demo</NavItem>
                     </Nav>
                 </Navbar.Collapse>
                 <FileUploadModal
@@ -222,7 +231,7 @@ const mapStateToProps = (state) => {
         tracks: state.tracks,
         control: state.control,
         samplerInstruments: state.webAudio.samplerInstrumentsSounds.map(
-            (value) => { return { name: value.name, loaded: value.loaded, id: value.id } }
+            (value) => { return { name: value.name, loaded: value.loaded, id: value.id, fetching: value.fetching } }
         )
     }
 }

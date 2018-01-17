@@ -40,15 +40,16 @@ class Sequencer {
             // Convert noteTime to context time.
             var contextPlayTime = this.noteTime + this.startTime;
             
-            Store.getState().webAudio.sound.scheduleStop(this.sixteenthPlaying, contextPlayTime, SoundOrigin.composition);
-            
+            let trackList = Store.getState().tracks.trackList;
+            let soundHandler = Store.getState().webAudio.sound;
+            soundHandler.scheduleStop(this.sixteenthPlaying, contextPlayTime, SoundOrigin.composition);            
             //iterate through all tracks
-            for (let i = 0; i < Store.getState().tracks.trackList.length; i++) {
-                let currTrackIndex = Store.getState().tracks.trackList[i].index;
+            for (let i = 0; i < trackList.length; i++) {
+                let currTrackIndex = trackList[i].index;
                 let currentNotesToPlay = notesToPlay(this.sixteenthPlaying, currTrackIndex);
                 if (!Utils.isNullUndefinedOrEmpty(currentNotesToPlay)) {
                     for (let j = 0; j < currentNotesToPlay.length; j++) {
-                        Store.getState().webAudio.sound.play(currTrackIndex, contextPlayTime, Utils.noteToMIDI(currentNotesToPlay[j].note),
+                        soundHandler.play(currTrackIndex, contextPlayTime, Utils.noteToMIDI(currentNotesToPlay[j].note),
                             SoundOrigin.composition, this.sixteenthPlaying +  currentNotesToPlay[j].durotian);
                     }
                 }

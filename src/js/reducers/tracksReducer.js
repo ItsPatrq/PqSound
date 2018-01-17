@@ -101,6 +101,9 @@ export default function reducer(state = {
                         for(let k = 0; k < newTrackList[j].input.length; k++){
                             Utils.getTrackByIndex(newTrackList, newTrackList[j].input[k]).output = j;
                         }
+                        if(selected === newTrackList[j].index){
+                            selected = j;
+                        }
                         newTrackList[j].index = j;
                     }
                     for(let j = 0; j < newTrackList.length; j++){

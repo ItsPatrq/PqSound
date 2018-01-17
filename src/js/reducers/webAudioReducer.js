@@ -45,7 +45,7 @@ export default function reducer(state = {
         }
         case 'NEED_TO_FETCH_SAMPLER_INSTRUMENT': {
             let newBufferLoader = { ...state.bufferLoader };
-            let newSamplerInstrumentsSounds = [...state.samplerInstrumentsSounds]
+            let newSamplerInstrumentsSounds = [...state.samplerInstrumentsSounds];
             for (let i = 0; i < SamplerPresets.length; i++) {
                 for (let j = 0; j < SamplerPresets[i].presets.length; j++) {
                     if (SamplerPresets[i].presets[j].id === action.payload.instrumentId) {
@@ -59,14 +59,13 @@ export default function reducer(state = {
                     newSamplerInstrumentsSounds[i].fetching = true;
                     break;
                 }
-
             }
             newBufferLoader.onload = action.payload.callback;
             newBufferLoader.load();
             return {
                 ...state,
-                bufferLoader: newBufferLoader,
-                samplerInstrumentsSounds: newSamplerInstrumentsSounds
+                samplerInstrumentsSounds: newSamplerInstrumentsSounds,                
+                bufferLoader: newBufferLoader
             }
         }
         case 'FETCHED_SAMPLER_INSTRUMENT': {
