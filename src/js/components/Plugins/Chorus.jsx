@@ -3,70 +3,82 @@ import React from 'react';
 require('styles/Plugins/Chorus.css');
 
 const Chorus = (props) => {
-    let handleChange = (newThreshold, newKnee, newRatio, newAttack, newRelease) => {
+    let handleChange = (newFeedback, newDelay, newDepth, newRate, newDry, newWet) => {
         props.onPresetChange({
-            threashold: newThreshold ? Number(newThreshold) : props.plugin.preset.threashold,
-            knee: newKnee ? Number(newKnee) : props.plugin.preset.knee,
-            ratio: newRatio ? Number(newRatio) : props.plugin.preset.ratio,
-            attack: newAttack ? Number(newAttack) : props.plugin.preset.attack,
-            release: newRelease ? Number(newRelease) : props.plugin.preset.release
+            feedback: newFeedback ? Number(newFeedback) : props.plugin.preset.feedback,
+            delay: newDelay ? Number(newDelay) : props.plugin.preset.delay,
+            depth: newDepth ? Number(newDepth) : props.plugin.preset.depth,
+            rate: newRate ? Number(newRate) : props.plugin.preset.rate,
+            dry: newDry ? Number(newDry) : props.plugin.preset.dry,
+            wet: newWet ? Number(newWet) : props.plugin.preset.wet
         })
     }
     return (
         <div>
             <div className="compressorModal">
                 <div className="compressorControlRow">
-                    <label>Feedback: {props.plugin.preset.threashold}</label>
+                    <label>Feedback: {props.plugin.preset.feedback}</label>
                     <input
                         type="range"
-                        value={props.plugin.preset.threashold}
-                        step="1"
-                        min="-100"
-                        max="0"
+                        value={props.plugin.preset.feedback}
+                        step="0.001"
+                        min="0"
+                        max="1"
                         onChange={(event) => handleChange(event.target.value)}
                     />
                 </div>
                 <div className="compressorControlRow">
-                    <label>Delay: {props.plugin.preset.knee}</label>
+                    <label>Delay: {props.plugin.preset.delay}</label>
                     <input type="range"
-                        value={props.plugin.preset.knee}
-                        step="0.5"
-                        min="0"
-                        max="40"
+                        value={props.plugin.preset.delay}
+                        step="0.005"
+                        min="0.005"
+                        max="0.1"
                         onChange={(event) => handleChange(null, event.target.value)}
                     />
                 </div>
                 <div className="compressorControlRow">
-                    <label>Depth: {props.plugin.preset.ratio}</label>
+                    <label>Depth: {props.plugin.preset.depth}</label>
                     <input
                         type="range"
-                        value={props.plugin.preset.ratio}
-                        step="0.25"
-                        min="1"
-                        max="20"
+                        value={props.plugin.preset.depth}
+                        step="0.0005"
+                        min="0.0005"
+                        max="0.004"
                         onChange={(event) => handleChange(null, null, event.target.value)}
                     />
                 </div>
                 <div className="compressorControlRow">
-                    <label>Rate: {props.plugin.preset.attack}</label>
+                    <label>Rate: {props.plugin.preset.rate}</label>
                     <input
                         type="range"
-                        value={props.plugin.preset.attack}
-                        step="0.01"
-                        min="0"
-                        max="1"
+                        value={props.plugin.preset.rate}
+                        step="0.25"
+                        min="0.5"
+                        max="15"
                         onChange={(event) => handleChange(null, null, null, event.target.value)}
                     />
                 </div>
                 <div className="compressorControlRow">
-                    <label>Bypass: {props.plugin.preset.release}</label>
+                    <label>Dry signal: {props.plugin.preset.dry}</label>
                     <input
                         type="range"
-                        value={props.plugin.preset.release}
-                        step="0.01"
+                        value={props.plugin.preset.dry}
+                        step="0.001"
                         min="0"
                         max="1"
-                        onChange={(event) => handleChange(null, null, null, null,  event.target.value)}
+                        onChange={(event) => handleChange(null, null, null, null, event.target.value)}
+                    />
+                </div>
+                <div className="compressorControlRow">
+                    <label>Wet signal: {props.plugin.preset.wet}</label>
+                    <input
+                        type="range"
+                        value={props.plugin.preset.wet}
+                        step="0.001"
+                        min="0"
+                        max="1"
+                        onChange={(event) => handleChange(null, null, null, null, null, event.target.value)}
                     />
                 </div>
             </div>

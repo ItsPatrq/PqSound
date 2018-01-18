@@ -21,7 +21,7 @@ const MultiOsc = (props) => {
             <MenuItem
                     key={oscilatorTypes[i]}
                     eventKey={oscilatorTypes[i]}
-                    onClick={(event) => handleChange(null, null, null, null, oscilatorTypes[i])}                    
+                    onClick={() => handleChange(null, null, null, null, oscilatorTypes[i])}                    
             >
                     {oscilatorTypes[i]}
                 </MenuItem>
