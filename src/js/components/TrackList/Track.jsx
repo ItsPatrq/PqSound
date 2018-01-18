@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Col, Row, Button, ButtonGroup, Glyphicon, FormControl } from 'react-bootstrap';
-import { TrackTypes, samplerIcon, virtualInstrumentIcon, auxIcon  } from 'constants/Constants';
+import { TrackTypes } from 'constants/Constants';
+import {samplerIcon, virtualInstrumentIcon, auxIcon} from 'constants/Icons';
 
 const Track = (props) => {
     let handleTrackNameChange = (event) => {

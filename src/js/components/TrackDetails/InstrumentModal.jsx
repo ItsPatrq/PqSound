@@ -2,7 +2,8 @@ import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import SamplerComponent from 'components/Instruments/Sampler';
 import MonotronComponent from 'components/Instruments/Monotron';
-import MultiSaw from 'components/Instruments/MultiSaw';
+import MultiOscComponent from 'components/Instruments/MultiOsc';
+import PqSynthComponent from 'components/Instruments/PqSynth';
 import { Instruments } from 'constants/Constants';
 
 const InstrumentModal = (props) => {
@@ -24,8 +25,16 @@ const InstrumentModal = (props) => {
       />
       break;
     }
-    case Instruments.MultiSaw.id: {
-      modalBody = <MultiSaw
+    case Instruments.MultiOsc.id: {
+      modalBody = <MultiOscComponent
+        instrument={props.track.instrument}
+        trackIndex={props.track.index}
+        onPresetChange={props.onInstrumentPresetChange}
+      />
+      break;
+    }
+    case Instruments.PqSynth.id: {
+        modalBody = <PqSynthComponent
         instrument={props.track.instrument}
         trackIndex={props.track.index}
         onPresetChange={props.onInstrumentPresetChange}

@@ -70,7 +70,15 @@ export default function reducer(state = {
                     trackNode: new Track(newPluginList, newInstrument, 0, 1.0, 0)
                 }
             );
-
+            if(action.payload.trackType === TrackTypes.virtualInstrument){
+                if(state.anyAuxSolo){
+                    newTrackList[newTrackList.length - 1].trackNode.updateSoloState(false, true);
+                } else {
+                    newTrackList[newTrackList.length - 1].trackNode.updateSoloState(false, state.anyVirtualInstrumentSolo);
+                }
+            } else if(action.payload.trackType === TrackTypes.aux){
+                newTrackList[newTrackList.length - 1].trackNode.updateSoloState(false, state.anyAuxSolo);
+            }
             return {
                 ...state,
                 trackList: newTrackList

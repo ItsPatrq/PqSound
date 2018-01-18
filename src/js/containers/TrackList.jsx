@@ -29,6 +29,10 @@ class TrackList extends React.Component {
     handleRecordClick(index) {
         this.props.dispatch(trackListActions.changeRecordState(index));
         this.shouldFetchSamplerInstrument(index);
+        let currTrack = Utils.getTrackByIndex(this.props.trackList, index);
+        if(!currTrack.record){
+            currTrack.instrument.stopAll();
+        }
     }
 
     handleSoloButtonClicked(index) {

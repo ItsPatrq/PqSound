@@ -1,9 +1,29 @@
 .samplerContainer {
+    background: #cdcdcd;
+    color: #212121;
+    padding: 5px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 }
 
-.samplerPresetInstrument {
+.brandName {
+    font-size: 44px;
+    margin-bottom: 25px;
+    text-align: center;
+    line-height: 26.4px;
+}
 
+.presetName {
+    margin: auto;
+    font-size: 22px;
+    margin-bottom: 10px;
+    text-align: center;
+    line-height: 15.4px;
+}
+
+.samplerPresetInstrument {
+    padding: 10px;
+    border: #9c9ba7 solid thin;
 }
 
 .samplerSliderContainer {

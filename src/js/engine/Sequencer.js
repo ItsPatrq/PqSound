@@ -74,7 +74,7 @@ class Sequencer {
         var that = this;
         var timerWorkerBlob = new Blob([
             'var timeoutID=0;' +
-            'function schedule(){timeoutID=setTimeout(function(){postMessage(\'schedule\'); schedule();},100);}' +
+            'function schedule(){timeoutID=setTimeout(function(){postMessage(\'schedule\'); schedule();},80);}' +
             'onmessage = function(e) { if (e.data == \'start\') { if (!timeoutID) schedule();} else if (e.data == \'stop\') {if (timeoutID) clearTimeout(timeoutID);' +
             'timeoutID=0;};}']);
 

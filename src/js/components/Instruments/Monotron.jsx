@@ -12,7 +12,7 @@ class Monotron extends React.Component {
         },
         int: {
             min: 0.5,
-            max: 500.0
+            max: 350.0
         },
         cutoff: {
             min: 0.001,
@@ -77,7 +77,6 @@ class Monotron extends React.Component {
         }
     }
     onChange = (event, id, knopf) => {
-        console.log(knopf.value)
         let ratio, scale, value;
         let param = this.params[id];
         if (!Utils.isNullOrUndefined(param)) {

@@ -9,9 +9,11 @@ import PianoRollTimeBar from 'components/CompositionGrid/PianoRollTimeBar';
 import { showPianoRoll, addRegion, removeRegion, addNote, removeNote, pasteRegion } from 'actions/compositionActions';
 import { changeCurrentTime, copyRegion } from 'actions/controlActions';
 import { getRegionIdByBitIndex, getRegionByRegionId, notesToDrawParser } from 'engine/CompositionParser';
-import { tools, SoundOrigin, pencilIcon, eraserIcon, copyIcon } from 'constants/Constants'
+import { tools, SoundOrigin } from 'constants/Constants'
+import { pencilIcon, eraserIcon, copyIcon} from 'constants/Icons';
 import { getTrackByIndex, isNullOrUndefined } from 'engine/Utils';
 import * as KeyboardActions from 'actions/keyboardActions';
+
 class CompositionGrid extends React.Component {
     constructor() {
         super();
@@ -112,11 +114,11 @@ class CompositionGrid extends React.Component {
         event.preventDefault();
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
-        if (this.props.keyboard.notesPlaying.includes(note)) {
+        //if (this.props.keyboard.notesPlaying.includes(note)) {
             let currTrackIndex = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).trackIndex;
             this.props.sound.stop(currTrackIndex, note)
-            this.props.dispatch(KeyboardActions.removePlayingNote(note));
-        }
+        //    this.props.dispatch(KeyboardActions.removePlayingNote(note));
+        //}
         return false;
     }
 
@@ -124,11 +126,10 @@ class CompositionGrid extends React.Component {
         event.preventDefault();
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
-        if (event.buttons == 1 &&  //leftClick
-            !this.props.keyboard.notesPlaying.includes(note)) {
+        if (event.buttons == 1 /*&& !this.props.keyboard.notesPlaying.includes(note)*/){  //leftClick
             let currTrackIndex = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).trackIndex;
             this.props.sound.play(currTrackIndex, null, note, SoundOrigin.pianoRollNote)
-            this.props.dispatch(KeyboardActions.addPlayingNote(note))
+            //this.props.dispatch(KeyboardActions.addPlayingNote(note))
         }
         return false;
     }

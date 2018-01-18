@@ -46,7 +46,6 @@ class PqSynth extends Instrument{
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
             this.output = this.context.createGain();
-            this.voices = new Array;
         }
     }
 

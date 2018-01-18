@@ -46,9 +46,7 @@ class Sampler extends Instrument{
         this.preset.decay = 0;
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
-
             this.output = this.context.createGain();
-            this.voices = new Array;
         }
     }
 

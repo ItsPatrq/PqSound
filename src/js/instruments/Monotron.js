@@ -84,7 +84,6 @@ class Monotron extends Instrument {
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
             this.output = this.context.createGain();
-            this.voices = new Array;
         }
         this.preset = {
             vco: {
@@ -93,7 +92,7 @@ class Monotron extends Instrument {
             },
             lfo: {
                 rate: 5.2,
-                int: 432,
+                int: 297,
                 knobRate: 46,
                 knobInt: 97
             },

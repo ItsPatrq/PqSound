@@ -3,6 +3,8 @@ import { MenuItem, DropdownButton } from 'react-bootstrap';
 import SamplerPresets from 'constants/SamplerPresets';
 import { Utils as SamplerPresetsUtils } from 'constants/SamplerPresets';
 
+require('styles/Instruments/Sampler.css');
+
 const Sampler = (props) => {
     let allPresets = new Array;
     for (let i = 0; i < SamplerPresets.length; i++) {
@@ -38,11 +40,14 @@ const Sampler = (props) => {
     }
     return (
         <div className="samplerContainer">
-            <p>Preset: </p>
             <div className="samplerPresetInstrument">
-                <DropdownButton id="preset-main-drop-down" bsStyle="default" className="drop-down" title={props.instrument.preset.name} >
-                    {allPresets}
-                </DropdownButton>
+            <div className="brandName">
+                SAMPLER
+            </div>
+            <div className="presetName">
+            <p>Selected preset: {props.instrument.preset.name}</p>
+            </div>
+                {allPresets}
             </div>
             <div className="samplerSliderContainer">
             <label>Attack: {props.instrument.preset.attack}</label>

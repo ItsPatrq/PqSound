@@ -4,6 +4,7 @@ import Equalizer from './Equalizer';
 import Distortion from './Distortion';
 import Delay from './Delay';
 import Reverb from './Reverb';
+import Chorus from './Chorus';
 import { PluginsEnum } from 'constants/Constants'
 let Utils = {};
 
@@ -24,6 +25,9 @@ Utils.getNewPluginByIndex = (id, index) => {
         case PluginsEnum.Reverb.id:{
             return new Reverb(index);
         }
+        case PluginsEnum.Chorus.id:{
+            return new Chorus(index);
+        }
     }
 }
 
@@ -33,5 +37,6 @@ module.exports = {
     Distortion,
     Delay,
     Reverb,
+    Chorus,
     Utils
 }

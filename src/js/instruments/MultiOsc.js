@@ -3,7 +3,7 @@ import { Instruments } from 'constants/Constants';
 import { isNullOrUndefined, noteToFrequency } from 'engine/Utils';
 import Instrument from './Instrument';
 
-class MultiSawVoice {
+class MultiOscVoice {
     constructor(freqyency, startTime, preset) {
         if (!isNullOrUndefined(Store)) {
             this.preset = preset;
@@ -14,7 +14,7 @@ class MultiSawVoice {
 
             for(let i = 0; i < preset.sawNumber; i++){
                 let saw = this.context.createOscillator();
-                saw.type = 'sawtooth';
+                saw.type = preset.oscilatorType;
                 saw.frequency.setValueAtTime(freqyency, this.context.currentTime);
                 saw.detune.setValueAtTime((-preset.detune + i * 2 * preset.detune / (preset.sawNumber - 1) | 0), this.context.currentTime);
                 saw.start(startTime);
@@ -46,26 +46,26 @@ class MultiSawVoice {
     }
 }
 
-class MultiSaw extends Instrument{
+class MultiOsc extends Instrument{
     constructor(preset = null) {
-        super(Instruments.MultiSaw)
+        super(Instruments.MultiOsc)
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
             this.output = this.context.createGain();
-            this.voices = new Array;
         }
         this.preset = preset ? preset : {
             sawNumber: 3,
             detune: 12,
             attack: 0,
-            decay: 0.5
+            decay: 0.5,
+            oscilatorType: 'sawtooth'
         }
     }
 
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let currVoice = new MultiSawVoice(noteToFrequency(note), startTime, this.preset);
+            let currVoice = new MultiOscVoice(noteToFrequency(note), startTime, this.preset);
             currVoice.connect(this.output);
             currVoice.start(startTime, this.preset.attack);
             this.voices[note] = currVoice;
@@ -89,4 +89,4 @@ class MultiSaw extends Instrument{
     }
 }
 
-export default MultiSaw;
+export default MultiOsc;

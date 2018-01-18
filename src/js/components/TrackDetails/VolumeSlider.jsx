@@ -39,12 +39,12 @@ class VolumeSlider extends React.Component {
             <div className="volumeSectionDiv">
                 <Col xs={6} className="nopadding">
                     <div className="volumeValue">
-                        {this.props.volume}
+                        {Math.floor(this.props.volume * 100)}%
                     </div>
                     <input
                         className="volumeSlider"
                         type="range" orient="vertical"
-                        min={0} max={100} value={this.props.volume * 100}
+                        min={0} max={200} value={this.props.volume * 100}
                         onChange={(event) => this.props.onVolumeChange(this.props.trackIndex, event.target.value)}
                     />
                 </Col>

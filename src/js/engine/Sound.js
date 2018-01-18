@@ -1,5 +1,6 @@
 import Store from '../stroe';
 import * as Utils from 'engine/Utils';
+import { SoundOrigin } from 'constants/Constants';
 
 export default class Sound {
   constructor(newContext) {
@@ -26,9 +27,11 @@ export default class Sound {
 
   play(trackIndex, contextPlayTime, note, origin, endIndex) {
     if (Utils.isNullOrUndefined(contextPlayTime)) {
-      contextPlayTime = this.context.currentTime + 0.01;
+      contextPlayTime = this.context.currentTime + 0.001;
     }
-    this.playingSounds[origin].push({ trackIndex: trackIndex, note: note, origin: origin, endIndex: endIndex });
+    if(origin === SoundOrigin.composition){
+      this.playingSounds[origin].push({ trackIndex: trackIndex, note: note, origin: origin, endIndex: endIndex });
+    }
 
     let currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
     currTrack.instrument.noteOn(note, contextPlayTime);

@@ -5,6 +5,7 @@ import CompressorComponent from 'components/Plugins/Compressor';
 import DistortionComponent from 'components/Plugins/Distortion';
 import DelayComponent from 'components/Plugins/Delay';
 import ReverbComponent from 'components/Plugins/Reverb';
+import ChorusComponent from 'components/Plugins/Chorus';
 import { isNullOrUndefined } from 'engine/Utils';
 import { PluginsEnum } from 'constants/Constants';
 
@@ -43,6 +44,13 @@ const InstrumentModal = (props) => {
             }
             case PluginsEnum.Reverb.id: {
                 modalBody = <ReverbComponent
+                    plugin={props.plugin}
+                    onPresetChange={props.onPresetChange}
+                />
+                break;
+            }
+            case PluginsEnum.Chorus.id: {
+                modalBody = <ChorusComponent
                     plugin={props.plugin}
                     onPresetChange={props.onPresetChange}
                 />
