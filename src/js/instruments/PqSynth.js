@@ -21,6 +21,10 @@ class PqSynthVoice {
         }
     }
 
+    oscilatorConstructor(preset){
+
+    }
+
     start(time) {
         time = time || this.context.currentTime;
         this.output.gain.exponentialRampToValueAtTime(1.0, time + 0.01);
@@ -46,6 +50,37 @@ class PqSynth extends Instrument{
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
             this.output = this.context.createGain();
+        }
+        this.preset = {
+            oscilators: [
+                {
+                    active: true,
+                    waveForm: 'sine',
+                    frequencyModPercent: 0,
+                    frequencyModOct: 0,
+                    frequencyModLfo: false,
+                    frequencyModLfoHz: 0.10,
+                    frequencyModLfoWidth: 0.01
+                },
+                {
+                    active: false,
+                    waveForm: 'triangle',
+                    frequencyModPercent: 0,
+                    frequencyModOct: 0,
+                    frequencyModLfo: false,
+                    frequencyModLfoHz: 0.10,
+                    frequencyModLfoWidth: 0.01
+                },
+                {
+                    active: false,
+                    waveForm: 'saw',
+                    frequencyModPercent: 0,
+                    frequencyModOct: 0,
+                    frequencyModLfo: false,
+                    frequencyModLfoHz: 0.10,
+                    frequencyModLfoWidth: 0.01
+                }
+            ]
         }
     }
 

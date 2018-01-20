@@ -1,3 +1,104 @@
 .pqSynthContainer {
     border: #212121 solid thick;
 }
+
+.pqSynthOscilatorsContainer {
+    display: inline-flex;
+    width: 100%;
+}
+
+.pqSynthOscilator {
+    margin: 6px;
+    padding: 2px;
+    border: #4d4d4d solid thin;
+    width: 33.3333%;
+    box-shadow: 0.2em 0.2em 0.8em #999;
+    overflow: hidden;
+}
+
+.pqSynthOscilatorTag {
+    width: 100%;
+    background: #7a9ca5;
+    border-left: #698fe0 solid 8px;
+    color: #fff;
+    font-weight: 100;
+    font-size: 18px;
+    margin: 1px;
+    margin-bottom: 3px;
+    padding: 4px;
+}
+.waveformSelector {
+    width: 120px;
+    border-radius: 5px;
+    background: rgba(73, 73, 73, 0.397);
+    color: rgb(239, 248, 255);
+    margin-right: 2px;
+    margin-left: 2px;
+    padding: 0;
+    font-size: 12px;
+}
+
+.waveformSelector:hover {
+    color: rgb(239, 248, 255);
+    background: rgb(73, 73, 73);
+}
+.waveformSelector:focus {
+    color: rgb(239, 248, 255);
+    background: rgb(73, 73, 73);
+}
+
+.waveformSection{
+    width: 100%;
+    display: inline-flex;
+    margin-bottom: 10px;
+}
+
+.waveformSelectorLabel {
+    padding-right: 10px;
+}
+
+.frequencyModSection {
+    margin: 1px;
+}
+
+.sectionLabel {
+    width: 100%;
+    background: #cccccc;
+    font-weight: 100;
+    font-size: 15px;
+    margin: 1px;
+    margin-bottom: 3px;
+    padding: 4px;
+}
+
+.frequencyModOctSelectorLabel {
+    padding-right: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.frequencyModOctPercent {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.frequencyModOctSelector {
+    width: 100%;
+    margin-bottom: 10px;
+    display: inline-flex;
+}
+
+.pqSynthSwitch {
+    display: inline-flex;
+    width: 100%;
+}
+
+.pqSynthSwitch label {
+    margin-right: 50px;
+    margin-bottom: 10px;
+}
+
+.frequencyModLfoSlider{
+    width: 100%;
+    margin-bottom: 10px;
+}
