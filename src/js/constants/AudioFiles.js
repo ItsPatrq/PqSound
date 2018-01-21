@@ -122,4 +122,120 @@ module.exports.SlingerlandKit = [
         name: 'Slingerland-Kit-SabianHHX-HiHat-OpenClose-B',
         url: slingerlandKitURL + 'Slingerland-Kit-SabianHHX-HiHat-OpenClose-B.wav'
     }
-]
+];
+
+let rockKitURL = baseURL + 'RockKit/';
+module.exports.RockKit = [
+    {
+        name: 'Rock-Kit-Crash-1-1',
+        url: rockKitURL + 'Rock-Kit-Crash-1-1.wav'
+    },
+    {
+        name: 'Rock-Kit-Crash-1-2',
+        url: rockKitURL + 'Rock-Kit-Crash-1-2.wav'
+    },
+    {
+        name: 'Rock-Kit-Crash-2-1',
+        url: rockKitURL + 'Rock-Kit-Crash-2-1.wav'
+    },
+    {
+        name: 'Rock-Kit-Crash-2-2',
+        url: rockKitURL + 'Rock-Kit-Crash-2-2.wav'
+    },
+    {
+        name: 'Rock-Kit-Floor-1',
+        url: rockKitURL + 'Rock-Kit-Floor-1.wav'
+    },
+    {
+        name: 'Rock-Kit-Floor-2',
+        url: rockKitURL + 'Rock-Kit-Floor-2.wav'
+    },
+    {
+        name: 'Rock-Kit-HiHat-Open',
+        url: rockKitURL + 'Rock-Kit-HiHat-Open.wav'
+    },
+    {
+        name: 'Rock-Kit-HiHat-OpenClose',
+        url: rockKitURL + 'Rock-Kit-HiHat-OpenClose.wav'
+    },
+    {
+        name: 'Rock-Kit-HiHat-Pedal',
+        url: rockKitURL + 'Rock-Kit-HiHat-Pedal.wav'
+    },
+    {
+        name: 'Rock-Kit-HiHat-Shank-1',
+        url: rockKitURL + 'Rock-Kit-HiHat-Shank-1.wav'
+    },
+    {
+        name: 'Rock-Kit-HiHat-Shank-2',
+        url: rockKitURL + 'Rock-Kit-HiHat-Shank-2.wav'
+    },
+    {
+        name: 'Rock-Kit-HiHat-Tip-1',
+        url: rockKitURL + 'Rock-Kit-HiHat-Tip-1.wav'
+    },
+    {
+        name: 'Rock-Kit-HiHat-Tip-2',
+        url: rockKitURL + 'Rock-Kit-HiHat-Tip-2.wav'
+    },
+    {
+        name: 'Rock-Kit-Kick-ff-1',
+        url: rockKitURL + 'Rock-Kit-Kick-ff-1.wav'
+    },
+    {
+        name: 'Rock-Kit-Kick-ff-2',
+        url: rockKitURL + 'Rock-Kit-Kick-ff-2.wav'
+    },
+    {
+        name: 'Rock-Kit-Kick-pp-1',
+        url: rockKitURL + 'Rock-Kit-Kick-pp-1.wav'
+    },
+    {
+        name: 'Rock-Kit-Kick-pp-2',
+        url: rockKitURL + 'Rock-Kit-Kick-pp-2.wav'
+    },
+    {
+        name: 'Rock-Rack-1',
+        url: rockKitURL + 'Rock-Rack-1.wav'
+    },
+    {
+        name: 'Rock-Rack-2',
+        url: rockKitURL + 'Rock-Rack-2.wav'
+    },
+    {
+        name: 'Rock-Ride-Bell',
+        url: rockKitURL + 'Rock-Ride-Bell.wav'
+    },
+    {
+        name: 'Rock-Ride-Shank',
+        url: rockKitURL + 'Rock-Ride-Shank.wav'
+    },
+    {
+        name: 'Rock-Ride-Tip',
+        url: rockKitURL + 'Rock-Ride-Tip.wav'
+    },
+    {
+        name: 'Rock-Snare-ff-1',
+        url: rockKitURL + 'Rock-Snare-ff-1.wav'
+    },
+    {
+        name: 'Rock-Snare-ff-2',
+        url: rockKitURL + 'Rock-Snare-ff-2.wav'
+    },
+    {
+        name: 'Rock-Snare-ff-3',
+        url: rockKitURL + 'Rock-Snare-ff-3.wav'
+    },
+    {
+        name: 'Rock-Snare-pp-1',
+        url: rockKitURL + 'Rock-Snare-pp-1.wav'
+    },
+    {
+        name: 'Rock-Snare-pp-2',
+        url: rockKitURL + 'Rock-Snare-pp-2.wav'
+    },
+    {
+        name: 'Rock-Snare-pp-3',
+        url: rockKitURL + 'Rock-Snare-pp-3.wav'
+    }
+];

@@ -193,7 +193,6 @@ class TopNavBar extends React.Component {
                 <Navbar.Collapse>
                     <Nav>
                         <NavItem eventKey={1} onClick={() => this.homeClicked()}>Home</NavItem>
-                        <NavItem eventKey={2} href='#'>About</NavItem>
                         <NavDropdown eventKey={3} title='Show' id='basic-nav-dropdown'>
                             <MenuItem eventKey={3.1} onClick={() => this.handleSwitchKeyboardVisibility()}>{showHideKeyboard}</MenuItem>
                             {showHideKeyNamesMenuItem}

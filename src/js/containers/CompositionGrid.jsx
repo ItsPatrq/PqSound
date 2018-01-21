@@ -12,7 +12,6 @@ import { getRegionIdByBitIndex, getRegionByRegionId, notesToDrawParser } from 'e
 import { tools, SoundOrigin } from 'constants/Constants'
 import { pencilIcon, eraserIcon, copyIcon} from 'constants/Icons';
 import { getTrackByIndex, isNullOrUndefined } from 'engine/Utils';
-import * as KeyboardActions from 'actions/keyboardActions';
 
 class CompositionGrid extends React.Component {
     constructor() {

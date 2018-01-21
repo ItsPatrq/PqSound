@@ -10,6 +10,11 @@ const Presets = {
         name: 'Slingerland Kit',
         id: 1,
         content: AudioFiles.SlingerlandKit
+    },
+    RockKit: {
+        name: 'Rock Kit',
+        id: 2,
+        content: AudioFiles.RockKit
     }
 };
 
@@ -24,7 +29,8 @@ const presetList = [
     {
         name: 'Drums & Percussion',
         presets: [
-            Presets.SlingerlandKit
+            Presets.SlingerlandKit,
+            Presets.RockKit
         ]
     }
 ]

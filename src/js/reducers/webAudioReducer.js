@@ -64,7 +64,7 @@ export default function reducer(state = {
             newBufferLoader.load();
             return {
                 ...state,
-                samplerInstrumentsSounds: newSamplerInstrumentsSounds,                
+                samplerInstrumentsSounds: newSamplerInstrumentsSounds,
                 bufferLoader: newBufferLoader
             }
         }

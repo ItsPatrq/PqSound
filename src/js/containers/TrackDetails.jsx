@@ -67,7 +67,7 @@ class TrackDetails extends React.Component {
     handleInstrumentChange(instrumentId) {
         if (instrumentId !== this.getTrackInstrument(this.props.selected).id) {
             this.props.dispatch(changeTrackInstrument(instrumentId, this.props.selected));
-            this.props.dispatch(Actions.instrumentModalVisibilitySwitch());            
+            this.props.dispatch(Actions.instrumentModalVisibilitySwitch());
         }
     }
 
@@ -144,7 +144,7 @@ class TrackDetails extends React.Component {
     handleAddPlugin(trackIndex, pluginId) {
         this.props.dispatch(addNewPlugin(trackIndex, pluginId));
         let currTrack = Utils.getTrackByIndex(this.props.trackList, trackIndex)
-        this.props.dispatch(Actions.pluginModalVisibilitySwitch(currTrack.pluginList.length - 1, trackIndex));        
+        this.props.dispatch(Actions.pluginModalVisibilitySwitch(currTrack.pluginList.length - 1, trackIndex));
     }
 
     handleRemovePlugin(trackIndex, pluginIndex) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
-import {oscilatorTypes} from 'constants/Constants';
+import {oscillatorTypes} from 'constants/Constants';
 
 require('styles/Instruments/MultiOsc.css');
 
@@ -15,15 +15,15 @@ const MultiOsc = (props) => {
             oscilatorType: newOscilatorType ? newOscilatorType : props.instrument.preset.oscilatorType
         })
     }
-    let oscilatorTypesDropdownItems = new Array;
-    for(let i = 0; i < oscilatorTypes.length; i++){
-        oscilatorTypesDropdownItems.push(
+    let oscillatorTypesDropdownItems = new Array;
+    for(let i = 0; i < oscillatorTypes.length; i++){
+        oscillatorTypesDropdownItems.push(
             <MenuItem
-                    key={oscilatorTypes[i]}
-                    eventKey={oscilatorTypes[i]}
-                    onClick={() => handleChange(null, null, null, null, oscilatorTypes[i])}                    
+                    key={oscillatorTypes[i]}
+                    eventKey={oscillatorTypes[i]}
+                    onClick={() => handleChange(null, null, null, null, oscillatorTypes[i])}
             >
-                    {oscilatorTypes[i]}
+                    {oscillatorTypes[i]}
                 </MenuItem>
         )
     }
@@ -35,7 +35,7 @@ const MultiOsc = (props) => {
             <div className="multiOscTypeSelector">
             <p>Oscilator type: </p>
             <DropdownButton id={'oscilator-types-drop-down'} bsStyle="default" className="drop-down" title={props.instrument.preset.oscilatorType} >
-                {oscilatorTypesDropdownItems}
+                {oscillatorTypesDropdownItems}
             </DropdownButton>
             </div>
             <div className="multiOscSliderContainer">

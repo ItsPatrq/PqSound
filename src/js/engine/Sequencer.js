@@ -42,7 +42,7 @@ class Sequencer {
             
             let trackList = Store.getState().tracks.trackList;
             let soundHandler = Store.getState().webAudio.sound;
-            soundHandler.scheduleStop(this.sixteenthPlaying, contextPlayTime, SoundOrigin.composition);            
+            soundHandler.scheduleStop(this.sixteenthPlaying, contextPlayTime, SoundOrigin.composition);
             //iterate through all tracks
             for (let i = 0; i < trackList.length; i++) {
                 let currTrackIndex = trackList[i].index;

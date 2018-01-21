@@ -13,7 +13,7 @@ for (let i = 0; i < 7; i++) {
 keyNotes.push(0);
 module.exports.keyNotes = keyNotes;
 
-module.exports.oscilatorTypes = ['sine', 'square', 'sawtooth', 'triangle'];
+module.exports.oscillatorTypes = ['sine', 'square', 'sawtooth', 'triangle'];
 
 /**
  * array of all 88 frequencies for each note starting from a0
