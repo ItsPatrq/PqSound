@@ -21,26 +21,74 @@ class PqSynthVoice {
         this.oscillators = [{}, {}, {}];
         for (let i = 0; i < preset.oscillators.length; i++) {
             if (preset.oscillators[i].active) {
-                if (preset.oscillators[i].waveForm === 'noise') {
+                if (preset.oscillators[i].waveForm === 'whiteNoise') {
+                    let bufferSize = 2 * this.context.sampleRate,
+                        noiseBuffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate),
+                        output = noiseBuffer.getChannelData(0);
+                    for (let j = 0; j < bufferSize; j++) {
+                        output[j] = Math.random() * 2 - 1;
+                    }
 
+                    this.oscillators[i].source = this.context.createBufferSource();
+                    this.oscillators[i].source.buffer = noiseBuffer;
+                    this.oscillators[i].source.loop = true;
+                    this.oscillators[i].source.start(0);
+                } else if(preset.oscillators[i].waveForm === 'pinkNoise'){
+                    let bufferSize = 2 * this.context.sampleRate,
+                        noiseBuffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate),
+                        output = noiseBuffer.getChannelData(0),
+                        b0, b1, b2, b3, b4, b5, b6;
+                    b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+                    for (let j = 0; j < bufferSize; j++) {
+                        let white = Math.random() * 2 - 1;
+                            b0 = 0.99886 * b0 + white * 0.0555179;
+                            b1 = 0.99332 * b1 + white * 0.0750759;
+                            b2 = 0.96900 * b2 + white * 0.1538520;
+                            b3 = 0.86650 * b3 + white * 0.3104856;
+                            b4 = 0.55000 * b4 + white * 0.5329522;
+                            b5 = -0.7616 * b5 - white * 0.0168980;
+                            output[j] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                            output[j] *= 0.11; // (roughly) compensate for gain
+                            b6 = white * 0.115926;
+                    }
+                    this.oscillators[i].source = this.context.createBufferSource();
+                    this.oscillators[i].source.buffer = noiseBuffer;
+                    this.oscillators[i].source.loop = true;
+                    this.oscillators[i].source.start(0);
+                } else if(preset.oscillators[i].waveForm === 'brownianNoise'){
+                    let bufferSize = 2 * this.context.sampleRate,
+                    noiseBuffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate),
+                    output = noiseBuffer.getChannelData(0),
+                    lastOut = 0.0;
+                    for (let j = 0; j < bufferSize; j++) {
+                        var white = Math.random() * 2 - 1;
+                        output[j] = (lastOut + (0.02 * white)) / 1.02;
+                        lastOut = output[j];
+                        output[i] *= 3.5; // (roughly) compensate for gain
+                    }
+                    this.oscillators[i].source = this.context.createBufferSource();
+                    this.oscillators[i].source.buffer = noiseBuffer;
+                    this.oscillators[i].source.loop = true;
+                    this.oscillators[i].source.start(0);
                 } else {
                     this.oscillators[i].source = this.context.createOscillator();
                     this.oscillators[i].source.type = preset.oscillators[i].waveForm;
                     let frequency = noteToFrequency(note + preset.oscillators[i].frequencyModOct * 12 + preset.oscillators[i].frequencyModPercent / 12)
                     this.oscillators[i].source.frequency.setValueAtTime(frequency, this.context.currentTime);
                     this.oscillators[i].source.start();
+
+                    if (preset.oscillators[i].frequencyModLfo) {
+                        this.oscillators[i].fqLfoModifier = this.context.createOscillator();
+                        this.oscillators[i].fqLfoModifier.type = 'sine';
+                        this.oscillators[i].fqLfoModifier.frequency.setValueAtTime(preset.oscillators[i].frequencyModLfoHz, this.context.currentTime);
+                        this.oscillators[i].widthFqLfoModifier = this.context.createGain();
+                        this.oscillators[i].widthFqLfoModifier.gain.setValueAtTime(preset.oscillators[i].frequencyModLfoWidth, this.context.currentTime);
+                        this.oscillators[i].fqLfoModifier.connect(this.oscillators[i].widthFqLfoModifier);
+                        this.oscillators[i].fqLfoModifier.start();
+                        this.oscillators[i].widthFqLfoModifier.connect(this.oscillators[i].source.frequency);
+                    }
                 }
 
-                if (preset.oscillators[i].frequencyModLfo) {
-                    this.oscillators[i].fqLfoModifier = this.context.createOscillator();
-                    this.oscillators[i].fqLfoModifier.type = 'sine';
-                    this.oscillators[i].fqLfoModifier.frequency.setValueAtTime(preset.oscillators[i].frequencyModLfoHz, this.context.currentTime);
-                    this.oscillators[i].widthFqLfoModifier = this.context.createGain();
-                    this.oscillators[i].widthFqLfoModifier.gain.setValueAtTime(preset.oscillators[i].frequencyModLfoWidth, this.context.currentTime);
-                    this.oscillators[i].fqLfoModifier.connect(this.oscillators[i].widthFqLfoModifier);
-                    this.oscillators[i].fqLfoModifier.start();
-                    this.oscillators[i].widthFqLfoModifier.connect(this.oscillators[i].source.frequency);
-                }
                 this.oscillators[i].baseAplitude = this.context.createGain();
                 this.oscillators[i].source.connect(this.oscillators[i].baseAplitude);
                 this.oscillators[i].baseAplitude.gain.setValueAtTime(preset.oscillators[i].amplitudeModPercent / 100, this.context.currentTime);
@@ -71,14 +119,17 @@ class PqSynthVoice {
         setTimeout(() => {
             for (let i = 0; i < this.preset.oscillators.length; i++) {
                 if (this.preset.oscillators[i].active) {
-                    if (this.preset.oscillators[i].waveForm === 'noise') {
+                    if (this.preset.oscillators[i].waveForm === 'whiteNoise' ||
+                        this.preset.oscillators[i].waveForm === 'pinkNoise' ||
+                        this.preset.oscillators[i].waveForm === 'brownianNoise'
+                    ) {
 
                     } else {
                         this.oscillators[i].source.disconnect();
-                    }
-                    if (this.preset.oscillators[i].frequencyModLfo) {
-                        this.oscillators[i].fqLfoModifier.disconnect();
-                        this.oscillators[i].widthFqLfoModifier.disconnect();
+                        if (this.preset.oscillators[i].frequencyModLfo) {
+                            this.oscillators[i].fqLfoModifier.disconnect();
+                            this.oscillators[i].widthFqLfoModifier.disconnect();
+                        }
                     }
                     if (this.preset.oscillators[i].amplitudeModLfo) {
                         this.oscillators[i].amplitudeLfoModifier.disconnect();

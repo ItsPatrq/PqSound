@@ -11,7 +11,6 @@ const PqSynth = (props) => {
         if(oscillator){
             newPreset.oscillators[oscilatorNumber][param] = value;
         }
-        console.log(newPreset,param, oscillator, oscilatorNumber, value)
         props.onPresetChange(newPreset);
     }
     let oscillators = new Array;
@@ -31,11 +30,29 @@ const PqSynth = (props) => {
         }
         shapeTypes.push(
             <MenuItem
-                key={'oscilator' + i + 'shapenoise'}
-                eventKey={'oscilator' + i + 'shapenoise'}
-                onClick={() => handleChange('waveForm', true, i, 'noise')}
+                key={'oscilator' + i + 'shapeWhiteNoise'}
+                eventKey={'oscilator' + i + 'shapeWhiteNoise'}
+                onClick={() => handleChange('waveForm', true, i, 'whiteNoise')}
             >
-                {'noise'}
+                {'white noise'}
+            </MenuItem>
+        )
+        shapeTypes.push(
+            <MenuItem
+                key={'oscilator' + i + 'shapePinkNoise'}
+                eventKey={'oscilator' + i + 'shapePinkNoise'}
+                onClick={() => handleChange('waveForm', true, i, 'pinkNoise')}
+            >
+                {'pink noise'}
+            </MenuItem>
+        )
+        shapeTypes.push(
+            <MenuItem
+                key={'oscilator' + i + 'brownianPinkNoise'}
+                eventKey={'oscilator' + i + 'brownianPinkNoise'}
+                onClick={() => handleChange('waveForm', true, i, 'brownianNoise')}
+            >
+                {'brownian noise'}
             </MenuItem>
         )
         for (let j = 0; j < 7; j++) {
