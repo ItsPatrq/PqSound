@@ -19,13 +19,16 @@ class Sequencer {
         this.timerWorker.postMessage('start');
     }
     handleStop(/*event*/) {
-        this.timerWorker.postMessage('stop');
-        this.sixteenthPlaying = 0;
-        Store.getState().webAudio.sound.stopAll(SoundOrigin.composition);
-        Store.dispatch(updateCurrentTime(this.sixteenthPlaying));
+        this.timerWorker.postMessage('stop');        
+        setTimeout(() => {
+            Store.getState().webAudio.sound.stopAll(SoundOrigin.composition);
+            this.sixteenthPlaying = 0;
+            Store.dispatch(updateCurrentTime(this.sixteenthPlaying));
+        },80);
+            
     }
     handlePause(/*event*/) {
-        this.timerWorker.postMessage('stop');
+        this.timerWorker.postMessage('stop');        
         Store.getState().webAudio.sound.stopAll(SoundOrigin.composition);
     }
     schedule() {
@@ -34,7 +37,7 @@ class Sequencer {
         currentTime -= this.startTime;
 
         /**
-         * Schedule notes to play for x secounds in advance (in this case, x = 0.26)
+         * Schedule notes to play for x secounds in advance (in this case, x = 0.200)
          */
         while (this.noteTime < currentTime + 0.200) {
             // Convert noteTime to context time.

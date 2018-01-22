@@ -227,6 +227,11 @@ export default function reducer(state = {
                     }
                 }
             }
+            for(let i = 0; i < newTrackList.length; i++){
+                if(newTrackList[i].record && newTrackList[i].trackType === TrackTypes.aux){
+                    newTrackList[i].record = false;
+                }
+            }
             return {
                 ...state,
                 trackList: newTrackList,
