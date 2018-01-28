@@ -108,6 +108,9 @@ class TrackList extends React.Component {
         this.props.dispatch(trackListActions.trackIndexDown(index));
     }
 
+    /**
+     * For not playing on virtual keyboard while inputing text
+     */
     handleInputFocusSwitch(){
         this.props.dispatch(textInputFocusedSwitch());
     }

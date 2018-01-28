@@ -11,7 +11,7 @@ const
     compiler = webpack(config),
     //open = require('open'),
     isDeveloping = process.env.NODE_ENV !== 'dist',
-    routes = require('./api/routes/Pq.Routes'),
+    routes = require('./api/routes/SamplerRoutes'),
 
     port = isDeveloping ? 3000 : process.env.PORT,
     app = express();

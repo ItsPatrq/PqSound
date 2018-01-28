@@ -1,8 +1,7 @@
 'use strict';
 module.exports = function (app) {
-    var controler = require('../controllers/Pq.Controller');
+    var controler = require('../controllers/SamplerController');
 
-    // todoList Routes
     app.route('/api/samplerinstrument/*')
         .get(controler.getInstrument);
 };
