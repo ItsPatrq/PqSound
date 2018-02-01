@@ -8,18 +8,18 @@ class MultiOscVoice {
         if (!isNullOrUndefined(Store)) {
             this.preset = preset;
             this.context = Store.getState().webAudio.context;
-            this.maxGain = 1 / preset.sawNumber;
-            this.saws = new Array;
+            this.maxGain = 1 / preset.waveNumber;
+            this.waves = new Array;
             this.output = this.context.createGain();
 
-            for(let i = 0; i < preset.sawNumber; i++){
-                let saw = this.context.createOscillator();
-                saw.type = preset.oscilatorType;
-                saw.frequency.setValueAtTime(freqyency, this.context.currentTime);
-                saw.detune.setValueAtTime((-preset.detune + i * 2 * preset.detune / (preset.sawNumber - 1) | 0), this.context.currentTime);
-                saw.start(startTime);
-                saw.connect(this.output);
-                this.saws.push(saw);
+            for(let i = 0; i < preset.waveNumber; i++){
+                let wave = this.context.createOscillator();
+                wave.type = preset.oscilatorType;
+                wave.frequency.setValueAtTime(freqyency, this.context.currentTime);
+                wave.detune.setValueAtTime((-preset.detune + i * 2 * preset.detune / (preset.waveNumber - 1) | 0), this.context.currentTime);
+                wave.start(startTime);
+                wave.connect(this.output);
+                this.waves.push(wave);
             }
         }
     }
@@ -30,15 +30,15 @@ class MultiOscVoice {
         this.output.gain.linearRampToValueAtTime(this.maxGain, time + attack);
     }
 
-    stop(time, decay) {
+    stop(time, release) {
         time = time || this.context.currentTime;
         this.output.gain.setValueAtTime(this.maxGain, time);
-        this.output.gain.linearRampToValueAtTime(0.0001, time + decay);
+        this.output.gain.linearRampToValueAtTime(0.0001, time + release);
         setTimeout(() => {
-            for(let i = 0; i < this.saws.length; i++){
-                this.saws[i].disconnect();
+            for(let i = 0; i < this.waves.length; i++){
+                this.waves[i].disconnect();
             }
-        }, Math.floor((time + decay - this.context.currentTime) * 1000));
+        }, Math.floor((time + release - this.context.currentTime) * 1000));
     }
 
     connect(target) {
@@ -54,10 +54,10 @@ class MultiOsc extends Instrument{
             this.output = this.context.createGain();
         }
         this.preset = preset ? preset : {
-            sawNumber: 3,
+            waveNumber: 3,
             detune: 12,
             attack: 0,
-            decay: 0.5,
+            release: 0.5,
             oscilatorType: 'sawtooth'
         }
     }
@@ -75,7 +75,7 @@ class MultiOsc extends Instrument{
     noteOff(note, endTime) {
         if (!isNullOrUndefined(this.voices[note])) {
             endTime = endTime || this.context.currentTime;
-            this.voices[note].stop(endTime, this.preset.decay);
+            this.voices[note].stop(endTime, this.preset.release);
             delete this.voices[note];
         }
     }

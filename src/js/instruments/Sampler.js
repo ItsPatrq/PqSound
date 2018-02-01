@@ -19,18 +19,18 @@ class SamplerVoice {
 
     start(time, attack) {
         time = time || this.context.currentTime;
-        this.source.start(time)
+        this.source.start(time);
         this.output.gain.setValueAtTime(0.00001, time);
         this.output.gain.linearRampToValueAtTime(1.0, time + attack);
     }
 
-    stop(time, decay) {
+    stop(time, release) {
         time = time || this.context.currentTime;
         this.output.gain.setValueAtTime(1, time);
-        this.output.gain.linearRampToValueAtTime(0.00001, time + decay + 0.001);
+        this.output.gain.linearRampToValueAtTime(0.00001, time + release + 0.001);
         setTimeout(() => {
             this.source.disconnect();
-        }, Math.floor((time + decay - this.context.currentTime) * 1000));
+        }, Math.floor((time + release - this.context.currentTime) * 1000));
     }
 
     connect(target) {
@@ -43,7 +43,7 @@ class Sampler extends Instrument{
         super(Instruments.Sampler);
         this.preset = preset;
         this.preset.attack = 0;
-        this.preset.decay = 0;
+        this.preset.release = 0;
         if (!isNullOrUndefined(Store)) {
             this.context = Store.getState().webAudio.context;
             this.output = this.context.createGain();
@@ -63,7 +63,7 @@ class Sampler extends Instrument{
     noteOff(note, endTime) {
         if (!isNullOrUndefined(this.voices[note])) {
             endTime = endTime || this.context.currentTime;
-            this.voices[note].stop(endTime, this.preset.decay);
+            this.voices[note].stop(endTime, this.preset.release);
             delete this.voices[note];
         }
     }

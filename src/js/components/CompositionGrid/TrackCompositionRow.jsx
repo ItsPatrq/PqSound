@@ -17,11 +17,11 @@ const TrackCompositionRow = (props) => {
                 bits.push(<div className="trackCompositionBit nopadding region noRightBorder" key={i} onClick={(e) => props.onRegionClick(e, props.trackIndex, i)}></div>);
             } else if (bitsToDraw[i] === 3) {
                 bits.push(<div className="trackCompositionBit nopadding region" key={i} onClick={(e) => props.onRegionClick(e, props.trackIndex, i)}></div>);
-            } else if(bitsToDraw[i] === 4 || bitsToDraw[i] === 5) {
+            } else if (bitsToDraw[i] === 4 || bitsToDraw[i] === 5) {
                 bits.push(<div className="trackCompositionBit nopadding region copied noRightBorder" key={i} onClick={(e) => props.onRegionClick(e, props.trackIndex, i)}></div>);
-            } else if(bitsToDraw[i] === 6) {
+            } else if (bitsToDraw[i] === 6) {
                 bits.push(<div className="trackCompositionBit nopadding region copied" key={i} onClick={(e) => props.onRegionClick(e, props.trackIndex, i)}></div>);
-            }else {
+            } else {
                 bits.push(<div className="trackCompositionBit nopadding" key={i} onClick={(e) => props.onEmptyBarClick(e, props.trackIndex, i, bitsToDraw)}></div>);
             }
         }

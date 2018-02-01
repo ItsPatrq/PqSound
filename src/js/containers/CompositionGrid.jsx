@@ -135,23 +135,23 @@ class CompositionGrid extends React.Component {
 
     updateScroll(scroll) {
         if (!isNullOrUndefined(scroll.pianoRollX) && scroll.pianoRollX !== this.state.scrollPianoRollX) {
-            this.setState(() => {
-                return { scrollPianoRollX: scroll.pianoRollX };
+            this.setState((prevState) => {
+                return { ...prevState, scrollPianoRollX: scroll.pianoRollX };
             });
         }
         if (!isNullOrUndefined(scroll.pianoRollY) && scroll.pianoRollY !== this.state.scrollPianoRollY) {
-            this.setState(() => {
-                return { scrollPianoRollY: scroll.pianoRollY };
+            this.setState((prevState) => {
+                return { ...prevState, scrollPianoRollY: scroll.pianoRollY };
             });
         }
         if (!isNullOrUndefined(scroll.compositionX) && scroll.compositionX !== this.state.scrollCompositionX) {
-            this.setState(() => {
-                return { scrollCompositionX: scroll.compositionX };
+            this.setState((prevState) => {
+                return { ...prevState, scrollCompositionX: scroll.compositionX };
             });
         }
         if (!isNullOrUndefined(scroll.compositionY) && scroll.compositionY !== this.state.scrollCompositionY) {
-            this.setState(() => {
-                return { scrollCompositionY: scroll.compositionY };
+            this.setState((prevState) => {
+                return { ...prevState, scrollCompositionY: scroll.compositionY };
             });
             document.getElementsByClassName('trackListContentList')[0].style.marginTop = -this.state.scrollCompositionY + 'px';
         }

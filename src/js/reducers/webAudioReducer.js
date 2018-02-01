@@ -17,12 +17,11 @@ export default function reducer(state = {
             try {
                 newContext = new (window.AudioContext || window.webkitAudioContext)();
                 newSound = new Sound(newContext);
+                newBufferLoader = new BufferLoader(newContext);
             } catch (e) {
                 //TODO: error panel
                 alert('Web Audio API is not supported in this browser');
             }
-
-            newBufferLoader = new BufferLoader(newContext);
 
             for (let i = 0; i < SamplerPresets.length; i++) {
                 for (let j = 0; j < SamplerPresets[i].presets.length; j++) {

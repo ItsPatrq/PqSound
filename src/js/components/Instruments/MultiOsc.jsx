@@ -5,13 +5,13 @@ import {oscillatorTypes} from 'constants/Constants';
 require('styles/Instruments/MultiOsc.css');
 
 const MultiOsc = (props) => {
-    let handleChange = (newSawNumber, newDetune, newAttack, newDecay, newOscilatorType) => {
+    let handleChange = (newWaveNumber, newDetune, newAttack, newRelease, newOscilatorType) => {
         props.onPresetChange({
             ...props.instrument.preset,
-            sawNumber: newSawNumber ? Number(newSawNumber) : props.instrument.preset.sawNumber,
+            waveNumber: newWaveNumber ? Number(newWaveNumber) : props.instrument.preset.waveNumber,
             detune: newDetune ? Number(newDetune) : props.instrument.preset.detune,
             attack: newAttack ? Number(newAttack) : props.instrument.preset.attack,
-            decay: newDecay ? Number(newDecay) : props.instrument.preset.decay,
+            release: newRelease ? Number(newRelease) : props.instrument.preset.release,
             oscilatorType: newOscilatorType ? newOscilatorType : props.instrument.preset.oscilatorType
         })
     }
@@ -39,9 +39,9 @@ const MultiOsc = (props) => {
             </DropdownButton>
             </div>
             <div className="multiOscSliderContainer">
-                <label>Number of oscilators: {props.instrument.preset.sawNumber}</label>
+                <label>Number of oscilators: {props.instrument.preset.waveNumber}</label>
                 <input type="range"
-                    value={props.instrument.preset.sawNumber}
+                    value={props.instrument.preset.waveNumber}
                     step="1"
                     min="1"
                     max="20"
@@ -69,9 +69,9 @@ const MultiOsc = (props) => {
                 />
             </div>
             <div className="multiOscSliderContainer">
-                <label>Decay: {props.instrument.preset.decay}</label>
+                <label>Release: {props.instrument.preset.release}</label>
                 <input type="range"
-                    value={props.instrument.preset.decay}
+                    value={props.instrument.preset.release}
                     step="0.02"
                     min="0"
                     max="4"

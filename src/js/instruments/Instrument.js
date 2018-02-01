@@ -9,11 +9,6 @@ class Instrument {
         this.voices = new Array;
     }
 
-
-    getPluginNode(){
-        return {input: this.input, output: this.output}
-    }
-
     updatePreset(newPreset){
         this.preset = {...this.preset, ...newPreset};
         this.updateNodes();

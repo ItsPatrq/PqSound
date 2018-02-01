@@ -11,6 +11,7 @@ class Sequencer {
         this.sixteenthPlaying = 0;
         this.timeoutId = null;
         this.timerWorker = null;
+        this.scheduleAhead = 0.200;
     }
     handlePlay() {
         this.noteTime = 0.0;
@@ -39,7 +40,7 @@ class Sequencer {
         /**
          * Schedule notes to play for x secounds in advance (in this case, x = 0.200)
          */
-        while (this.noteTime < currentTime + 0.200) {
+        while (this.noteTime < currentTime + this.scheduleAhead) {
             // Convert noteTime to context time.
             var contextPlayTime = this.noteTime + this.startTime;
             
