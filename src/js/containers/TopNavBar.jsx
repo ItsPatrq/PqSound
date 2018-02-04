@@ -168,7 +168,7 @@ class TopNavBar extends React.Component {
     }
 
     render() {
-        let showHideKeyboard = this.props.keyboardVisible ? 'Hide keyboard' : 'Show keyboard';
+        let showHideKeyboard = this.props.keyboardVisible ? 'Hide Keyboard' : 'Show Keyboard';
         let showHideKeyNames = this.props.keyNamesVisible ? 'Hide key names' : 'Show key names';
         let showHideBindNames = this.props.keyBindVisible ? 'Hide key bindings' : 'Show key bindings';
         let showHideKeyNamesMenuItem = this.props.keyboardVisible ?
@@ -177,7 +177,7 @@ class TopNavBar extends React.Component {
         let showHideBindNamesMenuItem = this.props.keyboardVisible ?
             <MenuItem eventKey={3.3} onClick={() => this.handleSwitchKeyBindVisibility()}>{showHideBindNames}</MenuItem> :
             null;
-        let showHidePianoroll = this.props.pianoRollVisible ? 'Hide pianoroll' : 'Show pianoroll';
+        let showHidePianoroll = this.props.pianoRollVisible ? 'Hide Piano Roll' : 'Show Piano Roll';
         let showHidePianorollMenuItem = !Utils.isNullOrUndefined(this.props.pianoRollRegion) ?
             <MenuItem eventKey={3.4} onClick={() => this.handleSwitchPianoRollVisibility()}>{showHidePianoroll}</MenuItem> :
             null;

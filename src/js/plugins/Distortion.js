@@ -26,15 +26,14 @@ class Distortion extends Plugin {
     }
 
     makeDistortionCurve(distortionAmount) {
-        var k = typeof distortionAmount === 'number' ? distortionAmount : 0,
-            n_samples = 44100,
+        //https://stackoverflow.com/questions/22312841/waveshaper-node-in-webaudio-how-to-emulate-distortion
+        let n_samples = this.context.sampleRate,
             curve = new Float32Array(n_samples),
             deg = Math.PI / 180,
-            i = 0,
             x;
-        for (; i < n_samples; ++i) {
+        for (let i = 0; i < n_samples; ++i) {
             x = i * 2 / n_samples - 1;
-            curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
+            curve[i] = (3 + distortionAmount) * x * 20 * deg / (Math.PI + distortionAmount * Math.abs(x));
         }
         return curve;
     }

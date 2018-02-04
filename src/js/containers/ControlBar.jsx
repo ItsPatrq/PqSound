@@ -130,9 +130,17 @@ class ControlBar extends React.Component {
     }
 
     handleInputFocusSwitch() {
+        this.state.tempBPM = this.props.controlState.BPM;
         this.props.dispatch(Actions.textInputFocusedSwitch());
     }
 
+    getBPM() {
+        if(this.props.controlState.textInputFocused){
+            return this.state.tempBPM
+        } else {
+            return this.props.controlState.BPM
+        }
+    }
 
     render() {
         return (
@@ -161,7 +169,7 @@ class ControlBar extends React.Component {
                     <ProjectInfoBox
                         changeBPM={this.handleBPMChange.bind(this)}
                         changeTempBPM={this.handleTempBPMChange.bind(this)}
-                        BPM={this.state.tempBPM}
+                        BPM={this.getBPM()}
                         currSixteenth={this.props.controlState.sixteenthNotePlaying}
                         onBarsInCompositionChange={this.handleBarsInCompositionChange.bind(this)}
                         onTempBarsInCompositionChange={this.handleTempBarsInComposition.bind(this)}
