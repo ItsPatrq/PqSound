@@ -31,7 +31,7 @@ class TopNavBar extends React.Component {
                         break;
                     }
                     case 18: {
-                        if(!that.props.control.altClicked){
+                        if (!that.props.control.altClicked) {
                             that.props.dispatch(switchAltKey());
                         }
                     }
@@ -129,7 +129,7 @@ class TopNavBar extends React.Component {
         this.loadComposition(Demo);
     }
 
-    loadComposition(binaryString){
+    loadComposition(binaryString) {
         let loadedState = JSON.parse(decodeURIComponent(binaryString));
         this.props.dispatch(loadTrackState(loadedState.tracks));
         this.props.dispatch(loadControlState(loadedState.control));
@@ -138,12 +138,14 @@ class TopNavBar extends React.Component {
         /**
          * loading all required samples
          */
-        for(let i = 1; i < this.props.tracks.trackList.length; i++){
-            for (let j = 0; j < this.props.samplerInstruments.length; j++) {
-                if (this.props.tracks.trackList[i].instrument.id === 0 &&
-                    this.props.samplerInstruments[j].id === this.props.tracks.trackList[i].instrument.preset.id) {
-                    if (!this.props.samplerInstruments[j].loaded && !this.props.samplerInstruments[j].fetching) {
-                        this.props.dispatch(fetchSamplerInstrument(this.props.tracks.trackList[i].instrument.preset.id));
+        for (let i = 1; i < loadedState.tracks.trackList.length; i++) {
+            if (loadedState.tracks.trackList[i].trackType === TrackTypes.virtualInstrument) {
+                for (let j = 0; j < this.props.samplerInstruments.length; j++) {
+                    if (loadedState.tracks.trackList[i].instrument.id === 0 &&
+                        this.props.samplerInstruments[j].id === loadedState.tracks.trackList[i].instrument.preset.id) {
+                        if (!this.props.samplerInstruments[j].loaded && !this.props.samplerInstruments[j].fetching) {
+                            this.props.dispatch(fetchSamplerInstrument(loadedState.tracks.trackList[i].instrument.preset.id));
+                        }
                     }
                 }
             }

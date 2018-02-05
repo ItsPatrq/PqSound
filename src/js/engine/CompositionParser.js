@@ -16,7 +16,7 @@ module.exports.regionToDrawParser = (trackIndex, bits, copiedRegion) => {
             bitsToDraw[trackRegionList[i].end] = 3; //For applying different CSS for first and last bit in region
         } else {
             bitsToDraw[trackRegionList[i].start] = 4; //For applying different CSS for first and last bit in region
-            for (let j = trackRegionList[i].start + 4; j < trackRegionList[i].end; j++) {
+            for (let j = trackRegionList[i].start + 1; j < trackRegionList[i].end; j++) {
                 bitsToDraw[j] = 5;
             }
             bitsToDraw[trackRegionList[i].end] = 6; //For applying different CSS for first and last bit in region

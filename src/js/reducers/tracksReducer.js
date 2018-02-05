@@ -89,37 +89,28 @@ export default function reducer(state = {
             let selected = state.selected;
             for (let i = 1; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
-                    if (newTrackList[i].index === selected) {
-                        selected = newTrackList[i].index === newTrackList.length - 1 ?
-                            --selected : selected;
-                    }
+                    selected = selected === newTrackList.length - 1 ? selected-1 : selected;
                     let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
-                    for(let j = 0; j < newTrackList[i].input.length; j++){
-                        Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output = newTrackList[i].output;
-                        currOutput.input.push(newTrackList[i].input[j]);
-                    }
                     for(let j = 0; j < currOutput.input.length; j++){
                         if(currOutput.input[j] === action.payload){
                             currOutput.input.splice(j, 1);
                             break;
                         }
                     }
-                    newTrackList.splice(i, 1);
-                    for (let j = i; j < newTrackList.length; j++) {
-                        for(let k = 0; k < newTrackList[j].input.length; k++){
-                            Utils.getTrackByIndex(newTrackList, newTrackList[j].input[k]).output = j;
-                        }
-                        if(selected === newTrackList[j].index){
-                            selected = j;
-                        }
-                        newTrackList[j].index = j;
+                    for(let j = 0; j < newTrackList[i].input.length; j++){
+                        Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output = newTrackList[i].output;
+                        currOutput.input.push(newTrackList[i].input[j]);
                     }
+                    newTrackList.splice(i, 1);
                     for(let j = 0; j < newTrackList.length; j++){
-                        for(let k = 0; k < newTrackList[j].input.length; k++){
-                            if(newTrackList[j].input[k] >= i){
-                                newTrackList[j].input[k]++;
+                        let currTrack = Utils.getTrackByIndex(newTrackList, newTrackList[j].index);
+                        for(let k = 0; k < currTrack.input.length; k++){
+                            if(currTrack.input[k] >= i){
+                                --currTrack.input[k]
                             }
                         }
+                        currTrack.output = currTrack.output >= i ? currTrack.output - 1 : currTrack.output;
+                        currTrack.index = currTrack.index >= i ? currTrack.index - 1 : currTrack.index;
                     }
                     break;
                 }

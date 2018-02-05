@@ -41,7 +41,16 @@ class CompositionGrid extends React.Component {
             }
             case tools.copyPaste.id: {
                 if(!isNullOrUndefined(this.props.copiedRegion)){
+                    let canPaste = true;
+                    for (let i = 0; i < getRegionByRegionId(this.props.copiedRegion, this.props.composition.regionList).regionLength; i++) {
+                        if (bitsToDraw[bitIndex + i] || bitIndex + i >= this.props.composition.BarsInComposition) {
+                            canPaste = false;
+                            break;
+                        }
+                    }
+                    if(canPaste){
                     this.props.dispatch(pasteRegion(trackIndex, bitIndex, this.props.copiedRegion))
+                    }
                 }
             }
         }
