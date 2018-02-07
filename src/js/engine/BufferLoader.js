@@ -26,7 +26,7 @@ class BufferLoader {
                     }
                     thisBuffer.bufferList[index] = buffer;
                     if (++thisBuffer.loadCount == thisBuffer.urlList.length){
-                        thisBuffer.onload(thisBuffer.bufferList);
+                        thisBuffer.onload(thisBuffer);
                     }
                 },
                 function (error) {

@@ -12,12 +12,10 @@ export default function reducer(state = {
         case 'INIT_WEB_AUDIO': {
             let newContext = null;
             let newSamplerInstrumentsSounds = new Array;
-            let newBufferLoader = null;
             let newSound = null;
             try {
                 newContext = new (window.AudioContext || window.webkitAudioContext)();
                 newSound = new Sound(newContext);
-                newBufferLoader = new BufferLoader(newContext);
             } catch (e) {
                 //TODO: error panel
                 alert('Web Audio API is not supported in this browser');
@@ -38,12 +36,11 @@ export default function reducer(state = {
                 ...state,
                 context: newContext,
                 sound: newSound,
-                bufferLoader: newBufferLoader,
                 samplerInstrumentsSounds: newSamplerInstrumentsSounds
             }
         }
         case 'NEED_TO_FETCH_SAMPLER_INSTRUMENT': {
-            let newBufferLoader = { ...state.bufferLoader };
+            let newBufferLoader = new BufferLoader(state.context);
             let newSamplerInstrumentsSounds = [...state.samplerInstrumentsSounds];
             for (let i = 0; i < SamplerPresets.length; i++) {
                 for (let j = 0; j < SamplerPresets[i].presets.length; j++) {
@@ -63,31 +60,28 @@ export default function reducer(state = {
             newBufferLoader.load();
             return {
                 ...state,
-                samplerInstrumentsSounds: newSamplerInstrumentsSounds,
-                bufferLoader: newBufferLoader
+                samplerInstrumentsSounds: newSamplerInstrumentsSounds
             }
         }
         case 'FETCHED_SAMPLER_INSTRUMENT': {
-            //let newSamplerInstrumentsSounds = JSON.parse(JSON.stringify(state.samplerInstrumentsSounds));
             let newSamplerInstrumentsSounds = [...state.samplerInstrumentsSounds];
             let instrumentIndex;
             for (let i = 0; i < newSamplerInstrumentsSounds.length; i++) {
-                if (newSamplerInstrumentsSounds[i].id === action.payload) {
+                if (newSamplerInstrumentsSounds[i].id === action.payload.id) {
                     instrumentIndex = i;
                     break;
                 }
             }
-            for (let i = 0; i < state.bufferLoader.bufferList.length; i++) {
+            for (let i = 0; i < action.payload.bufferLoader.bufferList.length; i++) {
 
-                newSamplerInstrumentsSounds[instrumentIndex].buffer.push(state.bufferLoader.bufferList[i]);
+                newSamplerInstrumentsSounds[instrumentIndex].buffer.push(action.payload.bufferLoader.bufferList[i]);
             }
             newSamplerInstrumentsSounds[instrumentIndex].loaded = true;
             newSamplerInstrumentsSounds[instrumentIndex].fetching = false;
 
             return {
                 ...state,
-                samplerInstrumentsSounds: newSamplerInstrumentsSounds,
-                bufferLoader: new BufferLoader(state.context)
+                samplerInstrumentsSounds: newSamplerInstrumentsSounds
             }
         }
     }

@@ -10,10 +10,13 @@ export function fetchSamplerInstrument(newInstrumentId) {
             type: 'NEED_TO_FETCH_SAMPLER_INSTRUMENT',
             payload: {
                 instrumentId: newInstrumentId,
-                callback: () => {
+                callback: (newBufferLoader) => {
                     dispatch({
                         type: 'FETCHED_SAMPLER_INSTRUMENT',
-                        payload: newInstrumentId
+                        payload: {
+                            id: newInstrumentId,
+                            bufferLoader: newBufferLoader
+                        }
                     })
                 }
             }

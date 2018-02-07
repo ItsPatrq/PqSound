@@ -131,6 +131,7 @@ class ControlBar extends React.Component {
 
     handleInputFocusSwitch() {
         this.state.tempBPM = this.props.controlState.BPM;
+        this.state.tempBarsInComposition = this.props.barsInComposition;
         this.props.dispatch(Actions.textInputFocusedSwitch());
     }
 
@@ -139,6 +140,14 @@ class ControlBar extends React.Component {
             return this.state.tempBPM
         } else {
             return this.props.controlState.BPM
+        }
+    }
+
+    getBarsInComposition(){
+        if(this.props.controlState.textInputFocused){
+            return this.state.tempBarsInComposition;
+        } else {
+            return this.props.barsInComposition;
         }
     }
 
@@ -173,7 +182,7 @@ class ControlBar extends React.Component {
                         currSixteenth={this.props.controlState.sixteenthNotePlaying}
                         onBarsInCompositionChange={this.handleBarsInCompositionChange.bind(this)}
                         onTempBarsInCompositionChange={this.handleTempBarsInComposition.bind(this)}
-                        barsInComposition={this.state.tempBarsInComposition}
+                        barsInComposition={this.getBarsInComposition()}
                         onInputFocusSwitch={this.handleInputFocusSwitch.bind(this)}
                     />
                 </div>
