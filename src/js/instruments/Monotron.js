@@ -24,28 +24,28 @@ class MonotronVoise {
                 this.lfoGain.connect(this.vcf.frequency);
             }
 
-            this.output.gain.setValueAtTime(0.0001, startTime || this.context.currentTime);
+            this.output.gain.setValueAtTime(0.0001, this.context.currentTime);
             this.vco.type = 'sawtooth'
             this.lfo.type = 'sawtooth'
-            this.vco.frequency.setValueAtTime(frequency + preset.vco.pitch, startTime || this.context.currentTime);
-            this.lfo.frequency.setValueAtTime(preset.lfo.rate, startTime || this.context.currentTime);
-            this.lfoGain.gain.setValueAtTime(preset.lfo.int, startTime || this.context.currentTime);
-            this.vcf.frequency.setValueAtTime(preset.vcf.cutoff, startTime || this.context.currentTime);
-            this.vcf.Q.setValueAtTime(preset.vcf.peak, startTime || this.context.currentTime);
+            this.vco.frequency.setValueAtTime(frequency + preset.vco.pitch, this.context.currentTime);
+            this.lfo.frequency.setValueAtTime(preset.lfo.rate, this.context.currentTime);
+            this.lfoGain.gain.setValueAtTime(preset.lfo.int, this.context.currentTime);
+            this.vcf.frequency.setValueAtTime(preset.vcf.cutoff, this.context.currentTime);
+            this.vcf.Q.setValueAtTime(preset.vcf.peak,this.context.currentTime);
 
-            this.vco.start(startTime || this.context.currentTime);
-            this.lfo.start(startTime || this.context.currentTime);
+            this.vco.start(this.context.currentTime);
+            this.lfo.start(this.context.currentTime);
         }
     }
 
     start(time) {
         time = time || this.context.currentTime;
-        this.output.gain.exponentialRampToValueAtTime(0.7, time + 0.05);
+        this.output.gain.exponentialRampToValueAtTime(0.7, time);
     }
 
     stop(time) {
         time = time || this.context.currentTime;
-        this.output.gain.exponentialRampToValueAtTime(0.0001, time + 0.15);
+        this.output.gain.exponentialRampToValueAtTime(0.0001, time + 0.05);
         setTimeout(() => {
             this.vco.disconnect();
             this.lfo.disconnect();

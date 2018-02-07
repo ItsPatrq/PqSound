@@ -86,6 +86,12 @@ export function switchUploadModalVisibility(){
     }
 }
 
+export function switchAboutModalVisibility(){
+    return {
+        type: 'SWITCH_ABOUT_MODAL_VISIBILITY'
+    }
+}
+
 export function loadControlState(newState){
     return {
         type: 'LOAD_CONTROL_STATE',

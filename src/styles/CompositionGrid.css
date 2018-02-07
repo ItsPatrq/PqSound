@@ -91,6 +91,7 @@
 
 .region {
     background-color: rgb(85, 95, 189);
+    /* background-color: rgb(95, 143, 155);  */
     border-bottom-width: thin;
 }
 
@@ -100,6 +101,7 @@
 
 .region.copied {
     background-color: rgb(118, 129, 223);
+    /* background-color: rgb(128, 193, 209); */
 }
 
 .keyRow {

@@ -17,6 +17,7 @@ export default function reducer(state = {
     altClicked: false,
     sequencer: null,
     showUploadModal: false,
+    showAboutModal: false,
     textInputFocused: false,
     midiController: new MIDIController()
 }, action) {
@@ -98,6 +99,12 @@ export default function reducer(state = {
             return {
                 ...state,
                 showUploadModal: !state.showUploadModal
+            }
+        }
+        case 'SWITCH_ABOUT_MODAL_VISIBILITY':{
+            return {
+                ...state,
+                showAboutModal: !state.showAboutModal
             }
         }
         case 'LOAD_CONTROL_STATE':{

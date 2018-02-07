@@ -3,10 +3,11 @@ import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { switchKeyboardVisibility, updateWidth, switchKeyNameVisibility, switchKeyBindVisibility } from 'actions/keyboardActions';
 import { switchPianorollVisibility, loadCompositionState } from 'actions/compositionActions';
-import { switchAltKey, switchUploadModalVisibility, loadControlState } from 'actions/controlActions'
+import { switchAltKey, switchUploadModalVisibility, switchAboutModalVisibility, loadControlState } from 'actions/controlActions'
 import { loadTrackState, updateAllTrackNodes } from 'actions/trackListActions';
 import * as Utils from 'engine/Utils';
 import FileUploadModal from 'components/FileUploadModal';
+import AboutModal from 'components/AboutModal';
 import { TrackTypes } from 'constants/Constants'
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import Demo from 'constants/Demo';
@@ -122,7 +123,11 @@ class TopNavBar extends React.Component {
     }
 
     fileUploadModalVisibilitySwitch() {
-        this.props.dispatch(switchUploadModalVisibility())
+        this.props.dispatch(switchUploadModalVisibility());
+    }
+
+    aboutModalVisibilitySwitch() {
+        this.props.dispatch(switchAboutModalVisibility());
     }
 
     loadDemo() {
@@ -195,6 +200,7 @@ class TopNavBar extends React.Component {
                 <Navbar.Collapse>
                     <Nav>
                         <NavItem eventKey={1} onClick={() => this.homeClicked()}>Home</NavItem>
+                        <NavItem eventKey={2} onClick={this.aboutModalVisibilitySwitch.bind(this)}>About</NavItem>
                         <NavDropdown eventKey={3} title='Show' id='basic-nav-dropdown'>
                             <MenuItem eventKey={3.1} onClick={() => this.handleSwitchKeyboardVisibility()}>{showHideKeyboard}</MenuItem>
                             {showHideKeyNamesMenuItem}
@@ -212,6 +218,10 @@ class TopNavBar extends React.Component {
                     showModal={this.props.control.showUploadModal}
                     modalVisibilitySwitch={this.fileUploadModalVisibilitySwitch.bind(this)}
                     onFileUpload={this.handleFileUpload.bind(this)}
+                />
+                <AboutModal
+                    showModal={this.props.control.showAboutModal}
+                    modalVisibilitySwitch={this.aboutModalVisibilitySwitch.bind(this)}
                 />
             </Navbar>
         );
