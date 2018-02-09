@@ -20,7 +20,7 @@ class Sequencer {
         this.timerWorker.postMessage('start');
     }
     handleStop(/*event*/) {
-        this.timerWorker.postMessage('stop');        
+        this.timerWorker.postMessage('stop');
         setTimeout(() => {
             Store.getState().webAudio.sound.stopAll(SoundOrigin.composition);
             this.sixteenthPlaying = 0;
@@ -29,7 +29,7 @@ class Sequencer {
             
     }
     handlePause(/*event*/) {
-        this.timerWorker.postMessage('stop');        
+        this.timerWorker.postMessage('stop');
         Store.getState().webAudio.sound.stopAll(SoundOrigin.composition);
     }
     schedule() {

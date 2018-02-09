@@ -16,7 +16,7 @@ class PqSynthVoice {
         }
     }
 
-    oscillatorsConstructor(note, preset, startTime) {
+    oscillatorsConstructor(note, preset/*, startTime*/) {
         this.oscillatorsOutput = this.context.createGain();
         this.oscillators = [{}, {}, {}];
         for (let i = 0; i < preset.oscillators.length; i++) {
