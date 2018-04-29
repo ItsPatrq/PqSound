@@ -1,6 +1,8 @@
 'use strict';
+import config from '../../config/base';
+
 let keys = ['C', 'Cs', 'D', 'Ds', 'E', 'F', 'Fs', 'G', 'Gs', 'A', 'As', 'B'];
-let baseURL = 'http://localhost:3000/api/samplerinstrument/';
+let baseURL = config.appEnv === 'dev' ? 'http://localhost:3000/api/samplerinstrument/' : 'https://pqsound.azurewebsites.net/api/samplerinstrument/';
 
 let DSKGrandPianoURL = baseURL + 'DSKGrandPiano/DSK_Grand_';
 let DSKGrandPiano = [
