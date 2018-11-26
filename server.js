@@ -9,7 +9,6 @@ const
     webpackHotMiddleware = require('webpack-hot-middleware'),
     config = require('./webpack.config.js'),
     compiler = webpack(config),
-    //open = require('open'),
     isDeveloping = process.env.NODE_ENV !== 'dist',
     routes = require('./api/routes/SamplerRoutes'),
 
