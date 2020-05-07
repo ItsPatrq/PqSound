@@ -2,8 +2,8 @@ import { PluginsEnum } from 'constants/Constants';
 import Plugin from './Plugin';
 
 class Reverb extends Plugin {
-    constructor(index) {
-        super(PluginsEnum.Reverb, index)
+    constructor(index, audioContext) {
+        super(PluginsEnum.Reverb, index, audioContext)
         this.preset = {
             sustain: 1,
             decay: 2,

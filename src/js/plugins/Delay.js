@@ -2,8 +2,8 @@ import { PluginsEnum } from 'constants/Constants';
 import Plugin from './Plugin';
 
 class Delay extends Plugin {
-    constructor(index) {
-        super(PluginsEnum.Delay, index)
+    constructor(index, audioContext) {
+        super(PluginsEnum.Delay, index, audioContext)
         this.preset = {
             delay: 0.5,
             feedback: 0.8,

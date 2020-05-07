@@ -4,9 +4,9 @@ import { isNullOrUndefined, noteToFrequency } from 'engine/Utils';
 import Instrument from './Instrument';
 
 class MonotronVoise {
-    constructor(frequency, startTime, preset) {
-        if (!isNullOrUndefined(Store)) {
-            this.context = Store.getState().webAudio.context;
+    constructor(frequency, startTime, preset, audioContext) {
+        if (!isNullOrUndefined(audioContext)) {
+            this.context = audioContext;
             this.frequency = frequency;
             this.mod = preset.mod;
             this.vco = this.context.createOscillator();
@@ -79,12 +79,8 @@ class MonotronVoise {
 }
 
 class Monotron extends Instrument {
-    constructor() {
-        super(Instruments.Monotron)
-        if (!isNullOrUndefined(Store)) {
-            this.context = Store.getState().webAudio.context;
-            this.output = this.context.createGain();
-        }
+    constructor(preset, audioContext) {
+        super(Instruments.Monotron, audioContext)
         this.preset = {
             vco: {
                 pitch: 33.3,
@@ -109,7 +105,7 @@ class Monotron extends Instrument {
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let currVoice = new MonotronVoise(noteToFrequency(note), startTime, this.preset);
+            let currVoice = new MonotronVoise(noteToFrequency(note), startTime, this.preset, this.context);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;

@@ -8,25 +8,25 @@ import Chorus from './Chorus';
 import { PluginsEnum } from 'constants/Constants'
 let Utils = {};
 
-Utils.getNewPluginByIndex = (id, index) => {
+Utils.getNewPluginByIndex = (id, index, audioContext) => {
     switch (id) {
         case PluginsEnum.Compressor.id: {
-            return new Compressor(index);
+            return new Compressor(index, audioContext);
         }
         case PluginsEnum.Equalizer.id: {
-            return new Equalizer(index);
+            return new Equalizer(index, audioContext);
         }
         case PluginsEnum.Distortion.id: {
-            return new Distortion(index);
+            return new Distortion(index, audioContext);
         }
         case PluginsEnum.Delay.id:{
-            return new Delay(index);
+            return new Delay(index, audioContext);
         }
         case PluginsEnum.Reverb.id:{
-            return new Reverb(index);
+            return new Reverb(index, audioContext);
         }
         case PluginsEnum.Chorus.id:{
-            return new Chorus(index);
+            return new Chorus(index, audioContext);
         }
     }
 }

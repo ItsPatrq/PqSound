@@ -2,8 +2,8 @@ import { PluginsEnum } from 'constants/Constants';
 import Plugin from './Plugin';
 
 class Distortion extends Plugin {
-    constructor(index) {
-        super(PluginsEnum.Distortion, index);
+    constructor(index, audioContext) {
+        super(PluginsEnum.Distortion, index, audioContext);
         this.preset = {
             outputGain: 1,
             distortion: 0

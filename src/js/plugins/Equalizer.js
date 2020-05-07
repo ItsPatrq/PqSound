@@ -2,8 +2,8 @@ import { PluginsEnum } from 'constants/Constants';
 import Plugin from './Plugin';
 
 class Equalizer extends Plugin {
-    constructor(index) {
-        super(PluginsEnum.Equalizer, index)
+    constructor(index, audioContext) {
+        super(PluginsEnum.Equalizer, index, audioContext)
         this.preset = {
             lowFilterGain: 1.0,
             midFilterGain: 1.0,

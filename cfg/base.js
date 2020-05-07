@@ -14,7 +14,7 @@ module.exports = {
     publicPath: defaultSettings.publicPath
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     alias: {
       actions: `${defaultSettings.srcPath}/js/actions/`,
       reducers: `${defaultSettings.srcPath}/js/reducers/`,

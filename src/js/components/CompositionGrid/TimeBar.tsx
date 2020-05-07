@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
 
-const TimeBar = (props) => {
+export const TimeBar = (props) => {
     let beats = new Array;
     for (let i = 0; i <= props.bits; i++) {
         beats.push(

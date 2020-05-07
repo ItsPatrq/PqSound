@@ -1,15 +1,14 @@
-import Store from '../stroe';
-import { isNullOrUndefined, getTrackByIndex } from 'engine/Utils';
+import { isNullOrUndefined, getTrackByIndex, devLog } from 'engine/Utils';
 class Track {
-  constructor(newPluginList, newInstrument, newOutputTrackIndex, newVolume = 1.0, newPan = 0.0) {
+  constructor(newPluginList, newInstrument, newDestTrack, audioContext, newVolume = 1.0, newPan = 0.0) {
     this.pluginNodeList = newPluginList;
-    this.outputTrackIndex = newOutputTrackIndex;
+    this.destTrack = newDestTrack;
     this.instrument = newInstrument;
     this.solo = false;
     this.mute = false;
     this.anySolo = false;
-    if (!isNullOrUndefined(Store)) {
-      this.context = Store.getState().webAudio.context;
+    if (!isNullOrUndefined(audioContext)) {
+      this.context = audioContext;
       this.gainNode = this.context.createGain();
       this.muteNode = this.context.createGain();
       this.panNode = this.context.createStereoPanner();
@@ -35,19 +34,24 @@ class Track {
       this.rightAnalyserNode.fftSize = 1024;
 
 
-      if (isNullOrUndefined(this.outputTrackIndex)) {
+      if (isNullOrUndefined(this.destTrack)) {
         this.output.connect(this.context.destination);
       } else {
-        this.output.connect(getTrackByIndex(Store.getState().tracks.trackList, 0).trackNode.input);
+        this.output.connect(this.destTrack)
       }
       if (!isNullOrUndefined(newInstrument)) {
         newInstrument.connect(this.input);
       }
+    } else {
+      devLog("Error initializing track")
     }
   }
 getAverageVolume(){
+  if(!this.context || !this.leftAnalyserNode || !this.rightAnalyserNode ){
+    return {left: 0, right: 0}
+  }
   let leftArray =  new Uint8Array(this.leftAnalyserNode.frequencyBinCount);
-  let rightArray =  new Uint8Array(this.leftAnalyserNode.frequencyBinCount);
+  let rightArray =  new Uint8Array(this.rightAnalyserNode.frequencyBinCount);
   this.leftAnalyserNode.getByteFrequencyData(leftArray);
   this.rightAnalyserNode.getByteFrequencyData(rightArray);
 
@@ -76,13 +80,13 @@ getAverageVolume(){
     return { input: firstPluginInChain.input, output: lastPluginInChain.output };
   }
 
-  updateTrackNode(newOutputTrackIndex) {
+  updateTrackNode(newDestTrack) {
     for (let i = 0; i < this.pluginNodeList.length; i++) {
       this.pluginNodeList[i].output.disconnect();
     }
     this.panNode.disconnect();
 
-    this.outputTrackIndex = isNullOrUndefined(newOutputTrackIndex) ? this.outputTrackIndex : newOutputTrackIndex;
+    this.destTrack = isNullOrUndefined(newDestTrack) ? this.destTrack : newDestTrack;
 
     if (!this.mute) {
       if (this.pluginNodeList.length > 0) {
@@ -94,10 +98,10 @@ getAverageVolume(){
         this.output = this.panNode;
         this.panNode.connect(this.splitter);
       }
-      if (isNullOrUndefined(this.outputTrackIndex)) {
+      if (isNullOrUndefined(this.destTrack)) {
         this.output.connect(this.context.destination);
       } else if (this.anySolo && this.solo || !this.anySolo) {
-        this.output.connect(getTrackByIndex(Store.getState().tracks.trackList, this.outputTrackIndex).trackNode.input);
+        this.output.connect(this.destTrack);
       }
     }
   }
@@ -141,10 +145,10 @@ getAverageVolume(){
   /**
   * due to initializing web audio api at start of application and sampler is the default instrument
   */
-  initContext() {
+  initContext(audioContext, destTrack) {
     if (isNullOrUndefined(this.context)) {
-      this.context = Store.getState().webAudio.context;
-      this.constructor(this.pluginNodeList, this.instrument, this.outputTrackIndex);
+      this.context = audioContext;
+      this.constructor(this.pluginNodeList, this.instrument, destTrack, audioContext);
     }
   }
 }

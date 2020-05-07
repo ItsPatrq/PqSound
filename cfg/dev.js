@@ -34,12 +34,20 @@ let config = Object.assign({}, baseConfig, {
 });
 
 // Add needed loaders to the defaults here
-config.module.rules.push(            {
+config.module.rules.push({
     test: /\.(js|jsx)$/,
     exclude: /node_modules/,
     use: [
         'babel-loader'
     ]
-});
+}, {
+    test: /\.tsx?$/,
+    use: { loader: 'awesome-typescript-loader' }
+}, {
+    enforce: 'pre',
+    test: /\.js$/,
+    loader: "source-map-loader"
+}
+);
 
 module.exports = config;

@@ -82,3 +82,5 @@ let copy = (data) => {
 }
 
 module.exports.copy = copy;
+
+export const devLog = msg => console.warn(msg);

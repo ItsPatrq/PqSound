@@ -1,12 +1,18 @@
 import { defaultKeysNames } from 'constants/Constants';
 import { MIDIToNote } from 'engine/Utils';
-import { isNullOrUndefined } from 'engine/Utils';
+import { isNullOrUndefined, devLog } from 'engine/Utils';
 
 class Instrument {
-    constructor(currEnum){
+    constructor(currEnum, audioContext){
         this.name = currEnum.name;
         this.id = currEnum.id;
         this.voices = new Array;
+        if (!isNullOrUndefined(audioContext)) {
+            this.context = audioContext;
+            this.output = this.context.createGain();
+        } else {
+            devLog("Instrument INIT error - no audioContext")
+        }
     }
 
     updatePreset(newPreset){

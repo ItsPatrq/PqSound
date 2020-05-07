@@ -1,13 +1,12 @@
-import Store from '../stroe';
 import { Instruments } from 'constants/Constants';
 import { isNullOrUndefined, noteToFrequency } from 'engine/Utils';
 import Instrument from './Instrument';
 
 class MultiOscVoice {
-    constructor(freqyency, startTime, preset) {
-        if (!isNullOrUndefined(Store)) {
+    constructor(freqyency, startTime, preset, audioContext) {
+        if (!isNullOrUndefined(audioContext)) {
             this.preset = preset;
-            this.context = Store.getState().webAudio.context;
+            this.context = audioContext;
             this.maxGain = 1 / preset.waveNumber;
             this.waves = new Array;
             this.output = this.context.createGain();
@@ -47,12 +46,8 @@ class MultiOscVoice {
 }
 
 class MultiOsc extends Instrument{
-    constructor(preset = null) {
-        super(Instruments.MultiOsc)
-        if (!isNullOrUndefined(Store)) {
-            this.context = Store.getState().webAudio.context;
-            this.output = this.context.createGain();
-        }
+    constructor(preset = null, audioContext = null) {
+        super(Instruments.MultiOsc, audioContext)
         this.preset = preset ? preset : {
             waveNumber: 3,
             detune: 12,
@@ -65,7 +60,7 @@ class MultiOsc extends Instrument{
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let currVoice = new MultiOscVoice(noteToFrequency(note), startTime, this.preset);
+            let currVoice = new MultiOscVoice(noteToFrequency(note), startTime, this.preset, this.context);
             currVoice.connect(this.output);
             currVoice.start(startTime, this.preset.attack);
             this.voices[note] = currVoice;

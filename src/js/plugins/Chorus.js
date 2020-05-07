@@ -2,8 +2,8 @@ import { PluginsEnum } from 'constants/Constants';
 import Plugin from './Plugin';
 
 class Chorus extends Plugin {
-    constructor(index) {
-        super(PluginsEnum.Chorus, index)
+    constructor(index, audioContext) {
+        super(PluginsEnum.Chorus, index, audioContext)
         this.preset = {
             feedback: 0.4,
             delay: 0.03,

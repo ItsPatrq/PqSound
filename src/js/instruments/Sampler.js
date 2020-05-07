@@ -1,19 +1,20 @@
 import Store from '../stroe';
 import { Instruments } from 'constants/Constants';
 import { Presets } from 'constants/SamplerPresets';
-import { isNullOrUndefined, MIDIToNote } from 'engine/Utils';
+import { isNullOrUndefined, MIDIToNote, devLog } from 'engine/Utils';
 import Instrument from './Instrument';
 
 class SamplerVoice {
-    constructor(buffer) {
-        if (!isNullOrUndefined(Store)) {
-            this.context = Store.getState().webAudio.context;
-
+    constructor(buffer, audioContext) {
+        if (!isNullOrUndefined(audioContext)) {
+            this.context = audioContext;
             this.source = this.context.createBufferSource();
             this.output = this.context.createGain();
             
             this.source.connect(this.output);
             this.source.buffer = buffer;
+        } else {
+            devLog("Sampler play error - no audioContext")
         }
     }
 
@@ -39,21 +40,18 @@ class SamplerVoice {
 }
 
 class Sampler extends Instrument{
-    constructor(preset = Presets.DSKGrandPiano) {
-        super(Instruments.Sampler);
+    constructor(preset = Presets.DSKGrandPiano, audioContext) {
+        super(Instruments.Sampler, audioContext);
         this.preset = preset;
         this.preset.attack = 0;
         this.preset.release = 0;
-        if (!isNullOrUndefined(Store)) {
-            this.context = Store.getState().webAudio.context;
-            this.output = this.context.createGain();
-        }
     }
 
     noteOn(note, startTime) {
+        console.log(this)
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let currVoice = new SamplerVoice(this.getBuffers(note));
+            let currVoice = new SamplerVoice(this.getBuffers(note), this.context);
             currVoice.connect(this.output);
             currVoice.start(startTime, this.preset.attack);
             this.voices[note] = currVoice;
@@ -78,7 +76,7 @@ class Sampler extends Instrument{
 
 
     connect(target) {
-        this.output.disconnect();
+        this.disconnect();
         this.output.connect(target);
     }
 
@@ -89,9 +87,9 @@ class Sampler extends Instrument{
     /**
      * due to initializing web audio api at start of application and sampler is the default instrument
      */
-    initContext() {
-        this.context = Store.getState().webAudio.context;
-        this.constructor();
+    initContext(audioContext) {
+        this.context = audioContext;
+        this.constructor(undefined, audioContext);
     }
 
     loadPreset(newPreset){

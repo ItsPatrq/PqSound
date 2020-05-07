@@ -1,8 +1,12 @@
+import Store from '../stroe';
+
 export function addTrack(newTrackType) {
+    const audioContext = Store.getState().webAudio.context;
     return{
         type: 'ADD_TRACK',
         payload: {
-            trackType: newTrackType
+            trackType: newTrackType,
+            audioContext: audioContext
         }
     }
 }
@@ -47,9 +51,13 @@ export function initTrackSound(newIndex){
 }
 
 export function initInstrumentContext(newIndex){
+    const audioContext = Store.getState().webAudio.context;
     return{
         type: 'INIT_INSTRUMENT_CONTEXT',
-        payload: newIndex
+        payload: {
+            index: newIndex,
+            audioContext: audioContext
+        }
     }
 }
 
@@ -138,11 +146,13 @@ export function trackIndexDown(newIndex){
 }
 
 export function addNewPlugin(newIndex, newPluginId){
+    const audioContext = Store.getState().webAudio.context;
     return {
         type: 'ADD_NEW_PLUGIN',
         payload: {
             index: newIndex,
-            pluginId: newPluginId
+            pluginId: newPluginId,
+            audioContext: audioContext
         }
     }
 }
@@ -169,9 +179,13 @@ export function changePluginPreset(newTrackIndex, newPluginIndex, newPreset){
 }
 
 export function loadTrackState(newState){
+    const audioContext = Store.getState().webAudio.context;
     return {
         type: 'LOAD_TRACK_STATE',
-        payload: newState
+        payload: {
+            stateToLoad: newState,
+            audioContext: audioContext
+        }
     }
 }
 

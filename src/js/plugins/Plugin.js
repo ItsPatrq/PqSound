@@ -1,11 +1,9 @@
-import Store from '../stroe';
-
 class Plugin {
-    constructor(currEnum, index){
+    constructor(currEnum, index, audioContext){
         this.name = currEnum.name;
         this.id = currEnum.id;
         this.index = index;
-        this.context = Store.getState().webAudio.context;
+        this.context = audioContext;
     }
 
 
