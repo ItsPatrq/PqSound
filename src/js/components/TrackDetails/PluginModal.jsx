@@ -14,42 +14,42 @@ const InstrumentModal = (props) => {
         let modalHeader = 'Track: ' + props.trackName + ' Plugin: ' + props.plugin.name;
         let modalBody;
         switch (props.plugin.id) {
-            case PluginsEnum.Equalizer.id: {
+            case PluginsEnum.Equalizer: {
                 modalBody = <EqualizerComponent
                     plugin={props.plugin}
                     onPresetChange={props.onPresetChange}
                 />
                 break;
             }
-            case PluginsEnum.Compressor.id: {
+            case PluginsEnum.Compressor: {
                 modalBody = <CompressorComponent
                     plugin={props.plugin}
                     onPresetChange={props.onPresetChange}
                 />
                 break;
             }
-            case PluginsEnum.Distortion.id: {
+            case PluginsEnum.Distortion: {
                 modalBody = <DistortionComponent
                     plugin={props.plugin}
                     onPresetChange={props.onPresetChange}
                 />
                 break;
             }
-            case PluginsEnum.Delay.id: {
+            case PluginsEnum.Delay: {
                 modalBody = <DelayComponent
                     plugin={props.plugin}
                     onPresetChange={props.onPresetChange}
                 />
                 break;
             }
-            case PluginsEnum.Reverb.id: {
+            case PluginsEnum.Reverb: {
                 modalBody = <ReverbComponent
                     plugin={props.plugin}
                     onPresetChange={props.onPresetChange}
                 />
                 break;
             }
-            case PluginsEnum.Chorus.id: {
+            case PluginsEnum.Chorus: {
                 modalBody = <ChorusComponent
                     plugin={props.plugin}
                     onPresetChange={props.onPresetChange}

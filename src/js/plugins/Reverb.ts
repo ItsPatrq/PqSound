@@ -1,7 +1,12 @@
-import { PluginsEnum } from 'constants/Constants';
+import { PluginsEnum } from '../constants/Constants';
 import Plugin from './Plugin';
 
 class Reverb extends Plugin {
+    convolver: ConvolverNode;
+    inputGainNode: GainNode;
+    outputGainNode: GainNode;
+    dryGainNode: GainNode;
+    wetGainNode: GainNode;
     constructor(index, audioContext) {
         super(PluginsEnum.Reverb, index, audioContext)
         this.preset = {

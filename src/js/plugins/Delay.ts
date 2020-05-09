@@ -1,7 +1,12 @@
-import { PluginsEnum } from 'constants/Constants';
+import { PluginsEnum } from '../constants/Constants';
 import Plugin from './Plugin';
 
 class Delay extends Plugin {
+    delayArray: any[];
+    inputGainNode: GainNode;
+    dryGainNode: GainNode;
+    outputGainNode: GainNode;
+    wetGainNode: GainNode;
     constructor(index, audioContext) {
         super(PluginsEnum.Delay, index, audioContext)
         this.preset = {

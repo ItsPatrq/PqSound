@@ -1,8 +1,21 @@
 import Store from '../stroe';
 import * as Utils from 'engine/Utils';
 
-module.exports.regionToDrawParser = (trackIndex, bits, copiedRegion) => {
-    let trackRegionList = module.exports.getRegionsByTrackIndex(trackIndex);
+export const getRegionsByTrackIndex = (trackIndex, allRegions) => {
+    let regionsByTrackIndex = new Array;
+    if (Utils.isNullOrUndefined(allRegions)) {
+        allRegions = Store.getState().composition.regionList;
+    }
+    for (let i = 0; i < allRegions.length; i++) {
+        if (allRegions[i].trackIndex === trackIndex) {
+            regionsByTrackIndex.push(allRegions[i]);
+        }
+    }
+    return regionsByTrackIndex;
+}
+
+export const regionToDrawParser = (trackIndex, bits, copiedRegion) => {
+    let trackRegionList = getRegionsByTrackIndex(trackIndex);
     let bitsToDraw = new Array;
     for (let i = 0; i < bits; i++) {
         bitsToDraw.push(0);
@@ -25,8 +38,8 @@ module.exports.regionToDrawParser = (trackIndex, bits, copiedRegion) => {
     return bitsToDraw;
 }
 
-module.exports.getRegionIdByBitIndex = (trackIndex, bitIndex) => {
-    let trackRegionList = module.exports.getRegionsByTrackIndex(trackIndex);
+export const getRegionIdByBitIndex = (trackIndex, bitIndex) => {
+    let trackRegionList = getRegionsByTrackIndex(trackIndex);
     let regionId;
     for (let i = 0; i < trackRegionList.length; i++) {
         if (trackRegionList[i].start <= bitIndex && trackRegionList[i].end >= bitIndex) {
@@ -36,7 +49,7 @@ module.exports.getRegionIdByBitIndex = (trackIndex, bitIndex) => {
     return regionId;
 }
 
-module.exports.getRegionByRegionId = (regionId, regionList) => {
+export const getRegionByRegionId = (regionId, regionList) => {
     if (Utils.isNullOrUndefined(regionList)) {
         regionList = Store.getState().composition.regionList;
     }
@@ -47,21 +60,8 @@ module.exports.getRegionByRegionId = (regionId, regionList) => {
     }
 }
 
-module.exports.getRegionsByTrackIndex = (trackIndex, allRegions) => {
-    let regionsByTrackIndex = new Array;
-    if (Utils.isNullOrUndefined(allRegions)) {
-        allRegions = Store.getState().composition.regionList;
-    }
-    for (let i = 0; i < allRegions.length; i++) {
-        if (allRegions[i].trackIndex === trackIndex) {
-            regionsByTrackIndex.push(allRegions[i]);
-        }
-    }
-    return regionsByTrackIndex;
-}
-
-module.exports.notesToDrawParser = (pianoRollNote) => {
-    let region = module.exports.getRegionByRegionId(Store.getState().composition.pianoRollRegion);
+export const notesToDrawParser = (pianoRollNote) => {
+    let region = getRegionByRegionId(Store.getState().composition.pianoRollRegion);
     let notesToDraw = new Array;
     for (let i = 0; i < region.regionLength * 16; i++) {
         notesToDraw.push(0);
@@ -79,8 +79,8 @@ module.exports.notesToDrawParser = (pianoRollNote) => {
     return notesToDraw;
 }
 
-module.exports.notesToPlay = (sixteenthPlaying, trackIndex) => {
-    let regions = module.exports.getRegionsByTrackIndex(trackIndex);
+export const notesToPlay = (sixteenthPlaying, trackIndex) => {
+    let regions = getRegionsByTrackIndex(trackIndex);
     if (!Utils.isNullUndefinedOrEmpty(regions)) {
         let notesToPlay = new Array;
         for (let i = 0; i < regions.length; i++) {

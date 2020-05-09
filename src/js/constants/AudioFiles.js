@@ -27,10 +27,10 @@ for(let i = 1; i < 8; i++){
     }
 }
 
-module.exports.DSKGrandPiano = DSKGrandPiano;
+export {DSKGrandPiano};
 
 let slingerlandKitURL = baseURL + 'SlingerlandKit/';
-module.exports.SlingerlandKit = [
+export const SlingerlandKit = [
     {
         name: 'Ludwig-Snare-A',
         url: slingerlandKitURL + 'Ludwig-Snare-A.wav'
@@ -126,7 +126,7 @@ module.exports.SlingerlandKit = [
 ];
 
 let rockKitURL = baseURL + 'RockKit/';
-module.exports.RockKit = [
+export const RockKit = [
     {
         name: 'Rock-Kit-Crash-1-1',
         url: rockKitURL + 'Rock-Kit-Crash-1-1.wav'

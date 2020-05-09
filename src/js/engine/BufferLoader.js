@@ -1,4 +1,4 @@
-class BufferLoader {
+export class BufferLoader {
     constructor(context, urlList=null, callback=null) {
         this.context = context;
         this.urlList = urlList;

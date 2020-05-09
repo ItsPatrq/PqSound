@@ -482,8 +482,6 @@ export default function reducer(state = {
             newState.trackList[0].trackNode.updateTrackNode();
 
             for (let i = 1; i < newState.trackList.length; i++) {
-                console.log(i, newState.trackList, newState.trackList[i].output)
-
                 if (newState.trackList[i].trackType === TrackTypes.aux){
                     let newPluginList = new Array;
                     for (let j = 0; j < newState.trackList[i].pluginList.length; j++) {

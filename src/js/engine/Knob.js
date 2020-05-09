@@ -1,5 +1,5 @@
 var Knob;
-Knob = function(input, ui) {
+Knob = function (input, ui) {
   var container = document.createElement('div');
   container.setAttribute('tabindex', 0);
   input.parentNode.replaceChild(container, input);
@@ -37,16 +37,16 @@ Knob = function(input, ui) {
 };
 
 Knob.prototype = {
-  _handleKeyEvents: function(e) {
+  _handleKeyEvents: function (e) {
     var keycode = e.keyCode;
     if (keycode >= 37 && keycode <= 40) {
       e.preventDefault();
       var f = 1 + e.shiftKey * 9;
-      this.changed({37: -1, 38: 1, 39: 1, 40: -1}[keycode] * f);
+      this.changed({ 37: -1, 38: 1, 39: 1, 40: -1 }[keycode] * f);
     }
   },
 
-  _handleWheelEvents: function(e) {
+  _handleWheelEvents: function (e) {
     e.preventDefault();
     var deltaX = -e.detail || e.wheelDeltaX;
     var deltaY = -e.detail || e.wheelDeltaY;
@@ -54,19 +54,19 @@ Knob.prototype = {
     this.changed(val);
   },
 
-  _handleMove: function(onMove, onEnd) {
-    this.centerX = Math.floor(this.container.getBoundingClientRect().left)+ document.body.scrollLeft + this.settings.width / 2;
-    this.centerY = Math.floor(this.container.getBoundingClientRect().top)+ document.body.scrollTop + this.settings.height / 2;
+  _handleMove: function (onMove, onEnd) {
+    this.centerX = Math.floor(this.container.getBoundingClientRect().left) + document.body.scrollLeft + this.settings.width / 2;
+    this.centerY = Math.floor(this.container.getBoundingClientRect().top) + document.body.scrollTop + this.settings.height / 2;
 
     var fnc = this._updateWhileMoving.bind(this);
     var body = document.body;
     body.addEventListener(onMove, fnc, false);
-    body.addEventListener(onEnd, function() {
+    body.addEventListener(onEnd, function () {
       body.removeEventListener(onMove, fnc, false);
     }, false);
   },
 
-  _updateWhileMoving: function(event) {
+  _updateWhileMoving: function (event) {
     event.preventDefault();
     var e = event.changedTouches ? event.changedTouches[0] : event;
     var x = this.centerX - e.pageX;
@@ -92,21 +92,21 @@ Knob.prototype = {
     this.triggerChange();
   },
 
-  changed: function(direction) {
+  changed: function (direction) {
     this.input.value = this.limit(parseFloat(this.input.value) + direction * (this.input.step || 1));
     this.value = this.input.value;
     this.ui.update(this._valueToPercent(), this.value);
     this.triggerChange();
   },
 
-  update: function(value) {
+  update: function (value) {
     this.input.value = this.limit(value);
     this.value = this.input.value;
     this.ui.update(this._valueToPercent(), this.value);
     this.triggerChange();
   },
 
-  triggerChange: function  () {
+  triggerChange: function () {
     if (document.createEventObject) {
       var evt = document.createEventObject();
       this.input.fireEvent('onchange', evt);
@@ -115,22 +115,22 @@ Knob.prototype = {
     }
   },
 
-  _valueToPercent: function() {
-    return  this.value != null ? 100 / this.settings.range * (this.value - this.min) / 100 : this.min;
+  _valueToPercent: function () {
+    return this.value != null ? 100 / this.settings.range * (this.value - this.min) / 100 : this.min;
   },
 
-  limit: function(value) {
+  limit: function (value) {
     return Math.min(Math.max(this.settings.min, value), this.settings.max);
   },
 
-  _getSettings: function(input) {
+  _getSettings: function (input) {
     var labels;
 
-    if(input.dataset.labels){
+    if (input.dataset.labels) {
       labels = input.dataset.labels.split(',');
     }
     var settings = {
-      max: labels ? labels.length-1 : parseFloat(input.max),
+      max: labels ? labels.length - 1 : parseFloat(input.max),
       min: labels ? 0 : parseFloat(input.min),
       step: parseFloat(input.step) || 1,
       angleoffset: 0,
@@ -140,7 +140,7 @@ Knob.prototype = {
     settings.range = settings.max - settings.min;
     var data = input.dataset;
     for (var i in data) {
-      if (data.hasOwnProperty(i) && i!=='labels') {
+      if (data.hasOwnProperty(i) && i !== 'labels') {
         var value = +data[i];
         settings[i] = isNaN(value) ? data[i] : value;
       }
@@ -151,11 +151,11 @@ Knob.prototype = {
 
 
 
-var Ui = function() {
+var Ui = function () {
 };
 
 Ui.prototype = {
-  init: function(parentEl, options) {
+  init: function (parentEl, options) {
     this.options || (this.options = {});
     this.merge(this.options, options);
     this.width = options.width;
@@ -164,12 +164,12 @@ Ui.prototype = {
     if (!this.components) {
       return;
     }
-    this.components.forEach(function(component) {
+    this.components.forEach(function (component) {
       component.init(this.el.node, options);
     }.bind(this));
   },
 
-  merge: function(dest, src) {
+  merge: function (dest, src) {
     for (var i in src) {
       if (src.hasOwnProperty(i)) {
         dest[i] = src[i];
@@ -178,22 +178,22 @@ Ui.prototype = {
     return dest;
   },
 
-  addComponent: function(component) {
+  addComponent: function (component) {
     this.components || (this.components = []);
     this.components.push(component);
   },
 
-  update: function(percent, value) {
+  update: function (percent, value) {
 
     if (!this.components) {
       return;
     }
-    this.components.forEach(function(component) {
+    this.components.forEach(function (component) {
       component.update(percent, value);
     });
   },
 
-  createElement: function(parentEl) {
+  createElement: function (parentEl) {
     this.el = new Ui.El(this.width, this.height);
     this.el.create('svg', {
       version: '1.2',
@@ -203,25 +203,25 @@ Ui.prototype = {
     });
     this.appendTo(parentEl);
   },
-  appendTo: function(parent) {
+  appendTo: function (parent) {
     parent.appendChild(this.el.node);
   }
 
 };
 
-Ui.Pointer = function(options) {
+Ui.Pointer = function (options) {
   this.options = options || {};
   this.options.type && Ui.El[this.options.type] || (this.options.type = 'Triangle');
 };
 
 Ui.Pointer.prototype = Object.create(Ui.prototype);
 
-Ui.Pointer.prototype.update = function(percent) {
+Ui.Pointer.prototype.update = function (percent) {
   this.el.rotate(this.options.angleoffset + percent * this.options.anglerange, this.width / 2,
     this.height / 2);
 };
 
-Ui.Pointer.prototype.createElement = function(parentEl) {
+Ui.Pointer.prototype.createElement = function (parentEl) {
   this.options.pointerHeight || (this.options.pointerHeight = this.height / 2);
   if (this.options.type == 'Arc') {
     this.el = new Ui.El.Arc(this.options);
@@ -236,22 +236,22 @@ Ui.Pointer.prototype.createElement = function(parentEl) {
 
 };
 
-Ui.Arc = function(options) {
+Ui.Arc = function (options) {
   this.options = options || {};
 };
 
 Ui.Arc.prototype = Object.create(Ui.prototype);
 
-Ui.Arc.prototype.createElement = function(parentEl) {
+Ui.Arc.prototype.createElement = function (parentEl) {
   this.el = new Ui.El.Arc(this.options);
   this.appendTo(parentEl);
 };
 
-Ui.Arc.prototype.update = function(percent) {
+Ui.Arc.prototype.update = function (percent) {
   this.el.setAngle(percent * this.options.anglerange);
 };
 
-Ui.Scale = function(options) {
+Ui.Scale = function (options) {
   this.options = this.merge({
     steps: options.range / options.step,
     radius: this.width / 2,
@@ -263,14 +263,14 @@ Ui.Scale = function(options) {
 
 Ui.Scale.prototype = Object.create(Ui.prototype);
 
-Ui.Scale.prototype.createElement = function(parentEl) {
+Ui.Scale.prototype.createElement = function (parentEl) {
   this.el = new Ui.El(this.width, this.height);
   this.startAngle = this.options.angleoffset || 0;
   this.options.radius || (this.options.radius = this.height / 2.5);
   this.el.create('g');
   this.el.addClassName('scale');
   if (this.options.drawScale) {
-    if(!this.options.labels){
+    if (!this.options.labels) {
       var step = this.options.anglerange / this.options.steps;
       var end = this.options.steps + (this.options.anglerange == 360 ? 0 : 1);
       this.ticks = [];
@@ -290,13 +290,13 @@ Ui.Scale.prototype.createElement = function(parentEl) {
   }
 };
 
-Ui.Scale.prototype.dial = function() {
+Ui.Scale.prototype.dial = function () {
   var step = this.options.anglerange / this.options.steps;
   var min = this.options.min;
   var dialStep = (this.options.max - min) / this.options.steps;
   var end = this.options.steps + (this.options.anglerange == 360 ? 0 : 1);
   this.dials = [];
-  if(!this.options.labels){
+  if (!this.options.labels) {
     for (var i = 0; i < end; i++) {
       var text = new Ui.El.Text(Math.abs(min + dialStep * i), this.width / 2 - 2.5,
         this.height / 2 - this.options.radius, 5, 5);
@@ -305,8 +305,8 @@ Ui.Scale.prototype.dial = function() {
       this.dials.push(text);
     }
   } else {
-    step = this.options.anglerange / (this.options.labels.length-1);
-    for(var i=0; i<this.options.labels.length; i++){
+    step = this.options.anglerange / (this.options.labels.length - 1);
+    for (var i = 0; i < this.options.labels.length; i++) {
       var label = this.options.labels[i];
       var text = new Ui.El.Text(label, this.width / 2 - 2.5,
         this.height / 2 - this.options.radius, 5, 5);
@@ -319,7 +319,7 @@ Ui.Scale.prototype.dial = function() {
   }
 };
 
-Ui.Scale.prototype.update = function(percent) {
+Ui.Scale.prototype.update = function (percent) {
   if (this.ticks) {
     if (this.activeStep) {
       this.activeStep.attr('class', '');
@@ -338,28 +338,28 @@ Ui.Scale.prototype.update = function(percent) {
   }
 };
 
-Ui.Text = function() {};
+Ui.Text = function () { };
 
 Ui.Text.prototype = Object.create(Ui.prototype);
 
-Ui.Text.prototype.createElement = function(parentEl) {
+Ui.Text.prototype.createElement = function (parentEl) {
   this.parentEl = parentEl
   this.el = new Ui.El.Text('', 0, this.height);
   this.appendTo(parentEl);
   this.el.center(parentEl);
 };
 
-Ui.Text.prototype.update = function(percent, value) {
+Ui.Text.prototype.update = function (percent, value) {
   this.el.node.textContent = value;
   this.el.center(this.parentEl);
 };
 
-Ui.El = function() {};
+Ui.El = function () { };
 
 Ui.El.prototype = {
   svgNS: 'http://www.w3.org/2000/svg',
 
-  init: function(width, height, x, y) {
+  init: function (width, height, x, y) {
     this.width = width;
     this.height = height;
     this.x = x || 0;
@@ -369,32 +369,32 @@ Ui.El.prototype = {
     this.top = this.y - height / 2;
     this.bottom = this.y + height / 2;
   },
-  create: function(type, attributes) {
+  create: function (type, attributes) {
     this.node = document.createElementNS(this.svgNS, type);
-    for (var key  in attributes) {
+    for (var key in attributes) {
       this.attr(key, attributes[key]);
     }
   },
 
-  rotate: function(angle, x, y) {
-    this.attr('transform', 'rotate(' + angle + ' ' + (x || this.x) + ' ' + (y || this.y ) + ')');
+  rotate: function (angle, x, y) {
+    this.attr('transform', 'rotate(' + angle + ' ' + (x || this.x) + ' ' + (y || this.y) + ')');
   },
 
-  attr: function(attributeName, value) {
+  attr: function (attributeName, value) {
     if (value == null) return this.node.getAttribute(attributeName) || '';
     this.node.setAttribute(attributeName, value);
   },
 
-  append: function(el) {
+  append: function (el) {
     this.node.appendChild(el.node);
   },
 
-  addClassName: function(className) {
+  addClassName: function (className) {
     this.attr('class', this.attr('class') + ' ' + className);
   }
 };
 
-Ui.El.Triangle = function() {
+Ui.El.Triangle = function () {
   this.init.apply(this, arguments);
   this.create('polygon', {
     'points': this.left + ',' + this.bottom + ' ' + this.x + ',' + this.top + ' ' + this.right + ',' + this.bottom
@@ -403,7 +403,7 @@ Ui.El.Triangle = function() {
 
 Ui.El.Triangle.prototype = Object.create(Ui.El.prototype);
 
-Ui.El.Rect = function() {
+Ui.El.Rect = function () {
   this.init.apply(this, arguments);
   this.create('rect', {
     x: this.x - this.width / 2,
@@ -415,7 +415,7 @@ Ui.El.Rect = function() {
 
 Ui.El.Rect.prototype = Object.create(Ui.El.prototype);
 
-Ui.El.Circle = function(radius, x, y) {
+Ui.El.Circle = function (radius, x, y) {
   if (arguments.length == 4) {
     x = arguments[2];
     y = arguments[3];
@@ -430,7 +430,7 @@ Ui.El.Circle = function(radius, x, y) {
 
 Ui.El.Circle.prototype = Object.create(Ui.El.prototype);
 
-Ui.El.Text = function(text, x, y, width, height) {
+Ui.El.Text = function (text, x, y, width, height) {
   this.create('text', {
     x: x,
     y: y,
@@ -442,30 +442,30 @@ Ui.El.Text = function(text, x, y, width, height) {
 
 Ui.El.Text.prototype = Object.create(Ui.El.prototype);
 
-Ui.El.Text.prototype.center = function(element) {
+Ui.El.Text.prototype.center = function (element) {
   var width = element.getAttribute('width');
   var height = element.getAttribute('height');
   this.attr('x', width / 2 - this.node.getBBox().width / 2);
   this.attr('y', height / 2 + this.node.getBBox().height / 4);
 };
 
-Ui.El.Arc = function(options) {
+Ui.El.Arc = function (options) {
   this.options = options;
   //when there are lables, do not shift the arc other wise it will be 180 degree off
   //compared to the labels
-  this.options.angleoffset = (options.angleoffset || 0) - (this.options.labels?0:90);
+  this.options.angleoffset = (options.angleoffset || 0) - (this.options.labels ? 0 : 90);
 
   this.create('path');
 };
 
 Ui.El.Arc.prototype = Object.create(Ui.El.prototype);
 
-Ui.El.Arc.prototype.setAngle = function(angle) {
+Ui.El.Arc.prototype.setAngle = function (angle) {
   this.attr('d', this.getCoords(angle));
 };
 
 
-Ui.El.Arc.prototype.getCoords = function(angle) {
+Ui.El.Arc.prototype.getCoords = function (angle) {
   var startAngle = this.options.angleoffset;
   var outerRadius = this.options.outerRadius || this.options.width / 2;
   var innerRadius = this.options.innerRadius || this.options.width / 2 - this.options.arcWidth;
@@ -479,12 +479,12 @@ Ui.El.Arc.prototype.getCoords = function(angle) {
   var p4 = pointOnCircle(innerRadius, endAngleDegree);
 
   var path = 'M' + p1.x + ',' + p1.y;
-  var largeArcFlag = ( angle < 180 ? 0 : 1);
+  var largeArcFlag = (angle < 180 ? 0 : 1);
   path += ' A' + outerRadius + ',' + outerRadius + ' 0 ' + largeArcFlag + ' 0 ' + p2.x + ',' + p2.y;
   path += 'L' + p3.x + ',' + p3.y;
   path += ' A' + innerRadius + ',' + innerRadius + ' 0 ' + largeArcFlag + ' 1 ' + p4.x + ',' + p4.y;
   path += 'L' + p1.x + ',' + p1.y;
-  return  path;
+  return path;
 
   function pointOnCircle(radius, angle) {
     return {
@@ -494,12 +494,12 @@ Ui.El.Arc.prototype.getCoords = function(angle) {
   }
 };
 
-Ui.P2 = function() {
+Ui.P2 = function () {
 };
 
 Ui.P2.prototype = Object.create(Ui.prototype);
 
-Ui.P2.prototype.createElement = function() {
+Ui.P2.prototype.createElement = function () {
   'use strict';
   Ui.prototype.createElement.apply(this, arguments);
   this.addComponent(new Ui.Arc({
@@ -511,12 +511,12 @@ Ui.P2.prototype.createElement = function() {
     pointerWidth: this.width / 10
   })));
 
-  this.merge(this.options, {arcWidth: this.width / 10});
+  this.merge(this.options, { arcWidth: this.width / 10 });
   var arc = new Ui.El.Arc(this.options);
   arc.setAngle(this.options.anglerange);
   this.el.node.appendChild(arc.node);
   this.el.node.setAttribute('class', 'p2');
 };
 
-module.exports.Knob = Knob;
-module.exports.Ui = Ui;
+export { Knob };
+export { Ui };

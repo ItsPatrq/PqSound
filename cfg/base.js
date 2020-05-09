@@ -7,7 +7,8 @@ module.exports = {
   node: {
     fs: 'empty'
   },
-  devtool: 'eval',
+  context: path.join(__dirname, '/../'),
+  devtool: 'eval-source-map',
   output: {
     path: path.join(__dirname, '/../dist/assets'),
     filename: 'boundle.js',

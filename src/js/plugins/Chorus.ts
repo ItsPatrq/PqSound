@@ -1,7 +1,18 @@
-import { PluginsEnum } from 'constants/Constants';
+import { PluginsEnum } from '../constants/Constants';
 import Plugin from './Plugin';
 
 class Chorus extends Plugin {
+    dryGain: GainNode;
+    wetGain: GainNode;
+    feedbackGainNodeLR: GainNode;
+    splitter: ChannelSplitterNode;
+    delayL: DelayNode;
+    delayR: DelayNode;
+    merger: ChannelMergerNode;
+    feedbackGainNodeRL: GainNode;
+    osc: OscillatorNode;
+    depthL: GainNode;
+    depthR: GainNode;
     constructor(index, audioContext) {
         super(PluginsEnum.Chorus, index, audioContext)
         this.preset = {

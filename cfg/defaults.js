@@ -18,13 +18,13 @@ let ExtractTextPlugin = require('extract-text-webpack-plugin');
 function getDefaultModules() {
     return {
         rules: [
-            {
-                enforce: 'pre',
-                test: /\.(js|jsx)$/,
-                include: srcPath,
-                exclude: /node_modules/,
-                loader: 'eslint-loader'
-            },
+            // {
+            //     enforce: 'pre',
+            //     test: /\.(js|jsx)$/,
+            //     include: srcPath,
+            //     exclude: /node_modules/,
+            //     loader: 'eslint-loader'
+            // },
             {
                 test: /\.json?$/,
                 loader: 'json'

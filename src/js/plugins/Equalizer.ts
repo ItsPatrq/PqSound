@@ -1,7 +1,18 @@
-import { PluginsEnum } from 'constants/Constants';
+import { PluginsEnum } from '../constants/Constants';
 import Plugin from './Plugin';
 
 class Equalizer extends Plugin {
+    sum: GainNode;
+    inputGain: GainNode;
+    hBand: BiquadFilterNode;
+    hInvert: GainNode;
+    lBand: BiquadFilterNode;
+    mBand: GainNode;
+    lInvert: GainNode;
+    lGain: GainNode;
+    mGain: any;
+    hGain: any;
+
     constructor(index, audioContext) {
         super(PluginsEnum.Equalizer, index, audioContext)
         this.preset = {

@@ -1,9 +1,10 @@
-import { PluginsEnum } from 'constants/Constants';
+import { PluginsEnum } from '../constants/Constants';
 import Plugin from './Plugin';
 
 class Compressor extends Plugin{
-    constructor(index, audioContext){
-        super(PluginsEnum.Compressor, index, audioContext)
+    compressorNode: DynamicsCompressorNode;
+    constructor(index:number, audioContext:AudioContext){
+        super(PluginsEnum.Compressor, index, audioContext);
         this.preset = {
             threashold: -50,
             knee: 40,

@@ -1,7 +1,10 @@
-import { PluginsEnum } from 'constants/Constants';
+import { PluginsEnum } from '../constants/Constants';
 import Plugin from './Plugin';
 
 class Distortion extends Plugin {
+    gainNode: GainNode;
+    distortionNode: WaveShaperNode;
+    
     constructor(index, audioContext) {
         super(PluginsEnum.Distortion, index, audioContext);
         this.preset = {

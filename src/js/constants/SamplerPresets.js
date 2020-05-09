@@ -65,6 +65,7 @@ Utils.getPresetListByName = function (name) {
     }
 }
 
-module.exports.Utils = Utils;
-module.exports.Presets = Presets;
+export {Utils};
+export {Presets};
+export {presetList}
 export default presetList;

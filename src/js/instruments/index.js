@@ -23,7 +23,7 @@ Utils.getNewInstrumentByIndex = (id, preset, audioContext) => {
     }
 }
 
-module.exports = {
+export {
     Sampler,
     PqSynth,
     Monotron,
