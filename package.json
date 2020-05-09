@@ -62,7 +62,7 @@
     "express": "^4.16.4",
     "normalize.css": "8.0.1",
     "npm": "^6.4.1",
-    "react": "^16.6.3",
+    "react": "^16.13.1",
     "react-bootstrap": "^0.31.5",
     "react-dom": "^16.6.3",
     "react-dropzone": "^4.3.0",
