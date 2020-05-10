@@ -1,5 +1,10 @@
 export class BufferLoader {
-    constructor(context, urlList=null, callback=null) {
+    context: AudioContext;
+    urlList: string[];
+    onload: (bufferLoader:BufferLoader) => any;
+    loadCount: number;
+    bufferList: AudioBuffer[];
+    constructor(context:AudioContext, urlList:string[], callback:(bufferLoader:BufferLoader)=>any) {
         this.context = context;
         this.urlList = urlList;
         this.onload = callback;
@@ -7,13 +12,13 @@ export class BufferLoader {
         this.loadCount = 0;
     }
 
-    loadBuffer = function (url, index) {
+    loadBuffer(url, index) {
         // Load buffer asynchronously
         let request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.responseType = 'arraybuffer';
 
-        let thisBuffer = this;
+        const thisBuffer = this;
 
         request.onload = function () {
             // Asynchronously decode the audio file data in request.response
@@ -42,7 +47,7 @@ export class BufferLoader {
         request.send();
     }
 
-    load = function () {
+    load() {
         this.bufferList.length = 0;
         for (var i = 0; i < this.urlList.length; ++i)
             this.loadBuffer(this.urlList[i], i);

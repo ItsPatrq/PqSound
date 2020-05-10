@@ -1,5 +1,5 @@
 import React from 'react';
-import { Knob, Ui } from 'engine/Knob';
+import { Knob, Ui } from '../shared/Knob/Knob';
 import * as Utils from 'engine/Utils';
 
 class PanKnob extends React.Component {

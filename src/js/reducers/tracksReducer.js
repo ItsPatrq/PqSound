@@ -11,7 +11,7 @@ import { Utils as SamplerPresetsUtils, Presets as SamplerPresets } from 'constan
  */
 let newMasterPluginList = new Array;
 let newTrackPluginList = new Array;
-let firstInstrument = new Sampler(SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id));
+let firstInstrument = {};
 export default function reducer(state = {
     trackList: [
         {
@@ -25,7 +25,7 @@ export default function reducer(state = {
             index: 0,
             output: null, //output: context.destination
             input: [1],
-            trackNode: new Track(newMasterPluginList)
+            trackNode: {}
         },
         {
             name: 'Piano',
@@ -40,7 +40,7 @@ export default function reducer(state = {
             index: 1,
             output: 0,
             input: new Array,
-            trackNode: new Track(newTrackPluginList, firstInstrument)
+            trackNode: {}
         }],
     selected: 1,
     anyVirtualInstrumentSolo: false,
@@ -68,7 +68,7 @@ export default function reducer(state = {
                     index: state.trackList.length,
                     output: 0,
                     input: new Array,
-                    trackNode: new Track(newPluginList, newInstrument, Utils.getTrackByIndex(newTrackList, 0).trackNode.input, 1.0, 0)
+                    trackNode: new Track(newPluginList, newInstrument, Utils.getTrackByIndex(newTrackList, 0).trackNode.input, action.payload.audioContext, 1.0, 0)
                 }
             );
             if(action.payload.trackType === TrackTypes.virtualInstrument){
@@ -250,15 +250,20 @@ export default function reducer(state = {
             let newTrackList = [...state.trackList];
             const {index, audioContext} = action.payload;
             if (Utils.isNullOrUndefined(index)) {
+                //TODO: Get rid of
                 newTrackList[newTrackList.length - 1].instrument.initContext(audioContext);
                 newTrackList[newTrackList.length - 1].trackNode.initContext(audioContext);
                 newTrackList[0].trackNode.initContext();
             } else {
                 for (let i = 0; i < newTrackList.length; i++) {
                     if (newTrackList[i].index === index) {
-                        newTrackList[0].trackNode.initContext(audioContext);
-                        newTrackList[i].instrument.initContext(audioContext);
-                        newTrackList[i].trackNode.initContext(audioContext, newTrackList[0].trackNode.input);
+                        newTrackList[0].trackNode = new Track(
+                            newTrackList[0].pluginList, null, null, audioContext, 1., 0
+                        );
+                        newTrackList[i].instrument = new Sampler(SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id), audioContext);
+                        newTrackList[i].trackNode = new Track(
+                            newTrackList[i].pluginList, newTrackList[i].instrument, newTrackList[0].trackNode.input, audioContext, 1., 0)
+                    
                     }
                 }
             }
@@ -297,7 +302,7 @@ export default function reducer(state = {
             let newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
-                    let newInstrument = InstrumentsUtils.getNewInstrumentByIndex(action.payload.trackInstrumentId);
+                    let newInstrument = InstrumentsUtils.getNewInstrumentByIndex(action.payload.trackInstrumentId, undefined, action.payload.audioContext);
                     newTrackList[i].instrument = newInstrument;
                     newTrackList[i].trackNode.updateInstrument(newInstrument);
                     break;

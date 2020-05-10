@@ -1,60 +1,58 @@
 import Store from '../stroe';
-import { notesToPlay } from 'engine/CompositionParser';
-import { updateCurrentTime } from 'actions/controlActions';
-import * as Utils from 'engine/Utils';
-import { SoundOrigin } from 'constants/Constants';
+import { notesToPlay } from './CompositionParser';
+import { updateCurrentTime } from '../actions/controlActions';
+import * as Utils from './Utils';
+import { SoundOrigin } from '../constants/Constants';
 
 class Sequencer {
-    constructor() {
-        this.noteTime = null;
-        this.startTime = null;
-        this.sixteenthPlaying = 0;
-        this.timeoutId = null;
-        this.timerWorker = null;
-        this.scheduleAhead = 0.200;
-    }
+    noteTime?: number;
+    startTime?: number;
+    timerWorker?: Worker;
+    sixteenthPlaying: number = 0;
+    timeoutId?: number;
+    scheduleAhead: number = 0.200;
     handlePlay() {
         this.noteTime = 0.0;
-        this.startTime = Store.getState().webAudio.context.currentTime + 0.005;
+        this.startTime = (Store.getState().webAudio as any).context.currentTime + 0.005;
         this.schedule();
-        this.timerWorker.postMessage('start');
+        this.timerWorker!.postMessage('start');
     }
     handleStop(/*event*/) {
-        this.timerWorker.postMessage('stop');
+        this.timerWorker!.postMessage('stop');
         setTimeout(() => {
-            Store.getState().webAudio.sound.stopAll(SoundOrigin.composition);
+            (Store.getState().webAudio as any).sound.stopAll(SoundOrigin.composition);
             this.sixteenthPlaying = 0;
             Store.dispatch(updateCurrentTime(this.sixteenthPlaying));
         },80);
             
     }
     handlePause(/*event*/) {
-        this.timerWorker.postMessage('stop');
-        Store.getState().webAudio.sound.stopAll(SoundOrigin.composition);
+        this.timerWorker!.postMessage('stop');
+        (Store.getState().webAudio as any).sound.stopAll(SoundOrigin.composition);
     }
     schedule() {
-        let currentTime = Store.getState().webAudio.context.currentTime;
+        let currentTime = ((Store.getState().webAudio as any).context as AudioContext).currentTime;
 
-        currentTime -= this.startTime;
+        currentTime -= this.startTime!;
 
         /**
          * Schedule notes to play for x secounds in advance (in this case, x = 0.200)
          */
-        while (this.noteTime < currentTime + this.scheduleAhead) {
+        while (this.noteTime! < currentTime + this.scheduleAhead) {
             // Convert noteTime to context time.
-            var contextPlayTime = this.noteTime + this.startTime;
+            var contextPlayTime = this.noteTime! + this.startTime!;
             
-            let trackList = Store.getState().tracks.trackList;
-            let soundHandler = Store.getState().webAudio.sound;
+            let trackList = (Store.getState().tracks as any).trackList;
+            let soundHandler = (Store.getState().webAudio as any).sound;
             soundHandler.scheduleStop(this.sixteenthPlaying, contextPlayTime, SoundOrigin.composition);
             //iterate through all tracks
             for (let i = 0; i < trackList.length; i++) {
                 let currTrackIndex = trackList[i].index;
                 let currentNotesToPlay = notesToPlay(this.sixteenthPlaying, currTrackIndex);
                 if (!Utils.isNullUndefinedOrEmpty(currentNotesToPlay)) {
-                    for (let j = 0; j < currentNotesToPlay.length; j++) {
-                        soundHandler.play(currTrackIndex, contextPlayTime, Utils.noteToMIDI(currentNotesToPlay[j].note),
-                            SoundOrigin.composition, this.sixteenthPlaying +  currentNotesToPlay[j].durotian);
+                    for (let j = 0; j < currentNotesToPlay!.length; j++) {
+                        soundHandler.play(currTrackIndex, contextPlayTime, Utils.noteToMIDI(currentNotesToPlay![j].note),
+                            SoundOrigin.composition, this.sixteenthPlaying +  currentNotesToPlay![j].durotian);
                     }
                 }
             }
@@ -70,7 +68,7 @@ class Sequencer {
 
         this.sixteenthPlaying++;
 
-        this.noteTime += 0.25 * secoundsPerBeat;
+        this.noteTime! += 0.25 * secoundsPerBeat;
         
         Store.dispatch(updateCurrentTime(this.sixteenthPlaying));
     }

@@ -1,50 +1,28 @@
-import { isNullOrUndefined, getTrackByIndex, devLog } from 'engine/Utils';
+import { isNullOrUndefined, devLog } from './Utils';
 class Track {
-  constructor(newPluginList, newInstrument, newDestTrack, audioContext, newVolume = 1.0, newPan = 0.0) {
+  pluginNodeList: any;
+  destTrack?: AudioNode;
+  instrument: any;
+  solo: boolean;
+  mute: boolean;
+  anySolo: boolean;
+  context?: AudioContext;
+  gainNode?: GainNode;
+  muteNode?: GainNode;
+  panNode?: StereoPannerNode;
+  leftAnalyserNode?: AnalyserNode;
+  rightAnalyserNode?: AnalyserNode;
+  splitter?: ChannelSplitterNode;
+  input?: GainNode;
+  output?: StereoPannerNode;
+  constructor(newPluginList, newInstrument, newDestTrack, audioContext:AudioContext, newVolume = 1.0, newPan = 0.0) {
     this.pluginNodeList = newPluginList;
     this.destTrack = newDestTrack;
     this.instrument = newInstrument;
     this.solo = false;
     this.mute = false;
     this.anySolo = false;
-    if (!isNullOrUndefined(audioContext)) {
-      this.context = audioContext;
-      this.gainNode = this.context.createGain();
-      this.muteNode = this.context.createGain();
-      this.panNode = this.context.createStereoPanner();
-
-      this.leftAnalyserNode = this.context.createAnalyser();
-      this.rightAnalyserNode = this.context.createAnalyser();
-      this.splitter = this.context.createChannelSplitter(2);
-
-      this.gainNode.connect(this.panNode);
-      this.input = this.gainNode;
-      this.panNode.connect(this.splitter);
-      this.output = this.panNode;
-      this.splitter.connect(this.leftAnalyserNode,0,0);
-      this.splitter.connect(this.rightAnalyserNode,1,0);
-
-      this.gainNode.gain.setValueAtTime(newVolume, this.context.currentTime);
-      this.muteNode.gain.setValueAtTime(0.000001, this.context.currentTime);
-      this.panNode.pan.setValueAtTime(newPan, this.context.currentTime);
-
-      this.leftAnalyserNode.smoothingTimeConstant = 0.3;
-      this.leftAnalyserNode.fftSize = 1024;
-      this.rightAnalyserNode.smoothingTimeConstant = 0.3;
-      this.rightAnalyserNode.fftSize = 1024;
-
-
-      if (isNullOrUndefined(this.destTrack)) {
-        this.output.connect(this.context.destination);
-      } else {
-        this.output.connect(this.destTrack)
-      }
-      if (!isNullOrUndefined(newInstrument)) {
-        newInstrument.connect(this.input);
-      }
-    } else {
-      devLog("Error initializing track")
-    }
+    this.initAudioContext(audioContext, newVolume, newPan);
   }
 getAverageVolume(){
   if(!this.context || !this.leftAnalyserNode || !this.rightAnalyserNode ){
@@ -80,28 +58,28 @@ getAverageVolume(){
     return { input: firstPluginInChain.input, output: lastPluginInChain.output };
   }
 
-  updateTrackNode(newDestTrack) {
+  updateTrackNode(newDestTrack?:AudioNode) {
     for (let i = 0; i < this.pluginNodeList.length; i++) {
       this.pluginNodeList[i].output.disconnect();
     }
-    this.panNode.disconnect();
+    this.panNode!.disconnect();
 
     this.destTrack = isNullOrUndefined(newDestTrack) ? this.destTrack : newDestTrack;
 
     if (!this.mute) {
       if (this.pluginNodeList.length > 0) {
         let pluginChain = this.getPluginChainNode();
-        this.panNode.connect(pluginChain.input);
+        this.panNode!.connect(pluginChain.input);
         this.output = pluginChain.output;
         pluginChain.output.connect(this.splitter);
       } else {
         this.output = this.panNode;
-        this.panNode.connect(this.splitter);
+        this.panNode!.connect(this.splitter!);
       }
       if (isNullOrUndefined(this.destTrack)) {
-        this.output.connect(this.context.destination);
+        this.output!.connect(this.context!.destination);
       } else if (this.anySolo && this.solo || !this.anySolo) {
-        this.output.connect(this.destTrack);
+        this.output!.connect(this.destTrack!);
       }
     }
   }
@@ -113,13 +91,13 @@ getAverageVolume(){
   }
 
   changeVolume(newVolume, changeTime) {
-    changeTime = changeTime || this.context.currentTime;
-    this.gainNode.gain.setValueAtTime(newVolume, changeTime);
+    changeTime = changeTime || this.context!.currentTime;
+    this.gainNode!.gain.setValueAtTime(newVolume, changeTime);
   }
 
   changePan(newPan, changeTime) {
-    changeTime = changeTime || this.context.currentTime;
-    this.panNode.pan.setValueAtTime(newPan/100, changeTime);
+    changeTime = changeTime || this.context!.currentTime;
+    this.panNode!.pan.setValueAtTime(newPan/100, changeTime);
   }
 
   getTrackNode() {
@@ -145,10 +123,44 @@ getAverageVolume(){
   /**
   * due to initializing web audio api at start of application and sampler is the default instrument
   */
-  initContext(audioContext, destTrack) {
-    if (isNullOrUndefined(this.context)) {
+  initAudioContext(audioContext:AudioContext, newVolume:number, newPan:number) {
+    if (!isNullOrUndefined(audioContext)) {
       this.context = audioContext;
-      this.constructor(this.pluginNodeList, this.instrument, destTrack, audioContext);
+      this.gainNode = this.context.createGain();
+      this.muteNode = this.context.createGain();
+      this.panNode = this.context.createStereoPanner();
+
+      this.leftAnalyserNode = this.context.createAnalyser();
+      this.rightAnalyserNode = this.context.createAnalyser();
+      this.splitter = this.context.createChannelSplitter(2);
+
+      this.gainNode.connect(this.panNode);
+      this.input = this.gainNode;
+      this.panNode.connect(this.splitter);
+      this.output = this.panNode;
+      this.splitter.connect(this.leftAnalyserNode, 0, 0);
+      this.splitter.connect(this.rightAnalyserNode, 1, 0);
+
+      this.gainNode.gain.setValueAtTime(newVolume, this.context.currentTime);
+      this.muteNode.gain.setValueAtTime(0.000001, this.context.currentTime);
+      this.panNode.pan.setValueAtTime(newPan, this.context.currentTime);
+
+      this.leftAnalyserNode.smoothingTimeConstant = 0.3;
+      this.leftAnalyserNode.fftSize = 1024;
+      this.rightAnalyserNode.smoothingTimeConstant = 0.3;
+      this.rightAnalyserNode.fftSize = 1024;
+
+
+      if (isNullOrUndefined(this.destTrack)) {
+        this.output.connect(this.context.destination);
+      } else {
+        this.output.connect(this.destTrack!)
+      }
+      if (!isNullOrUndefined(this.instrument)) {
+        this.updateInstrument(this.instrument);
+      }
+    } else {
+      devLog("Error initializing track")
     }
   }
 }

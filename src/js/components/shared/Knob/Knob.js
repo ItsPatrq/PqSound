@@ -1,7 +1,7 @@
 var Knob;
 Knob = function (input, ui) {
   var container = document.createElement('div');
-  container.setAttribute('tabindex', 0);
+  container.setAttribute('tabindex', "0");
   input.parentNode.replaceChild(container, input);
   input.style.cssText = 'position: absolute; top: -10000px';
   input.setAttribute('tabindex', -1);

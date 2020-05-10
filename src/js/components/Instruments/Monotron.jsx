@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Utils from 'engine/Utils';
-import { Knob, Ui } from 'engine/Knob';
+import { Knob, Ui } from '../shared/Knob/Knob';
 require('styles/Instruments/Monotron.css');
 
 class Monotron extends React.Component {

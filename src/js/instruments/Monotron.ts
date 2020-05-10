@@ -1,44 +1,50 @@
 import Store from '../stroe';
-import { Instruments } from 'constants/Constants';
-import { isNullOrUndefined, noteToFrequency } from 'engine/Utils';
-import Instrument from './Instrument';
+import { Instruments } from '../constants/Constants';
+import { isNullOrUndefined, noteToFrequency } from '../engine/Utils';
+import { InstrumentBase } from './Instrument';
+import { VoiceSynthBase } from './Voice';
+class MonotronVoice extends VoiceSynthBase {
+    frequency: number;
+    mod: any;
+    vco: OscillatorNode;
+    lfo: OscillatorNode;
+    lfoGain: GainNode;
+    vcf: BiquadFilterNode;
+    output: GainNode;
 
-class MonotronVoise {
-    constructor(frequency, startTime, preset, audioContext) {
-        if (!isNullOrUndefined(audioContext)) {
-            this.context = audioContext;
-            this.frequency = frequency;
-            this.mod = preset.mod;
-            this.vco = this.context.createOscillator();
-            this.lfo = this.context.createOscillator();
-            this.lfoGain = this.context.createGain();
-            this.vcf = this.context.createBiquadFilter();
-            this.output = this.context.createGain();
+    constructor(frequency:number, startTime:number, preset:any, audioContext:AudioContext) {
+        super(audioContext, preset);
+        this.frequency = frequency;
+        this.mod = preset.mod;
+        this.vco = this.context.createOscillator();
+        this.lfo = this.context.createOscillator();
+        this.lfoGain = this.context.createGain();
+        this.vcf = this.context.createBiquadFilter();
+        this.output = this.context.createGain();
 
-            this.vco.connect(this.vcf);
-            this.vcf.connect(this.output);
-            this.lfo.connect(this.lfoGain);
-            if (preset.mod === 'pitch') {
-                this.lfoGain.connect(this.vco.frequency);
-            } else if (preset.mod === 'cutoff') {
-                this.lfoGain.connect(this.vcf.frequency);
-            }
-
-            this.output.gain.setValueAtTime(0.0001, this.context.currentTime);
-            this.vco.type = 'sawtooth'
-            this.lfo.type = 'sawtooth'
-            this.vco.frequency.setValueAtTime(frequency + preset.vco.pitch, this.context.currentTime);
-            this.lfo.frequency.setValueAtTime(preset.lfo.rate, this.context.currentTime);
-            this.lfoGain.gain.setValueAtTime(preset.lfo.int, this.context.currentTime);
-            this.vcf.frequency.setValueAtTime(preset.vcf.cutoff, this.context.currentTime);
-            this.vcf.Q.setValueAtTime(preset.vcf.peak,this.context.currentTime);
-
-            this.vco.start(this.context.currentTime);
-            this.lfo.start(this.context.currentTime);
+        this.vco.connect(this.vcf);
+        this.vcf.connect(this.output);
+        this.lfo.connect(this.lfoGain);
+        if (preset.mod === 'pitch') {
+            this.lfoGain.connect(this.vco.frequency);
+        } else if (preset.mod === 'cutoff') {
+            this.lfoGain.connect(this.vcf.frequency);
         }
+
+        this.output.gain.setValueAtTime(0.0001, this.context.currentTime);
+        this.vco.type = 'sawtooth'
+        this.lfo.type = 'sawtooth'
+        this.vco.frequency.setValueAtTime(frequency + preset.vco.pitch, this.context.currentTime);
+        this.lfo.frequency.setValueAtTime(preset.lfo.rate, this.context.currentTime);
+        this.lfoGain.gain.setValueAtTime(preset.lfo.int, this.context.currentTime);
+        this.vcf.frequency.setValueAtTime(preset.vcf.cutoff, this.context.currentTime);
+        this.vcf.Q.setValueAtTime(preset.vcf.peak, this.context.currentTime);
+
+        this.vco.start(this.context.currentTime);
+        this.lfo.start(this.context.currentTime);
     }
 
-    start(time) {
+    start(time:number) {
         time = time || this.context.currentTime;
         this.output.gain.exponentialRampToValueAtTime(0.7, time);
     }
@@ -78,7 +84,7 @@ class MonotronVoise {
     }
 }
 
-class Monotron extends Instrument {
+class Monotron extends InstrumentBase {
     constructor(preset, audioContext) {
         super(Instruments.Monotron, audioContext)
         this.preset = {
@@ -105,7 +111,7 @@ class Monotron extends Instrument {
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let currVoice = new MonotronVoise(noteToFrequency(note), startTime, this.preset, this.context);
+            let currVoice = new MonotronVoice(noteToFrequency(note), startTime, this.preset, this.context);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;

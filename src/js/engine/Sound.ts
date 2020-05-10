@@ -1,14 +1,19 @@
 import Store from '../stroe';
-import * as Utils from 'engine/Utils';
-import { SoundOrigin } from 'constants/Constants';
+import * as Utils from './Utils';
+import { SoundOrigin } from '../constants/Constants';
 
 export default class Sound {
-  constructor(newContext) {
+  context: AudioContext;
+  playingSounds: any[][];
+  constructor(newContext:AudioContext) {
+    if(newContext.state !== "running") {
+      newContext.resume();
+    }
     this.context = newContext;
     this.playingSounds = [[], [], []]; // trackindex, note, origin, endindex
   }
 
-  scheduleStop(sixteenthPlaying, contextPlayTime, origin) {
+  scheduleStop(sixteenthPlaying:number, contextPlayTime:number, origin:number) {
     for (let i = this.playingSounds[origin].length - 1; i >= 0; i--) {
       let currNote = this.playingSounds[origin][i];
       if (currNote.endIndex === sixteenthPlaying) {
@@ -18,7 +23,7 @@ export default class Sound {
     }
   }
 
-  stopAll(origin) {
+  stopAll(origin:number) {
     for (let i = 0; i < this.playingSounds[origin].length; i++) {
       this.stop(this.playingSounds[origin][i].trackIndex, this.playingSounds[origin][i].note);
     }
@@ -37,7 +42,7 @@ export default class Sound {
     currTrack.instrument.noteOn(note, contextPlayTime);
   }
 
-  stop(trackIndex, note, contextStopTime) {
+  stop(trackIndex:number, note:number, contextStopTime?:number) {
     if (Utils.isNullOrUndefined(contextStopTime)) {
       contextStopTime = this.context.currentTime + 0.001;
     }

@@ -82,11 +82,13 @@ export function changeTrackPan(newIndex, newPan){
 }
 
 export function changeTrackInstrument(newTrackInstrumentId, newIndex){
+    const audioContext = Store.getState().webAudio.context;
     return {
         type: 'CHANGE_TRACK_INSTRUMENT',
         payload: {
             index: newIndex,
-            trackInstrumentId: newTrackInstrumentId
+            trackInstrumentId: newTrackInstrumentId,
+            audioContext: audioContext
         }
     }
 }

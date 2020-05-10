@@ -1,14 +1,14 @@
 import Store from '../stroe';
-import * as Utils from 'engine/Utils';
+import * as Utils from './Utils';
 
-export const getRegionsByTrackIndex = (trackIndex, allRegions) => {
+export const getRegionsByTrackIndex = (trackIndex:number, allRegions?:any[]) => {
     let regionsByTrackIndex = new Array;
     if (Utils.isNullOrUndefined(allRegions)) {
         allRegions = Store.getState().composition.regionList;
     }
-    for (let i = 0; i < allRegions.length; i++) {
-        if (allRegions[i].trackIndex === trackIndex) {
-            regionsByTrackIndex.push(allRegions[i]);
+    for (let i = 0; i < allRegions!.length; i++) {
+        if (allRegions![i].trackIndex === trackIndex) {
+            regionsByTrackIndex.push(allRegions![i]);
         }
     }
     return regionsByTrackIndex;
@@ -49,13 +49,13 @@ export const getRegionIdByBitIndex = (trackIndex, bitIndex) => {
     return regionId;
 }
 
-export const getRegionByRegionId = (regionId, regionList) => {
+export const getRegionByRegionId = (regionId:number, regionList?:any[]) => {
     if (Utils.isNullOrUndefined(regionList)) {
         regionList = Store.getState().composition.regionList;
     }
-    for (let i = 0; i < regionList.length; i++) {
-        if (regionList[i].id === regionId) {
-            return regionList[i];
+    for (let i = 0; i < regionList!.length; i++) {
+        if (regionList![i].id === regionId) {
+            return regionList![i];
         }
     }
 }
@@ -81,17 +81,18 @@ export const notesToDrawParser = (pianoRollNote) => {
 
 export const notesToPlay = (sixteenthPlaying, trackIndex) => {
     let regions = getRegionsByTrackIndex(trackIndex);
-    if (!Utils.isNullUndefinedOrEmpty(regions)) {
-        let notesToPlay = new Array;
-        for (let i = 0; i < regions.length; i++) {
-            if (regions[i].start * 16 <= sixteenthPlaying && (regions[i].end + 1) * 16 >= sixteenthPlaying) {
-                let currRegion = regions[i];
-                for (let j = 0; j < currRegion.notes.length; j++) {
-                    if (!Utils.isNullUndefinedOrEmpty(currRegion.notes[j])) {
-                        for (let z = 0; z < currRegion.notes[j].length; z++) {
-                            if (currRegion.notes[j][z].sixteenthNumber + currRegion.start * 16 === sixteenthPlaying) {
-                                notesToPlay.push({ note: j, durotian: currRegion.notes[j][z].length });
-                            }
+    if (Utils.isNullUndefinedOrEmpty(regions)) {
+        return;
+    }
+    let notesToPlay = new Array;
+    for (let i = 0; i < regions.length; i++) {
+        if (regions[i].start * 16 <= sixteenthPlaying && (regions[i].end + 1) * 16 >= sixteenthPlaying) {
+            let currRegion = regions[i];
+            for (let j = 0; j < currRegion.notes.length; j++) {
+                if (!Utils.isNullUndefinedOrEmpty(currRegion.notes[j])) {
+                    for (let z = 0; z < currRegion.notes[j].length; z++) {
+                        if (currRegion.notes[j][z].sixteenthNumber + currRegion.start * 16 === sixteenthPlaying) {
+                            notesToPlay.push({ note: j, durotian: currRegion.notes[j][z].length });
                         }
                     }
                 }
@@ -99,4 +100,5 @@ export const notesToPlay = (sixteenthPlaying, trackIndex) => {
         }
         return (notesToPlay);
     }
+    return;
 }

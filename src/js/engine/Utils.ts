@@ -24,7 +24,7 @@ export const getRegionsByTrackIndex = (regionsByTrack, index) => {
 
 export const removeAllFromArray = (array, condition) => {
     let newArray = [...array];
-    for (let i = newArray.lengt - 1; i >= 0; i--) {
+    for (let i = newArray.length - 1; i >= 0; i--) {
         if (condition(newArray[i])) {
             newArray.splice(i, 1);
         }

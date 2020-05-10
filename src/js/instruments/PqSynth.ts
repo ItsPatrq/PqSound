@@ -1,23 +1,39 @@
-import { Instruments } from 'constants/Constants';
-import { isNullOrUndefined, noteToFrequency } from 'engine/Utils';
-import Instrument from './Instrument';
+import { Instruments } from '../constants/Constants';
+import { isNullOrUndefined, noteToFrequency } from '../engine/Utils';
+import {InstrumentBase} from './Instrument';
+import {VoiceSynthBase} from './Voice';
 
-class PqSynthVoice {
-    constructor(note, startTime, preset, audioContext) {
-        if (!isNullOrUndefined(audioContext)) {
-            this.context = audioContext;
-            this.oscillator = this.context.createOscillator();
-            this.output = this.context.createGain();
-            this.output.gain.setValueAtTime(0.0001, startTime || this.context.currentTime);
-            this.oscillatorsConstructor(note, preset, startTime);
-            this.oscillatorsOutput.connect(this.output);
-            this.preset = preset;
-        }
+export interface PqSynthOscillator {
+    widthAmplitudeLfoModifier: GainNode;
+    amplitudeLfoModifier: OscillatorNode;
+    baseAmplitude: GainNode;
+    widthFqLfoModifier: GainNode;
+    fqLfoModifier: OscillatorNode;
+    source: AudioBufferSourceNode | OscillatorNode;
+
+}
+
+class PqSynthVoice extends VoiceSynthBase{
+    updatePreset(preset: any) {
+        console.warn("Method not implemented.");
+    }
+    oscillator: OscillatorNode;
+    output:GainNode;
+    oscillatorsOutput: GainNode;
+    oscillators: PqSynthOscillator[] = [{} as PqSynthOscillator, {} as PqSynthOscillator, {} as PqSynthOscillator];
+    constructor(note:number, startTime:number, preset:any, audioContext:AudioContext) {
+        super(audioContext, preset);
+        this.context = audioContext;
+        this.oscillator = this.context.createOscillator();
+        this.output = this.context.createGain();
+        this.output.gain.setValueAtTime(0.0001, startTime || this.context.currentTime);
+        this.oscillatorsOutput = this.context.createGain();
+        this.oscillatorsConstructor(note, preset, startTime);
+        this.oscillatorsOutput.connect(this.output);
+        this.preset = preset;
     }
 
-    oscillatorsConstructor(note, preset/*, startTime*/) {
-        this.oscillatorsOutput = this.context.createGain();
-        this.oscillators = [{}, {}, {}];
+    oscillatorsConstructor(note, preset, startTime) {
         for (let i = 0; i < preset.oscillators.length; i++) {
             if (preset.oscillators[i].active) {
                 if (preset.oscillators[i].waveForm === 'whiteNoise') {
@@ -29,8 +45,8 @@ class PqSynthVoice {
                     }
 
                     this.oscillators[i].source = this.context.createBufferSource();
-                    this.oscillators[i].source.buffer = noiseBuffer;
-                    this.oscillators[i].source.loop = true;
+                    (this.oscillators[i].source as AudioBufferSourceNode).buffer = noiseBuffer;
+                    (this.oscillators[i].source as AudioBufferSourceNode).loop = true;
                     this.oscillators[i].source.start(0);
                 } else if(preset.oscillators[i].waveForm === 'pinkNoise'){
                     let bufferSize = 2 * this.context.sampleRate,
@@ -51,8 +67,8 @@ class PqSynthVoice {
                             b6 = white * 0.115926;
                     }
                     this.oscillators[i].source = this.context.createBufferSource();
-                    this.oscillators[i].source.buffer = noiseBuffer;
-                    this.oscillators[i].source.loop = true;
+                    (this.oscillators[i].source  as AudioBufferSourceNode).buffer = noiseBuffer;
+                    (this.oscillators[i].source  as AudioBufferSourceNode).loop = true;
                     this.oscillators[i].source.start(0);
                 } else if(preset.oscillators[i].waveForm === 'brownianNoise'){
                     let bufferSize = 2 * this.context.sampleRate,
@@ -66,14 +82,14 @@ class PqSynthVoice {
                         output[i] *= 3.5; // (roughly) compensate for gain
                     }
                     this.oscillators[i].source = this.context.createBufferSource();
-                    this.oscillators[i].source.buffer = noiseBuffer;
-                    this.oscillators[i].source.loop = true;
+                    (this.oscillators[i].source as AudioBufferSourceNode).buffer = noiseBuffer;
+                    (this.oscillators[i].source as AudioBufferSourceNode).loop = true;
                     this.oscillators[i].source.start(0);
                 } else {
                     this.oscillators[i].source = this.context.createOscillator();
-                    this.oscillators[i].source.type = preset.oscillators[i].waveForm;
-                    let frequency = noteToFrequency(note + preset.oscillators[i].frequencyModOct * 12 + preset.oscillators[i].frequencyModPercent / 12)
-                    this.oscillators[i].source.frequency.setValueAtTime(frequency, this.context.currentTime);
+                    (this.oscillators[i].source as OscillatorNode).type = preset.oscillators[i].waveForm;
+                    const frequency = noteToFrequency(note + preset.oscillators[i].frequencyModOct * 12 + preset.oscillators[i].frequencyModPercent / 12);
+                    (this.oscillators[i].source  as OscillatorNode).frequency.setValueAtTime(frequency, this.context.currentTime);
                     this.oscillators[i].source.start();
 
                     if (preset.oscillators[i].frequencyModLfo) {
@@ -84,13 +100,13 @@ class PqSynthVoice {
                         this.oscillators[i].widthFqLfoModifier.gain.setValueAtTime(preset.oscillators[i].frequencyModLfoWidth, this.context.currentTime);
                         this.oscillators[i].fqLfoModifier.connect(this.oscillators[i].widthFqLfoModifier);
                         this.oscillators[i].fqLfoModifier.start();
-                        this.oscillators[i].widthFqLfoModifier.connect(this.oscillators[i].source.frequency);
+                        this.oscillators[i].widthFqLfoModifier.connect((this.oscillators[i].source  as OscillatorNode).frequency);
                     }
                 }
 
-                this.oscillators[i].baseAplitude = this.context.createGain();
-                this.oscillators[i].source.connect(this.oscillators[i].baseAplitude);
-                this.oscillators[i].baseAplitude.gain.setValueAtTime(preset.oscillators[i].amplitudeModPercent / 100, this.context.currentTime);
+                this.oscillators[i].baseAmplitude = this.context.createGain();
+                this.oscillators[i].source.connect(this.oscillators[i].baseAmplitude);
+                this.oscillators[i].baseAmplitude.gain.setValueAtTime(preset.oscillators[i].amplitudeModPercent / 100, this.context.currentTime);
                 if (preset.oscillators[i].amplitudeModLfo) {
                     this.oscillators[i].amplitudeLfoModifier = this.context.createOscillator();
                     this.oscillators[i].amplitudeLfoModifier.type = 'sine';
@@ -99,10 +115,10 @@ class PqSynthVoice {
                     this.oscillators[i].widthAmplitudeLfoModifier.gain.setValueAtTime(preset.oscillators[i].amplitudeModLfoWidth, this.context.currentTime);
                     this.oscillators[i].amplitudeLfoModifier.connect(this.oscillators[i].widthAmplitudeLfoModifier);
                     this.oscillators[i].amplitudeLfoModifier.start();
-                    this.oscillators[i].widthAmplitudeLfoModifier.connect(this.oscillators[i].baseAplitude.gain);
+                    this.oscillators[i].widthAmplitudeLfoModifier.connect(this.oscillators[i].baseAmplitude.gain);
                 }
 
-                this.oscillators[i].baseAplitude.connect(this.oscillatorsOutput);
+                this.oscillators[i].baseAmplitude.connect(this.oscillatorsOutput);
             }
         }
     }
@@ -144,8 +160,11 @@ class PqSynthVoice {
     }
 }
 
-class PqSynth extends Instrument {
-    constructor(preset = null, audioContext = null) {
+class PqSynth extends InstrumentBase {
+    updateNodes(): void {
+        console.warn("Method not implemented.");
+    }
+    constructor(preset:any, audioContext:AudioContext) {
         super(Instruments.PqSynth, audioContext)
         this.preset = preset;
         this.preset = {

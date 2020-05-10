@@ -1,37 +1,39 @@
 import Store from '../stroe';
-import { Instruments } from 'constants/Constants';
-import { Presets } from 'constants/SamplerPresets';
-import { isNullOrUndefined, MIDIToNote, devLog } from 'engine/Utils';
-import Instrument from './Instrument';
+import { Instruments } from '../constants/Constants';
+import { Presets } from '../constants/SamplerPresets';
+import { isNullOrUndefined, MIDIToNote, devLog } from '../engine/Utils';
+import {InstrumentBase} from './Instrument';
+import {VoiceSynthBase} from './Voice';
+class SamplerVoice extends VoiceSynthBase {
+    updatePreset(preset: any) {
+        console.warn("Method not implemented.");
+    }
+    output: GainNode;
+    source: AudioBufferSourceNode;
 
-class SamplerVoice {
-    constructor(buffer, audioContext) {
-        if (!isNullOrUndefined(audioContext)) {
-            this.context = audioContext;
-            this.source = this.context.createBufferSource();
-            this.output = this.context.createGain();
-            
-            this.source.connect(this.output);
-            this.source.buffer = buffer;
-        } else {
-            devLog("Sampler play error - no audioContext")
-        }
+    constructor(buffer:AudioBuffer, preset:any, audioContext:AudioContext) {
+        super(audioContext, preset);
+        this.source = this.context.createBufferSource();
+        this.output = this.context.createGain();
+        
+        this.source.connect(this.output);
+        this.source.buffer = buffer;
     }
 
-    start(time, attack) {
+    start(time) {
         time = time || this.context.currentTime;
         this.source.start(time);
         this.output.gain.setValueAtTime(0.00001, time);
-        this.output.gain.linearRampToValueAtTime(1.0, time + attack);
+        this.output.gain.linearRampToValueAtTime(1.0, time + this.preset.attack);
     }
 
-    stop(time, release) {
+    stop(time) {
         time = time || this.context.currentTime;
         this.output.gain.setValueAtTime(1, time);
-        this.output.gain.linearRampToValueAtTime(0.00001, time + release + 0.001);
+        this.output.gain.linearRampToValueAtTime(0.00001, time + this.preset.release + 0.001);
         setTimeout(() => {
             this.source.disconnect();
-        }, Math.floor((time + release - this.context.currentTime) * 1000));
+        }, Math.floor((time + this.preset.release - this.context.currentTime) * 1000));
     }
 
     connect(target) {
@@ -39,7 +41,7 @@ class SamplerVoice {
     }
 }
 
-class Sampler extends Instrument{
+class Sampler extends InstrumentBase {
     constructor(preset = Presets.DSKGrandPiano, audioContext) {
         super(Instruments.Sampler, audioContext);
         this.preset = preset;
@@ -51,9 +53,9 @@ class Sampler extends Instrument{
         console.log(this)
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let currVoice = new SamplerVoice(this.getBuffers(note), this.context);
+            let currVoice = new SamplerVoice(this.getBuffers(note), this.preset, this.context);
             currVoice.connect(this.output);
-            currVoice.start(startTime, this.preset.attack);
+            currVoice.start(startTime);
             this.voices[note] = currVoice;
         }
     }
@@ -61,7 +63,7 @@ class Sampler extends Instrument{
     noteOff(note, endTime) {
         if (!isNullOrUndefined(this.voices[note])) {
             endTime = endTime || this.context.currentTime;
-            this.voices[note].stop(endTime, this.preset.release);
+            this.voices[note].stop(endTime);
             delete this.voices[note];
         }
     }
@@ -83,15 +85,7 @@ class Sampler extends Instrument{
     disconnect(){
         this.output.disconnect();
     }
-
-    /**
-     * due to initializing web audio api at start of application and sampler is the default instrument
-     */
-    initContext(audioContext) {
-        this.context = audioContext;
-        this.constructor(undefined, audioContext);
-    }
-
+    
     loadPreset(newPreset){
         this.preset = newPreset;
     }
@@ -101,7 +95,7 @@ class Sampler extends Instrument{
     }
 
     getBuffers(note) {
-        let samplerInstruments = Store.getState().webAudio.samplerInstrumentsSounds;
+        let samplerInstruments = (Store.getState().webAudio as any).samplerInstrumentsSounds;
         for (let i = 0; i < samplerInstruments.length; i++) {
             if (samplerInstruments[i].name === this.preset.name) {
                 return samplerInstruments[i].buffer[MIDIToNote(note)];

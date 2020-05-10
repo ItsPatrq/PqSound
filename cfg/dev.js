@@ -72,20 +72,22 @@ let config = Object.assign({}, baseConfig, {
 });
 
 // Add needed loaders to the defaults here
-config.module.rules.push({
-    test: /\.(js|jsx)$/,
-    exclude: /node_modules/,
-    use: [
-        'babel-loader'
-    ]
-}, {
-    test: /\.tsx?$/,
-    loader: 'ts-loader',
-    exclude: /node_modules/,
-    // options: {
-    //     transpileOnly: true // Transpilation is handled by Fork TS Checker Webpack Plugin
-    // }
-}, {
+config.module.rules.push(
+    {
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/,
+        // options: {
+        //     transpileOnly: true // Transpilation is handled by Fork TS Checker Webpack Plugin
+        // }
+    },
+    {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: [
+            'babel-loader'
+        ]
+    }, {
     enforce: 'pre',
     test: /\.js$/,
     loader: "source-map-loader"

@@ -1,10 +1,15 @@
 import Store from '../stroe';
-import { updateMidiController, changeMidiDevice } from 'actions/controlActions';
-import {addPlayingNote, removePlayingNote} from 'actions/keyboardActions';
-import {isNullOrUndefined} from 'engine/Utils';
-import { SoundOrigin } from 'constants/Constants';
+import { updateMidiController, changeMidiDevice } from '../actions/controlActions';
+import {addPlayingNote, removePlayingNote} from '../actions/keyboardActions';
+import {isNullOrUndefined} from './Utils';
+import { SoundOrigin } from '../constants/Constants';
 
 class MIDIController {
+    devices: { input: any[]; output: any[]; };
+    MIDISupported: boolean;
+    selectedInputDevice: any;
+    selectedOutputDevice: any;
+    midiAccess: any;
     constructor() {
         this.devices = {
             input: new Array,
@@ -18,11 +23,12 @@ class MIDIController {
     init() {
         if (window.navigator && 'function' === typeof window.navigator.requestMIDIAccess) {
             return window.navigator.requestMIDIAccess().then(this.connectCallBack.bind(this), this.onMIDIFailure.bind(this));
-        } else {
-            this.MIDISupported = false;
-            console.log('Your browser doesn\'t support WebMIDI API.');
-            Store.dispatch(updateMidiController(this));
         }
+
+        this.MIDISupported = false;
+        console.log('Your browser doesn\'t support WebMIDI API.');
+        Store.dispatch(updateMidiController(this));
+        return;
     }
     connectCallBack(access) {
         this.MIDISupported = true;
@@ -37,8 +43,8 @@ class MIDIController {
                     input = null;
 
                 // iterate through the devices
-                for (input = inputs.next(); input && !input.done; input = inputs.next()) {
-                    this.devices.input.push(input.value);
+                for (input = inputs.next(); input && !(input as any).done; input = inputs.next()) {
+                    this.devices.input.push((input as any).value);
                 }
             } else {
                 this.devices.input = new Array;
@@ -49,8 +55,8 @@ class MIDIController {
                     output = null;
 
                 // iterate through the devices
-                for (output = outputs.next(); output && !output.done; output = outputs.next()) {
-                    this.devices.output.push(output.value);
+                for (output = outputs.next(); output && !(output as any).done; output = outputs.next()) {
+                    this.devices.output.push((output as any).value);
                 }
             } else {
                 this.devices.output = new Array;
@@ -78,12 +84,12 @@ class MIDIController {
     changeMidiDevice = (deviceId) => {
         if(isNullOrUndefined(deviceId)){
             if(!isNullOrUndefined(this.selectedInputDevice)){
-                this.selectedInputDevice.onmidimessage = null;
+                this.selectedInputDevice!.onmidimessage = null;
             }
             this.selectedInputDevice = null;
         } else {
             if(!isNullOrUndefined(this.selectedInputDevice)){
-                this.selectedInputDevice.onmidimessage = null;
+                this.selectedInputDevice!.onmidimessage = null;
             }
             for(let i = 0; i < this.devices.input.length; i++){
                 if(deviceId === this.devices.input[i].id){
@@ -144,8 +150,8 @@ class MIDIController {
                     input = null;
 
                 // iterate through the devices
-                for (input = inputs.next(); input && !input.done; input = inputs.next()) {
-                    this.devices.input.push(input.value);
+                for (input = inputs.next(); input && !(input as any).done; input = inputs.next()) {
+                    this.devices.input.push((input as any).value);
                 }
             } else {
                 this.devices.input = new Array;
@@ -156,8 +162,8 @@ class MIDIController {
                     output = null;
 
                 // iterate through the devices
-                for (output = outputs.next(); output && !output.done; output = outputs.next()) {
-                    this.devices.output.push(output.value);
+                for (output = outputs.next(); output && !(output as any).done; output = outputs.next()) {
+                    this.devices.output.push((output as any).value);
                 }
             } else {
                 this.devices.output = new Array;
@@ -201,7 +207,7 @@ class MIDIController {
         if (Store.getState().keyboard.notesPlaying.includes(note)) {
             let recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
-                Store.getState().webAudio.sound.stop(recordingTracksSounds[i], note)
+                (Store.getState().webAudio as any).sound.stop(recordingTracksSounds[i], note)
             }
             Store.dispatch(removePlayingNote(note));
         }
@@ -211,7 +217,7 @@ class MIDIController {
         if(!Store.getState().keyboard.notesPlaying.includes(note)){
             let recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
-                Store.getState().webAudio.sound.play(recordingTracksSounds[i], null, note, SoundOrigin.pianoRollNote)
+                (Store.getState().webAudio as any).sound.play(recordingTracksSounds[i], null, note, SoundOrigin.pianoRollNote)
             }
             Store.dispatch(addPlayingNote(note))
         }
