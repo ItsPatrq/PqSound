@@ -3,7 +3,7 @@ import AddNewPluginButton from 'components/TrackDetails/AddNewPluginButton';
 import { Glyphicon } from 'react-bootstrap';
 
 const PluginList = (props) => {
-    let pluginList = new Array;
+    const pluginList = [];
     for (let i = 0; i < props.pluginList.length; i++) {
         pluginList.push(
             <div className="pluginRow"

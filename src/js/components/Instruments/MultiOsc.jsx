@@ -5,7 +5,7 @@ import {oscillatorTypes} from 'constants/Constants';
 require('styles/Instruments/MultiOsc.css');
 
 const MultiOsc = (props) => {
-    let handleChange = (newWaveNumber, newDetune, newAttack, newRelease, newOscilatorType) => {
+    const handleChange = (newWaveNumber, newDetune, newAttack, newRelease, newOscilatorType) => {
         props.onPresetChange({
             ...props.instrument.preset,
             waveNumber: newWaveNumber ? Number(newWaveNumber) : props.instrument.preset.waveNumber,
@@ -15,7 +15,7 @@ const MultiOsc = (props) => {
             oscilatorType: newOscilatorType ? newOscilatorType : props.instrument.preset.oscilatorType
         })
     }
-    let oscillatorTypesDropdownItems = new Array;
+    const oscillatorTypesDropdownItems = [];
     for(let i = 0; i < oscillatorTypes.length; i++){
         oscillatorTypesDropdownItems.push(
             <MenuItem

@@ -5,7 +5,7 @@ import { SoundOrigin } from '../constants/Constants';
 export default class Sound {
   context: AudioContext;
   playingSounds: any[][];
-  constructor(newContext:AudioContext) {
+  constructor(newContext: AudioContext) {
     if(newContext.state !== "running") {
       newContext.resume();
     }
@@ -13,9 +13,9 @@ export default class Sound {
     this.playingSounds = [[], [], []]; // trackindex, note, origin, endindex
   }
 
-  scheduleStop(sixteenthPlaying:number, contextPlayTime:number, origin:number) {
+  scheduleStop(sixteenthPlaying: number, contextPlayTime: number, origin: number) {
     for (let i = this.playingSounds[origin].length - 1; i >= 0; i--) {
-      let currNote = this.playingSounds[origin][i];
+      const currNote = this.playingSounds[origin][i];
       if (currNote.endIndex === sixteenthPlaying) {
         this.stop(currNote.trackIndex, currNote.note, contextPlayTime);
         this.playingSounds[origin].splice(i, 1)
@@ -23,7 +23,7 @@ export default class Sound {
     }
   }
 
-  stopAll(origin:number) {
+  stopAll(origin: number) {
     for (let i = 0; i < this.playingSounds[origin].length; i++) {
       this.stop(this.playingSounds[origin][i].trackIndex, this.playingSounds[origin][i].note);
     }
@@ -38,15 +38,15 @@ export default class Sound {
       this.playingSounds[origin].push({ trackIndex: trackIndex, note: note, origin: origin, endIndex: endIndex });
     }
 
-    let currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
+    const currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
     currTrack.instrument.noteOn(note, contextPlayTime);
   }
 
-  stop(trackIndex:number, note:number, contextStopTime?:number) {
+  stop(trackIndex: number, note: number, contextStopTime?: number) {
     if (Utils.isNullOrUndefined(contextStopTime)) {
       contextStopTime = this.context.currentTime + 0.001;
     }
-    let currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
+    const currTrack = Utils.getTrackByIndex(Store.getState().tracks.trackList, trackIndex);
     currTrack.instrument.noteOff(note, contextStopTime);
   }
 }

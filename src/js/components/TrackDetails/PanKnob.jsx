@@ -21,11 +21,11 @@ class PanKnob extends React.Component {
                 input.setAttribute('data-angleOffset', 220);
                 input.setAttribute('data-angleRange', 280);
 
-                let knopf = new Knob(input, new Ui.P2());
+                const knopf = new Knob(input, new Ui.P2());
                 this.knob = knopf;
                 input.addEventListener('change', (e) => { this.onChange(e, input.id, knopf) });
             } else{
-                let pan = this.props.pan < 0.001 && this.props.pan > -0.001 ? 0  : this.props.pan;
+                const pan = this.props.pan < 0.001 && this.props.pan > -0.001 ? 0  : this.props.pan;
                 if(Number(this.knob.value) !== pan){
                     this.knob.update(this.props.pan);
                 }

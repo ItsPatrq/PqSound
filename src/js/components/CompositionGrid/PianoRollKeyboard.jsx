@@ -6,12 +6,12 @@ import { isNullOrUndefined } from 'engine/Utils';
 
 
 const PianoRollKeyboard = (props) => {
-    let getTooltip = (index) => {
+    const getTooltip = (index) => {
         return (
             <Tooltip id={'tooltip' + index}>{props.instrument.getNoteName(index)}</Tooltip>
         )
     }
-    let keys = new Array;
+    const keys = [];
     for (let i = 87; i > 0; i--) {
         if (keyboardWidths[i].sharp) {
             keys.push(

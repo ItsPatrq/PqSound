@@ -18,7 +18,7 @@ class Delay extends Plugin {
             wet: 1,
             iterations: 10
         }
-        this.delayArray = new Array;
+        this.delayArray = [];
         this.inputGainNode = this.context.createGain();
         this.outputGainNode = this.context.createGain();
         this.dryGainNode = this.context.createGain();
@@ -41,17 +41,17 @@ class Delay extends Plugin {
         this.wetGainNode.disconnect();
         this.delayArray.length = 0;
         for (let i = 0; i < this.preset.iterations; i++) {
-            let delay = this.context.createDelay();
+            const delay = this.context.createDelay();
             delay.delayTime.setValueAtTime(this.preset.delay ?
                 this.preset.delay : 0.000001, this.context.currentTime)
-            let feedback = this.context.createGain();
+            const feedback = this.context.createGain();
             feedback.gain.setValueAtTime(this.preset.feedback ?
                 this.preset.feedback : 0.000001, this.context.currentTime);
-            let lowCutFilter = this.context.createBiquadFilter();
+            const lowCutFilter = this.context.createBiquadFilter();
             lowCutFilter.type = 'highpass';
             lowCutFilter.frequency.setValueAtTime(this.preset.lowCut ?
                 this.preset.lowCut : 0.000001, this.context.currentTime);
-            let highCutFilter = this.context.createBiquadFilter();
+            const highCutFilter = this.context.createBiquadFilter();
             highCutFilter.type = 'lowpass';
             highCutFilter.frequency.setValueAtTime(this.preset.highCut ?
                 this.preset.highCut : 0.000001, this.context.currentTime);

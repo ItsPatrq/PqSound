@@ -18,10 +18,10 @@ class PqSynthVoice extends VoiceSynthBase{
         console.warn("Method not implemented.");
     }
     oscillator: OscillatorNode;
-    output:GainNode;
+    output: GainNode;
     oscillatorsOutput: GainNode;
     oscillators: PqSynthOscillator[] = [{} as PqSynthOscillator, {} as PqSynthOscillator, {} as PqSynthOscillator];
-    constructor(note:number, startTime:number, preset:any, audioContext:AudioContext) {
+    constructor(note: number, startTime: number, preset: any, audioContext: AudioContext) {
         super(audioContext, preset);
         this.context = audioContext;
         this.oscillator = this.context.createOscillator();
@@ -37,7 +37,7 @@ class PqSynthVoice extends VoiceSynthBase{
         for (let i = 0; i < preset.oscillators.length; i++) {
             if (preset.oscillators[i].active) {
                 if (preset.oscillators[i].waveForm === 'whiteNoise') {
-                    let bufferSize = 2 * this.context.sampleRate,
+                    const bufferSize = 2 * this.context.sampleRate,
                         noiseBuffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate),
                         output = noiseBuffer.getChannelData(0);
                     for (let j = 0; j < bufferSize; j++) {
@@ -49,13 +49,13 @@ class PqSynthVoice extends VoiceSynthBase{
                     (this.oscillators[i].source as AudioBufferSourceNode).loop = true;
                     this.oscillators[i].source.start(0);
                 } else if(preset.oscillators[i].waveForm === 'pinkNoise'){
-                    let bufferSize = 2 * this.context.sampleRate,
+                    const bufferSize = 2 * this.context.sampleRate,
                         noiseBuffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate),
-                        output = noiseBuffer.getChannelData(0),
-                        b0, b1, b2, b3, b4, b5, b6;
+                        output = noiseBuffer.getChannelData(0);
+                    let b0, b1, b2, b3, b4, b5, b6;
                     b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
                     for (let j = 0; j < bufferSize; j++) {
-                        let white = Math.random() * 2 - 1;
+                        const white = Math.random() * 2 - 1;
                             b0 = 0.99886 * b0 + white * 0.0555179;
                             b1 = 0.99332 * b1 + white * 0.0750759;
                             b2 = 0.96900 * b2 + white * 0.1538520;
@@ -71,12 +71,12 @@ class PqSynthVoice extends VoiceSynthBase{
                     (this.oscillators[i].source  as AudioBufferSourceNode).loop = true;
                     this.oscillators[i].source.start(0);
                 } else if(preset.oscillators[i].waveForm === 'brownianNoise'){
-                    let bufferSize = 2 * this.context.sampleRate,
-                    noiseBuffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate),
-                    output = noiseBuffer.getChannelData(0),
-                    lastOut = 0.0;
+                    const bufferSize = 2 * this.context.sampleRate,
+                        noiseBuffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate),
+                        output = noiseBuffer.getChannelData(0);
+                    let lastOut = 0.0;
                     for (let j = 0; j < bufferSize; j++) {
-                        var white = Math.random() * 2 - 1;
+                        const white = Math.random() * 2 - 1;
                         output[j] = (lastOut + (0.02 * white)) / 1.02;
                         lastOut = output[j];
                         output[i] *= 3.5; // (roughly) compensate for gain
@@ -164,7 +164,7 @@ class PqSynth extends InstrumentBase {
     updateNodes(): void {
         console.warn("Method not implemented.");
     }
-    constructor(preset:any, audioContext:AudioContext) {
+    constructor(preset: any, audioContext: AudioContext) {
         super(Instruments.PqSynth, audioContext)
         this.preset = preset;
         this.preset = {
@@ -215,7 +215,7 @@ class PqSynth extends InstrumentBase {
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let currVoice = new PqSynthVoice(note, startTime, this.preset, this.context);
+            const currVoice = new PqSynthVoice(note, startTime, this.preset, this.context);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;

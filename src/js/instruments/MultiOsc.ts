@@ -9,16 +9,16 @@ class MultiOscVoice extends VoiceSynthBase {
     updatePreset(preset: any) {
         console.warn("Method not implemented.");
     }
-    constructor(freqyency:number, startTime:number, preset:any, audioContext:AudioContext) {
+    constructor(freqyency: number, startTime: number, preset: any, audioContext: AudioContext) {
         super(audioContext, preset);
         this.preset = preset;
         this.context = audioContext;
         this.maxGain = 1 / preset.waveNumber;
-        this.waves = new Array;
+        this.waves = [];
         this.output = this.context.createGain();
 
         for(let i = 0; i < preset.waveNumber; i++){
-            let wave = this.context.createOscillator();
+            const wave = this.context.createOscillator();
             wave.type = preset.oscilatorType;
             wave.frequency.setValueAtTime(freqyency, this.context.currentTime);
             wave.detune.setValueAtTime((-preset.detune + i * 2 * preset.detune / (preset.waveNumber - 1) | 0), this.context.currentTime);
@@ -54,7 +54,7 @@ class MultiOsc extends InstrumentBase{
     updateNodes(): void {
         console.warn("Method not implemented.");
     }
-    constructor(preset, audioContext:AudioContext) {
+    constructor(preset, audioContext: AudioContext) {
         super(Instruments.MultiOsc, audioContext)
         this.preset = preset ? preset : {
             waveNumber: 3,
@@ -68,7 +68,7 @@ class MultiOsc extends InstrumentBase{
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let currVoice = new MultiOscVoice(noteToFrequency(note), startTime, this.preset, this.context);
+            const currVoice = new MultiOscVoice(noteToFrequency(note), startTime, this.preset, this.context);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;

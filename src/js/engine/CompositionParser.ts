@@ -1,22 +1,43 @@
 import Store from '../stroe';
 import * as Utils from './Utils';
 
-export const getRegionsByTrackIndex = (trackIndex:number, allRegions?:any[]) => {
-    let regionsByTrackIndex = new Array;
-    if (Utils.isNullOrUndefined(allRegions)) {
-        allRegions = Store.getState().composition.regionList;
+interface Region {
+    end: number;
+    id: number;
+    start: number;
+    regionLength: number;
+    notes: Notes[];
+    trackIndex: number;
+}
+
+type Notes = Note[];
+
+interface NoteToPlay {
+    duration: number;
+    note: number;
+}
+
+interface Note {
+    sixteenthNumber: number;
+    length: number;
+}
+
+export const getRegionsByTrackIndex = (trackIndex: number, allRegions?: Region[]): Region[] => {
+    const regionsByTrackIndex: Region[] = [];
+    if (!allRegions) {
+        allRegions = (Store.getState().composition.regionList as Region[]);
     }
-    for (let i = 0; i < allRegions!.length; i++) {
-        if (allRegions![i].trackIndex === trackIndex) {
-            regionsByTrackIndex.push(allRegions![i]);
+    for (let i = 0; i < allRegions.length; i++) {
+        if (allRegions[i].trackIndex === trackIndex) {
+            regionsByTrackIndex.push(allRegions[i]);
         }
     }
     return regionsByTrackIndex;
 }
 
-export const regionToDrawParser = (trackIndex, bits, copiedRegion) => {
-    let trackRegionList = getRegionsByTrackIndex(trackIndex);
-    let bitsToDraw = new Array;
+export const regionToDrawParser = (trackIndex: number, bits: number, copiedRegion: number): number[] => {
+    const trackRegionList = getRegionsByTrackIndex(trackIndex);
+    const bitsToDraw: number[] = [];
     for (let i = 0; i < bits; i++) {
         bitsToDraw.push(0);
     }
@@ -38,9 +59,9 @@ export const regionToDrawParser = (trackIndex, bits, copiedRegion) => {
     return bitsToDraw;
 }
 
-export const getRegionIdByBitIndex = (trackIndex, bitIndex) => {
-    let trackRegionList = getRegionsByTrackIndex(trackIndex);
-    let regionId;
+export const getRegionIdByBitIndex = (trackIndex: number, bitIndex: number): number | null => {
+    const trackRegionList = getRegionsByTrackIndex(trackIndex);
+    let regionId: number | null = null;
     for (let i = 0; i < trackRegionList.length; i++) {
         if (trackRegionList[i].start <= bitIndex && trackRegionList[i].end >= bitIndex) {
             regionId = trackRegionList[i].id;
@@ -49,26 +70,30 @@ export const getRegionIdByBitIndex = (trackIndex, bitIndex) => {
     return regionId;
 }
 
-export const getRegionByRegionId = (regionId:number, regionList?:any[]) => {
-    if (Utils.isNullOrUndefined(regionList)) {
-        regionList = Store.getState().composition.regionList;
+export const getRegionByRegionId = (regionId: number, regionList?: Region[]): Region | null => {
+    if (!regionList) {
+        regionList = (Store.getState().composition.regionList as Region[]);
     }
-    for (let i = 0; i < regionList!.length; i++) {
-        if (regionList![i].id === regionId) {
-            return regionList![i];
+    for (let i = 0; i < regionList.length; i++) {
+        if (regionList[i].id === regionId) {
+            return regionList[i];
         }
     }
+    return null;
 }
 
-export const notesToDrawParser = (pianoRollNote) => {
-    let region = getRegionByRegionId(Store.getState().composition.pianoRollRegion);
-    let notesToDraw = new Array;
+export const notesToDrawParser = (pianoRollNote: number): number[] | null => {
+    const region = getRegionByRegionId(Store.getState().composition.pianoRollRegion);
+    if(region === null) {
+        return null;
+    }
+    const notesToDraw: number[] = [];
     for (let i = 0; i < region.regionLength * 16; i++) {
         notesToDraw.push(0);
     }
     if (!Utils.isNullOrUndefined(region.notes[pianoRollNote])) {
         for (let i = 0; i < region.notes[pianoRollNote].length; i++) {
-            let currNote = region.notes[pianoRollNote][i];
+            const currNote = region.notes[pianoRollNote][i];
             notesToDraw[currNote.sixteenthNumber] = 1;
             for (let j = currNote.sixteenthNumber + 1; j < currNote.sixteenthNumber + currNote.length - 1; j++) {
                 notesToDraw[j] = 2;
@@ -79,26 +104,26 @@ export const notesToDrawParser = (pianoRollNote) => {
     return notesToDraw;
 }
 
-export const notesToPlay = (sixteenthPlaying, trackIndex) => {
-    let regions = getRegionsByTrackIndex(trackIndex);
+export const notesToPlay = (sixteenthPlaying: number, trackIndex: number): NoteToPlay[] | null => {
+    const regions = getRegionsByTrackIndex(trackIndex);
     if (Utils.isNullUndefinedOrEmpty(regions)) {
-        return;
+        return null;
     }
-    let notesToPlay = new Array;
+    const notesToPlay: NoteToPlay[] = [];
     for (let i = 0; i < regions.length; i++) {
         if (regions[i].start * 16 <= sixteenthPlaying && (regions[i].end + 1) * 16 >= sixteenthPlaying) {
-            let currRegion = regions[i];
+            const currRegion = regions[i];
             for (let j = 0; j < currRegion.notes.length; j++) {
                 if (!Utils.isNullUndefinedOrEmpty(currRegion.notes[j])) {
                     for (let z = 0; z < currRegion.notes[j].length; z++) {
                         if (currRegion.notes[j][z].sixteenthNumber + currRegion.start * 16 === sixteenthPlaying) {
-                            notesToPlay.push({ note: j, durotian: currRegion.notes[j][z].length });
+                            notesToPlay.push({ note: j, duration: currRegion.notes[j][z].length });
                         }
                     }
                 }
             }
         }
-        return (notesToPlay);
+        return notesToPlay;
     }
-    return;
+    return null;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Row } from 'react-bootstrap';
 
 const PianoRollTimeBar = (props) => {
-    let beats = new Array;
+    const beats = [];
     for (let i = 0; i <= props.bits; i++) {
         beats.push(
             <div key={(i + props.beatStart).toString()}>

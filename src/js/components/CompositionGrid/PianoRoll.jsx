@@ -4,15 +4,15 @@ import { keyNotes, defaultKeysNames } from 'constants/Constants';
 import { isNullOrUndefined, noteToMIDI } from 'engine/Utils';
 
 const PianoRoll = (props) => {
-    let keyRows = new Array;
-    let handleRowClicked = (note, event) => {
-        let el = event.target.className === 'note' ? event.target.parentElement : event.target;
-        let sixteenth = Math.floor((event.clientX - el.getClientRects()[0].left) / 30);
+    const keyRows = [];
+    const handleRowClicked = (note, event) => {
+        const el = event.target.className === 'note' ? event.target.parentElement : event.target;
+        const sixteenth = Math.floor((event.clientX - el.getClientRects()[0].left) / 30);
         props.onNoteClick(event, note, sixteenth);
     }
     for (let i = 87; i >= 0; i--) {
         let rowClassName;
-        let notes = new Array;
+        const notes = [];
         if (keyNotes[i]) {
             rowClassName = 'nopadding keyRow black'
         } else {
@@ -50,7 +50,7 @@ const PianoRoll = (props) => {
         );
     }
 
-    let onScroll = (event) => {
+    const onScroll = (event) => {
         props.onScroll({
             pianoRollY: event.target.scrollTop,
             pianoRollX: event.target.scrollLeft

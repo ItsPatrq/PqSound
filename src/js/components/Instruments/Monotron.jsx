@@ -48,7 +48,7 @@ class Monotron extends React.Component {
                 input.setAttribute('data-angleOffset', 220);
                 input.setAttribute('data-angleRange', 280);
 
-                let knopf = new Knob(input, new Ui.P2());
+                const knopf = new Knob(input, new Ui.P2());
                 switch (input.id) {
                     case 'pitch': {
                         knopf.update(this.props.instrument.preset.vco.knobPitch);
@@ -78,7 +78,7 @@ class Monotron extends React.Component {
     }
     onChange = (event, id, knopf) => {
         let ratio, scale, value;
-        let param = this.params[id];
+        const param = this.params[id];
         if (!Utils.isNullOrUndefined(param)) {
             scale = param.scale != null ? param.scale : 1.05;
             ratio = Math.pow(scale, parseInt(knopf.value)) / Math.pow(scale, knopf.settings.max);

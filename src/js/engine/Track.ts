@@ -15,7 +15,7 @@ class Track {
   splitter?: ChannelSplitterNode;
   input?: GainNode;
   output?: StereoPannerNode;
-  constructor(newPluginList, newInstrument, newDestTrack, audioContext:AudioContext, newVolume = 1.0, newPan = 0.0) {
+  constructor(newPluginList, newInstrument, newDestTrack, audioContext: AudioContext, newVolume = 1.0, newPan = 0.0) {
     this.pluginNodeList = newPluginList;
     this.destTrack = newDestTrack;
     this.instrument = newInstrument;
@@ -28,18 +28,18 @@ getAverageVolume(){
   if(!this.context || !this.leftAnalyserNode || !this.rightAnalyserNode ){
     return {left: 0, right: 0}
   }
-  let leftArray =  new Uint8Array(this.leftAnalyserNode.frequencyBinCount);
-  let rightArray =  new Uint8Array(this.rightAnalyserNode.frequencyBinCount);
+  const leftArray =  new Uint8Array(this.leftAnalyserNode.frequencyBinCount);
+  const rightArray =  new Uint8Array(this.rightAnalyserNode.frequencyBinCount);
   this.leftAnalyserNode.getByteFrequencyData(leftArray);
   this.rightAnalyserNode.getByteFrequencyData(rightArray);
 
   let leftValues = 0;
   let rightValues = 0;
 
-  var length = leftArray.length;
+  const length = leftArray.length;
 
   // get all the frequency amplitudes
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     leftValues += leftArray[i];
     rightValues += rightArray[i];
   }
@@ -48,17 +48,17 @@ getAverageVolume(){
 }
 
   getPluginChainNode() {
-    let firstPluginInChain = this.pluginNodeList[0].getPluginNode();
+    const firstPluginInChain = this.pluginNodeList[0].getPluginNode();
     let lastPluginInChain = this.pluginNodeList[0].getPluginNode();
     for (let i = 1; i < this.pluginNodeList.length; i++) {
-      let curPluginNode = this.pluginNodeList[i].getPluginNode();
+      const curPluginNode = this.pluginNodeList[i].getPluginNode();
       lastPluginInChain.output.connect(curPluginNode.input);
       lastPluginInChain = curPluginNode;
     }
     return { input: firstPluginInChain.input, output: lastPluginInChain.output };
   }
 
-  updateTrackNode(newDestTrack?:AudioNode) {
+  updateTrackNode(newDestTrack?: AudioNode) {
     for (let i = 0; i < this.pluginNodeList.length; i++) {
       this.pluginNodeList[i].output.disconnect();
     }
@@ -68,7 +68,7 @@ getAverageVolume(){
 
     if (!this.mute) {
       if (this.pluginNodeList.length > 0) {
-        let pluginChain = this.getPluginChainNode();
+        const pluginChain = this.getPluginChainNode();
         this.panNode!.connect(pluginChain.input);
         this.output = pluginChain.output;
         pluginChain.output.connect(this.splitter);
@@ -123,7 +123,7 @@ getAverageVolume(){
   /**
   * due to initializing web audio api at start of application and sampler is the default instrument
   */
-  initAudioContext(audioContext:AudioContext, newVolume:number, newPan:number) {
+  initAudioContext(audioContext: AudioContext, newVolume: number, newPan: number) {
     if (!isNullOrUndefined(audioContext)) {
       this.context = audioContext;
       this.gainNode = this.context.createGain();

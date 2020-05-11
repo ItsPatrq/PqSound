@@ -3,7 +3,7 @@ import React from 'react';
 require('styles/Plugins/Compressor.css');
 
 const Compressor = (props) => {
-    let handleChange = (newThreshold, newKnee, newRatio, newAttack, newRelease) => {
+    const handleChange = (newThreshold, newKnee, newRatio, newAttack, newRelease) => {
         props.onPresetChange({
             threashold: newThreshold ? Number(newThreshold) : props.plugin.preset.threashold,
             knee: newKnee ? Number(newKnee) : props.plugin.preset.knee,

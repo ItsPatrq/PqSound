@@ -9,7 +9,7 @@ module.exports = {
     project: path.resolve(__dirname, './tsconfig.json'),
     tsconfigRootDir: __dirname,
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
-    sourceType: 'unambiguous', // Allows for the use of imports
+    //sourceType: 'module', // Allows for the use of imports
     ecmaFeatures: {
       "jsx": true
     }

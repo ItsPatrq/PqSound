@@ -3,7 +3,7 @@ import { MenuItem, DropdownButton } from 'react-bootstrap';
 import {Plugins} from 'constants/Constants';
 
 const AddNewPluginButton = (props) => {
-    let availablePlugins = new Array;
+    const availablePlugins = [];
     for (let i = 0; i < Plugins.length; i++) {
         availablePlugins.push(
             <MenuItem

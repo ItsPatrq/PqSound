@@ -3,7 +3,7 @@ import React from 'react';
 require('styles/Plugins/Delay.css');
 
 const Delay = (props) => {
-    let handleChange = (newDelay, newFeedback, newIterations, newHighCut, newLowCut, newWet, newDry) => {
+    const handleChange = (newDelay, newFeedback, newIterations, newHighCut, newLowCut, newWet, newDry) => {
         props.onPresetChange({
             delay: newDelay ? Number(newDelay) : props.plugin.preset.delay,
             feedback: newFeedback ? Number(newFeedback) : props.plugin.preset.feedback,

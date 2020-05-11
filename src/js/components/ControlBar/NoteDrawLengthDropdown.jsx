@@ -4,8 +4,8 @@ import { noteLengths } from 'constants/Constants';
 
 const NoteDrawLengthDropdown = (props) => {
     if (props.isVisible) {
-        let noteLengthsMenuItems = new Array;
-        for (let property in noteLengths) {
+        const noteLengthsMenuItems = [];
+        for (const property in noteLengths) {
             if (noteLengths.hasOwnProperty(property)) {
                 noteLengthsMenuItems.push(
                     <MenuItem

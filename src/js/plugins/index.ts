@@ -8,10 +8,10 @@ import Chorus from './Chorus';
 import { PluginsEnum } from '../constants/Constants';
 
 interface PluginUtils {
-    getNewPluginByIndex(id:number, index:number, audioContext:AudioContext):any
+    getNewPluginByIndex(id: number, index: number, audioContext: AudioContext): any;
 }
 
-const Utils:PluginUtils = {
+const Utils: PluginUtils = {
 
     getNewPluginByIndex: (id, index, audioContext) => {
         switch (id) {

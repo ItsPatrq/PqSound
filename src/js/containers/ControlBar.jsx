@@ -12,7 +12,7 @@ import { isNullOrUndefined } from 'engine/Utils';
 class ControlBar extends React.Component {
     constructor(props) {
         super();
-        let sequencer = new Sequencer();
+        const sequencer = new Sequencer();
         sequencer.init();
         props.dispatch(Actions.initSequencer(sequencer))
         this.state = {

@@ -23,7 +23,7 @@ export const getRegionsByTrackIndex = (regionsByTrack, index) => {
 }
 
 export const removeAllFromArray = (array, condition) => {
-    let newArray = [...array];
+    const newArray = [...array];
     for (let i = newArray.length - 1; i >= 0; i--) {
         if (condition(newArray[i])) {
             newArray.splice(i, 1);
@@ -33,7 +33,7 @@ export const removeAllFromArray = (array, condition) => {
 }
 
 export const removeFirstFromArray = (array, condition) => {
-    let newArray = [...array];
+    const newArray = [...array];
     for (let i = 0; i < newArray.length; i++) {
         if (condition(newArray[i], i)) {
             newArray.splice(i, 1);
@@ -69,8 +69,8 @@ export const MIDIToNote = (note) => {
 
 export const copy = (data) => {
     if (!(data instanceof AudioContext)) {
-        var output, v, key;
-        output = Array.isArray(data) ? [] : {};
+        let v, key;
+        const output = Array.isArray(data) ? [] : {};
         for (key in data) {
             v = data[key];
             output[key] = (typeof v === 'object') ? copy(v) : v;

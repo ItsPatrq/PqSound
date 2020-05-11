@@ -15,7 +15,7 @@ import Demo from 'constants/Demo';
 class TopNavBar extends React.Component {
     constructor() {
         super();
-        let that = this;
+        const that = this;
         window.addEventListener('keydown', function (e) {
             if (e.altKey) {
                 switch (e.keyCode) {
@@ -49,7 +49,7 @@ class TopNavBar extends React.Component {
     }
 
     handleSwitchKeyboardVisibility() {
-        let ComposingCol = document.getElementById('ComposingCol');
+        const ComposingCol = document.getElementById('ComposingCol');
         if (Utils.isNullOrUndefined(ComposingCol) && this.props.keyboardWidth !== 0) {
             this.props.dispatch(updateWidth(0));
         } else if (ComposingCol.offsetWidth !== this.props.keyboardWidth) {
@@ -83,10 +83,10 @@ class TopNavBar extends React.Component {
     }
 
     getExportData() {
-        let tempControl = Utils.copy(this.props.control);
+        const tempControl = Utils.copy(this.props.control);
         delete tempControl['midiController'];
         delete tempControl['sequencer'];
-        let tempTracks = Utils.copy(this.props.tracks);
+        const tempTracks = Utils.copy(this.props.tracks);
         for (let i = 0; i < tempTracks.trackList.length; i++) {
             delete tempTracks.trackList[i]['trackNode'];
             if (tempTracks.trackList.trackType === TrackTypes.virtualInstrument) {
@@ -104,7 +104,7 @@ class TopNavBar extends React.Component {
                 }
             }
         }
-        let obj = {
+        const obj = {
             tracks: tempTracks,
             control: tempControl,
             composition: this.props.composition
@@ -114,8 +114,8 @@ class TopNavBar extends React.Component {
     }
 
     export() {
-        let linkElement = document.createElement('a');
-        let dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(this.getExportData());
+        const linkElement = document.createElement('a');
+        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(this.getExportData());
 
         linkElement.setAttribute('href', dataUri);
         linkElement.setAttribute('download', 'PqSoundComposition.json');
@@ -135,7 +135,7 @@ class TopNavBar extends React.Component {
     }
 
     loadComposition(binaryString) {
-        let loadedState = JSON.parse(decodeURIComponent(binaryString));
+        const loadedState = JSON.parse(decodeURIComponent(binaryString));
         this.props.dispatch(loadTrackState(loadedState.tracks));
         this.props.dispatch(loadControlState(loadedState.control));
         this.props.dispatch(loadCompositionState(loadedState.composition))
@@ -175,17 +175,17 @@ class TopNavBar extends React.Component {
     }
 
     render() {
-        let showHideKeyboard = this.props.keyboardVisible ? 'Hide Keyboard' : 'Show Keyboard';
-        let showHideKeyNames = this.props.keyNamesVisible ? 'Hide key names' : 'Show key names';
-        let showHideBindNames = this.props.keyBindVisible ? 'Hide key bindings' : 'Show key bindings';
-        let showHideKeyNamesMenuItem = this.props.keyboardVisible ?
+        const showHideKeyboard = this.props.keyboardVisible ? 'Hide Keyboard' : 'Show Keyboard';
+        const showHideKeyNames = this.props.keyNamesVisible ? 'Hide key names' : 'Show key names';
+        const showHideBindNames = this.props.keyBindVisible ? 'Hide key bindings' : 'Show key bindings';
+        const showHideKeyNamesMenuItem = this.props.keyboardVisible ?
             <MenuItem eventKey={3.2} onClick={() => this.handleSwitchKeyNameVisibility()}>{showHideKeyNames}</MenuItem> :
             null;
-        let showHideBindNamesMenuItem = this.props.keyboardVisible ?
+        const showHideBindNamesMenuItem = this.props.keyboardVisible ?
             <MenuItem eventKey={3.3} onClick={() => this.handleSwitchKeyBindVisibility()}>{showHideBindNames}</MenuItem> :
             null;
-        let showHidePianoroll = this.props.pianoRollVisible ? 'Hide Piano Roll' : 'Show Piano Roll';
-        let showHidePianorollMenuItem = !Utils.isNullOrUndefined(this.props.pianoRollRegion) ?
+        const showHidePianoroll = this.props.pianoRollVisible ? 'Hide Piano Roll' : 'Show Piano Roll';
+        const showHidePianorollMenuItem = !Utils.isNullOrUndefined(this.props.pianoRollRegion) ?
             <MenuItem eventKey={3.4} onClick={() => this.handleSwitchPianoRollVisibility()}>{showHidePianoroll}</MenuItem> :
             null;
 

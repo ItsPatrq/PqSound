@@ -2,8 +2,8 @@ import React from 'react';
 import { MenuItem, DropdownButton, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const Output = (props) => {
-    let availableAuxTracks = new Array;
-    let isEnabled = props.auxTracks.length > 1;
+    const availableAuxTracks = [];
+    const isEnabled = props.auxTracks.length > 1;
     for (let i = 0; i < props.auxTracks.length; i++) {
         availableAuxTracks.push(
             <MenuItem

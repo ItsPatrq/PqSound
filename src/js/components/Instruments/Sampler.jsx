@@ -6,16 +6,16 @@ import { Utils as SamplerPresetsUtils } from 'constants/SamplerPresets';
 require('styles/Instruments/Sampler.css');
 
 const Sampler = (props) => {
-    let allPresets = new Array;
+    const allPresets = [];
     for (let i = 0; i < SamplerPresets.length; i++) {
-        let availablePresets = new Array;
+        const availablePresets = [];
         for (let j = 0; j < SamplerPresets[i].presets.length; j++) {
             availablePresets.push(
                 <MenuItem
                     key={SamplerPresets[i].presets[j].id.toString()}
                     eventKey={SamplerPresets[i].presets[j].id.toString()}
                     onClick={() => {
-                        let newPreset = SamplerPresetsUtils.getPresetById(SamplerPresets[i].presets[j].id);
+                        const newPreset = SamplerPresetsUtils.getPresetById(SamplerPresets[i].presets[j].id);
                         newPreset.attack = props.instrument.preset.attack;
                         newPreset.release = props.instrument.preset.release;
                         props.onPresetChange(newPreset);
@@ -31,7 +31,7 @@ const Sampler = (props) => {
             </DropdownButton>
         )
     }
-    let handleChange = (newAttack, newRelease) => {
+    const handleChange = (newAttack, newRelease) => {
         props.onPresetChange({
             ...props.instrument.preset,
             attack: newAttack ? Number(newAttack) : props.instrument.preset.attack,

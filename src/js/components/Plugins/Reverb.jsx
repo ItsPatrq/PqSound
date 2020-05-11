@@ -3,7 +3,7 @@ import React from 'react';
 require('styles/Plugins/Reverb.css');
 
 const Reverb = (props) => {
-    let handleChange = (newSustain, newDecay, newReverse, newWet, newDry) => {
+    const handleChange = (newSustain, newDecay, newReverse, newWet, newDry) => {
         props.onPresetChange({
             sustain: newSustain ? Number(newSustain) : props.plugin.preset.sustain,
             decay: newDecay ? Number(newDecay) : props.plugin.preset.decay,

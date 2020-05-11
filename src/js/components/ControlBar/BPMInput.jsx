@@ -2,14 +2,14 @@ import React from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const BPMInput = (props) => {
-    let _handleChange = (e) => {
-        let newValue = Number(e.target.value);
+    const _handleChange = (e) => {
+        const newValue = Number(e.target.value);
         if (Number.isInteger(newValue)) {
             props.changeTempBPM(newValue);
         }
     }
-    let _handleKeyPress = (e) => {
-        var keyCode = e.keyCode || e.which;
+    const _handleKeyPress = (e) => {
+        const keyCode = e.keyCode || e.which;
         if (keyCode === 13 /* ENTER */) {
             props.changeBPM();
         }

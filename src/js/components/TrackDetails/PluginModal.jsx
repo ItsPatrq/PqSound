@@ -11,7 +11,7 @@ import { PluginsEnum } from 'constants/Constants';
 
 const InstrumentModal = (props) => {
     if (!isNullOrUndefined(props.trackName) && !isNullOrUndefined(props.plugin)) {
-        let modalHeader = 'Track: ' + props.trackName + ' Plugin: ' + props.plugin.name;
+        const modalHeader = 'Track: ' + props.trackName + ' Plugin: ' + props.plugin.name;
         let modalBody;
         switch (props.plugin.id) {
             case PluginsEnum.Equalizer: {

@@ -11,7 +11,7 @@ class SamplerVoice extends VoiceSynthBase {
     output: GainNode;
     source: AudioBufferSourceNode;
 
-    constructor(buffer:AudioBuffer, preset:any, audioContext:AudioContext) {
+    constructor(buffer: AudioBuffer, preset: any, audioContext: AudioContext) {
         super(audioContext, preset);
         this.source = this.context.createBufferSource();
         this.output = this.context.createGain();
@@ -42,6 +42,9 @@ class SamplerVoice extends VoiceSynthBase {
 }
 
 class Sampler extends InstrumentBase {
+    updateNodes(): void {
+        throw new Error("Method not implemented.");
+    }
     constructor(preset = Presets.DSKGrandPiano, audioContext) {
         super(Instruments.Sampler, audioContext);
         this.preset = preset;
@@ -53,7 +56,7 @@ class Sampler extends InstrumentBase {
         console.log(this)
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let currVoice = new SamplerVoice(this.getBuffers(note), this.preset, this.context);
+            const currVoice = new SamplerVoice(this.getBuffers(note), this.preset, this.context);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;
@@ -90,12 +93,8 @@ class Sampler extends InstrumentBase {
         this.preset = newPreset;
     }
 
-    updateNodes(){
-        
-    }
-
     getBuffers(note) {
-        let samplerInstruments = (Store.getState().webAudio as any).samplerInstrumentsSounds;
+        const samplerInstruments = (Store.getState().webAudio as any).samplerInstrumentsSounds;
         for (let i = 0; i < samplerInstruments.length; i++) {
             if (samplerInstruments[i].name === this.preset.name) {
                 return samplerInstruments[i].buffer[MIDIToNote(note)];

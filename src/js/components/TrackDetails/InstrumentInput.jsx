@@ -4,8 +4,8 @@ import { Instruments } from 'constants/Constants';
 import InstrumentModal from './InstrumentModal';
 
 const InstrumentInput = (props) => {
-    let availableInstruments = new Array;
-    for (let property in Instruments) {
+    const availableInstruments = [];
+    for (const property in Instruments) {
         if (Instruments.hasOwnProperty(property)) {
             availableInstruments.push(
                 <MenuItem

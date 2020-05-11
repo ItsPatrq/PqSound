@@ -5,15 +5,15 @@ import {isNullOrUndefined} from './Utils';
 import { SoundOrigin } from '../constants/Constants';
 
 class MIDIController {
-    devices: { input: any[]; output: any[]; };
+    devices: { input: any[]; output: any[] };
     MIDISupported: boolean;
     selectedInputDevice: any;
     selectedOutputDevice: any;
     midiAccess: any;
     constructor() {
         this.devices = {
-            input: new Array,
-            output: new Array
+            input: [],
+            output: []
         }
         this.MIDISupported = false;
         this.selectedInputDevice = null;
@@ -39,27 +39,27 @@ class MIDIController {
             console.log('Update your Chrome version!');
         } else {
             if (access.inputs && access.inputs.size > 0) {
-                let inputs = access.inputs.values(),
-                    input = null;
+                const inputs = access.inputs.values();
+                let input = null;
 
                 // iterate through the devices
                 for (input = inputs.next(); input && !(input as any).done; input = inputs.next()) {
                     this.devices.input.push((input as any).value);
                 }
             } else {
-                this.devices.input = new Array;
+                this.devices.input = [];
                 console.log('No input devices detected!');
             }
             if (access.outputs && access.outputs.size > 0) {
-                let outputs = access.outputs.values(),
-                    output = null;
+                const outputs = access.outputs.values();
+                let output = null;
 
                 // iterate through the devices
                 for (output = outputs.next(); output && !(output as any).done; output = outputs.next()) {
                     this.devices.output.push((output as any).value);
                 }
             } else {
-                this.devices.output = new Array;
+                this.devices.output = [];
                 console.log('No output devices detected!');
             }
         }
@@ -103,7 +103,7 @@ class MIDIController {
     }
 
     handleMidiMessage(event){
-        let data = event.data,
+        const data = event.data,
         //cmd = data[0] >> 4,
         //channel = data[0] & 0xf,
         type = data[0] & 0xf0, // channel agnostic message type.
@@ -137,8 +137,8 @@ class MIDIController {
     }
 
     updateDevices(){
-        this.devices.input = new Array;
-        this.devices.output = new Array;
+        this.devices.input = [];
+        this.devices.output = [];
 
         if ('function' === typeof this.midiAccess.inputs) {
             // deprecated
@@ -146,27 +146,27 @@ class MIDIController {
             console.error('Update your Chrome version, due to changes in Web MIDI Api');
         } else {
             if (this.midiAccess.inputs && this.midiAccess.inputs.size > 0) {
-                let inputs = this.midiAccess.inputs.values(),
-                    input = null;
+                const inputs = this.midiAccess.inputs.values();
+                let input = null;
 
                 // iterate through the devices
                 for (input = inputs.next(); input && !(input as any).done; input = inputs.next()) {
                     this.devices.input.push((input as any).value);
                 }
             } else {
-                this.devices.input = new Array;
+                this.devices.input = [];
                 console.log('No input devices detected');
             }
             if (this.midiAccess.outputs && this.midiAccess.outputs.size > 0) {
-                let outputs = this.midiAccess.outputs.values(),
-                    output = null;
+                const outputs = this.midiAccess.outputs.values();
+                let output = null;
 
                 // iterate through the devices
                 for (output = outputs.next(); output && !(output as any).done; output = outputs.next()) {
                     this.devices.output.push((output as any).value);
                 }
             } else {
-                this.devices.output = new Array;
+                this.devices.output = [];
                 
                 console.log('No output devices detected');
             }
@@ -193,19 +193,19 @@ class MIDIController {
         Store.dispatch(updateMidiController(this));
     }
 
-    getAllRecordingTracks() {
-        let recordingTracksSounds = new Array;
+    getAllRecordingTracks(): number[] {
+        const recordingTracksSounds: number[] = [];
         for (let i = 1; i < Store.getState().tracks.trackList.length; i++) {
             if (Store.getState().tracks.trackList[i].record) {
-                recordingTracksSounds.push(Store.getState().tracks.trackList[i].index);
+                recordingTracksSounds.push((Store.getState().tracks.trackList[i].index as number));
             }
         }
         return recordingTracksSounds;
     }
 
     handleUp(note) {
-        if (Store.getState().keyboard.notesPlaying.includes(note)) {
-            let recordingTracksSounds = this.getAllRecordingTracks();
+        if ((Store.getState().keyboard as any).notesPlaying.includes(note)) {
+            const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
                 (Store.getState().webAudio as any).sound.stop(recordingTracksSounds[i], note)
             }
@@ -214,8 +214,8 @@ class MIDIController {
     }
 
     handleDown(note) {
-        if(!Store.getState().keyboard.notesPlaying.includes(note)){
-            let recordingTracksSounds = this.getAllRecordingTracks();
+        if(!(Store.getState().keyboard as any).notesPlaying.includes(note)){
+            const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
                 (Store.getState().webAudio as any).sound.play(recordingTracksSounds[i], null, note, SoundOrigin.pianoRollNote)
             }

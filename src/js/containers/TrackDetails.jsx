@@ -87,9 +87,9 @@ class TrackDetails extends React.Component {
     }
 
     getAvailableAuxTracks() {
-        let auxTrackList = new Array;
-        let currTrack = Utils.getTrackByIndex(this.props.trackList, this.props.selected);
-        let usedAuxList = new Array;
+        const auxTrackList = [];
+        const currTrack = Utils.getTrackByIndex(this.props.trackList, this.props.selected);
+        const usedAuxList = [];
         this.addInputsToArray(currTrack, usedAuxList);
         for (let i = 0; i < this.props.trackList.length; i++) {
             if (this.props.trackList[i].trackType === TrackTypes.aux &&
@@ -143,7 +143,7 @@ class TrackDetails extends React.Component {
 
     handleAddPlugin(trackIndex, pluginId) {
         this.props.dispatch(addNewPlugin(trackIndex, pluginId));
-        let currTrack = Utils.getTrackByIndex(this.props.trackList, trackIndex)
+        const currTrack = Utils.getTrackByIndex(this.props.trackList, trackIndex)
         this.props.dispatch(Actions.pluginModalVisibilitySwitch(currTrack.pluginList.length - 1, trackIndex));
     }
 

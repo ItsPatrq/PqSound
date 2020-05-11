@@ -3,7 +3,7 @@ import React from 'react';
 require('styles/Plugins/Distortion.css');
 
 const Distortion = (props) => {
-    let handleChange = (newOutputGain, newDistortion) => {
+    const handleChange = (newOutputGain, newDistortion) => {
         props.onPresetChange({
             outputGain: newOutputGain ? Number(newOutputGain) : props.plugin.preset.outputGain,
             distortion: newDistortion ? Number(newDistortion) : props.plugin.preset.distortion

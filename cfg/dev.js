@@ -1,9 +1,9 @@
 'use strict';
 
-let path = require('path');
-let webpack = require('webpack');
-let baseConfig = require('./base');
-let defaultSettings = require('./defaults');
+const path = require('path');
+const webpack = require('webpack');
+const baseConfig = require('./base');
+const defaultSettings = require('./defaults');
 
 // Add needed plugins here
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -11,7 +11,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
-let config = Object.assign({}, baseConfig, {
+const config = Object.assign({}, baseConfig, {
     entry: [
         'webpack-hot-middleware/client?reload=true',
         path.join(__dirname, '/../src/index')
@@ -74,20 +74,14 @@ let config = Object.assign({}, baseConfig, {
 // Add needed loaders to the defaults here
 config.module.rules.push(
     {
-        test: /\.tsx?$/,
+        test: /\.(tsx?|jsx?)$/,
         loader: 'ts-loader',
         exclude: /node_modules/,
         // options: {
         //     transpileOnly: true // Transpilation is handled by Fork TS Checker Webpack Plugin
         // }
     },
-    {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: [
-            'babel-loader'
-        ]
-    }, {
+     {
     enforce: 'pre',
     test: /\.js$/,
     loader: "source-map-loader"

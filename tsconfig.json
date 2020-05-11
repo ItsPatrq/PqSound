@@ -9,7 +9,7 @@
       "react",
       "webmidi"
     ] /* Type declaration files to be included in compilation. */,
-    "module": "esNext" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
+    //"module": ["esNext", "CommonJS"] /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
     "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     "declaration": false /* Generates corresponding '.d.ts' file. */,
@@ -26,7 +26,10 @@
     "strictNullChecks": true /* Enable strict null checks. */,
     "allowJs": true /* Allow javascript files to be compiled. */
   },
+  "exclude": [
+    "node_modules"
+  ],
   "include": [
-    "src"
+    "."
   ]
 }

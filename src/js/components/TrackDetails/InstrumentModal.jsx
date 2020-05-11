@@ -7,7 +7,7 @@ import PqSynthComponent from 'components/Instruments/PqSynth';
 import { Instruments } from 'constants/Constants';
 
 const InstrumentModal = (props) => {
-  let modalHeader = 'Track name: ' + props.track.name + ', instrument: ' + props.track.instrument.name;
+  const modalHeader = 'Track name: ' + props.track.name + ', instrument: ' + props.track.instrument.name;
   let modalBody;
   switch (props.track.instrument.id) {
     case Instruments.Sampler.id: {

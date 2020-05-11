@@ -3,9 +3,9 @@ import { DropdownButton, MenuItem } from 'react-bootstrap';
 import {tools} from 'constants/Constants';
 
 const ToolDropdown = (props) => {
-    let toolsMenuItems = new Array;
-    let secoundaryToolsMenuITems = new Array;
-    for (let property in tools) {
+    const toolsMenuItems = [];
+    const secoundaryToolsMenuITems = [];
+    for (const property in tools) {
         if (tools.hasOwnProperty(property)) {
             toolsMenuItems.push(
                 <MenuItem
@@ -23,8 +23,8 @@ const ToolDropdown = (props) => {
             );
         }
     }
-    let getToolName = (id) => {
-        for(let property in tools) {
+    const getToolName = (id) => {
+        for(const property in tools) {
             if(tools[property].id === id){
                 return tools[property].name
             }

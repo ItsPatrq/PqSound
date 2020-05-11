@@ -1,26 +1,24 @@
 export class BufferLoader {
     context: AudioContext;
     urlList: string[];
-    onload: (bufferLoader:BufferLoader) => any;
+    onload: (bufferLoader: BufferLoader) => void;
     loadCount: number;
     bufferList: AudioBuffer[];
-    constructor(context:AudioContext, urlList:string[], callback:(bufferLoader:BufferLoader)=>any) {
+    constructor(context: AudioContext, urlList: string[], callback: (bufferLoader: BufferLoader) => void) {
         this.context = context;
         this.urlList = urlList;
         this.onload = callback;
-        this.bufferList = new Array();
+        this.bufferList = [];
         this.loadCount = 0;
     }
 
-    loadBuffer(url, index) {
+    loadBuffer(url: string, index: number): void {
         // Load buffer asynchronously
-        let request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.responseType = 'arraybuffer';
 
-        const thisBuffer = this;
-
-        request.onload = function () {
+        request.onload = (thisBuffer => (): void => {
             // Asynchronously decode the audio file data in request.response
             thisBuffer.context.decodeAudioData(
                 request.response,
@@ -38,18 +36,18 @@ export class BufferLoader {
                     console.log('decodeAudioData error', error);
                 }
             );
-        }
+        })(this);
 
-        request.onerror = function () {
+        request.onerror = function (): void {
             console.log('BufferLoader: XHR error');
         }
 
-        request.send();
+        return request.send();
     }
 
-    load() {
+    load(): void {
         this.bufferList.length = 0;
-        for (var i = 0; i < this.urlList.length; ++i)
+        for (let i = 0; i < this.urlList.length; ++i)
             this.loadBuffer(this.urlList[i], i);
     }
 }

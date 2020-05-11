@@ -1,12 +1,12 @@
 'use strict';
-var fs = require('fs'),
+const fs = require('fs'),
     path = require('path'),
     instrumentsPath = path.join(__dirname, '/../../assets/audio/samples/instruments/');
 
 exports.getInstrument = function (req, res) {
-    var sound = req.url.substring(23);
-    var instrument = sound.substring(0, sound.indexOf('/'));
-    var filePath = instrumentsPath + sound;
+    const sound = req.url.substring(23);
+    const instrument = sound.substring(0, sound.indexOf('/'));
+    const filePath = instrumentsPath + sound;
     if (instrument === 'ClassicalPiano') {
         getSound(req, res, filePath, 'audio/ogg');
     } else if(instrument === 'DSKGrandPiano' || instrument === 'SlingerlandKit' || instrument === 'RockKit') {
@@ -20,7 +20,7 @@ exports.getInstrument = function (req, res) {
 
 
 var getSound = function (req, res, filePath, mimeType) {
-    var stats = fs.statSync(filePath);
+    const stats = fs.statSync(filePath);
     fs.readFile(filePath, function (err, data) {
         res.writeHead(200, { 'Content-Type': mimeType, 'Content-Length': stats.size });
         if (err) {

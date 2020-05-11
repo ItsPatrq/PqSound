@@ -6,12 +6,12 @@ export default function reducer(state = {
     context: null,
     sound: null,
     bufferLoader: null,
-    samplerInstrumentsSounds: new Array
+    samplerInstrumentsSounds: []
 }, action) {
     switch (action.type) {
         case 'INIT_WEB_AUDIO': {
             let newContext = null;
-            let newSamplerInstrumentsSounds = new Array;
+            const newSamplerInstrumentsSounds = [];
             let newSound = null;
             try {
                 newContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -28,7 +28,7 @@ export default function reducer(state = {
                         id: SamplerPresets[i].presets[j].id,
                         loaded: false,
                         fetching: false,
-                        buffer: new Array
+                        buffer: []
                     })
                 }
             }
@@ -40,8 +40,8 @@ export default function reducer(state = {
             }
         }
         case 'NEED_TO_FETCH_SAMPLER_INSTRUMENT': {
-            let newBufferLoader = new BufferLoader(state.context);
-            let newSamplerInstrumentsSounds = [...state.samplerInstrumentsSounds];
+            const newBufferLoader = new BufferLoader(state.context);
+            const newSamplerInstrumentsSounds = [...state.samplerInstrumentsSounds];
             for (let i = 0; i < SamplerPresets.length; i++) {
                 for (let j = 0; j < SamplerPresets[i].presets.length; j++) {
                     if (SamplerPresets[i].presets[j].id === action.payload.instrumentId) {
@@ -64,7 +64,7 @@ export default function reducer(state = {
             }
         }
         case 'FETCHED_SAMPLER_INSTRUMENT': {
-            let newSamplerInstrumentsSounds = [...state.samplerInstrumentsSounds];
+            const newSamplerInstrumentsSounds = [...state.samplerInstrumentsSounds];
             let instrumentIndex;
             for (let i = 0; i < newSamplerInstrumentsSounds.length; i++) {
                 if (newSamplerInstrumentsSounds[i].id === action.payload.id) {

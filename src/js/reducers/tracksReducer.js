@@ -9,9 +9,9 @@ import { Utils as SamplerPresetsUtils, Presets as SamplerPresets } from 'constan
 /**
  * Those let-s are for initializing purpose
  */
-let newMasterPluginList = new Array;
-let newTrackPluginList = new Array;
-let firstInstrument = {};
+const newMasterPluginList = [];
+const newTrackPluginList = [];
+const firstInstrument = {};
 export default function reducer(state = {
     trackList: [
         {
@@ -39,7 +39,7 @@ export default function reducer(state = {
             solo: false,
             index: 1,
             output: 0,
-            input: new Array,
+            input: [],
             trackNode: {}
         }],
     selected: 1,
@@ -49,10 +49,10 @@ export default function reducer(state = {
 }, action) {
     switch (action.type) {
         case 'ADD_TRACK': {
-            let newTrackList = [...state.trackList];
-            let newPluginList = new Array;
+            const newTrackList = [...state.trackList];
+            const newPluginList = [];
             newTrackList[0].input.push(state.trackList.length);
-            let newInstrument = action.payload.trackType === TrackTypes.virtualInstrument ?
+            const newInstrument = action.payload.trackType === TrackTypes.virtualInstrument ?
                 new Sampler(SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id), action.payload.audioContext) : null;
             newTrackList.push(
                 {
@@ -67,7 +67,7 @@ export default function reducer(state = {
                     solo: false,
                     index: state.trackList.length,
                     output: 0,
-                    input: new Array,
+                    input: [],
                     trackNode: new Track(newPluginList, newInstrument, Utils.getTrackByIndex(newTrackList, 0).trackNode.input, action.payload.audioContext, 1.0, 0)
                 }
             );
@@ -86,12 +86,12 @@ export default function reducer(state = {
             }
         }
         case 'REMOVE_TRACK': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             let selected = state.selected;
             for (let i = 1; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
                     selected = selected === newTrackList.length - 1 ? selected-1 : selected;
-                    let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
+                    const currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
                     for(let j = 0; j < currOutput.input.length; j++){
                         if(currOutput.input[j] === action.payload){
                             currOutput.input.splice(j, 1);
@@ -104,7 +104,7 @@ export default function reducer(state = {
                     }
                     newTrackList.splice(i, 1);
                     for(let j = 0; j < newTrackList.length; j++){
-                        let currTrack = Utils.getTrackByIndex(newTrackList, newTrackList[j].index);
+                        const currTrack = Utils.getTrackByIndex(newTrackList, newTrackList[j].index);
                         for(let k = 0; k < currTrack.input.length; k++){
                             if(currTrack.input[k] >= i){
                                 --currTrack.input[k]
@@ -123,7 +123,7 @@ export default function reducer(state = {
             }
         }
         case 'CHANGE_RECORD_STATE': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
                     newTrackList[i].record = !newTrackList[i].record;
@@ -135,7 +135,7 @@ export default function reducer(state = {
             }
         }
         case 'CHANGE_TRACK_SOLO_STATE': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             let newAnyVirtualInstrumentSolo = false;
             let newAnyAuxSolo = false;
             for (let i = 1; i < newTrackList.length; i++) {
@@ -170,7 +170,7 @@ export default function reducer(state = {
             }
         }
         case 'CHANGE_TRACK_MUTE_STATE': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
                     newTrackList[i].mute = !newTrackList[i].mute;
@@ -184,7 +184,7 @@ export default function reducer(state = {
             }
         }
         case 'CHANGE_TRACK_NAME': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
                     newTrackList[i].name = action.payload.newTrackName;
@@ -196,7 +196,7 @@ export default function reducer(state = {
             }
         }
         case 'CHANGE_SELECTED_TRACK': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             let recording = 0;
             for(let i = 0; i < newTrackList.length; i++){
                 if(newTrackList[i].record){
@@ -231,7 +231,7 @@ export default function reducer(state = {
             }
         }
         case 'INIT_TRACK_SOUND': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             if (Utils.isNullOrUndefined(action.payload)) {
                 newTrackList[newTrackList.length - 1].sound = new Sound(newTrackList.length - 1);
             } else {
@@ -247,7 +247,7 @@ export default function reducer(state = {
             }
         }
         case 'INIT_INSTRUMENT_CONTEXT': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             const {index, audioContext} = action.payload;
             if (Utils.isNullOrUndefined(index)) {
                 //TODO: Get rid of
@@ -273,7 +273,7 @@ export default function reducer(state = {
             }
         }
         case 'CHANGE_TRACK_VOLUME': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
                     newTrackList[i].volume = action.payload.volume;
@@ -286,7 +286,7 @@ export default function reducer(state = {
             }
         }
         case 'CHANGE_TRACK_PAN': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
                     newTrackList[i].pan = action.payload.pan;
@@ -299,10 +299,10 @@ export default function reducer(state = {
             }
         }
         case 'CHANGE_TRACK_INSTRUMENT': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
-                    let newInstrument = InstrumentsUtils.getNewInstrumentByIndex(action.payload.trackInstrumentId, undefined, action.payload.audioContext);
+                    const newInstrument = InstrumentsUtils.getNewInstrumentByIndex(action.payload.trackInstrumentId, undefined, action.payload.audioContext);
                     newTrackList[i].instrument = newInstrument;
                     newTrackList[i].trackNode.updateInstrument(newInstrument);
                     break;
@@ -314,10 +314,10 @@ export default function reducer(state = {
             }
         }
         case 'CHANGE_TRACK_OUTPUT': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
-                    let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
+                    const currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
                     for(let j = 0; j < currOutput.input.length; j++){
                         if(currOutput.input[j] === action.payload.index){
                             currOutput.input.splice(j, 1);
@@ -342,7 +342,7 @@ export default function reducer(state = {
             }
         }
         case 'UPDATE_INSTRUMENT_PRESET': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
                     newTrackList[i].instrument.updatePreset(action.payload.preset);
@@ -355,13 +355,13 @@ export default function reducer(state = {
             }
         }
         case 'TRACK_INDEX_UP': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
                     for(let j = 0; j < newTrackList[i].input.length; j++){
                         Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output++;
                     }
-                    let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
+                    const currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
                     for(let j = 0; j < currOutput.input.length; j++){
                         if(currOutput.input[j] === newTrackList[i].index){
                             currOutput.input[j]++;
@@ -373,7 +373,7 @@ export default function reducer(state = {
                     for(let j = 0; j < newTrackList[i].input.length; j++){
                         Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output--;
                     }
-                    let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
+                    const currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
                     for(let j = 0; j < currOutput.input.length; j++){
                         if(currOutput.input[j] === newTrackList[i].index){
                             currOutput.input[j]--;
@@ -390,13 +390,13 @@ export default function reducer(state = {
             }
         }
         case 'TRACK_INDEX_DOWN': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
                     for(let j = 0; j < newTrackList[i].input.length; j++){
                         Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output--;
                     }
-                    let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
+                    const currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
                     for(let j = 0; j < currOutput.input.length; j++){
                         if(currOutput.input[j] === newTrackList[i].index){
                             currOutput.input[j]--;
@@ -408,7 +408,7 @@ export default function reducer(state = {
                     for(let j = 0; j < newTrackList[i].input.length; j++){
                         Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output++;
                     }
-                    let currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
+                    const currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
                     for(let j = 0; j < currOutput.input.length; j++){
                         if(currOutput.input[j] === newTrackList[i].index){
                             currOutput.input[j]++;
@@ -425,8 +425,8 @@ export default function reducer(state = {
             }
         }
         case 'ADD_NEW_PLUGIN': {
-            let newTrackList = [...state.trackList];
-            let currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
+            const newTrackList = [...state.trackList];
+            const currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
             currTrack.pluginList.push(
                 PluginsUtils.getNewPluginByIndex(action.payload.pluginId, currTrack.pluginList.length, action.payload.audioContext)
             );
@@ -437,8 +437,8 @@ export default function reducer(state = {
             }
         }
         case 'REMOVE_PLUGIN': {
-            let newTrackList = [...state.trackList];
-            let currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
+            const newTrackList = [...state.trackList];
+            const currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
             for (let i = 0; i < currTrack.pluginList.length; i++) {
                 if (currTrack.pluginList[i].index === action.payload.pluginIndex) {
                     currTrack.pluginList.splice(i, 1);
@@ -455,8 +455,8 @@ export default function reducer(state = {
             }
         }
         case 'CHANGE_PLUGIN_PRESET': {
-            let newTrackList = [...state.trackList];
-            let currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
+            const newTrackList = [...state.trackList];
+            const currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
             for (let i = 0; i < currTrack.pluginList.length; i++) {
                 if (currTrack.pluginList[i].index === action.payload.pluginIndex) {
                     currTrack.pluginList[i].updatePreset(action.payload.preset);
@@ -470,9 +470,9 @@ export default function reducer(state = {
         }
         case 'LOAD_TRACK_STATE': {
             const {stateToLoad, audioContext} = action.payload;
-            let newState = Utils.copy(stateToLoad);
+            const newState = Utils.copy(stateToLoad);
 
-            let newPluginList = new Array;
+            const newPluginList = [];
             for (let j = 0; j < newState.trackList[0].pluginList.length; j++) {
                 newPluginList.push(
                     PluginsUtils.getNewPluginByIndex(newState.trackList[0].pluginList[j].id, newPluginList.length, audioContext)
@@ -488,7 +488,7 @@ export default function reducer(state = {
 
             for (let i = 1; i < newState.trackList.length; i++) {
                 if (newState.trackList[i].trackType === TrackTypes.aux){
-                    let newPluginList = new Array;
+                    const newPluginList = [];
                     for (let j = 0; j < newState.trackList[i].pluginList.length; j++) {
                         newPluginList.push(
                             PluginsUtils.getNewPluginByIndex(newState.trackList[i].pluginList[j].id, newPluginList.length, audioContext)
@@ -510,10 +510,10 @@ export default function reducer(state = {
             }
             for (let i = 1; i < newState.trackList.length; i++) {
                 if (newState.trackList[i].trackType !== TrackTypes.aux){
-                        let newInstrument = InstrumentsUtils.getNewInstrumentByIndex(stateToLoad.trackList[i].instrument.id, undefined, audioContext);
+                        const newInstrument = InstrumentsUtils.getNewInstrumentByIndex(stateToLoad.trackList[i].instrument.id, undefined, audioContext);
                         newInstrument.updatePreset(stateToLoad.trackList[i].instrument.preset);
                         newState.trackList[i].instrument = newInstrument;
-                        let newPluginList = new Array;
+                        const newPluginList = [];
                         for (let j = 0; j < newState.trackList[i].pluginList.length; j++) {
                             newPluginList.push(
                                 PluginsUtils.getNewPluginByIndex(newState.trackList[i].pluginList[j].id, newPluginList.length, audioContext)
@@ -538,7 +538,7 @@ export default function reducer(state = {
             }
         }
         case 'UPDATE_ALL_TRACK_NODES': {
-            let newTrackList = [...state.trackList];
+            const newTrackList = [...state.trackList];
             
             for(let i = 0; i < newTrackList.length; i++){
                 if(newTrackList[i].mute){

@@ -13,7 +13,7 @@ import { Row } from 'react-bootstrap';
 class Keyboard extends React.Component {
     constructor() {
         super();
-        let that = this;
+        const that = this;
         window.onkeydown = function (e) {
             if (!e.ctrlKey && !e.altKey) {
                 switch (e.key) {
@@ -285,7 +285,7 @@ class Keyboard extends React.Component {
         }
     }
     getAllRecordingTracks() {
-        let recordingTracksSounds = new Array;
+        const recordingTracksSounds = [];
         for (let i = 1; i < this.props.trackList.length; i++) {
             if (this.props.trackList[i].record) {
                 recordingTracksSounds.push(this.props.trackList[i].index);
@@ -299,7 +299,7 @@ class Keyboard extends React.Component {
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
         if (this.props.keyboard.notesPlaying.includes(note)) {
-            let recordingTracksSounds = this.getAllRecordingTracks();
+            const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
                 this.props.sound.stop(recordingTracksSounds[i], note)
             }
@@ -314,7 +314,7 @@ class Keyboard extends React.Component {
         event.nativeEvent.stopImmediatePropagation();
         if (event.buttons == 1 &&  //leftClick
             !this.props.keyboard.notesPlaying.includes(note)) {
-            let recordingTracksSounds = this.getAllRecordingTracks();
+            const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
                 this.props.sound.play(recordingTracksSounds[i], null, note, SoundOrigin.keyboard)
             }
@@ -324,7 +324,7 @@ class Keyboard extends React.Component {
     }
 
     getKeyName(note) {
-        let recordingTracksSounds = this.getAllRecordingTracks();
+        const recordingTracksSounds = this.getAllRecordingTracks();
         if (recordingTracksSounds.length === 1) {
             return getTrackByIndex(this.props.trackList, recordingTracksSounds[0]).instrument.getNoteName(note);
         }
@@ -349,7 +349,7 @@ class Keyboard extends React.Component {
         if (!this.props.textInputFocused) {
             if (!isNullOrUndefined(this.props.keyboard.keyBindings[note]) &&
                 !this.props.keyboard.notesPlaying.includes(this.props.keyboard.keyBindings[note].MIDINote)) {
-                let recordingTracksSounds = this.getAllRecordingTracks();
+                const recordingTracksSounds = this.getAllRecordingTracks();
                 for (let i = 0; i < recordingTracksSounds.length; i++) {
                     this.props.sound.play(recordingTracksSounds[i], null, this.props.keyboard.keyBindings[note].MIDINote, SoundOrigin.keyboard)
                 }
@@ -363,7 +363,7 @@ class Keyboard extends React.Component {
         if (!this.props.textInputFocused) {
             if (!isNullOrUndefined(this.props.keyboard.keyBindings[note]) &&
                 this.props.keyboard.notesPlaying.includes(this.props.keyboard.keyBindings[note].MIDINote)) {
-                let recordingTracksSounds = this.getAllRecordingTracks();
+                const recordingTracksSounds = this.getAllRecordingTracks();
                 for (let i = 0; i < recordingTracksSounds.length; i++) {
                     this.props.sound.stop(recordingTracksSounds[i], this.props.keyboard.keyBindings[note].MIDINote)
                 }
@@ -413,7 +413,7 @@ class Keyboard extends React.Component {
 
     updateDimensions() {
         if (this.props.keyboard.show) {
-            let ComposingCol = document.getElementById('ComposingCol');
+            const ComposingCol = document.getElementById('ComposingCol');
             if (isNullOrUndefined(ComposingCol)) {
                 if (this.props.keyboard.width !== 0) {
                     this.props.dispatch(Actions.updateWidth(0));
@@ -435,11 +435,11 @@ class Keyboard extends React.Component {
 
     render() {
         if (this.props.keyboard.show) {
-            let firstVisibleKey = this.props.keyboard.firstKey;
+            const firstVisibleKey = this.props.keyboard.firstKey;
 
             let currVisible = firstVisibleKey;
-            let whiteKeysToRender = new Array;
-            let blackKeysToRender = new Array;
+            const whiteKeysToRender = [];
+            const blackKeysToRender = [];
 
             while (currVisible < 88 && keyboardWidths[currVisible].startWidth - keyboardWidths[firstVisibleKey].startWidth <= this.props.keyboard.width - 122) {
                 if (keyboardWidths[currVisible].sharp) {

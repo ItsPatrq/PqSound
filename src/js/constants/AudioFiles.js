@@ -1,10 +1,10 @@
 'use strict';
 
-let keys = ['C', 'Cs', 'D', 'Ds', 'E', 'F', 'Fs', 'G', 'Gs', 'A', 'As', 'B'];
-let baseURL = 'http://localhost:3000/api/samplerinstrument/';
+const keys = ['C', 'Cs', 'D', 'Ds', 'E', 'F', 'Fs', 'G', 'Gs', 'A', 'As', 'B'];
+const baseURL = 'http://localhost:3000/api/samplerinstrument/';
 
-let DSKGrandPianoURL = baseURL + 'DSKGrandPiano/DSK_Grand_';
-let DSKGrandPiano = [
+const DSKGrandPianoURL = baseURL + 'DSKGrandPiano/DSK_Grand_';
+const DSKGrandPiano = [
     {
         name: 'DSKGrandPiano' + 'A' + 0,
         url: DSKGrandPianoURL + 'A' + 0 + '.wav'
@@ -29,7 +29,7 @@ for(let i = 1; i < 8; i++){
 
 export {DSKGrandPiano};
 
-let slingerlandKitURL = baseURL + 'SlingerlandKit/';
+const slingerlandKitURL = baseURL + 'SlingerlandKit/';
 export const SlingerlandKit = [
     {
         name: 'Ludwig-Snare-A',
@@ -125,7 +125,7 @@ export const SlingerlandKit = [
     }
 ];
 
-let rockKitURL = baseURL + 'RockKit/';
+const rockKitURL = baseURL + 'RockKit/';
 export const RockKit = [
     {
         name: 'Rock-Kit-Crash-1-1',

@@ -9,7 +9,7 @@
 const path = require('path');
 const srcPath = path.join(__dirname, '/../src');
 
-let ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 /**
  * Get the default modules object for webpack

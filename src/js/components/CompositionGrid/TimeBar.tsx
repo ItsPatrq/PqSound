@@ -1,15 +1,22 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
 
-export const TimeBar = (props) => {
-    let beats = new Array;
+interface TimeBarProps {
+    bits: number;
+    scroll: number;
+    changeCurrSixteenth(change: number): void;
+    sixteenthNotePlaying: number;
+}
+
+export const TimeBar: React.FunctionComponent<TimeBarProps> = (props: TimeBarProps) => {
+    const beats: JSX.Element[] = [];
     for (let i = 0; i <= props.bits; i++) {
         beats.push(
             <div
                 className="timeBarBeat"
                 style={{ left: i * 50 - props.scroll + 'px' }}
                 key={i.toString()}
-                onClick={() => props.changeCurrSixteenth(i*16)}
+                onClick={(): void => props.changeCurrSixteenth(i*16)}
             >
                 {i}
             </div>

@@ -5,10 +5,10 @@ import { TrackTypes } from 'constants/Constants';
 import {samplerIcon, virtualInstrumentIcon, auxIcon} from 'constants/Icons';
 
 const Track = (props) => {
-    let handleTrackNameChange = (event) => {
+    const handleTrackNameChange = (event) => {
         props.handleTrackNameChange(event, props.trackDetails.index);
     }
-    let getTrackRowClassName = () => {
+    const getTrackRowClassName = () => {
         if (props.selected === props.trackDetails.index) {
             return 'trackRow selected'
         } else {
@@ -47,7 +47,7 @@ const Track = (props) => {
             <Glyphicon glyph="arrow-down" />
         </Button>;
     }
-    let getIcon = () => {
+    const getIcon = () => {
         switch(props.trackDetails.trackType ){
             case TrackTypes.aux:{
                 return auxIcon;

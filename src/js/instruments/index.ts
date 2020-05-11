@@ -6,10 +6,10 @@ import MultiOsc from './MultiOsc';
 import {Instruments as InstrumentsEnum} from '../constants/Constants'
 
 interface InstrumentUtils {
-    getNewInstrumentByIndex(id:Number, preset:any, audioContext:AudioContext):any
+    getNewInstrumentByIndex(id: number, preset: any, audioContext: AudioContext): any;
 }
 const Utils: InstrumentUtils = {
-    getNewInstrumentByIndex: (id:Number, preset:any, audioContext:AudioContext) => {
+    getNewInstrumentByIndex: (id: number, preset: any, audioContext: AudioContext) => {
         switch (id) {
             case InstrumentsEnum.Sampler.id: {
                 return new Sampler(preset, audioContext);

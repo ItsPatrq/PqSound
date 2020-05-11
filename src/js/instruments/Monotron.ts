@@ -12,7 +12,7 @@ class MonotronVoice extends VoiceSynthBase {
     vcf: BiquadFilterNode;
     output: GainNode;
 
-    constructor(frequency:number, startTime:number, preset:any, audioContext:AudioContext) {
+    constructor(frequency: number, startTime: number, preset: any, audioContext: AudioContext) {
         super(audioContext, preset);
         this.frequency = frequency;
         this.mod = preset.mod;
@@ -44,7 +44,7 @@ class MonotronVoice extends VoiceSynthBase {
         this.lfo.start(this.context.currentTime);
     }
 
-    start(time:number) {
+    start(time: number) {
         time = time || this.context.currentTime;
         this.output.gain.exponentialRampToValueAtTime(0.7, time);
     }
@@ -111,7 +111,7 @@ class Monotron extends InstrumentBase {
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
-            let currVoice = new MonotronVoice(noteToFrequency(note), startTime, this.preset, this.context);
+            const currVoice = new MonotronVoice(noteToFrequency(note), startTime, this.preset, this.context);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;

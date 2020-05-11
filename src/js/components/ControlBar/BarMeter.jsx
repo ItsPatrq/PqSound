@@ -1,16 +1,16 @@
 import React from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 const BarMeter = (props) => {
-    let getSixteenth = () => {
+    const getSixteenth = () => {
         return props.currSixteenth % 4;
     }
 
-    let getBeat = () => {
+    const getBeat = () => {
         return Math.floor(props.currSixteenth / 4) % 4;
     }
 
-    let getBar = () => {
-        let bars = Math.floor(props.currSixteenth / 16);
+    const getBar = () => {
+        const bars = Math.floor(props.currSixteenth / 16);
         if (bars < 10) {
             return '00' + bars;
         } else if (bars < 100) {

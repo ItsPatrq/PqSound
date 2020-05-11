@@ -6,7 +6,7 @@
 /**
  * array of all 88 keys to help determine if specific key is black (1) or white (0)
  */
-let keyNotes = [0, 1, 0];
+const keyNotes = [0, 1, 0];
 for (let i = 0; i < 7; i++) {
     keyNotes.push(0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0)
 }
@@ -18,8 +18,8 @@ export const oscillatorTypes = ['sine', 'square', 'sawtooth', 'triangle'];
 /**
  * array of all 88 frequencies for each note starting from a0
  */
-let keyFrequencies = [27.50];
-let multipler = Math.pow(2, 1 / 12)
+const keyFrequencies = [27.50];
+const multipler = Math.pow(2, 1 / 12)
 for (let i = 1; i < 89; i++) {
     keyFrequencies.push(keyFrequencies[i - 1] * multipler)
 }
@@ -126,8 +126,8 @@ export const SoundOrigin = {
 /**
  * widths in pixels for every piano key to determine if need to be displayed
  */
-let keyboardWidths = [{ sharp: false, startWidth: 0 }, { sharp: true, startWidth: 47 }, { sharp: false, startWidth: 66 }];
-let octaveKeysWidth = [{ sharp: false, startWidth: 0 }, { sharp: true, startWidth: 55 }, { sharp: false, startWidth: 66 },
+const keyboardWidths = [{ sharp: false, startWidth: 0 }, { sharp: true, startWidth: 47 }, { sharp: false, startWidth: 66 }];
+const octaveKeysWidth = [{ sharp: false, startWidth: 0 }, { sharp: true, startWidth: 55 }, { sharp: false, startWidth: 66 },
 { sharp: true, startWidth: 123 }, { sharp: false, startWidth: 122 }, { sharp: false, startWidth: 198 },
 { sharp: true, startWidth: 254 }, { sharp: false, startWidth: 264 }, { sharp: true, startWidth: 322 },
 { sharp: false, startWidth: 330 }, { sharp: true, startWidth: 389 }, { sharp: false, startWidth: 396 }]
@@ -143,8 +143,8 @@ export { keyboardWidths };
 /**
  * List of strings representing each of 88 notes musical notation for displaying purpose
  */
-let keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-let defaultKeysNames = ['A0', 'A#0', 'B0'];
+const keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const defaultKeysNames = ['A0', 'A#0', 'B0'];
 for (let i = 0; i < 7; i++) {
     for (let j = 0; j < keys.length; j++) {
         defaultKeysNames.push(keys[j] + (i + 1).toString());
@@ -153,7 +153,7 @@ for (let i = 0; i < 7; i++) {
 defaultKeysNames.push('C8');
 export { defaultKeysNames };
 
-let defaultKeysNamesNoOctaveNumber = ['A', 'A#', 'B'];
+const defaultKeysNamesNoOctaveNumber = ['A', 'A#', 'B'];
 for (let i = 0; i < 7; i++) {
     for (let j = 0; j < keys.length; j++) {
         defaultKeysNamesNoOctaveNumber.push(keys[j]);

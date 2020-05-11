@@ -1,13 +1,13 @@
-var Knob;
+let Knob;
 Knob = function (input, ui) {
-  var container = document.createElement('div');
+  const container = document.createElement('div');
   container.setAttribute('tabindex', "0");
   input.parentNode.replaceChild(container, input);
   input.style.cssText = 'position: absolute; top: -10000px';
   input.setAttribute('tabindex', -1);
   container.appendChild(input);
 
-  var settings = this.settings = this._getSettings(input);
+  const settings = this.settings = this._getSettings(input);
 
 
   this.value = input.value = settings.min + settings.range / 2;
@@ -16,7 +16,7 @@ Knob = function (input, ui) {
 
   this.ui = ui;
 
-  var events = {
+  const events = {
     keydown: this._handleKeyEvents.bind(this),
     mousewheel: this._handleWheelEvents.bind(this),
     DOMMouseScroll: this._handleWheelEvents.bind(this),
@@ -24,7 +24,7 @@ Knob = function (input, ui) {
     mousedown: this._handleMove.bind(this, 'mousemove', 'mouseup')
   };
 
-  for (var event in events) {
+  for (const event in events) {
     container.addEventListener(event, events[event], false);
   }
 
@@ -38,19 +38,19 @@ Knob = function (input, ui) {
 
 Knob.prototype = {
   _handleKeyEvents: function (e) {
-    var keycode = e.keyCode;
+    const keycode = e.keyCode;
     if (keycode >= 37 && keycode <= 40) {
       e.preventDefault();
-      var f = 1 + e.shiftKey * 9;
+      const f = 1 + e.shiftKey * 9;
       this.changed({ 37: -1, 38: 1, 39: 1, 40: -1 }[keycode] * f);
     }
   },
 
   _handleWheelEvents: function (e) {
     e.preventDefault();
-    var deltaX = -e.detail || e.wheelDeltaX;
-    var deltaY = -e.detail || e.wheelDeltaY;
-    var val = deltaX > 0 || deltaY > 0 ? 1 : deltaX < 0 || deltaY < 0 ? -1 : 0;
+    const deltaX = -e.detail || e.wheelDeltaX;
+    const deltaY = -e.detail || e.wheelDeltaY;
+    const val = deltaX > 0 || deltaY > 0 ? 1 : deltaX < 0 || deltaY < 0 ? -1 : 0;
     this.changed(val);
   },
 
@@ -58,8 +58,8 @@ Knob.prototype = {
     this.centerX = Math.floor(this.container.getBoundingClientRect().left) + document.body.scrollLeft + this.settings.width / 2;
     this.centerY = Math.floor(this.container.getBoundingClientRect().top) + document.body.scrollTop + this.settings.height / 2;
 
-    var fnc = this._updateWhileMoving.bind(this);
-    var body = document.body;
+    const fnc = this._updateWhileMoving.bind(this);
+    const body = document.body;
     body.addEventListener(onMove, fnc, false);
     body.addEventListener(onEnd, function () {
       body.removeEventListener(onMove, fnc, false);
@@ -68,11 +68,11 @@ Knob.prototype = {
 
   _updateWhileMoving: function (event) {
     event.preventDefault();
-    var e = event.changedTouches ? event.changedTouches[0] : event;
-    var x = this.centerX - e.pageX;
-    var y = this.centerY - e.pageY;
-    var deg = Math.atan2(-y, -x) * 180 / Math.PI + 90 - this.settings.angleoffset;
-    var percent;
+    const e = event.changedTouches ? event.changedTouches[0] : event;
+    const x = this.centerX - e.pageX;
+    const y = this.centerY - e.pageY;
+    let deg = Math.atan2(-y, -x) * 180 / Math.PI + 90 - this.settings.angleoffset;
+    let percent;
 
     if (deg < 0) {
       deg += 360;
@@ -83,10 +83,10 @@ Knob.prototype = {
     } else {
       percent = +(deg - this.settings.anglerange < (360 - this.settings.anglerange) / 2);
     }
-    var range = this.settings.range;
-    var value = this.min + range * percent;
+    const range = this.settings.range;
+    const value = this.min + range * percent;
 
-    var step = (this.settings.max - this.min) / range;
+    const step = (this.settings.max - this.min) / range;
     this.value = this.input.value = Math.round(value / step) * step;
     this.ui.update(percent, this.value);
     this.triggerChange();
@@ -108,7 +108,7 @@ Knob.prototype = {
 
   triggerChange: function () {
     if (document.createEventObject) {
-      var evt = document.createEventObject();
+      const evt = document.createEventObject();
       this.input.fireEvent('onchange', evt);
     } else {
       this.input.dispatchEvent(new Event('change'));
@@ -124,12 +124,12 @@ Knob.prototype = {
   },
 
   _getSettings: function (input) {
-    var labels;
+    let labels;
 
     if (input.dataset.labels) {
       labels = input.dataset.labels.split(',');
     }
-    var settings = {
+    const settings = {
       max: labels ? labels.length - 1 : parseFloat(input.max),
       min: labels ? 0 : parseFloat(input.min),
       step: parseFloat(input.step) || 1,
@@ -138,10 +138,10 @@ Knob.prototype = {
       labels: labels
     };
     settings.range = settings.max - settings.min;
-    var data = input.dataset;
-    for (var i in data) {
+    const data = input.dataset;
+    for (const i in data) {
       if (data.hasOwnProperty(i) && i !== 'labels') {
-        var value = +data[i];
+        const value = +data[i];
         settings[i] = isNaN(value) ? data[i] : value;
       }
     }
@@ -151,7 +151,7 @@ Knob.prototype = {
 
 
 
-var Ui = function () {
+const Ui = function () {
 };
 
 Ui.prototype = {
@@ -170,7 +170,7 @@ Ui.prototype = {
   },
 
   merge: function (dest, src) {
-    for (var i in src) {
+    for (const i in src) {
       if (src.hasOwnProperty(i)) {
         dest[i] = src[i];
       }
@@ -271,12 +271,12 @@ Ui.Scale.prototype.createElement = function (parentEl) {
   this.el.addClassName('scale');
   if (this.options.drawScale) {
     if (!this.options.labels) {
-      var step = this.options.anglerange / this.options.steps;
-      var end = this.options.steps + (this.options.anglerange == 360 ? 0 : 1);
+      const step = this.options.anglerange / this.options.steps;
+      const end = this.options.steps + (this.options.anglerange == 360 ? 0 : 1);
       this.ticks = [];
-      var Shape = this.options.type;
-      for (var i = 0; i < end; i++) {
-        var rect = new Shape(this.options.tickWidth, this.options.tickHeight, this.width / 2,
+      const Shape = this.options.type;
+      for (let i = 0; i < end; i++) {
+        const rect = new Shape(this.options.tickWidth, this.options.tickHeight, this.width / 2,
           this.options.tickHeight / 2);
         rect.rotate(this.startAngle + i * step, this.width / 2, this.height / 2);
         this.el.append(rect);
@@ -291,10 +291,10 @@ Ui.Scale.prototype.createElement = function (parentEl) {
 };
 
 Ui.Scale.prototype.dial = function () {
-  var step = this.options.anglerange / this.options.steps;
-  var min = this.options.min;
-  var dialStep = (this.options.max - min) / this.options.steps;
-  var end = this.options.steps + (this.options.anglerange == 360 ? 0 : 1);
+  let step = this.options.anglerange / this.options.steps;
+  const min = this.options.min;
+  const dialStep = (this.options.max - min) / this.options.steps;
+  const end = this.options.steps + (this.options.anglerange == 360 ? 0 : 1);
   this.dials = [];
   if (!this.options.labels) {
     for (var i = 0; i < end; i++) {
@@ -307,7 +307,7 @@ Ui.Scale.prototype.dial = function () {
   } else {
     step = this.options.anglerange / (this.options.labels.length - 1);
     for (var i = 0; i < this.options.labels.length; i++) {
-      var label = this.options.labels[i];
+      const label = this.options.labels[i];
       var text = new Ui.El.Text(label, this.width / 2 - 2.5,
         this.height / 2 - this.options.radius, 5, 5);
       this.el.append(text);
@@ -371,7 +371,7 @@ Ui.El.prototype = {
   },
   create: function (type, attributes) {
     this.node = document.createElementNS(this.svgNS, type);
-    for (var key in attributes) {
+    for (const key in attributes) {
       this.attr(key, attributes[key]);
     }
   },
@@ -443,8 +443,8 @@ Ui.El.Text = function (text, x, y, width, height) {
 Ui.El.Text.prototype = Object.create(Ui.El.prototype);
 
 Ui.El.Text.prototype.center = function (element) {
-  var width = element.getAttribute('width');
-  var height = element.getAttribute('height');
+  const width = element.getAttribute('width');
+  const height = element.getAttribute('height');
   this.attr('x', width / 2 - this.node.getBBox().width / 2);
   this.attr('y', height / 2 + this.node.getBBox().height / 4);
 };
@@ -466,20 +466,20 @@ Ui.El.Arc.prototype.setAngle = function (angle) {
 
 
 Ui.El.Arc.prototype.getCoords = function (angle) {
-  var startAngle = this.options.angleoffset;
-  var outerRadius = this.options.outerRadius || this.options.width / 2;
-  var innerRadius = this.options.innerRadius || this.options.width / 2 - this.options.arcWidth;
-  var startAngleDegree = Math.PI * startAngle / 180;
-  var endAngleDegree = Math.PI * (startAngle + angle) / 180;
-  var center = this.options.width / 2;
+  const startAngle = this.options.angleoffset;
+  const outerRadius = this.options.outerRadius || this.options.width / 2;
+  const innerRadius = this.options.innerRadius || this.options.width / 2 - this.options.arcWidth;
+  const startAngleDegree = Math.PI * startAngle / 180;
+  const endAngleDegree = Math.PI * (startAngle + angle) / 180;
+  const center = this.options.width / 2;
 
-  var p1 = pointOnCircle(outerRadius, endAngleDegree);
-  var p2 = pointOnCircle(outerRadius, startAngleDegree);
-  var p3 = pointOnCircle(innerRadius, startAngleDegree);
-  var p4 = pointOnCircle(innerRadius, endAngleDegree);
+  const p1 = pointOnCircle(outerRadius, endAngleDegree);
+  const p2 = pointOnCircle(outerRadius, startAngleDegree);
+  const p3 = pointOnCircle(innerRadius, startAngleDegree);
+  const p4 = pointOnCircle(innerRadius, endAngleDegree);
 
-  var path = 'M' + p1.x + ',' + p1.y;
-  var largeArcFlag = (angle < 180 ? 0 : 1);
+  let path = 'M' + p1.x + ',' + p1.y;
+  const largeArcFlag = (angle < 180 ? 0 : 1);
   path += ' A' + outerRadius + ',' + outerRadius + ' 0 ' + largeArcFlag + ' 0 ' + p2.x + ',' + p2.y;
   path += 'L' + p3.x + ',' + p3.y;
   path += ' A' + innerRadius + ',' + innerRadius + ' 0 ' + largeArcFlag + ' 1 ' + p4.x + ',' + p4.y;
@@ -512,7 +512,7 @@ Ui.P2.prototype.createElement = function () {
   })));
 
   this.merge(this.options, { arcWidth: this.width / 10 });
-  var arc = new Ui.El.Arc(this.options);
+  const arc = new Ui.El.Arc(this.options);
   arc.setAngle(this.options.anglerange);
   this.el.node.appendChild(arc.node);
   this.el.node.setAttribute('class', 'p2');

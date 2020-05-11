@@ -7,7 +7,7 @@ const WhiteKey = (props) => {
     } else {
         className = 'whiteKey';
     }
-    let names = new Array;
+    const names = [];
     if (props.keyNameVisible) {
         names.push(
             <p className="keyName white" key={props.keyName + props.note}>

@@ -3,8 +3,8 @@ import { regionToDrawParser } from 'engine/CompositionParser';
 import { TrackTypes } from 'constants/Constants';
 
 const TrackCompositionRow = (props) => {
-    let bits = new Array;
-    let bitsToDraw = regionToDrawParser(props.trackIndex, props.bits, props.copiedRegion);
+    const bits = [];
+    const bitsToDraw = regionToDrawParser(props.trackIndex, props.bits, props.copiedRegion);
 
     if (props.trackType === TrackTypes.aux) {
         return (

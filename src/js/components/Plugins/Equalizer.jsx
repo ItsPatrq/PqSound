@@ -3,7 +3,7 @@ import React from 'react';
 require('styles/Plugins/Equalizer.css');
 
 const Equalizer = (props) => {
-    let handleChange = (newLow, newMid, newHigh) => {
+    const handleChange = (newLow, newMid, newHigh) => {
         props.onPresetChange({
             lowFilterGain: newLow ? Number(newLow) : props.plugin.preset.lowFilterGain,
             midFilterGain: newMid ? Number(newMid) : props.plugin.preset.midFilterGain,

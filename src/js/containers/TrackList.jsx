@@ -29,7 +29,7 @@ class TrackList extends React.Component {
     handleRecordClick(index) {
         this.props.dispatch(trackListActions.changeRecordState(index));
         this.shouldFetchSamplerInstrument(index);
-        let currTrack = Utils.getTrackByIndex(this.props.trackList, index);
+        const currTrack = Utils.getTrackByIndex(this.props.trackList, index);
         if(!currTrack.record){
             currTrack.instrument.stopAll();
         }
@@ -116,7 +116,7 @@ class TrackList extends React.Component {
     }
 
     render() {
-        let renderTrackList = new Array;
+        const renderTrackList = [];
         /**
          * start iteration from i = 1 because i = 0 is the master track
          */

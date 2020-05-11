@@ -3,7 +3,7 @@ import React from 'react';
 require('styles/Plugins/Chorus.css');
 
 const Chorus = (props) => {
-    let handleChange = (newFeedback, newDelay, newDepth, newRate, newDry, newWet) => {
+    const handleChange = (newFeedback, newDelay, newDepth, newRate, newDry, newWet) => {
         props.onPresetChange({
             feedback: newFeedback ? Number(newFeedback) : props.plugin.preset.feedback,
             delay: newDelay ? Number(newDelay) : props.plugin.preset.delay,

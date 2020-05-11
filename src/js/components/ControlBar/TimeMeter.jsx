@@ -1,8 +1,8 @@
 import React from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 const TimeMeter = (props) => {
-    let getMin = () => {
-        let minutes = Math.floor(props.currSixteenth * 0.25 * (60 / props.bpm) / 60);
+    const getMin = () => {
+        const minutes = Math.floor(props.currSixteenth * 0.25 * (60 / props.bpm) / 60);
         if (minutes < 10) {
             return '0' + minutes;
         } else {
@@ -10,8 +10,8 @@ const TimeMeter = (props) => {
         }
     }
 
-    let getSec = () => {
-        let secounds = (props.currSixteenth * 0.25 * (60 / props.bpm))%60;
+    const getSec = () => {
+        const secounds = (props.currSixteenth * 0.25 * (60 / props.bpm))%60;
         if (secounds < 10) {
             return '0' + secounds;
         } else {
@@ -19,8 +19,8 @@ const TimeMeter = (props) => {
         }
     }
 
-    let getCs = () => {
-        let csecounds = (props.currSixteenth * 2.5 * (60 / props.bpm))%10;
+    const getCs = () => {
+        const csecounds = (props.currSixteenth * 2.5 * (60 / props.bpm))%10;
         
             return csecounds.toString();
     }

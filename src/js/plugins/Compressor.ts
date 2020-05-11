@@ -3,7 +3,7 @@ import Plugin from './Plugin';
 
 class Compressor extends Plugin{
     compressorNode: DynamicsCompressorNode;
-    constructor(index:number, audioContext:AudioContext){
+    constructor(index: number, audioContext: AudioContext){
         super(PluginsEnum.Compressor, index, audioContext);
         this.preset = {
             threashold: -50,

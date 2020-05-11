@@ -4,33 +4,33 @@ import { isNullOrUndefined, devLog } from '../engine/Utils';
 import { Voice } from './Voice';
 
 export interface Instrument {
-    name:string,
-    id:number,
-    voices:any[],
-    context:AudioContext,
-    output:AudioNode,
-    preset:any,
-    updatePreset(newPreset:any):void,
-    noteOff(note:number):void,
-    updateNodes():void,
-    getNoteName(note:number):string,
-    stopAll():void
+    name: string;
+    id: number;
+    voices: any[];
+    context: AudioContext;
+    output: AudioNode;
+    preset: any;
+    updatePreset(newPreset: any): void;
+    noteOff(note: number): void;
+    updateNodes(): void;
+    getNoteName(note: number): string;
+    stopAll(): void;
 }
 
 export abstract class InstrumentBase implements Instrument {
-    name:string;
-    id:number;
-    voices:Voice[];
+    name: string;
+    id: number;
+    voices: Voice[];
     
-    declare context:AudioContext;
-    declare output:AudioNode;
-    declare preset:any;
-    abstract noteOff(note:number, endTime?:number):void;
-    abstract updateNodes():void;
-    constructor(currEnum, audioContext:AudioContext){
+    declare context: AudioContext;
+    declare output: AudioNode;
+    declare preset: any;
+    abstract noteOff(note: number, endTime?: number): void;
+    abstract updateNodes(): void;
+    constructor(currEnum, audioContext: AudioContext){
         this.name = currEnum.name;
         this.id = currEnum.id;
-        this.voices = new Array;
+        this.voices = [];
         if (!isNullOrUndefined(audioContext)) {
             this.context = audioContext;
             this.output = this.context.createGain();

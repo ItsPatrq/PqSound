@@ -5,7 +5,7 @@ export default function reducer(state = {
     width: 0,
     firstKey: 0,
     show: false,
-    notesPlaying: new Array,
+    notesPlaying: [],
     keyNamesVisible: true,
     keyBindings: defaultKeyBindings,
     keyBindVisible: true
@@ -42,7 +42,7 @@ export default function reducer(state = {
             }
         }
         case 'ADD_PLAYING_NOTE': {
-            let newNotesPlaying = [...state.notesPlaying];
+            const newNotesPlaying = [...state.notesPlaying];
             newNotesPlaying.push(action.payload);
             return {
                 ...state,
@@ -62,7 +62,7 @@ export default function reducer(state = {
             }
         }
         case 'CHANGE_KEY_BINDINGS': {
-            let newKeyBindings = [...state.keyBindings];
+            const newKeyBindings = [...state.keyBindings];
             for (let i = 0; i < newKeyBindings.length; i++) {
                 newKeyBindings[i].MIDINote = newKeyBindings[i].MIDINote + action.payload;
             }

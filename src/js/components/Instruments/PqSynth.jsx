@@ -6,17 +6,17 @@ import { oscillatorTypes } from 'constants/Constants';
 require('styles/Instruments/PqSynth.css');
 
 const PqSynth = (props) => {
-    let handleChange = (param, oscillator, oscilatorNumber, value) => {
-        let newPreset = JSON.parse(JSON.stringify(props.instrument.preset));
+    const handleChange = (param, oscillator, oscilatorNumber, value) => {
+        const newPreset = JSON.parse(JSON.stringify(props.instrument.preset));
         if(oscillator){
             newPreset.oscillators[oscilatorNumber][param] = value;
         }
         props.onPresetChange(newPreset);
     }
-    let oscillators = new Array;
+    const oscillators = [];
     for (let i = 0; i < 3; i++) {
-        let shapeTypes = new Array;
-        let octaveShifts = new Array;
+        const shapeTypes = [];
+        const octaveShifts = [];
         for (let j = 0; j < oscillatorTypes.length; j++) {
             shapeTypes.push(
                 <MenuItem

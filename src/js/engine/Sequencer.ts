@@ -8,9 +8,9 @@ class Sequencer {
     noteTime?: number;
     startTime?: number;
     timerWorker?: Worker;
-    sixteenthPlaying: number = 0;
+    sixteenthPlaying = 0;
     timeoutId?: number;
-    scheduleAhead: number = 0.200;
+    scheduleAhead = 0.200;
     handlePlay() {
         this.noteTime = 0.0;
         this.startTime = (Store.getState().webAudio as any).context.currentTime + 0.005;
@@ -40,19 +40,19 @@ class Sequencer {
          */
         while (this.noteTime! < currentTime + this.scheduleAhead) {
             // Convert noteTime to context time.
-            var contextPlayTime = this.noteTime! + this.startTime!;
+            const contextPlayTime = this.noteTime! + this.startTime!;
             
-            let trackList = (Store.getState().tracks as any).trackList;
-            let soundHandler = (Store.getState().webAudio as any).sound;
+            const trackList = (Store.getState().tracks as any).trackList;
+            const soundHandler = (Store.getState().webAudio as any).sound;
             soundHandler.scheduleStop(this.sixteenthPlaying, contextPlayTime, SoundOrigin.composition);
             //iterate through all tracks
             for (let i = 0; i < trackList.length; i++) {
-                let currTrackIndex = trackList[i].index;
-                let currentNotesToPlay = notesToPlay(this.sixteenthPlaying, currTrackIndex);
+                const currTrackIndex = trackList[i].index;
+                const currentNotesToPlay = notesToPlay(this.sixteenthPlaying, currTrackIndex);
                 if (!Utils.isNullUndefinedOrEmpty(currentNotesToPlay)) {
                     for (let j = 0; j < currentNotesToPlay!.length; j++) {
                         soundHandler.play(currTrackIndex, contextPlayTime, Utils.noteToMIDI(currentNotesToPlay![j].note),
-                            SoundOrigin.composition, this.sixteenthPlaying +  currentNotesToPlay![j].durotian);
+                            SoundOrigin.composition, this.sixteenthPlaying +  currentNotesToPlay![j].duration);
                     }
                 }
             }
@@ -63,8 +63,8 @@ class Sequencer {
      * change the current note to plan up in time by one sixteenth note time length
      */
     advenceNote() {
-        let tempo = Store.getState().control.BPM;
-        var secoundsPerBeat = 60.0 / tempo;
+        const tempo = Store.getState().control.BPM;
+        const secoundsPerBeat = 60.0 / tempo;
 
         this.sixteenthPlaying++;
 
@@ -73,19 +73,19 @@ class Sequencer {
         Store.dispatch(updateCurrentTime(this.sixteenthPlaying));
     }
     init() {
-        var that = this;
-        var timerWorkerBlob = new Blob([
+        const schedule = this.schedule;
+        const timerWorkerBlob = new Blob([
             'var timeoutID=0;' +
             'function schedule(){timeoutID=setTimeout(function(){postMessage(\'schedule\'); schedule();},80);}' +
             'onmessage = function(e) { if (e.data == \'start\') { if (!timeoutID) schedule();} else if (e.data == \'stop\') {if (timeoutID) clearTimeout(timeoutID);' +
             'timeoutID=0;};}']);
 
         // Obtain a blob URL reference to our worker 'file'.
-        var timerWorkerBlobURL = window.URL.createObjectURL(timerWorkerBlob);
+        const timerWorkerBlobURL = window.URL.createObjectURL(timerWorkerBlob);
 
         this.timerWorker = new Worker(timerWorkerBlobURL);
         this.timerWorker.onmessage = function (/*e*/) {
-            that.schedule();
+            schedule();
         };
         this.timerWorker.postMessage('init'); // Start the worker.
     }

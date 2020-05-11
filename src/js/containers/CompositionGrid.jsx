@@ -57,7 +57,7 @@ class CompositionGrid extends React.Component {
     }
 
     handleRegionClicked(event, trackIndex, bitIndex) {
-        let regionIndex = getRegionIdByBitIndex(trackIndex, bitIndex);
+        const regionIndex = getRegionIdByBitIndex(trackIndex, bitIndex);
 
         switch (event.altKey ? this.props.selectedSecoundaryTool : this.props.selectedTool) {
             case tools.select.id: {
@@ -95,7 +95,7 @@ class CompositionGrid extends React.Component {
                 break;
             }
         }
-        let notesToDraw = notesToDrawParser(noteNumber);
+        const notesToDraw = notesToDrawParser(noteNumber);
         switch (event.altKey ? this.props.selectedSecoundaryTool : this.props.selectedTool) {
             case tools.draw.id: {
                 let canDraw = sixteenthNumber + noteLength <= notesToDraw.length ? true : false;
@@ -123,7 +123,7 @@ class CompositionGrid extends React.Component {
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
         //if (this.props.keyboard.notesPlaying.includes(note)) {
-            let currTrackIndex = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).trackIndex;
+            const currTrackIndex = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).trackIndex;
             this.props.sound.stop(currTrackIndex, note)
         //    this.props.dispatch(KeyboardActions.removePlayingNote(note));
         //}
@@ -135,7 +135,7 @@ class CompositionGrid extends React.Component {
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
         if (event.buttons == 1 /*&& !this.props.keyboard.notesPlaying.includes(note)*/){  //leftClick
-            let currTrackIndex = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).trackIndex;
+            const currTrackIndex = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).trackIndex;
             this.props.sound.play(currTrackIndex, null, note, SoundOrigin.pianoRollNote)
             //this.props.dispatch(KeyboardActions.addPlayingNote(note))
         }
@@ -189,11 +189,11 @@ class CompositionGrid extends React.Component {
     }
 
     render() {
-        let trackCompositionRowList = new Array;
+        const trackCompositionRowList = [];
         if (this.props.composition.showPianoRoll) {
-            let currRegion = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList);
-            let bitsNumber = currRegion.regionLength;
-            let currTrackIndex = currRegion.trackIndex;
+            const currRegion = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList);
+            const bitsNumber = currRegion.regionLength;
+            const currTrackIndex = currRegion.trackIndex;
             return (
                 <Col xs={12} className="nopadding compositionPanelPianoRoll">
                     <PianoRollTimeBar

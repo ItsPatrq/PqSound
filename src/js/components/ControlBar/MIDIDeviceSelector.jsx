@@ -2,7 +2,7 @@ import React from 'react';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 
 const MIDIDeviceSelector = (props) => {
-    let availableDevices = new Array;
+    const availableDevices = [];
     availableDevices.push(
         <MenuItem
             key='selectNoneMidiDevice'
@@ -12,7 +12,7 @@ const MIDIDeviceSelector = (props) => {
             None
         </MenuItem>
     )
-    let isEnabled = props.devices.length > 0;
+    const isEnabled = props.devices.length > 0;
     for (let i = 0; i < props.devices.length; i++) {
         availableDevices.push(
             <MenuItem

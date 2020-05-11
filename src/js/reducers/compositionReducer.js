@@ -6,18 +6,18 @@ export default function reducer(state = {
     maxBarsInComposition: 1000,
     showPianoRoll: false,
     pianoRollRegion: null,
-    regionList: new Array,
+    regionList: [],
     regionLastId: 0
 }, action) {
     switch (action.type) {
         case 'REMOVE_TRACK_FROM_COMPOSITION': {
-            let newRegionList = state.regionList.filter((el) => { return el.trackIndex !== action.payload })
+            const newRegionList = state.regionList.filter((el) => { return el.trackIndex !== action.payload })
             for (let i = 0; i < newRegionList.length; i++) {
                 if (newRegionList[i].trackIndex > action.payload) {
                     newRegionList[i].trackIndex = newRegionList[i].trackIndex - 1;
                 }
             }
-            let newPianoRollRegion = state.pianoRollRegion === action.payload ? null : state.pianoRollRegion
+            const newPianoRollRegion = state.pianoRollRegion === action.payload ? null : state.pianoRollRegion
             return {
                 ...state,
                 regionList: newRegionList,
@@ -25,7 +25,7 @@ export default function reducer(state = {
             }
         }
         case 'ADD_REGION': {
-            let newRegionList = JSON.parse(JSON.stringify(state.regionList));
+            const newRegionList = JSON.parse(JSON.stringify(state.regionList));
             let newRegionLastId = state.regionLastId;
             newRegionList.push({
                 id: ++newRegionLastId,
@@ -42,9 +42,9 @@ export default function reducer(state = {
             }
         }
         case 'PASTE_REGION': {
-            let newRegionList = JSON.parse(JSON.stringify(state.regionList));
+            const newRegionList = JSON.parse(JSON.stringify(state.regionList));
             let newRegionLastId = state.regionLastId;
-            let copiedRegion = compositionParser.getRegionByRegionId(action.payload.copiedRegion, newRegionList);
+            const copiedRegion = compositionParser.getRegionByRegionId(action.payload.copiedRegion, newRegionList);
             if (!Utils.isNullOrUndefined(copiedRegion)) {
                 newRegionList.push({
                     id: ++newRegionLastId,
@@ -69,10 +69,10 @@ export default function reducer(state = {
             }
         }
         case 'ADD_NOTE': {
-            let newRegionsList = JSON.parse(JSON.stringify(state.regionList));
-            let currRegion = compositionParser.getRegionByRegionId(action.payload.regionId, newRegionsList);
+            const newRegionsList = JSON.parse(JSON.stringify(state.regionList));
+            const currRegion = compositionParser.getRegionByRegionId(action.payload.regionId, newRegionsList);
             if (Utils.isNullOrUndefined(currRegion.notes[action.payload.noteNumber])) {
-                currRegion.notes[action.payload.noteNumber] = new Array;
+                currRegion.notes[action.payload.noteNumber] = [];
             }
             currRegion.notes[action.payload.noteNumber].push({
                 sixteenthNumber: action.payload.sixteenthNumber,
@@ -84,8 +84,8 @@ export default function reducer(state = {
             }
         }
         case 'REMOVE_NOTE': {
-            let newRegionsList = JSON.parse(JSON.stringify(state.regionList));
-            let currRegion = compositionParser.getRegionByRegionId(action.payload.regionId, newRegionsList);
+            const newRegionsList = JSON.parse(JSON.stringify(state.regionList));
+            const currRegion = compositionParser.getRegionByRegionId(action.payload.regionId, newRegionsList);
             for (let i = 0; i < currRegion.notes[action.payload.noteNumber].length; i++) {
                 if (currRegion.notes[action.payload.noteNumber][i].sixteenthNumber <= action.payload.sixteenthNumber &&
                     currRegion.notes[action.payload.noteNumber][i].sixteenthNumber +
@@ -140,7 +140,7 @@ export default function reducer(state = {
             }
         }
         case 'REGION_TRACK_INDEX_UP': {
-            let newRegionsList = JSON.parse(JSON.stringify(state.regionList));
+            const newRegionsList = JSON.parse(JSON.stringify(state.regionList));
             for (let i = 0; i < newRegionsList.length; i++) {
                 if (newRegionsList[i].trackIndex === action.payload) {
                     ++newRegionsList[i].trackIndex;
@@ -154,7 +154,7 @@ export default function reducer(state = {
             }
         }
         case 'REGION_TRACK_INDEX_DOWN': {
-            let newRegionsList = JSON.parse(JSON.stringify(state.regionList));
+            const newRegionsList = JSON.parse(JSON.stringify(state.regionList));
             for (let i = 0; i < newRegionsList.length; i++) {
                 if (newRegionsList[i].trackIndex === action.payload) {
                     --newRegionsList[i].trackIndex;
