@@ -30,7 +30,7 @@
     "@types/react-dom": "^16.9.7",
     "@types/styled-components": "^5.1.0",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
-    "@typescript-eslint/parser": "^2.31.0",
+    "@typescript-eslint/parser": "^2.32.0",
     "awesome-typescript-loader": "^5.2.1",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",
