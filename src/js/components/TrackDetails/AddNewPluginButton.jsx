@@ -1,6 +1,6 @@
 import React from 'react';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
-import {Plugins} from 'constants/Constants';
+import { Plugins } from 'constants/Constants';
 
 const AddNewPluginButton = (props) => {
     const availablePlugins = [];
@@ -9,17 +9,17 @@ const AddNewPluginButton = (props) => {
             <MenuItem
                 key={Plugins[i].id}
                 eventKey={Plugins[i].id}
-                onClick={() => { props.onPluginAdd(props.trackIndex, Plugins[i].id) }}
+                onClick={() => {
+                    props.onPluginAdd(props.trackIndex, Plugins[i].id);
+                }}
             >
                 {Plugins[i].name}
-            </MenuItem>
+            </MenuItem>,
         );
     }
     return (
-
         <div className="addNewPluginButton">
-            
-            <div style={{margin: 'auto'}}>
+            <div style={{ margin: 'auto' }}>
                 <DropdownButton
                     bsStyle="link"
                     className="drop-down outputSelectorDropDown"
@@ -28,9 +28,9 @@ const AddNewPluginButton = (props) => {
                 >
                     {availablePlugins}
                 </DropdownButton>
-                </div>
+            </div>
         </div>
     );
-}
+};
 
 export default AddNewPluginButton;

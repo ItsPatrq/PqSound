@@ -25,6 +25,6 @@ const ToolsSelector = (props) => {
                 onTempRegionDrawLengthChange={props.handleTempRegionDrawLengthChange}
             />
         </div>
-    )
-}
+    );
+};
 export default ToolsSelector;

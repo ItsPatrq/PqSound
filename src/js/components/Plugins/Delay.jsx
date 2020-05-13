@@ -11,16 +11,16 @@ const Delay = (props) => {
             highCut: newHighCut ? Number(newHighCut) : props.plugin.preset.highCut,
             lowCut: newLowCut ? Number(newLowCut) : props.plugin.preset.lowCut,
             wet: newWet ? Number(newWet) : props.plugin.preset.wet,
-            dry: newDry ? Number(newDry) : props.plugin.preset.dry
-            
-        })
-    }
+            dry: newDry ? Number(newDry) : props.plugin.preset.dry,
+        });
+    };
     return (
         <div>
             <div className="delayModal">
                 <div className="delayControlRow">
                     <label>Delay: {props.plugin.preset.delay}</label>
-                    <input type="range"
+                    <input
+                        type="range"
                         value={props.plugin.preset.delay}
                         step="0.02"
                         min="0"
@@ -30,7 +30,8 @@ const Delay = (props) => {
                 </div>
                 <div className="delayControlRow">
                     <label>Feedback: {props.plugin.preset.feedback}</label>
-                    <input type="range"
+                    <input
+                        type="range"
                         value={props.plugin.preset.feedback}
                         step="0.02"
                         min="0"
@@ -40,7 +41,8 @@ const Delay = (props) => {
                 </div>
                 <div className="delayControlRow">
                     <label>Delays number: {props.plugin.preset.iterations}</label>
-                    <input type="range"
+                    <input
+                        type="range"
                         value={props.plugin.preset.iterations}
                         step="1"
                         min="1"
@@ -50,7 +52,8 @@ const Delay = (props) => {
                 </div>
                 <div className="delayControlRow">
                     <label>Highcut: {props.plugin.preset.highCut}</label>
-                    <input type="range"
+                    <input
+                        type="range"
                         value={props.plugin.preset.highCut}
                         step="1"
                         min="0"
@@ -60,7 +63,8 @@ const Delay = (props) => {
                 </div>
                 <div className="delayControlRow">
                     <label>Lowcut: {props.plugin.preset.lowCut}</label>
-                    <input type="range"
+                    <input
+                        type="range"
                         value={props.plugin.preset.lowCut}
                         step="1"
                         min="0"
@@ -76,7 +80,7 @@ const Delay = (props) => {
                         step="0.01"
                         min="0"
                         max="1"
-                        onChange={(event) => handleChange(null, null, null, null, null,  event.target.value)}
+                        onChange={(event) => handleChange(null, null, null, null, null, event.target.value)}
                     />
                 </div>
                 <div className="delayControlRow">
@@ -91,8 +95,7 @@ const Delay = (props) => {
                     />
                 </div>
             </div>
-
         </div>
     );
-}
+};
 export default Delay;

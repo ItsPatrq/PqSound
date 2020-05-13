@@ -14,15 +14,15 @@ class Chorus extends Plugin {
     depthL: GainNode;
     depthR: GainNode;
     constructor(index, audioContext) {
-        super(PluginsEnum.Chorus, index, audioContext)
+        super(PluginsEnum.Chorus, index, audioContext);
         this.preset = {
             feedback: 0.4,
             delay: 0.03,
             depth: 0.002,
             rate: 3.5,
             dry: 0.5,
-            wet: 0.5
-        }
+            wet: 0.5,
+        };
 
         this.dryGain = this.context.createGain();
         this.wetGain = this.context.createGain();
@@ -68,14 +68,16 @@ class Chorus extends Plugin {
         this.depthL.gain.setValueAtTime(this.preset.depth, this.context.currentTime);
         this.depthR.gain.setValueAtTime(-this.preset.depth, this.context.currentTime);
         this.osc.frequency.setValueAtTime(this.preset.rate, this.context.currentTime);
-        this.feedbackGainNodeLR.gain.setValueAtTime(this.preset.feedback ?
-            this.preset.feedback : 0.00001, this.context.currentTime);
-        this.feedbackGainNodeRL.gain.setValueAtTime(this.preset.feedback ?
-            this.preset.feedback : 0.00001, this.context.currentTime);
-        this.dryGain.gain.setValueAtTime(this.preset.dry ?
-            this.preset.dry : 0.00001, this.context.currentTime);
-        this.wetGain.gain.setValueAtTime(this.preset.wet ?
-            this.preset.wet : 0.00001, this.context.currentTime);
+        this.feedbackGainNodeLR.gain.setValueAtTime(
+            this.preset.feedback ? this.preset.feedback : 0.00001,
+            this.context.currentTime,
+        );
+        this.feedbackGainNodeRL.gain.setValueAtTime(
+            this.preset.feedback ? this.preset.feedback : 0.00001,
+            this.context.currentTime,
+        );
+        this.dryGain.gain.setValueAtTime(this.preset.dry ? this.preset.dry : 0.00001, this.context.currentTime);
+        this.wetGain.gain.setValueAtTime(this.preset.wet ? this.preset.wet : 0.00001, this.context.currentTime);
     }
 }
 

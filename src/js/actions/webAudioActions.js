@@ -1,7 +1,7 @@
 export function initializeWebAudio() {
     return {
-        type: 'INIT_WEB_AUDIO'
-    }
+        type: 'INIT_WEB_AUDIO',
+    };
 }
 
 export function fetchSamplerInstrument(newInstrumentId) {
@@ -15,21 +15,21 @@ export function fetchSamplerInstrument(newInstrumentId) {
                         type: 'FETCHED_SAMPLER_INSTRUMENT',
                         payload: {
                             id: newInstrumentId,
-                            bufferLoader: newBufferLoader
-                        }
-                    })
-                }
-            }
+                            bufferLoader: newBufferLoader,
+                        },
+                    });
+                },
+            },
         });
-    }
+    };
 }
 
-export function loadKeyboardSounds(loadName, loadVolume){
+export function loadKeyboardSounds(loadName, loadVolume) {
     return {
         type: 'LOAD_KEYBOARD_SOUNDS',
         payload: {
             name: loadName,
-            volume: loadVolume
-        }
-    }
+            volume: loadVolume,
+        },
+    };
 }

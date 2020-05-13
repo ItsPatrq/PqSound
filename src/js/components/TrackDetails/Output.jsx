@@ -9,32 +9,35 @@ const Output = (props) => {
             <MenuItem
                 key={props.auxTracks[i].index}
                 eventKey={props.auxTracks[i].index}
-                onClick={() => { props.onOutputChange(props.auxTracks[i].index) }}
+                onClick={() => {
+                    props.onOutputChange(props.auxTracks[i].index);
+                }}
             >
                 {props.auxTracks[i].name}
-            </MenuItem>
+            </MenuItem>,
         );
     }
     return (
-
         <div className="output">
-            <OverlayTrigger placement="bottom" overlay={
-                <Tooltip id={'tooltipTimeSignature'}>{'Output AUX'}</Tooltip>
-            } delayShow={500}>
-            <div style={{margin: 'auto'}}>
-                <DropdownButton
-                    disabled={!isEnabled}
-                    bsStyle="link"
-                    className="drop-down outputSelectorDropDown"
-                    title={props.dropDownTitle}
-                    id="OutputSelectorDropDown"
-                >
-                    {availableAuxTracks}
-                </DropdownButton>
+            <OverlayTrigger
+                placement="bottom"
+                overlay={<Tooltip id={'tooltipTimeSignature'}>{'Output AUX'}</Tooltip>}
+                delayShow={500}
+            >
+                <div style={{ margin: 'auto' }}>
+                    <DropdownButton
+                        disabled={!isEnabled}
+                        bsStyle="link"
+                        className="drop-down outputSelectorDropDown"
+                        title={props.dropDownTitle}
+                        id="OutputSelectorDropDown"
+                    >
+                        {availableAuxTracks}
+                    </DropdownButton>
                 </div>
             </OverlayTrigger>
         </div>
     );
-}
+};
 
 export default Output;

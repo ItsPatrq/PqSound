@@ -15,45 +15,27 @@ const InstrumentModal = (props) => {
         let modalBody;
         switch (props.plugin.id) {
             case PluginsEnum.Equalizer: {
-                modalBody = <EqualizerComponent
-                    plugin={props.plugin}
-                    onPresetChange={props.onPresetChange}
-                />
+                modalBody = <EqualizerComponent plugin={props.plugin} onPresetChange={props.onPresetChange} />;
                 break;
             }
             case PluginsEnum.Compressor: {
-                modalBody = <CompressorComponent
-                    plugin={props.plugin}
-                    onPresetChange={props.onPresetChange}
-                />
+                modalBody = <CompressorComponent plugin={props.plugin} onPresetChange={props.onPresetChange} />;
                 break;
             }
             case PluginsEnum.Distortion: {
-                modalBody = <DistortionComponent
-                    plugin={props.plugin}
-                    onPresetChange={props.onPresetChange}
-                />
+                modalBody = <DistortionComponent plugin={props.plugin} onPresetChange={props.onPresetChange} />;
                 break;
             }
             case PluginsEnum.Delay: {
-                modalBody = <DelayComponent
-                    plugin={props.plugin}
-                    onPresetChange={props.onPresetChange}
-                />
+                modalBody = <DelayComponent plugin={props.plugin} onPresetChange={props.onPresetChange} />;
                 break;
             }
             case PluginsEnum.Reverb: {
-                modalBody = <ReverbComponent
-                    plugin={props.plugin}
-                    onPresetChange={props.onPresetChange}
-                />
+                modalBody = <ReverbComponent plugin={props.plugin} onPresetChange={props.onPresetChange} />;
                 break;
             }
             case PluginsEnum.Chorus: {
-                modalBody = <ChorusComponent
-                    plugin={props.plugin}
-                    onPresetChange={props.onPresetChange}
-                />
+                modalBody = <ChorusComponent plugin={props.plugin} onPresetChange={props.onPresetChange} />;
                 break;
             }
         }
@@ -68,19 +50,15 @@ const InstrumentModal = (props) => {
                 <Modal.Header closeButton>
                     <Modal.Title>{modalHeader}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    {modalBody}
-                </Modal.Body>
+                <Modal.Body>{modalBody}</Modal.Body>
                 <Modal.Footer>
                     <Button onClick={() => props.modalVisibilitySwitch()}>Close</Button>
                 </Modal.Footer>
             </Modal>
-
         );
     } else {
         return null;
     }
-
-}
+};
 
 export default InstrumentModal;

@@ -6,15 +6,16 @@ const Distortion = (props) => {
     const handleChange = (newOutputGain, newDistortion) => {
         props.onPresetChange({
             outputGain: newOutputGain ? Number(newOutputGain) : props.plugin.preset.outputGain,
-            distortion: newDistortion ? Number(newDistortion) : props.plugin.preset.distortion
-        })
-    }
+            distortion: newDistortion ? Number(newDistortion) : props.plugin.preset.distortion,
+        });
+    };
     return (
         <div>
             <div className="distortionModal">
                 <div className="distortionControlRow">
                     <label>Distortion: {props.plugin.preset.distortion}</label>
-                    <input type="range"
+                    <input
+                        type="range"
                         value={props.plugin.preset.distortion}
                         step="1"
                         min="0"
@@ -34,8 +35,7 @@ const Distortion = (props) => {
                     />
                 </div>
             </div>
-
         </div>
     );
-}
+};
 export default Distortion;

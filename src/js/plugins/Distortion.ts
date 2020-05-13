@@ -4,18 +4,18 @@ import Plugin from './Plugin';
 class Distortion extends Plugin {
     gainNode: GainNode;
     distortionNode: WaveShaperNode;
-    
+
     constructor(index, audioContext) {
         super(PluginsEnum.Distortion, index, audioContext);
         this.preset = {
             outputGain: 1,
-            distortion: 0
-        }
+            distortion: 0,
+        };
         this.gainNode = this.context.createGain();
         this.distortionNode = this.context.createWaveShaper();
 
         this.updateNodes();
-        
+
         this.gainNode.connect(this.distortionNode);
 
         this.input = this.gainNode;
@@ -23,8 +23,10 @@ class Distortion extends Plugin {
     }
 
     updateNodes() {
-        this.gainNode.gain.setValueAtTime(this.preset.outputGain ?
-            this.preset.outputGain : 0.000001, this.context.currentTime);
+        this.gainNode.gain.setValueAtTime(
+            this.preset.outputGain ? this.preset.outputGain : 0.000001,
+            this.context.currentTime,
+        );
         this.distortionNode.curve = this.makeDistortionCurve(this.preset.distortion);
     }
 
@@ -35,8 +37,8 @@ class Distortion extends Plugin {
         const deg = Math.PI / 180;
         let x = 0;
         for (let i = 0; i < samplesNumber; ++i) {
-            x = i * 2 / samplesNumber - 1;
-            curve[i] = (3 + distortionAmount) * x * 20 * deg / (Math.PI + distortionAmount * Math.abs(x));
+            x = (i * 2) / samplesNumber - 1;
+            curve[i] = ((3 + distortionAmount) * x * 20 * deg) / (Math.PI + distortionAmount * Math.abs(x));
         }
         return curve;
     }

@@ -12,15 +12,15 @@ const WhiteKey = (props) => {
         names.push(
             <p className="keyName white" key={props.keyName + props.note}>
                 {props.keyName}
-            </p>
-        )
+            </p>,
+        );
     }
     if (props.keyBindingVisible) {
         names.push(
             <p className="keyBind white" key={props.keyBind + props.note}>
                 {props.keyBind}
-            </p>
-        )
+            </p>,
+        );
     }
     return (
         <div
@@ -33,6 +33,6 @@ const WhiteKey = (props) => {
             {names}
         </div>
     );
-}
+};
 
 export default WhiteKey;

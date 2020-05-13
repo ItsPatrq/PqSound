@@ -12,24 +12,21 @@ const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const config = Object.assign({}, baseConfig, {
-    entry: [
-        'webpack-hot-middleware/client?reload=true',
-        path.join(__dirname, '/../src/index')
-    ],
-    mode: "development",
+    entry: ['webpack-hot-middleware/client?reload=true', path.join(__dirname, '/../src/index')],
+    mode: 'development',
     devtool: 'inline-source-map',
     cache: true,
     plugins: [
         new HtmlWebpackPlugin({
             template: path.join(__dirname, '/../src/index.html'),
             inject: 'body',
-            filename: 'index.html'
+            filename: 'index.html',
         }),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('development')
+            'process.env.NODE_ENV': JSON.stringify('development'),
         }),
         new ExtractTextPlugin('style.css'),
         // new HardSourceWebpackPlugin({
@@ -68,7 +65,7 @@ const config = Object.assign({}, baseConfig, {
         //       tsconfig: path.join(__dirname, '/../tsconfig.json')
         //   }) //not working
     ],
-    module: defaultSettings.getDefaultModules()
+    module: defaultSettings.getDefaultModules(),
 });
 
 // Add needed loaders to the defaults here
@@ -81,11 +78,11 @@ config.module.rules.push(
         //     transpileOnly: true // Transpilation is handled by Fork TS Checker Webpack Plugin
         // }
     },
-     {
-    enforce: 'pre',
-    test: /\.js$/,
-    loader: "source-map-loader"
-}
+    {
+        enforce: 'pre',
+        test: /\.js$/,
+        loader: 'source-map-loader',
+    },
 );
 
 module.exports = config;

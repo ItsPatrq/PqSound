@@ -9,9 +9,9 @@ const Compressor = (props) => {
             knee: newKnee ? Number(newKnee) : props.plugin.preset.knee,
             ratio: newRatio ? Number(newRatio) : props.plugin.preset.ratio,
             attack: newAttack ? Number(newAttack) : props.plugin.preset.attack,
-            release: newRelease ? Number(newRelease) : props.plugin.preset.release
-        })
-    }
+            release: newRelease ? Number(newRelease) : props.plugin.preset.release,
+        });
+    };
     return (
         <div>
             <div className="compressorModal">
@@ -28,7 +28,8 @@ const Compressor = (props) => {
                 </div>
                 <div className="compressorControlRow">
                     <label>Knee: {props.plugin.preset.knee}</label>
-                    <input type="range"
+                    <input
+                        type="range"
                         value={props.plugin.preset.knee}
                         step="0.5"
                         min="0"
@@ -66,12 +67,11 @@ const Compressor = (props) => {
                         step="0.01"
                         min="0"
                         max="1"
-                        onChange={(event) => handleChange(null, null, null, null,  event.target.value)}
+                        onChange={(event) => handleChange(null, null, null, null, event.target.value)}
                     />
                 </div>
             </div>
-
         </div>
     );
-}
+};
 export default Compressor;

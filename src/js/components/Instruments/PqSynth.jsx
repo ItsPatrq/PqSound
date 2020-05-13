@@ -2,17 +2,16 @@ import React from 'react';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 import { oscillatorTypes } from 'constants/Constants';
 
-
 require('styles/Instruments/PqSynth.css');
 
 const PqSynth = (props) => {
     const handleChange = (param, oscillator, oscilatorNumber, value) => {
         const newPreset = JSON.parse(JSON.stringify(props.instrument.preset));
-        if(oscillator){
+        if (oscillator) {
             newPreset.oscillators[oscilatorNumber][param] = value;
         }
         props.onPresetChange(newPreset);
-    }
+    };
     const oscillators = [];
     for (let i = 0; i < 3; i++) {
         const shapeTypes = [];
@@ -25,8 +24,8 @@ const PqSynth = (props) => {
                     onClick={() => handleChange('waveForm', true, i, oscillatorTypes[j])}
                 >
                     {oscillatorTypes[j]}
-                </MenuItem>
-            )
+                </MenuItem>,
+            );
         }
         shapeTypes.push(
             <MenuItem
@@ -35,8 +34,8 @@ const PqSynth = (props) => {
                 onClick={() => handleChange('waveForm', true, i, 'whiteNoise')}
             >
                 {'white noise'}
-            </MenuItem>
-        )
+            </MenuItem>,
+        );
         shapeTypes.push(
             <MenuItem
                 key={'oscilator' + i + 'shapePinkNoise'}
@@ -44,8 +43,8 @@ const PqSynth = (props) => {
                 onClick={() => handleChange('waveForm', true, i, 'pinkNoise')}
             >
                 {'pink noise'}
-            </MenuItem>
-        )
+            </MenuItem>,
+        );
         shapeTypes.push(
             <MenuItem
                 key={'oscilator' + i + 'brownianPinkNoise'}
@@ -53,18 +52,18 @@ const PqSynth = (props) => {
                 onClick={() => handleChange('waveForm', true, i, 'brownianNoise')}
             >
                 {'brownian noise'}
-            </MenuItem>
-        )
+            </MenuItem>,
+        );
         for (let j = 0; j < 7; j++) {
             octaveShifts.push(
                 <MenuItem
                     key={'oscilator' + i + 'octShift' + (j - 3)}
                     eventKey={'oscilator' + i + 'octShift' + (j - 3)}
-                    onClick={() => handleChange('frequencyModOct', true, i, j-3)}
+                    onClick={() => handleChange('frequencyModOct', true, i, j - 3)}
                 >
                     {j - 3 === 0 ? 'none' : j - 3}
-                </MenuItem>
-            )
+                </MenuItem>,
+            );
         }
         oscillators.push(
             <div className="pqSynthOscilator" key={i.toString()}>
@@ -72,30 +71,35 @@ const PqSynth = (props) => {
                     <h2>oscillator {i + 1}</h2>
                 </div>
                 <div className="pqSynthSwitch">
-                        <label>
-                            <input
-                                type="radio"
-                                value="standby"
-                                checked={props.instrument.preset.oscillators[i].active}
-                                onChange={() => handleChange('active', true, i, true)}
-                            />
-                            On
-                                </label>
-                        <label>
-                            <input
-                                type="radio"
-                                value="pitch"
-                                checked={!props.instrument.preset.oscillators[i].active}
-                                onChange={() => handleChange('active', true, i, false)}
-                            />
-                            Off
-                            </label>
-                    </div>
+                    <label>
+                        <input
+                            type="radio"
+                            value="standby"
+                            checked={props.instrument.preset.oscillators[i].active}
+                            onChange={() => handleChange('active', true, i, true)}
+                        />
+                        On
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            value="pitch"
+                            checked={!props.instrument.preset.oscillators[i].active}
+                            onChange={() => handleChange('active', true, i, false)}
+                        />
+                        Off
+                    </label>
+                </div>
                 <div className="waveformSection">
                     <div className="waveformSelectorLabel">
                         <h3>waveform:</h3>
                     </div>
-                    <DropdownButton id={'oscilator-types-drop-down'} bsStyle="link" className="waveformSelector" title={props.instrument.preset.oscillators[i].waveForm} >
+                    <DropdownButton
+                        id={'oscilator-types-drop-down'}
+                        bsStyle="link"
+                        className="waveformSelector"
+                        title={props.instrument.preset.oscillators[i].waveForm}
+                    >
                         {shapeTypes}
                     </DropdownButton>
                 </div>
@@ -105,20 +109,31 @@ const PqSynth = (props) => {
                     </div>
                     <div className="frequencyModOctPercent">
                         <label>shift (in %): {props.instrument.preset.oscillators[i].frequencyModPercent}</label>
-                        <input type="range"
+                        <input
+                            type="range"
                             value={props.instrument.preset.oscillators[i].frequencyModPercent}
                             step="0.01"
                             min="-100"
                             max="100"
-                            onChange={(event) => handleChange('frequencyModPercent', true, i, Number(event.target.value))}
+                            onChange={(event) =>
+                                handleChange('frequencyModPercent', true, i, Number(event.target.value))
+                            }
                         />
                     </div>
                     <div className="frequencyModOctSelector">
                         <div className="frequencyModOctSelectorLabel">
                             <h3>shift (in octaves)</h3>
                         </div>
-                        <DropdownButton id={'oscilator-types-drop-down'} bsStyle="link" className="waveformSelector"
-                            title={props.instrument.preset.oscillators[i].frequencyModOct ? props.instrument.preset.oscillators[i].frequencyModOct : 'none'} >
+                        <DropdownButton
+                            id={'oscilator-types-drop-down'}
+                            bsStyle="link"
+                            className="waveformSelector"
+                            title={
+                                props.instrument.preset.oscillators[i].frequencyModOct
+                                    ? props.instrument.preset.oscillators[i].frequencyModOct
+                                    : 'none'
+                            }
+                        >
                             {octaveShifts}
                         </DropdownButton>
                     </div>
@@ -134,7 +149,7 @@ const PqSynth = (props) => {
                                 onChange={() => handleChange('frequencyModLfo', true, i, true)}
                             />
                             On
-                                </label>
+                        </label>
                         <label>
                             <input
                                 type="radio"
@@ -143,11 +158,12 @@ const PqSynth = (props) => {
                                 onChange={() => handleChange('frequencyModLfo', true, i, false)}
                             />
                             Off
-                            </label>
+                        </label>
                     </div>
                     <div className="frequencyModLfoSlider">
-                    <label>frequency (Hz): {props.instrument.preset.oscillators[i].frequencyModLfoHz}</label>
-                        <input type="range"
+                        <label>frequency (Hz): {props.instrument.preset.oscillators[i].frequencyModLfoHz}</label>
+                        <input
+                            type="range"
                             value={props.instrument.preset.oscillators[i].frequencyModLfoHz}
                             step="0.01"
                             min="0.1"
@@ -157,12 +173,15 @@ const PqSynth = (props) => {
                     </div>
                     <div className="frequencyModLfoSlider">
                         <label>width: {props.instrument.preset.oscillators[i].frequencyModLfoWidth}</label>
-                        <input type="range"
+                        <input
+                            type="range"
                             value={props.instrument.preset.oscillators[i].frequencyModLfoWidth}
                             step="0.01"
                             min="0.01"
                             max="1000"
-                            onChange={(event) => handleChange('frequencyModLfoWidth', true, i, Number(event.target.value))}
+                            onChange={(event) =>
+                                handleChange('frequencyModLfoWidth', true, i, Number(event.target.value))
+                            }
                         />
                     </div>
                 </div>
@@ -172,12 +191,15 @@ const PqSynth = (props) => {
                     </div>
                     <div className="frequencyModLfoSlider">
                         <label>scale (in %): {props.instrument.preset.oscillators[i].amplitudeModPercent}</label>
-                        <input type="range"
+                        <input
+                            type="range"
                             value={props.instrument.preset.oscillators[i].amplitudeModPercent}
                             step="1"
                             min="0"
                             max="100"
-                            onChange={(event) => handleChange('amplitudeModPercent', true, i,Number(event.target.value))}
+                            onChange={(event) =>
+                                handleChange('amplitudeModPercent', true, i, Number(event.target.value))
+                            }
                         />
                     </div>
                     <div className="sectionLabel">
@@ -189,23 +211,24 @@ const PqSynth = (props) => {
                                 type="radio"
                                 value="standby"
                                 checked={props.instrument.preset.oscillators[i].amplitudeModLfo}
-                                onChange={() => handleChange('amplitudeModLfo', true, i,true)}
+                                onChange={() => handleChange('amplitudeModLfo', true, i, true)}
                             />
                             On
-                                </label>
+                        </label>
                         <label>
                             <input
                                 type="radio"
                                 value="pitch"
                                 checked={!props.instrument.preset.oscillators[i].amplitudeModLfo}
-                                onChange={() => handleChange('amplitudeModLfo', true, i,false)}
+                                onChange={() => handleChange('amplitudeModLfo', true, i, false)}
                             />
                             Off
-                            </label>
+                        </label>
                     </div>
                     <div className="frequencyModLfoSlider">
                         <label>frequency (in Hz): {props.instrument.preset.oscillators[i].amplitudeModLfoHz}</label>
-                        <input type="range"
+                        <input
+                            type="range"
                             value={props.instrument.preset.oscillators[i].amplitudeModLfoHz}
                             step="0.01"
                             min="0.1"
@@ -215,24 +238,25 @@ const PqSynth = (props) => {
                     </div>
                     <div className="frequencyModLfoSlider">
                         <label>width: {props.instrument.preset.oscillators[i].amplitudeModLfoWidth}</label>
-                        <input type="range"
+                        <input
+                            type="range"
                             value={props.instrument.preset.oscillators[i].amplitudeModLfoWidth}
                             step="0.01"
                             min="0"
                             max="1"
-                            onChange={(event) => handleChange('amplitudeModLfoWidth', true, i, Number(event.target.value))}
+                            onChange={(event) =>
+                                handleChange('amplitudeModLfoWidth', true, i, Number(event.target.value))
+                            }
                         />
                     </div>
                 </div>
-            </div>
-        )
+            </div>,
+        );
     }
     return (
         <div className="pqSynthContainer">
-            <div className="pqSynthOscilatorsContainer">
-                {oscillators}
-            </div>
+            <div className="pqSynthOscilatorsContainer">{oscillators}</div>
         </div>
     );
-}
+};
 export default PqSynth;

@@ -11,20 +11,21 @@ const NoteDrawLengthDropdown = (props) => {
                     <MenuItem
                         key={(noteLengths[property].id + 1).toString()}
                         eventKey={(noteLengths[property].id + 1).toString()}
-                        onClick={() => props.onNoteDrawLengthChange(noteLengths[property].id)}>{noteLengths[property].name}
-                    </MenuItem>
+                        onClick={() => props.onNoteDrawLengthChange(noteLengths[property].id)}
+                    >
+                        {noteLengths[property].name}
+                    </MenuItem>,
                 );
             }
         }
 
         return (
-            <DropdownButton bsStyle="default" className="drop-down" title="Note draw length" id={props.id} >
+            <DropdownButton bsStyle="default" className="drop-down" title="Note draw length" id={props.id}>
                 {noteLengthsMenuItems}
             </DropdownButton>
-        )
-    }
-    else {
+        );
+    } else {
         return null;
     }
-}
+};
 export default NoteDrawLengthDropdown;

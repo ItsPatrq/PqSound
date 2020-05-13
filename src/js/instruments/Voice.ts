@@ -1,4 +1,4 @@
-import { isNullOrUndefined } from "../engine/Utils";
+import { isNullOrUndefined } from '../engine/Utils';
 
 export interface Voice {
     context: AudioContext;
@@ -11,7 +11,7 @@ export interface Voice {
 }
 
 export abstract class VoiceSynthBase implements Voice {
-    constructor(audioContext: AudioContext, preset: any){
+    constructor(audioContext: AudioContext, preset: any) {
         if (!isNullOrUndefined(audioContext)) {
             this.context = audioContext;
             this.preset = preset;

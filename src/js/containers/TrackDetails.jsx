@@ -10,7 +10,18 @@ import Output from 'components/TrackDetails/Output';
 import SoloMuteButtons from 'components/TrackDetails/SoloMuteButtons';
 import PluginModal from 'components/TrackDetails/PluginModal';
 import * as Actions from 'actions/trackDetailsActions';
-import { changeTrackVolume, changeTrackInstrument, changeTrackOutput, changeSoloState, changeMuteState, changeTrackPan, addNewPlugin, removePlugin, changePluginPreset, updateInstrumentPreset } from 'actions/trackListActions';
+import {
+    changeTrackVolume,
+    changeTrackInstrument,
+    changeTrackOutput,
+    changeSoloState,
+    changeMuteState,
+    changeTrackPan,
+    addNewPlugin,
+    removePlugin,
+    changePluginPreset,
+    updateInstrumentPreset,
+} from 'actions/trackListActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 import { TrackTypes } from 'constants/Constants';
@@ -92,10 +103,12 @@ class TrackDetails extends React.Component {
         const usedAuxList = [];
         this.addInputsToArray(currTrack, usedAuxList);
         for (let i = 0; i < this.props.trackList.length; i++) {
-            if (this.props.trackList[i].trackType === TrackTypes.aux &&
+            if (
+                this.props.trackList[i].trackType === TrackTypes.aux &&
                 this.props.trackList[i].index !== this.props.selected &&
-                !usedAuxList.includes(this.props.trackList[i].index)) {
-                auxTrackList.push(this.props.trackList[i])
+                !usedAuxList.includes(this.props.trackList[i].index)
+            ) {
+                auxTrackList.push(this.props.trackList[i]);
             }
         }
         return auxTrackList;
@@ -136,14 +149,14 @@ class TrackDetails extends React.Component {
 
     handlePanChange(index, value) {
         if (value === 0) {
-            value = 0.0000001
+            value = 0.0000001;
         }
         this.props.dispatch(changeTrackPan(index, value));
     }
 
     handleAddPlugin(trackIndex, pluginId) {
         this.props.dispatch(addNewPlugin(trackIndex, pluginId));
-        const currTrack = Utils.getTrackByIndex(this.props.trackList, trackIndex)
+        const currTrack = Utils.getTrackByIndex(this.props.trackList, trackIndex);
         this.props.dispatch(Actions.pluginModalVisibilitySwitch(currTrack.pluginList.length - 1, trackIndex));
     }
 
@@ -156,18 +169,22 @@ class TrackDetails extends React.Component {
     }
 
     getSelectedPlugin() {
-        if (!Utils.isNullOrUndefined(this.props.trackDetails.selectedPluginTrackIndex) &&
-            !Utils.isNullOrUndefined(this.props.trackDetails.selectedPluginIndex))
-            return Utils.getTrackByIndex(this.props.trackList, this.props.trackDetails.selectedPluginTrackIndex).pluginList[this.props.trackDetails.selectedPluginIndex];
-
+        if (
+            !Utils.isNullOrUndefined(this.props.trackDetails.selectedPluginTrackIndex) &&
+            !Utils.isNullOrUndefined(this.props.trackDetails.selectedPluginIndex)
+        )
+            return Utils.getTrackByIndex(this.props.trackList, this.props.trackDetails.selectedPluginTrackIndex)
+                .pluginList[this.props.trackDetails.selectedPluginIndex];
     }
 
     handlePluginPresetChange(newPreset) {
-        this.props.dispatch(changePluginPreset(
-            this.props.trackDetails.selectedPluginTrackIndex,
-            this.props.trackDetails.selectedPluginIndex,
-            newPreset
-        ))
+        this.props.dispatch(
+            changePluginPreset(
+                this.props.trackDetails.selectedPluginTrackIndex,
+                this.props.trackDetails.selectedPluginIndex,
+                newPreset,
+            ),
+        );
     }
 
     handleInstrumentPresetChange(newPreset) {
@@ -176,8 +193,10 @@ class TrackDetails extends React.Component {
 
     render() {
         let instrumentComponent;
-        if (Utils.getTrackByIndex(this.props.trackList, this.props.selected).trackType === TrackTypes.virtualInstrument) {
-            instrumentComponent =
+        if (
+            Utils.getTrackByIndex(this.props.trackList, this.props.selected).trackType === TrackTypes.virtualInstrument
+        ) {
+            instrumentComponent = (
                 <InstrumentInput
                     instrumentModalVisibilitySwitch={this.instrumentModalVisibilitySwitch.bind(this)}
                     showModal={this.props.trackDetails.showInstrumentModal}
@@ -185,10 +204,10 @@ class TrackDetails extends React.Component {
                     onSamplerPresetChange={this.handleSamplerPresetChange.bind(this)}
                     onInstrumentChange={this.handleInstrumentChange.bind(this)}
                     onInstrumentPresetChange={this.handleInstrumentPresetChange.bind(this)}
-                />;
+                />
+            );
         } else {
-            instrumentComponent =
-                <div className="instrumentInputContainer" />
+            instrumentComponent = <div className="instrumentInputContainer" />;
         }
         return (
             <div>
@@ -203,7 +222,9 @@ class TrackDetails extends React.Component {
                     />
                     <Output
                         auxTracks={this.getAvailableAuxTracks()}
-                        dropDownTitle={this.getOutputName(Utils.getTrackByIndex(this.props.trackList, this.props.selected).output)}
+                        dropDownTitle={this.getOutputName(
+                            Utils.getTrackByIndex(this.props.trackList, this.props.selected).output,
+                        )}
                         onOutputChange={this.handleOutputChange.bind(this)}
                     />
                     <PanKnob
@@ -233,10 +254,7 @@ class TrackDetails extends React.Component {
                         onPluginRemove={this.handleRemovePlugin.bind(this)}
                         onPluginModalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
                     />
-                    <Output
-                        auxTracks={[]}
-                        dropDownTitle="Stereo out"
-                    />
+                    <Output auxTracks={[]} dropDownTitle="Stereo out" />
                     <PanKnob
                         pan={Utils.getTrackByIndex(this.props.trackList, 0).pan}
                         onPanChange={this.handlePanChange.bind(this)}
@@ -273,10 +291,10 @@ const mapStateToProps = (state) => {
         trackList: state.tracks.trackList,
         selected: state.tracks.selected,
         trackDetails: state.trackDetails,
-        samplerInstruments: state.webAudio.samplerInstrumentsSounds.map(
-            (value) => { return { name: value.name, loaded: value.loaded, id: value.id } }
-        )
-    }
-}
+        samplerInstruments: state.webAudio.samplerInstrumentsSounds.map((value) => {
+            return { name: value.name, loaded: value.loaded, id: value.id };
+        }),
+    };
+};
 
 export default connect(mapStateToProps)(TrackDetails);

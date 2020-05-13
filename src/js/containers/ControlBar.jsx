@@ -14,11 +14,11 @@ class ControlBar extends React.Component {
         super();
         const sequencer = new Sequencer();
         sequencer.init();
-        props.dispatch(Actions.initSequencer(sequencer))
+        props.dispatch(Actions.initSequencer(sequencer));
         this.state = {
             tempBPM: props.controlState.BPM,
             tempRegionDrawLength: props.controlState.regionDrawLength,
-            tempBarsInComposition: props.barsInComposition
+            tempBarsInComposition: props.barsInComposition,
         };
     }
 
@@ -45,27 +45,32 @@ class ControlBar extends React.Component {
 
     handleTempBPMChange(BPM) {
         if (BPM < 10000 && BPM >= 0) {
-            this.setState(() => { return { tempBPM: BPM }; });
+            this.setState(() => {
+                return { tempBPM: BPM };
+            });
         }
     }
 
     handleBPMChange() {
-        if (this.state.tempBPM >= this.props.controlState.minBPM && this.state.tempBPM <= this.props.controlState.maxBPM &&
-            this.state.tempBPM !== this.props.controlState.BPM) {
+        if (
+            this.state.tempBPM >= this.props.controlState.minBPM &&
+            this.state.tempBPM <= this.props.controlState.maxBPM &&
+            this.state.tempBPM !== this.props.controlState.BPM
+        ) {
             this.props.dispatch(Actions.changeBPM(this.state.tempBPM));
         } else {
-            this.setState(() => { return { tempBPM: this.props.controlState.BPM }; });
+            this.setState(() => {
+                return { tempBPM: this.props.controlState.BPM };
+            });
         }
     }
 
     handleToolChange(tool) {
-        if (tool !== this.props.controlState.tool)
-            this.props.dispatch(Actions.changeTool(tool));
+        if (tool !== this.props.controlState.tool) this.props.dispatch(Actions.changeTool(tool));
     }
 
     handleSecoundaryToolChange(tool) {
-        if (tool !== this.props.controlState.secoundaryTool)
-            this.props.dispatch(Actions.changeSecoundaryTool(tool));
+        if (tool !== this.props.controlState.secoundaryTool) this.props.dispatch(Actions.changeSecoundaryTool(tool));
     }
 
     handleNoteDrawLengthChange(length) {
@@ -75,33 +80,47 @@ class ControlBar extends React.Component {
     }
 
     handleRegionDrawLengthChange() {
-        if (this.state.tempRegionDrawLength >= 1 && this.state.tempRegionDrawLength <= this.props.controlState.maxRegionDrawLength &&
-            this.state.tempRegionDrawLength !== this.props.controlState.regionDrawLength) {
+        if (
+            this.state.tempRegionDrawLength >= 1 &&
+            this.state.tempRegionDrawLength <= this.props.controlState.maxRegionDrawLength &&
+            this.state.tempRegionDrawLength !== this.props.controlState.regionDrawLength
+        ) {
             this.props.dispatch(Actions.changeRegionDrawLength(this.state.tempRegionDrawLength));
         } else {
-            this.setState(() => { return { tempRegionDrawLength: this.props.controlState.regionDrawLength }; });
+            this.setState(() => {
+                return { tempRegionDrawLength: this.props.controlState.regionDrawLength };
+            });
         }
     }
 
     handleTempRegionDrawLengthChange(regionDrawLength) {
         if (regionDrawLength < 1000 && regionDrawLength >= 0) {
-            this.setState(() => { return { tempRegionDrawLength: regionDrawLength }; });
+            this.setState(() => {
+                return { tempRegionDrawLength: regionDrawLength };
+            });
         }
     }
 
     handleBarsInCompositionChange() {
         //TODO: Delete regions on lowering bits in coposition
-        if (this.state.tempBarsInComposition >= 48 && this.state.tempBarsInComposition <= this.props.maxBarsInComposition &&
-            this.state.tempBarsInComposition !== this.props.BarsInComposition) {
+        if (
+            this.state.tempBarsInComposition >= 48 &&
+            this.state.tempBarsInComposition <= this.props.maxBarsInComposition &&
+            this.state.tempBarsInComposition !== this.props.BarsInComposition
+        ) {
             this.props.dispatch(changeBarsInComposition(this.state.tempBarsInComposition));
         } else {
-            this.setState(() => { return { tempBarsInComposition: this.props.barsInComposition }; });
+            this.setState(() => {
+                return { tempBarsInComposition: this.props.barsInComposition };
+            });
         }
     }
 
     handleTempBarsInComposition(barsInComposition) {
         if (barsInComposition < 10000 && barsInComposition >= 0) {
-            this.setState(() => { return { tempBarsInComposition: barsInComposition }; });
+            this.setState(() => {
+                return { tempBarsInComposition: barsInComposition };
+            });
         }
     }
 
@@ -109,7 +128,7 @@ class ControlBar extends React.Component {
         if (this.props.controlState.midiController.MIDISupported) {
             if (this.props.controlState.midiController.devices.input.length > 0) {
                 if (isNullOrUndefined(this.props.controlState.midiController.selectedInputDevice)) {
-                    return 'No device selected'
+                    return 'No device selected';
                 } else {
                     return this.props.controlState.midiController.selectedInputDevice.name;
                 }
@@ -122,29 +141,34 @@ class ControlBar extends React.Component {
     }
 
     handleDeviceChange(deviceId) {
-        if (!(deviceId === null && isNullOrUndefined(this.props.controlState.midiController.selectedInputDevice)) &&
+        if (
+            !(deviceId === null && isNullOrUndefined(this.props.controlState.midiController.selectedInputDevice)) &&
             (isNullOrUndefined(this.props.controlState.midiController.selectedInputDevice) ||
-                deviceId !== this.props.controlState.midiController.selectedInputDevice.id)) {
+                deviceId !== this.props.controlState.midiController.selectedInputDevice.id)
+        ) {
             this.props.dispatch(Actions.changeMidiDevice(deviceId));
         }
     }
 
     handleInputFocusSwitch() {
-        this.state.tempBPM = this.props.controlState.BPM;
-        this.state.tempBarsInComposition = this.props.barsInComposition;
+        this.setState((prevState) => ({
+            ...prevState,
+            tempBPM: this.props.controlState.BPM,
+            tempBarsInComposition: this.props.barsInComposition,
+        }));
         this.props.dispatch(Actions.textInputFocusedSwitch());
     }
 
     getBPM() {
-        if(this.props.controlState.textInputFocused){
-            return this.state.tempBPM
+        if (this.props.controlState.textInputFocused) {
+            return this.state.tempBPM;
         } else {
-            return this.props.controlState.BPM
+            return this.props.controlState.BPM;
         }
     }
 
-    getBarsInComposition(){
-        if(this.props.controlState.textInputFocused){
+    getBarsInComposition() {
+        if (this.props.controlState.textInputFocused) {
             return this.state.tempBarsInComposition;
         } else {
             return this.props.barsInComposition;
@@ -187,9 +211,15 @@ class ControlBar extends React.Component {
                     />
                 </div>
                 <Col xs={2} className="controlButtons">
-                    <Button onClick={this.handlePlay.bind(this)}><Glyphicon glyph="play" /></Button>
-                    <Button onClick={this.handlePause.bind(this)}><Glyphicon glyph="pause" /></Button>
-                    <Button onClick={this.handleStop.bind(this)}><Glyphicon glyph="stop" /></Button>
+                    <Button onClick={this.handlePlay.bind(this)}>
+                        <Glyphicon glyph="play" />
+                    </Button>
+                    <Button onClick={this.handlePause.bind(this)}>
+                        <Glyphicon glyph="pause" />
+                    </Button>
+                    <Button onClick={this.handleStop.bind(this)}>
+                        <Glyphicon glyph="stop" />
+                    </Button>
                 </Col>
             </Col>
         );
@@ -202,8 +232,8 @@ const mapStateToProps = (state) => {
         controlState: state.control,
         showPianoRoll: state.composition.showPianoRoll,
         barsInComposition: state.composition.barsInComposition,
-        maxBarsInComposition: state.composition.maxBarsInComposition
-    }
-}
+        maxBarsInComposition: state.composition.maxBarsInComposition,
+    };
+};
 
 export default connect(mapStateToProps)(ControlBar);

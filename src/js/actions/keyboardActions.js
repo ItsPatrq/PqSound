@@ -1,60 +1,60 @@
 export function changeOctaveNumber(number) {
-    return{
+    return {
         type: 'CHANGE_OCTAVE_NUMBER',
-        payload: number
-    }
+        payload: number,
+    };
 }
 
-export function switchKeyboardVisibility(show){
-    return{
+export function switchKeyboardVisibility(show) {
+    return {
         type: 'SWITCH_KEYBOARD_VISIBILITY',
-        payload: show
-    }
+        payload: show,
+    };
 }
 
-export function updateWidth(width){
+export function updateWidth(width) {
     return {
         type: 'UPDATE_WIDTH',
-        payload: width
-    }
+        payload: width,
+    };
 }
 
-export function changeFirstKeyboardKey(key){
+export function changeFirstKeyboardKey(key) {
     return {
         type: 'CHANGE_FIRST_KEYBOARD_KEY',
-        payload: key
-    }
+        payload: key,
+    };
 }
 
-export function addPlayingNote(note){
+export function addPlayingNote(note) {
     return {
         type: 'ADD_PLAYING_NOTE',
-        payload: note
-    }
+        payload: note,
+    };
 }
 
-export function removePlayingNote(note){
+export function removePlayingNote(note) {
     return {
         type: 'REMOVE_PLAYING_NOTE',
-        payload: note
-    }
+        payload: note,
+    };
 }
 
-export function changeKeyBindings(offset){
+export function changeKeyBindings(offset) {
     return {
         type: 'CHANGE_KEY_BINDINGS',
-        payload: offset
-    }
+        payload: offset,
+    };
 }
 
-export function switchKeyNameVisibility(){
+export function switchKeyNameVisibility() {
     return {
-        type: 'SWITCH_KEY_NAME_VISIBILITY'
-    }
+        type: 'SWITCH_KEY_NAME_VISIBILITY',
+    };
 }
 
-export function switchKeyBindVisibility(){
+export function switchKeyBindVisibility() {
     return {
-        type: 'SWITCH_KEY_BIND_VISIBILITY'
-    }
+        type: 'SWITCH_KEY_BIND_VISIBILITY',
+    };
 }

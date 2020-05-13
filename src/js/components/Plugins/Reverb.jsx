@@ -9,16 +9,16 @@ const Reverb = (props) => {
             decay: newDecay ? Number(newDecay) : props.plugin.preset.decay,
             reverse: newReverse ? Number(newReverse) : props.plugin.preset.reverse,
             wet: newWet ? Number(newWet) : props.plugin.preset.wet,
-            dry: newDry ? Number(newDry) : props.plugin.preset.dry
-            
-        })
-    }
+            dry: newDry ? Number(newDry) : props.plugin.preset.dry,
+        });
+    };
     return (
         <div>
             <div className="reverbModal">
                 <div className="reverbControlRow">
                     <label>Sustain: {props.plugin.preset.sustain}</label>
-                    <input type="range"
+                    <input
+                        type="range"
                         value={props.plugin.preset.sustain}
                         step="0.02"
                         min="0"
@@ -28,7 +28,8 @@ const Reverb = (props) => {
                 </div>
                 <div className="reverbControlRow">
                     <label>Decay: {props.plugin.preset.decay}</label>
-                    <input type="range"
+                    <input
+                        type="range"
                         value={props.plugin.preset.decay}
                         step="0.02"
                         min="0"
@@ -38,7 +39,8 @@ const Reverb = (props) => {
                 </div>
                 <div className="reverbControlRow">
                     <label>Reverse: {props.plugin.preset.reverse}</label>
-                    <input type="range"
+                    <input
+                        type="range"
                         value={props.plugin.preset.reverse}
                         step="1"
                         min="0"
@@ -54,7 +56,7 @@ const Reverb = (props) => {
                         step="0.01"
                         min="0"
                         max="2"
-                        onChange={(event) => handleChange(null, null, null,  event.target.value)}
+                        onChange={(event) => handleChange(null, null, null, event.target.value)}
                     />
                 </div>
                 <div className="reverbControlRow">
@@ -69,8 +71,7 @@ const Reverb = (props) => {
                     />
                 </div>
             </div>
-
         </div>
     );
-}
+};
 export default Reverb;

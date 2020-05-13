@@ -26,16 +26,14 @@ class Main extends React.Component {
     }
 
     render() {
-        return (
-            <Layout />
-        );
+        return <Layout />;
     }
 }
 const mapStateToProps = (state) => {
     return {
         webAudio: state.webAudio,
-        control: state.control
-    }
-}
+        control: state.control,
+    };
+};
 //REDUX connection
 export default connect(mapStateToProps)(Main);

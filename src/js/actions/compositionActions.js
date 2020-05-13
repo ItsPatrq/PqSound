@@ -1,93 +1,93 @@
-export function removeTrackFromComposition(index){
+export function removeTrackFromComposition(index) {
     return {
         type: 'REMOVE_TRACK_FROM_COMPOSITION',
-        payload: index
-    }
+        payload: index,
+    };
 }
-export function addRegion(newTrackIndex, newStart, length){
+export function addRegion(newTrackIndex, newStart, length) {
     return {
         type: 'ADD_REGION',
         payload: {
             trackIndex: newTrackIndex,
             start: newStart,
-            length: length
-        }
-    }
+            length: length,
+        },
+    };
 }
-export function removeRegion(newRegionId){
+export function removeRegion(newRegionId) {
     return {
         type: 'REMOVE_REGION',
-        payload: newRegionId
-    }
+        payload: newRegionId,
+    };
 }
 export function changeOctaveNumber(number) {
-    return{
+    return {
         type: 'CHANGE_BITS_NUMBER',
-        payload: number
-    }
+        payload: number,
+    };
 }
 export function showPianoRoll(newTrackIndex, newRegionIndex) {
-    return{
+    return {
         type: 'SHOW_PIANO_ROLL',
         payload: {
             trackIndex: newTrackIndex,
-            regionIndex: newRegionIndex
-        }
-    }
+            regionIndex: newRegionIndex,
+        },
+    };
 }
 export function switchPianorollVisibility(show) {
-    return{
+    return {
         type: 'SWITCH_PIANO_ROLL_VISIBILITY',
-        payload: show
-    }
+        payload: show,
+    };
 }
 export function updateTrackComposition(newPianoKey, newQuarterIndex, newSixteenthIndex) {
-    return{
+    return {
         type: 'UPDATE_TRACK_COMPOSITION',
         payload: {
             pianoKey: newPianoKey,
             quarterIndex: newQuarterIndex,
-            sixteenthIndex: newSixteenthIndex
-        }
-    }
+            sixteenthIndex: newSixteenthIndex,
+        },
+    };
 }
 
-export function addNote (newRegionId, newNoteNumber, newSixteenthNumber, newNoteLength) {
-    return{
+export function addNote(newRegionId, newNoteNumber, newSixteenthNumber, newNoteLength) {
+    return {
         type: 'ADD_NOTE',
         payload: {
             regionId: newRegionId,
             noteNumber: newNoteNumber,
             sixteenthNumber: newSixteenthNumber,
-            noteLength: newNoteLength
-        }
-    }
+            noteLength: newNoteLength,
+        },
+    };
 }
 
-export function removeNote (newRegionId, newNoteNumber, newSixteenthNumber, newNoteLength) {
-    return{
+export function removeNote(newRegionId, newNoteNumber, newSixteenthNumber, newNoteLength) {
+    return {
         type: 'REMOVE_NOTE',
         payload: {
             regionId: newRegionId,
             noteNumber: newNoteNumber,
             sixteenthNumber: newSixteenthNumber,
-            noteLength: newNoteLength
-        }
-    }
+            noteLength: newNoteLength,
+        },
+    };
 }
 
-export function changeBarsInComposition (newBarsInComposition){
-    return{
+export function changeBarsInComposition(newBarsInComposition) {
+    return {
         type: 'CHANGE_BARS_IN_COMPOSITION',
-        payload: newBarsInComposition
-    }
+        payload: newBarsInComposition,
+    };
 }
 
-export function loadCompositionState (newState){
+export function loadCompositionState(newState) {
     return {
         type: 'LOAD_COMPOSITION_STATE',
-        payload: newState
-    }
+        payload: newState,
+    };
 }
 
 export function pasteRegion(newTrackIndex, newStart, newCopiedRegion) {
@@ -96,21 +96,21 @@ export function pasteRegion(newTrackIndex, newStart, newCopiedRegion) {
         payload: {
             trackIndex: newTrackIndex,
             start: newStart,
-            copiedRegion: newCopiedRegion
-        }
-    }
+            copiedRegion: newCopiedRegion,
+        },
+    };
 }
 
-export function trackIndexUp(newIndex){
+export function trackIndexUp(newIndex) {
     return {
         type: 'REGION_TRACK_INDEX_UP',
-        payload: newIndex
-    }
+        payload: newIndex,
+    };
 }
 
-export function trackIndexDown(newIndex){
+export function trackIndexDown(newIndex) {
     return {
         type: 'REGION_TRACK_INDEX_DOWN',
-        payload: newIndex
-    }
+        payload: newIndex,
+    };
 }

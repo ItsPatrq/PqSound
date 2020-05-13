@@ -9,8 +9,8 @@ import PianoRollTimeBar from 'components/CompositionGrid/PianoRollTimeBar';
 import { showPianoRoll, addRegion, removeRegion, addNote, removeNote, pasteRegion } from 'actions/compositionActions';
 import { changeCurrentTime, copyRegion } from 'actions/controlActions';
 import { getRegionIdByBitIndex, getRegionByRegionId, notesToDrawParser } from 'engine/CompositionParser';
-import { tools, SoundOrigin } from 'constants/Constants'
-import { pencilIcon, eraserIcon, copyIcon} from 'constants/Icons';
+import { tools, SoundOrigin } from 'constants/Constants';
+import { pencilIcon, eraserIcon, copyIcon } from 'constants/Icons';
 import { getTrackByIndex, isNullOrUndefined } from 'engine/Utils';
 
 class CompositionGrid extends React.Component {
@@ -20,8 +20,8 @@ class CompositionGrid extends React.Component {
             scrollPianoRollY: 0,
             scrollPianoRollX: 0,
             scrollCompositionX: 0,
-            scrollCompositionY: 0
-        }
+            scrollCompositionY: 0,
+        };
     }
 
     handleEmptyBarClicked(event, trackIndex, bitIndex, bitsToDraw) {
@@ -40,16 +40,21 @@ class CompositionGrid extends React.Component {
                 break;
             }
             case tools.copyPaste.id: {
-                if(!isNullOrUndefined(this.props.copiedRegion)){
+                if (!isNullOrUndefined(this.props.copiedRegion)) {
                     let canPaste = true;
-                    for (let i = 0; i < getRegionByRegionId(this.props.copiedRegion, this.props.composition.regionList).regionLength; i++) {
+                    for (
+                        let i = 0;
+                        i <
+                        getRegionByRegionId(this.props.copiedRegion, this.props.composition.regionList).regionLength;
+                        i++
+                    ) {
                         if (bitsToDraw[bitIndex + i] || bitIndex + i >= this.props.composition.BarsInComposition) {
                             canPaste = false;
                             break;
                         }
                     }
-                    if(canPaste){
-                    this.props.dispatch(pasteRegion(trackIndex, bitIndex, this.props.copiedRegion))
+                    if (canPaste) {
+                        this.props.dispatch(pasteRegion(trackIndex, bitIndex, this.props.copiedRegion));
                     }
                 }
             }
@@ -81,16 +86,20 @@ class CompositionGrid extends React.Component {
             case 0: {
                 noteLength = 16;
                 break;
-            } case 1: {
+            }
+            case 1: {
                 noteLength = 8;
                 break;
-            } case 2: {
+            }
+            case 2: {
                 noteLength = 4;
                 break;
-            } case 3: {
+            }
+            case 3: {
                 noteLength = 2;
                 break;
-            } case 4: {
+            }
+            case 4: {
                 noteLength = 1;
                 break;
             }
@@ -105,13 +114,17 @@ class CompositionGrid extends React.Component {
                     }
                 }
                 if (canDraw) {
-                    this.props.dispatch(addNote(this.props.composition.pianoRollRegion, noteNumber, sixteenthNumber, noteLength));
+                    this.props.dispatch(
+                        addNote(this.props.composition.pianoRollRegion, noteNumber, sixteenthNumber, noteLength),
+                    );
                 }
                 break;
             }
             case tools.remove.id: {
                 if (notesToDraw[sixteenthNumber]) {
-                    this.props.dispatch(removeNote(this.props.composition.pianoRollRegion, noteNumber, sixteenthNumber, noteLength));
+                    this.props.dispatch(
+                        removeNote(this.props.composition.pianoRollRegion, noteNumber, sixteenthNumber, noteLength),
+                    );
                 }
                 break;
             }
@@ -123,8 +136,11 @@ class CompositionGrid extends React.Component {
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
         //if (this.props.keyboard.notesPlaying.includes(note)) {
-            const currTrackIndex = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).trackIndex;
-            this.props.sound.stop(currTrackIndex, note)
+        const currTrackIndex = getRegionByRegionId(
+            this.props.composition.pianoRollRegion,
+            this.props.composition.regionList,
+        ).trackIndex;
+        this.props.sound.stop(currTrackIndex, note);
         //    this.props.dispatch(KeyboardActions.removePlayingNote(note));
         //}
         return false;
@@ -134,9 +150,13 @@ class CompositionGrid extends React.Component {
         event.preventDefault();
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
-        if (event.buttons == 1 /*&& !this.props.keyboard.notesPlaying.includes(note)*/){  //leftClick
-            const currTrackIndex = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).trackIndex;
-            this.props.sound.play(currTrackIndex, null, note, SoundOrigin.pianoRollNote)
+        if (event.buttons == 1 /*&& !this.props.keyboard.notesPlaying.includes(note)*/) {
+            //leftClick
+            const currTrackIndex = getRegionByRegionId(
+                this.props.composition.pianoRollRegion,
+                this.props.composition.regionList,
+            ).trackIndex;
+            this.props.sound.play(currTrackIndex, null, note, SoundOrigin.pianoRollNote);
             //this.props.dispatch(KeyboardActions.addPlayingNote(note))
         }
         return false;
@@ -162,9 +182,9 @@ class CompositionGrid extends React.Component {
             this.setState((prevState) => {
                 return { ...prevState, scrollCompositionY: scroll.compositionY };
             });
-            document.getElementsByClassName('trackListContentList')[0].style.marginTop = -this.state.scrollCompositionY + 'px';
+            document.getElementsByClassName('trackListContentList')[0].style.marginTop =
+                -this.state.scrollCompositionY + 'px';
         }
-
     }
 
     getCursor() {
@@ -191,7 +211,10 @@ class CompositionGrid extends React.Component {
     render() {
         const trackCompositionRowList = [];
         if (this.props.composition.showPianoRoll) {
-            const currRegion = getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList);
+            const currRegion = getRegionByRegionId(
+                this.props.composition.pianoRollRegion,
+                this.props.composition.regionList,
+            );
             const bitsNumber = currRegion.regionLength;
             const currTrackIndex = currRegion.trackIndex;
             return (
@@ -213,14 +236,29 @@ class CompositionGrid extends React.Component {
                         <PianoRoll
                             bitsNumber={bitsNumber}
                             onNoteClick={this.handleNoteClicked.bind(this)}
-                            notes={getRegionByRegionId(this.props.composition.pianoRollRegion, this.props.composition.regionList).notes}
+                            notes={
+                                getRegionByRegionId(
+                                    this.props.composition.pianoRollRegion,
+                                    this.props.composition.regionList,
+                                ).notes
+                            }
                             onScroll={this.updateScroll.bind(this)}
                             onDown={this.handleDown.bind(this)}
                             onUp={this.handleUp.bind(this)}
                         />
                     </div>
-                    <svg className="svgContainer" style={{ left: this.props.sixteenthPlaying * 30 - this.state.scrollPianoRollX + 100 - (currRegion.start * 30 * 16) + 'px' }}>
-                        <rect className="currTimeLine" > </rect>
+                    <svg
+                        className="svgContainer"
+                        style={{
+                            left:
+                                this.props.sixteenthPlaying * 30 -
+                                this.state.scrollPianoRollX +
+                                100 -
+                                currRegion.start * 30 * 16 +
+                                'px',
+                        }}
+                    >
+                        <rect className="currTimeLine"> </rect>
                     </svg>
                 </Col>
             );
@@ -229,17 +267,21 @@ class CompositionGrid extends React.Component {
              * start iteration from i = 1 because i = 0 is the master track
              */
             for (let i = 1; i < this.props.trackList.length; i++) {
-                trackCompositionRowList.push(<TrackCompositionRow
-                    bits={this.props.composition.barsInComposition}
-                    key={this.props.trackList[i].index}
-                    trackIndex={this.props.trackList[i].index}
-                    trackType={this.props.trackList[i].trackType}
-                    onEmptyBarClick={this.handleEmptyBarClicked.bind(this)}
-                    onRegionClick={this.handleRegionClicked.bind(this)}
-                    copiedRegion={this.props.copiedRegion}
-                />)
+                trackCompositionRowList.push(
+                    <TrackCompositionRow
+                        bits={this.props.composition.barsInComposition}
+                        key={this.props.trackList[i].index}
+                        trackIndex={this.props.trackList[i].index}
+                        trackType={this.props.trackList[i].trackType}
+                        onEmptyBarClick={this.handleEmptyBarClicked.bind(this)}
+                        onRegionClick={this.handleRegionClicked.bind(this)}
+                        copiedRegion={this.props.copiedRegion}
+                    />,
+                );
             }
-            trackCompositionRowList.sort((a, b) => { return a.props.trackIndex - b.props.trackIndex });
+            trackCompositionRowList.sort((a, b) => {
+                return a.props.trackIndex - b.props.trackIndex;
+            });
             return (
                 <Col xs={10} className="nopadding compositionPanel">
                     <TimeBar
@@ -251,18 +293,21 @@ class CompositionGrid extends React.Component {
 
                     <div
                         className="compositionRowList"
-                        onScroll={(e) => this.updateScroll(
-                            {
+                        onScroll={(e) =>
+                            this.updateScroll({
                                 compositionX: e.target.scrollLeft,
-                                compositionY: e.target.scrollTop
-                            }
-                        )}
+                                compositionY: e.target.scrollTop,
+                            })
+                        }
                         style={{ cursor: this.getCursor() }}
                     >
                         {trackCompositionRowList}
                     </div>
-                    <svg className="svgContainer" style={{ left: this.props.sixteenthPlaying * 50 / 16 - this.state.scrollCompositionX + 'px' }}>
-                        <rect className="currTimeLine" > </rect>
+                    <svg
+                        className="svgContainer"
+                        style={{ left: (this.props.sixteenthPlaying * 50) / 16 - this.state.scrollCompositionX + 'px' }}
+                    >
+                        <rect className="currTimeLine"> </rect>
                     </svg>
                 </Col>
             );
@@ -283,8 +328,8 @@ const mapStateToProps = (state) => {
         sound: state.webAudio.sound,
         sixteenthPlaying: state.control.sixteenthNotePlaying,
         altClicked: state.control.altClicked,
-        copiedRegion: state.control.copiedRegion
-    }
-}
+        copiedRegion: state.control.copiedRegion,
+    };
+};
 
 export default connect(mapStateToProps)(CompositionGrid);

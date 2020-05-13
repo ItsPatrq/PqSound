@@ -1,9 +1,8 @@
-
 import Sampler from './Sampler';
 import PqSynth from './PqSynth';
 import Monotron from './Monotron';
 import MultiOsc from './MultiOsc';
-import {Instruments as InstrumentsEnum} from '../constants/Constants'
+import { Instruments as InstrumentsEnum } from '../constants/Constants';
 
 interface InstrumentUtils {
     getNewInstrumentByIndex(id: number, preset: any, audioContext: AudioContext): any;
@@ -27,13 +26,7 @@ const Utils: InstrumentUtils = {
                 return;
             }
         }
-    }
-}
+    },
+};
 
-export {
-    Sampler,
-    PqSynth,
-    Monotron,
-    MultiOsc,
-    Utils
-}
+export { Sampler, PqSynth, Monotron, MultiOsc, Utils };

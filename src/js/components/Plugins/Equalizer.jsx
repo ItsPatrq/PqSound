@@ -7,9 +7,9 @@ const Equalizer = (props) => {
         props.onPresetChange({
             lowFilterGain: newLow ? Number(newLow) : props.plugin.preset.lowFilterGain,
             midFilterGain: newMid ? Number(newMid) : props.plugin.preset.midFilterGain,
-            highFilterGain: newHigh ? Number(newHigh) : props.plugin.preset.highFilterGain
-        })
-    }
+            highFilterGain: newHigh ? Number(newHigh) : props.plugin.preset.highFilterGain,
+        });
+    };
     return (
         <div>
             <div className="equalizerModal">
@@ -26,7 +26,8 @@ const Equalizer = (props) => {
                 </div>
                 <div className="equalizerControlRow">
                     <label>Mid Gain: {props.plugin.preset.midFilterGain}</label>
-                    <input type="range"
+                    <input
+                        type="range"
                         value={props.plugin.preset.midFilterGain}
                         step="0.01"
                         min="0"
@@ -46,8 +47,7 @@ const Equalizer = (props) => {
                     />
                 </div>
             </div>
-
         </div>
     );
-}
+};
 export default Equalizer;

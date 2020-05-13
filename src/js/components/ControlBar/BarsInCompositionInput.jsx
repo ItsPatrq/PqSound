@@ -7,18 +7,20 @@ const BarsInCompositionInput = (props) => {
         if (Number.isInteger(newValue)) {
             props.onTempBarsInCompositionChange(newValue);
         }
-    }
+    };
     const _handleKeyPress = (e) => {
         const keyCode = e.keyCode || e.which;
         if (keyCode === 13 /* ENTER */) {
             props.onBarsInCompositionChange();
         }
-    }
+    };
     return (
         <div className="formControlBarsInComposition">
-            <OverlayTrigger placement="bottom" overlay={
-                <Tooltip id={'tooltipTimeSignature'}>{'Bars in composition'}</Tooltip>
-            } delayShow={500}>
+            <OverlayTrigger
+                placement="bottom"
+                overlay={<Tooltip id={'tooltipTimeSignature'}>{'Bars in composition'}</Tooltip>}
+                delayShow={500}
+            >
                 <div className="barsInCompositionDisplay">
                     <input
                         type="text"
@@ -26,15 +28,16 @@ const BarsInCompositionInput = (props) => {
                         value={props.barsInComposition}
                         onChange={_handleChange}
                         onKeyDown={_handleKeyPress}
-                        onBlur={() => {props.onBarsInCompositionChange(); props.onInputFocusSwitch();}}
+                        onBlur={() => {
+                            props.onBarsInCompositionChange();
+                            props.onInputFocusSwitch();
+                        }}
                         onFocus={props.onInputFocusSwitch}
                     />
                 </div>
             </OverlayTrigger>
-            <div className="projectInfoBoxPropertyName">
-                Total Bars
-            </div>
+            <div className="projectInfoBoxPropertyName">Total Bars</div>
         </div>
-    )
-}
+    );
+};
 export default BarsInCompositionInput;

@@ -25,7 +25,7 @@ interface Note {
 export const getRegionsByTrackIndex = (trackIndex: number, allRegions?: Region[]): Region[] => {
     const regionsByTrackIndex: Region[] = [];
     if (!allRegions) {
-        allRegions = (Store.getState().composition.regionList as Region[]);
+        allRegions = Store.getState().composition.regionList as Region[];
     }
     for (let i = 0; i < allRegions.length; i++) {
         if (allRegions[i].trackIndex === trackIndex) {
@@ -33,7 +33,7 @@ export const getRegionsByTrackIndex = (trackIndex: number, allRegions?: Region[]
         }
     }
     return regionsByTrackIndex;
-}
+};
 
 export const regionToDrawParser = (trackIndex: number, bits: number, copiedRegion: number): number[] => {
     const trackRegionList = getRegionsByTrackIndex(trackIndex);
@@ -57,7 +57,7 @@ export const regionToDrawParser = (trackIndex: number, bits: number, copiedRegio
         }
     }
     return bitsToDraw;
-}
+};
 
 export const getRegionIdByBitIndex = (trackIndex: number, bitIndex: number): number | null => {
     const trackRegionList = getRegionsByTrackIndex(trackIndex);
@@ -68,11 +68,11 @@ export const getRegionIdByBitIndex = (trackIndex: number, bitIndex: number): num
         }
     }
     return regionId;
-}
+};
 
 export const getRegionByRegionId = (regionId: number, regionList?: Region[]): Region | null => {
     if (!regionList) {
-        regionList = (Store.getState().composition.regionList as Region[]);
+        regionList = Store.getState().composition.regionList as Region[];
     }
     for (let i = 0; i < regionList.length; i++) {
         if (regionList[i].id === regionId) {
@@ -80,11 +80,11 @@ export const getRegionByRegionId = (regionId: number, regionList?: Region[]): Re
         }
     }
     return null;
-}
+};
 
 export const notesToDrawParser = (pianoRollNote: number): number[] | null => {
     const region = getRegionByRegionId(Store.getState().composition.pianoRollRegion);
-    if(region === null) {
+    if (region === null) {
         return null;
     }
     const notesToDraw: number[] = [];
@@ -102,7 +102,7 @@ export const notesToDrawParser = (pianoRollNote: number): number[] | null => {
         }
     }
     return notesToDraw;
-}
+};
 
 export const notesToPlay = (sixteenthPlaying: number, trackIndex: number): NoteToPlay[] | null => {
     const regions = getRegionsByTrackIndex(trackIndex);
@@ -126,4 +126,4 @@ export const notesToPlay = (sixteenthPlaying: number, trackIndex: number): NoteT
         return notesToPlay;
     }
     return null;
-}
+};

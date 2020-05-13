@@ -18,7 +18,7 @@ export class BufferLoader {
         request.open('GET', url, true);
         request.responseType = 'arraybuffer';
 
-        request.onload = (thisBuffer => (): void => {
+        request.onload = ((thisBuffer) => (): void => {
             // Asynchronously decode the audio file data in request.response
             thisBuffer.context.decodeAudioData(
                 request.response,
@@ -28,27 +28,26 @@ export class BufferLoader {
                         return;
                     }
                     thisBuffer.bufferList[index] = buffer;
-                    if (++thisBuffer.loadCount == thisBuffer.urlList.length){
+                    if (++thisBuffer.loadCount == thisBuffer.urlList.length) {
                         thisBuffer.onload(thisBuffer);
                     }
                 },
                 function (error) {
                     console.log('decodeAudioData error', error);
-                }
+                },
             );
         })(this);
 
         request.onerror = function (): void {
             console.log('BufferLoader: XHR error');
-        }
+        };
 
         return request.send();
     }
 
     load(): void {
         this.bufferList.length = 0;
-        for (let i = 0; i < this.urlList.length; ++i)
-            this.loadBuffer(this.urlList[i], i);
+        for (let i = 0; i < this.urlList.length; ++i) this.loadBuffer(this.urlList[i], i);
     }
 }
 

@@ -14,14 +14,14 @@ class Equalizer extends Plugin {
     hGain: any;
 
     constructor(index, audioContext) {
-        super(PluginsEnum.Equalizer, index, audioContext)
+        super(PluginsEnum.Equalizer, index, audioContext);
         this.preset = {
             lowFilterGain: 1.0,
             midFilterGain: 1.0,
             highFilterGain: 1.0,
             lowBandSplit: 360,
             highBandSplit: 3600,
-            gainDb: -40.0
+            gainDb: -40.0,
         };
         this.hBand = this.context.createBiquadFilter();
         this.hBand.type = 'lowshelf';
@@ -69,13 +69,19 @@ class Equalizer extends Plugin {
         this.output = this.sum;
     }
 
-    updateNodes(){
-        this.lGain.gain.setValueAtTime(this.preset.lowFilterGain ?
-            this.preset.lowFilterGain : 0.000001, this.context.currentTime);
-        this.mGain.gain.setValueAtTime(this.preset.midFilterGain ?
-            this.preset.midFilterGain : 0.000001, this.context.currentTime);
-        this.hGain.gain.setValueAtTime(this.preset.highFilterGain ?
-            this.preset.highFilterGain : 0.000001, this.context.currentTime);
+    updateNodes() {
+        this.lGain.gain.setValueAtTime(
+            this.preset.lowFilterGain ? this.preset.lowFilterGain : 0.000001,
+            this.context.currentTime,
+        );
+        this.mGain.gain.setValueAtTime(
+            this.preset.midFilterGain ? this.preset.midFilterGain : 0.000001,
+            this.context.currentTime,
+        );
+        this.hGain.gain.setValueAtTime(
+            this.preset.highFilterGain ? this.preset.highFilterGain : 0.000001,
+            this.context.currentTime,
+        );
     }
 }
 

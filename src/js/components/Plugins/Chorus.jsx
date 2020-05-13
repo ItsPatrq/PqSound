@@ -10,9 +10,9 @@ const Chorus = (props) => {
             depth: newDepth ? Number(newDepth) : props.plugin.preset.depth,
             rate: newRate ? Number(newRate) : props.plugin.preset.rate,
             dry: newDry ? Number(newDry) : props.plugin.preset.dry,
-            wet: newWet ? Number(newWet) : props.plugin.preset.wet
-        })
-    }
+            wet: newWet ? Number(newWet) : props.plugin.preset.wet,
+        });
+    };
     return (
         <div>
             <div className="compressorModal">
@@ -29,7 +29,8 @@ const Chorus = (props) => {
                 </div>
                 <div className="compressorControlRow">
                     <label>Delay: {props.plugin.preset.delay}</label>
-                    <input type="range"
+                    <input
+                        type="range"
                         value={props.plugin.preset.delay}
                         step="0.005"
                         min="0.005"
@@ -82,8 +83,7 @@ const Chorus = (props) => {
                     />
                 </div>
             </div>
-
         </div>
     );
-}
+};
 export default Chorus;

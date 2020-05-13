@@ -8,27 +8,27 @@ class Monotron extends React.Component {
         rate: {
             min: 0.001,
             max: 900.0,
-            scale: 1.1
+            scale: 1.1,
         },
         int: {
             min: 0.5,
-            max: 350.0
+            max: 350.0,
         },
         cutoff: {
             min: 0.001,
             max: 900.0,
-            scale: 1.03
+            scale: 1.03,
         },
         peak: {
             min: 0.001,
             max: 1000.0,
-            scale: 1.10
+            scale: 1.1,
         },
         pitch: {
             min: 0.0,
             max: 2000.0,
-            scale: 1.10
-        }
+            scale: 1.1,
+        },
     };
     knobs = [];
     inputs = [];
@@ -72,10 +72,12 @@ class Monotron extends React.Component {
                     }
                 }
                 this.knobs.push(knopf);
-                input.addEventListener('change', (e) => { this.onChange(e, input.id, knopf) })
+                input.addEventListener('change', (e) => {
+                    this.onChange(e, input.id, knopf);
+                });
             }
         }
-    }
+    };
     onChange = (event, id, knopf) => {
         let ratio, scale, value;
         const param = this.params[id];
@@ -83,48 +85,64 @@ class Monotron extends React.Component {
             scale = param.scale != null ? param.scale : 1.05;
             ratio = Math.pow(scale, parseInt(knopf.value)) / Math.pow(scale, knopf.settings.max);
             value = ratio * (param.max - param.min) + param.min;
-            switch(id){
-                case 'pitch':{
-                    this.props.onPresetChange({vco: {pitch: value, knobPitch: knopf.value}});
+            switch (id) {
+                case 'pitch': {
+                    this.props.onPresetChange({ vco: { pitch: value, knobPitch: knopf.value } });
                     break;
                 }
-                case 'rate':{
-                    this.props.onPresetChange({lfo: {
-                        rate: value, knobRate: knopf.value,
-                        int: this.props.instrument.preset.lfo.int, knobInt: this.props.instrument.preset.lfo.knobInt
-                    }});
+                case 'rate': {
+                    this.props.onPresetChange({
+                        lfo: {
+                            rate: value,
+                            knobRate: knopf.value,
+                            int: this.props.instrument.preset.lfo.int,
+                            knobInt: this.props.instrument.preset.lfo.knobInt,
+                        },
+                    });
                     break;
                 }
-                case 'int':{
-                    this.props.onPresetChange({lfo: {
-                        int: value, knobInt: knopf.value,
-                        rate: this.props.instrument.preset.lfo.rate, knobInt: this.props.instrument.preset.lfo.knobRate
-                    }});
+                case 'int': {
+                    this.props.onPresetChange({
+                        lfo: {
+                            int: value,
+                            knobInt: knopf.value,
+                            rate: this.props.instrument.preset.lfo.rate,
+                            knobInt: this.props.instrument.preset.lfo.knobRate,
+                        },
+                    });
                     break;
                 }
-                case 'cutoff':{
-                    this.props.onPresetChange({vcf: {
-                        cutoff: value, knobCutoff: knopf.value,
-                        peak: this.props.instrument.preset.vcf.peak, knobPeak: this.props.instrument.preset.vcf.knobPeak
-                        }});
+                case 'cutoff': {
+                    this.props.onPresetChange({
+                        vcf: {
+                            cutoff: value,
+                            knobCutoff: knopf.value,
+                            peak: this.props.instrument.preset.vcf.peak,
+                            knobPeak: this.props.instrument.preset.vcf.knobPeak,
+                        },
+                    });
                     break;
                 }
-                case 'peak':{
-                    this.props.onPresetChange({vcf: {
-                        peak: value, knobPeak: knopf.value,
-                        cutoff: this.props.instrument.preset.vcf.cutoff, knobPeak: this.props.instrument.preset.vcf.knobCutoff
-                    }});
+                case 'peak': {
+                    this.props.onPresetChange({
+                        vcf: {
+                            peak: value,
+                            knobPeak: knopf.value,
+                            cutoff: this.props.instrument.preset.vcf.cutoff,
+                            knobPeak: this.props.instrument.preset.vcf.knobCutoff,
+                        },
+                    });
                     break;
                 }
             }
         }
-    }
+    };
     onModChange(event) {
-        this.props.onPresetChange({mod: event.target.value});
+        this.props.onPresetChange({ mod: event.target.value });
     }
     render() {
         return (
-            <div id="monotron" >
+            <div id="monotron">
                 <div id="brand">
                     <h1 id="title">Monotron</h1>
                     <div id="description">Analogue Ribbon Synthesizer</div>
@@ -170,7 +188,8 @@ class Monotron extends React.Component {
                                     Cutoff
                                 </label>
                             </div>
-                            <br />Mod
+                            <br />
+                            Mod
                         </label>
                     </div>
                     <div className="panel">
@@ -182,7 +201,9 @@ class Monotron extends React.Component {
                                     type="range"
                                     min="0"
                                     max="100"
-                                    ref={(input) => { this.initKnob(input); }}
+                                    ref={(input) => {
+                                        this.initKnob(input);
+                                    }}
                                 />
                                 <label>Pitch</label>
                             </div>
@@ -197,7 +218,9 @@ class Monotron extends React.Component {
                                     type="range"
                                     min="0"
                                     max="100"
-                                    ref={(input) => { this.initKnob(input); }}
+                                    ref={(input) => {
+                                        this.initKnob(input);
+                                    }}
                                 />
                                 <label>Rate</label>
                             </div>
@@ -207,7 +230,9 @@ class Monotron extends React.Component {
                                     type="range"
                                     min="0"
                                     max="100"
-                                    ref={(input) => { this.initKnob(input); }}
+                                    ref={(input) => {
+                                        this.initKnob(input);
+                                    }}
                                 />
                                 <label>Int.</label>
                             </div>
@@ -222,7 +247,9 @@ class Monotron extends React.Component {
                                     type="range"
                                     min="0"
                                     max="100"
-                                    ref={(input) => { this.initKnob(input); }}
+                                    ref={(input) => {
+                                        this.initKnob(input);
+                                    }}
                                 />
                                 <label>Cutoff</label>
                             </div>
@@ -232,7 +259,9 @@ class Monotron extends React.Component {
                                     type="range"
                                     min="0"
                                     max="100"
-                                    ref={(input) => { this.initKnob(input); }}
+                                    ref={(input) => {
+                                        this.initKnob(input);
+                                    }}
                                 />
                                 <label>Peak</label>
                             </div>
@@ -240,7 +269,7 @@ class Monotron extends React.Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

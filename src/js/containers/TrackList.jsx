@@ -8,7 +8,7 @@ import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 import AddNewTrackModal from 'components/TrackList/AddNewTrackModal';
 import TrackListButtons from 'components/TrackList/TrackListButtons';
-import {textInputFocusedSwitch} from 'actions/controlActions';
+import { textInputFocusedSwitch } from 'actions/controlActions';
 
 class TrackList extends React.Component {
     constructor() {
@@ -30,7 +30,7 @@ class TrackList extends React.Component {
         this.props.dispatch(trackListActions.changeRecordState(index));
         this.shouldFetchSamplerInstrument(index);
         const currTrack = Utils.getTrackByIndex(this.props.trackList, index);
-        if(!currTrack.record){
+        if (!currTrack.record) {
             currTrack.instrument.stopAll();
         }
     }
@@ -44,7 +44,7 @@ class TrackList extends React.Component {
     }
 
     handleTrackNameChange(event, trackIndex) {
-        if(event.target.value.length > 0){
+        if (event.target.value.length > 0) {
             this.props.dispatch(trackListActions.changeTrackName(event.target.value, trackIndex));
         }
     }
@@ -52,15 +52,16 @@ class TrackList extends React.Component {
     //Sprawdzanie czy wybrany jest sampler i czy ma załadowane sample TODO: zmienic nazwe tej metody?
     shouldFetchSamplerInstrument(index) {
         for (let i = 0; i < this.props.trackList.length; i++) {
-            if (this.props.trackList[i].index === index &&
-                this.props.trackList[i].instrument.name === 'Sampler') {
+            if (this.props.trackList[i].index === index && this.props.trackList[i].instrument.name === 'Sampler') {
                 for (let j = 0; j < this.props.samplerInstruments.length; j++) {
-                    if (this.props.trackList[i].instrument.preset === this.props.samplerInstruments[j].name &&
-                        !this.props.samplerInstruments[j].loaded && !this.props.samplerInstruments[j].fetching) {
+                    if (
+                        this.props.trackList[i].instrument.preset === this.props.samplerInstruments[j].name &&
+                        !this.props.samplerInstruments[j].loaded &&
+                        !this.props.samplerInstruments[j].fetching
+                    ) {
                         this.props.dispatch(fetchSamplerInstrument(this.props.trackList[i].instrument.preset));
                     }
                 }
-
             }
         }
     }
@@ -73,7 +74,6 @@ class TrackList extends React.Component {
 
     handleSwitchModalVisibility() {
         this.props.dispatch(trackListActions.addNewTrackModalVisibilitySwitch());
-
     }
 
     handleSoloAllClicked() {
@@ -89,9 +89,9 @@ class TrackList extends React.Component {
     }
 
     handleIndexUp(index) {
-        if(this.props.selected === index){
+        if (this.props.selected === index) {
             this.props.dispatch(trackListActions.changeSelectedTrack(index + 1));
-        } else if(this.props.selected === index + 1){
+        } else if (this.props.selected === index + 1) {
             this.props.dispatch(trackListActions.changeSelectedTrack(index));
         }
         this.props.dispatch(compositionActions.trackIndexUp(index));
@@ -99,9 +99,9 @@ class TrackList extends React.Component {
     }
 
     handleIndexDown(index) {
-        if(this.props.selected === index){
+        if (this.props.selected === index) {
             this.props.dispatch(trackListActions.changeSelectedTrack(index - 1));
-        } else if(this.props.selected === index - 1){
+        } else if (this.props.selected === index - 1) {
             this.props.dispatch(trackListActions.changeSelectedTrack(index));
         }
         this.props.dispatch(compositionActions.trackIndexDown(index));
@@ -111,7 +111,7 @@ class TrackList extends React.Component {
     /**
      * For not playing on virtual keyboard while inputing text
      */
-    handleInputFocusSwitch(){
+    handleInputFocusSwitch() {
         this.props.dispatch(textInputFocusedSwitch());
     }
 
@@ -125,7 +125,8 @@ class TrackList extends React.Component {
         } else {
             for (let i = 1; i < this.props.trackList.length; i++) {
                 renderTrackList.push(
-                    <Track key={i.toString()}
+                    <Track
+                        key={i.toString()}
                         trackDetails={this.props.trackList[i]}
                         trackListLength={this.props.trackList.length}
                         onIndexUp={this.handleIndexUp.bind(this)}
@@ -138,10 +139,12 @@ class TrackList extends React.Component {
                         handleTrackNameChange={this.handleTrackNameChange.bind(this)}
                         selected={this.props.selected}
                         onInputFocusSwitch={this.handleInputFocusSwitch.bind(this)}
-                    />
+                    />,
                 );
             }
-            renderTrackList.sort((a, b) => { return a.props.trackDetails.index - b.props.trackDetails.index });
+            renderTrackList.sort((a, b) => {
+                return a.props.trackDetails.index - b.props.trackDetails.index;
+            });
             return (
                 <Col xs={2} className="trackList">
                     <TrackListButtons
@@ -150,9 +153,7 @@ class TrackList extends React.Component {
                         isAnySolo={this.props.anyActive}
                     />
                     <div className="trackListContent">
-                        <div className="trackListContentList">
-                            {renderTrackList}
-                        </div>
+                        <div className="trackListContentList">{renderTrackList}</div>
                     </div>
                     <AddNewTrackModal
                         showModal={this.props.showModal}
@@ -169,7 +170,7 @@ class TrackList extends React.Component {
 const mapStateToProps = (state) => {
     let samplerInstruments = null;
     if (!Utils.isNullUndefinedOrEmpty(state.webAudio.samplerInstrumentsSounds)) {
-        samplerInstruments = state.webAudio.samplerInstrumentsSounds.map(a => ({ 'name': a.name, 'loaded': a.loaded }));
+        samplerInstruments = state.webAudio.samplerInstrumentsSounds.map((a) => ({ name: a.name, loaded: a.loaded }));
     }
     return {
         trackList: state.tracks.trackList,
@@ -177,8 +178,8 @@ const mapStateToProps = (state) => {
         anyActive: state.tracks.anyAuxSolo || state.tracks.anyVirtualInstrumentSolo,
         samplerInstruments: samplerInstruments,
         showModal: state.tracks.showAddNewTrackModal,
-        pianoRollVisible: state.composition.showPianoRoll
-    }
-}
+        pianoRollVisible: state.composition.showPianoRoll,
+    };
+};
 
 export default connect(mapStateToProps)(TrackList);

@@ -2,12 +2,15 @@ import SamplerPresets from 'constants/SamplerPresets';
 import BufferLoader from 'engine/BufferLoader';
 import Sound from 'engine/Sound';
 
-export default function reducer(state = {
-    context: null,
-    sound: null,
-    bufferLoader: null,
-    samplerInstrumentsSounds: []
-}, action) {
+export default function reducer(
+    state = {
+        context: null,
+        sound: null,
+        bufferLoader: null,
+        samplerInstrumentsSounds: [],
+    },
+    action,
+) {
     switch (action.type) {
         case 'INIT_WEB_AUDIO': {
             let newContext = null;
@@ -28,16 +31,16 @@ export default function reducer(state = {
                         id: SamplerPresets[i].presets[j].id,
                         loaded: false,
                         fetching: false,
-                        buffer: []
-                    })
+                        buffer: [],
+                    });
                 }
             }
             return {
                 ...state,
                 context: newContext,
                 sound: newSound,
-                samplerInstrumentsSounds: newSamplerInstrumentsSounds
-            }
+                samplerInstrumentsSounds: newSamplerInstrumentsSounds,
+            };
         }
         case 'NEED_TO_FETCH_SAMPLER_INSTRUMENT': {
             const newBufferLoader = new BufferLoader(state.context);
@@ -45,7 +48,9 @@ export default function reducer(state = {
             for (let i = 0; i < SamplerPresets.length; i++) {
                 for (let j = 0; j < SamplerPresets[i].presets.length; j++) {
                     if (SamplerPresets[i].presets[j].id === action.payload.instrumentId) {
-                        newBufferLoader.urlList = SamplerPresets[i].presets[j].content.map((el) => { return el.url });
+                        newBufferLoader.urlList = SamplerPresets[i].presets[j].content.map((el) => {
+                            return el.url;
+                        });
                         break;
                     }
                 }
@@ -60,8 +65,8 @@ export default function reducer(state = {
             newBufferLoader.load();
             return {
                 ...state,
-                samplerInstrumentsSounds: newSamplerInstrumentsSounds
-            }
+                samplerInstrumentsSounds: newSamplerInstrumentsSounds,
+            };
         }
         case 'FETCHED_SAMPLER_INSTRUMENT': {
             const newSamplerInstrumentsSounds = [...state.samplerInstrumentsSounds];
@@ -73,7 +78,6 @@ export default function reducer(state = {
                 }
             }
             for (let i = 0; i < action.payload.bufferLoader.bufferList.length; i++) {
-
                 newSamplerInstrumentsSounds[instrumentIndex].buffer.push(action.payload.bufferLoader.bufferList[i]);
             }
             newSamplerInstrumentsSounds[instrumentIndex].loaded = true;
@@ -81,8 +85,8 @@ export default function reducer(state = {
 
             return {
                 ...state,
-                samplerInstrumentsSounds: newSamplerInstrumentsSounds
-            }
+                samplerInstrumentsSounds: newSamplerInstrumentsSounds,
+            };
         }
     }
 

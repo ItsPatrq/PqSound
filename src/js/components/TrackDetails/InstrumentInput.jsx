@@ -11,10 +11,12 @@ const InstrumentInput = (props) => {
                 <MenuItem
                     key={(Instruments[property].id + 1).toString()}
                     eventKey={(Instruments[property].id + 1).toString()}
-                    onClick={() => { props.onInstrumentChange(Instruments[property].id) }}
+                    onClick={() => {
+                        props.onInstrumentChange(Instruments[property].id);
+                    }}
                 >
                     {Instruments[property].name}
-                </MenuItem>
+                </MenuItem>,
             );
         }
     }
@@ -41,6 +43,6 @@ const InstrumentInput = (props) => {
             />
         </div>
     );
-}
+};
 
 export default InstrumentInput;

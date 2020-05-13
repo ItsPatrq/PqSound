@@ -1,51 +1,68 @@
 import React from 'react';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { switchKeyboardVisibility, updateWidth, switchKeyNameVisibility, switchKeyBindVisibility } from 'actions/keyboardActions';
+import {
+    switchKeyboardVisibility,
+    updateWidth,
+    switchKeyNameVisibility,
+    switchKeyBindVisibility,
+} from 'actions/keyboardActions';
 import { switchPianorollVisibility, loadCompositionState } from 'actions/compositionActions';
-import { switchAltKey, switchUploadModalVisibility, switchAboutModalVisibility, loadControlState } from 'actions/controlActions'
+import {
+    switchAltKey,
+    switchUploadModalVisibility,
+    switchAboutModalVisibility,
+    loadControlState,
+} from 'actions/controlActions';
 import { loadTrackState, updateAllTrackNodes } from 'actions/trackListActions';
 import * as Utils from 'engine/Utils';
 import FileUploadModal from 'components/FileUploadModal';
 import AboutModal from 'components/AboutModal';
-import { TrackTypes } from 'constants/Constants'
+import { TrackTypes } from 'constants/Constants';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import Demo from 'constants/Demo';
 
 class TopNavBar extends React.Component {
     constructor() {
         super();
-        const that = this;
-        window.addEventListener('keydown', function (e) {
-            if (e.altKey) {
-                switch (e.keyCode) {
-                    case 80: {
-                        that.handleSwitchKeyboardVisibility();
-                        break;
-                    }
-                    case 78: {
-                        that.handleSwitchKeyBindVisibility();
-                        break;
-                    }
-                    case 66: {
-                        that.handleSwitchKeyNameVisibility();
-                        break;
-                    }
-                    case 18: {
-                        if (!that.props.control.altClicked) {
-                            that.props.dispatch(switchAltKey());
+        window.addEventListener(
+            'keydown',
+            ((that) => (e) => {
+                if (e.altKey) {
+                    switch (e.keyCode) {
+                        case 80: {
+                            that.handleSwitchKeyboardVisibility();
+                            break;
+                        }
+                        case 78: {
+                            that.handleSwitchKeyBindVisibility();
+                            break;
+                        }
+                        case 66: {
+                            that.handleSwitchKeyNameVisibility();
+                            break;
+                        }
+                        case 18: {
+                            if (!that.props.control.altClicked) {
+                                that.props.dispatch(switchAltKey());
+                            }
                         }
                     }
                 }
-            }
-        }, false);
-        window.addEventListener('keyup', function (e) {
-            switch (e.keyCode) {
-                case 18: {
-                    that.props.dispatch(switchAltKey());
+            })(this),
+            false,
+        );
+        window.addEventListener(
+            'keyup',
+            function (e) {
+                switch (e.keyCode) {
+                    case 18: {
+                        that.props.dispatch(switchAltKey());
+                    }
                 }
-            }
-        }, false);
+            },
+            false,
+        );
     }
 
     handleSwitchKeyboardVisibility() {
@@ -93,21 +110,21 @@ class TopNavBar extends React.Component {
                 tempTracks.trackList[i].instrument = {
                     preset: tempTracks.trackList[i].instrument.preset,
                     id: tempTracks.trackList[i].instrument.id,
-                    index: tempTracks.trackList[i].instrument.index
-                }
+                    index: tempTracks.trackList[i].instrument.index,
+                };
             }
             for (let j = 0; j < tempTracks.trackList[i].pluginList.length; j++) {
                 tempTracks.trackList[i].pluginList[j] = {
                     preset: tempTracks.trackList[i].pluginList[j].preset,
                     id: tempTracks.trackList[i].pluginList[j].id,
-                    index: tempTracks.trackList[i].pluginList[j].index
-                }
+                    index: tempTracks.trackList[i].pluginList[j].index,
+                };
             }
         }
         const obj = {
             tracks: tempTracks,
             control: tempControl,
-            composition: this.props.composition
+            composition: this.props.composition,
         };
 
         return encodeURIComponent(JSON.stringify(obj));
@@ -138,7 +155,7 @@ class TopNavBar extends React.Component {
         const loadedState = JSON.parse(decodeURIComponent(binaryString));
         this.props.dispatch(loadTrackState(loadedState.tracks));
         this.props.dispatch(loadControlState(loadedState.control));
-        this.props.dispatch(loadCompositionState(loadedState.composition))
+        this.props.dispatch(loadCompositionState(loadedState.composition));
         this.props.dispatch(updateAllTrackNodes());
         /**
          * loading all required samples
@@ -146,10 +163,14 @@ class TopNavBar extends React.Component {
         for (let i = 1; i < loadedState.tracks.trackList.length; i++) {
             if (loadedState.tracks.trackList[i].trackType === TrackTypes.virtualInstrument) {
                 for (let j = 0; j < this.props.samplerInstruments.length; j++) {
-                    if (loadedState.tracks.trackList[i].instrument.id === 0 &&
-                        this.props.samplerInstruments[j].id === loadedState.tracks.trackList[i].instrument.preset.id) {
+                    if (
+                        loadedState.tracks.trackList[i].instrument.id === 0 &&
+                        this.props.samplerInstruments[j].id === loadedState.tracks.trackList[i].instrument.preset.id
+                    ) {
                         if (!this.props.samplerInstruments[j].loaded && !this.props.samplerInstruments[j].fetching) {
-                            this.props.dispatch(fetchSamplerInstrument(loadedState.tracks.trackList[i].instrument.preset.id));
+                            this.props.dispatch(
+                                fetchSamplerInstrument(loadedState.tracks.trackList[i].instrument.preset.id),
+                            );
                         }
                     }
                 }
@@ -170,7 +191,7 @@ class TopNavBar extends React.Component {
             reader.readAsBinaryString(accepted[0]);
         }
         if (rejected.length > 0) {
-            console.log(rejected)
+            console.log(rejected);
         }
     }
 
@@ -178,16 +199,22 @@ class TopNavBar extends React.Component {
         const showHideKeyboard = this.props.keyboardVisible ? 'Hide Keyboard' : 'Show Keyboard';
         const showHideKeyNames = this.props.keyNamesVisible ? 'Hide key names' : 'Show key names';
         const showHideBindNames = this.props.keyBindVisible ? 'Hide key bindings' : 'Show key bindings';
-        const showHideKeyNamesMenuItem = this.props.keyboardVisible ?
-            <MenuItem eventKey={3.2} onClick={() => this.handleSwitchKeyNameVisibility()}>{showHideKeyNames}</MenuItem> :
-            null;
-        const showHideBindNamesMenuItem = this.props.keyboardVisible ?
-            <MenuItem eventKey={3.3} onClick={() => this.handleSwitchKeyBindVisibility()}>{showHideBindNames}</MenuItem> :
-            null;
+        const showHideKeyNamesMenuItem = this.props.keyboardVisible ? (
+            <MenuItem eventKey={3.2} onClick={() => this.handleSwitchKeyNameVisibility()}>
+                {showHideKeyNames}
+            </MenuItem>
+        ) : null;
+        const showHideBindNamesMenuItem = this.props.keyboardVisible ? (
+            <MenuItem eventKey={3.3} onClick={() => this.handleSwitchKeyBindVisibility()}>
+                {showHideBindNames}
+            </MenuItem>
+        ) : null;
         const showHidePianoroll = this.props.pianoRollVisible ? 'Hide Piano Roll' : 'Show Piano Roll';
-        const showHidePianorollMenuItem = !Utils.isNullOrUndefined(this.props.pianoRollRegion) ?
-            <MenuItem eventKey={3.4} onClick={() => this.handleSwitchPianoRollVisibility()}>{showHidePianoroll}</MenuItem> :
-            null;
+        const showHidePianorollMenuItem = !Utils.isNullOrUndefined(this.props.pianoRollRegion) ? (
+            <MenuItem eventKey={3.4} onClick={() => this.handleSwitchPianoRollVisibility()}>
+                {showHidePianoroll}
+            </MenuItem>
+        ) : null;
 
         return (
             <Navbar inverse fixedTop collapseOnSelect fluid>
@@ -199,10 +226,16 @@ class TopNavBar extends React.Component {
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav>
-                        <NavItem eventKey={1} onClick={() => this.homeClicked()}>Home</NavItem>
-                        <NavItem eventKey={2} onClick={this.aboutModalVisibilitySwitch.bind(this)}>About</NavItem>
-                        <NavDropdown eventKey={3} title='Show' id='basic-nav-dropdown'>
-                            <MenuItem eventKey={3.1} onClick={() => this.handleSwitchKeyboardVisibility()}>{showHideKeyboard}</MenuItem>
+                        <NavItem eventKey={1} onClick={() => this.homeClicked()}>
+                            Home
+                        </NavItem>
+                        <NavItem eventKey={2} onClick={this.aboutModalVisibilitySwitch.bind(this)}>
+                            About
+                        </NavItem>
+                        <NavDropdown eventKey={3} title="Show" id="basic-nav-dropdown">
+                            <MenuItem eventKey={3.1} onClick={() => this.handleSwitchKeyboardVisibility()}>
+                                {showHideKeyboard}
+                            </MenuItem>
                             {showHideKeyNamesMenuItem}
                             {showHideBindNamesMenuItem}
                             {showHidePianorollMenuItem}
@@ -210,8 +243,12 @@ class TopNavBar extends React.Component {
                         <NavItem eventKey={4} onClick={this.fileUploadModalVisibilitySwitch.bind(this)}>
                             Import
                         </NavItem>
-                        <NavItem eventKey={5} onClick={this.export.bind(this)}>Export</NavItem>
-                        <NavItem eventKey={6} onClick={this.loadDemo.bind(this)}>Load demo</NavItem>
+                        <NavItem eventKey={5} onClick={this.export.bind(this)}>
+                            Export
+                        </NavItem>
+                        <NavItem eventKey={6} onClick={this.loadDemo.bind(this)}>
+                            Load demo
+                        </NavItem>
                     </Nav>
                 </Navbar.Collapse>
                 <FileUploadModal
@@ -241,10 +278,10 @@ const mapStateToProps = (state) => {
         composition: state.composition,
         tracks: state.tracks,
         control: state.control,
-        samplerInstruments: state.webAudio.samplerInstrumentsSounds.map(
-            (value) => { return { name: value.name, loaded: value.loaded, id: value.id, fetching: value.fetching } }
-        )
-    }
-}
+        samplerInstruments: state.webAudio.samplerInstrumentsSounds.map((value) => {
+            return { name: value.name, loaded: value.loaded, id: value.id, fetching: value.fetching };
+        }),
+    };
+};
 
 export default connect(mapStateToProps)(TopNavBar);

@@ -2,11 +2,11 @@ import Store from '../stroe';
 import { Instruments } from '../constants/Constants';
 import { Presets } from '../constants/SamplerPresets';
 import { isNullOrUndefined, MIDIToNote, devLog } from '../engine/Utils';
-import {InstrumentBase} from './Instrument';
-import {VoiceSynthBase} from './Voice';
+import { InstrumentBase } from './Instrument';
+import { VoiceSynthBase } from './Voice';
 class SamplerVoice extends VoiceSynthBase {
     updatePreset(preset: any) {
-        console.warn("Method not implemented.");
+        console.warn('Method not implemented.');
     }
     output: GainNode;
     source: AudioBufferSourceNode;
@@ -15,7 +15,7 @@ class SamplerVoice extends VoiceSynthBase {
         super(audioContext, preset);
         this.source = this.context.createBufferSource();
         this.output = this.context.createGain();
-        
+
         this.source.connect(this.output);
         this.source.buffer = buffer;
     }
@@ -43,7 +43,7 @@ class SamplerVoice extends VoiceSynthBase {
 
 class Sampler extends InstrumentBase {
     updateNodes(): void {
-        throw new Error("Method not implemented.");
+        throw new Error('Method not implemented.');
     }
     constructor(preset = Presets.DSKGrandPiano, audioContext) {
         super(Instruments.Sampler, audioContext);
@@ -53,7 +53,7 @@ class Sampler extends InstrumentBase {
     }
 
     noteOn(note, startTime) {
-        console.log(this)
+        console.log(this);
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
             const currVoice = new SamplerVoice(this.getBuffers(note), this.preset, this.context);
@@ -71,25 +71,24 @@ class Sampler extends InstrumentBase {
         }
     }
 
-    getNoteName(note){
-        if(!isNullOrUndefined(this.preset.content[MIDIToNote(note)])){
+    getNoteName(note) {
+        if (!isNullOrUndefined(this.preset.content[MIDIToNote(note)])) {
             return this.preset.content[MIDIToNote(note)].name;
         } else {
             return 'No sample';
         }
     }
 
-
     connect(target) {
         this.disconnect();
         this.output.connect(target);
     }
 
-    disconnect(){
+    disconnect() {
         this.output.disconnect();
     }
-    
-    loadPreset(newPreset){
+
+    loadPreset(newPreset) {
         this.preset = newPreset;
     }
 

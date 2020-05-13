@@ -1,4 +1,3 @@
-
 import Compressor from './Compressor';
 import Equalizer from './Equalizer';
 import Distortion from './Distortion';
@@ -12,7 +11,6 @@ interface PluginUtils {
 }
 
 const Utils: PluginUtils = {
-
     getNewPluginByIndex: (id, index, audioContext) => {
         switch (id) {
             case PluginsEnum.Compressor: {
@@ -37,15 +35,7 @@ const Utils: PluginUtils = {
                 return;
             }
         }
-    }
-}
+    },
+};
 
-export {
-    Compressor,
-    Equalizer,
-    Distortion,
-    Delay,
-    Reverb,
-    Chorus,
-    Utils
-}
+export { Compressor, Equalizer, Distortion, Delay, Reverb, Chorus, Utils };

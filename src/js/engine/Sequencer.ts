@@ -10,7 +10,7 @@ class Sequencer {
     timerWorker?: Worker;
     sixteenthPlaying = 0;
     timeoutId?: number;
-    scheduleAhead = 0.200;
+    scheduleAhead = 0.2;
     handlePlay() {
         this.noteTime = 0.0;
         this.startTime = (Store.getState().webAudio as any).context.currentTime + 0.005;
@@ -23,14 +23,13 @@ class Sequencer {
             (Store.getState().webAudio as any).sound.stopAll(SoundOrigin.composition);
             this.sixteenthPlaying = 0;
             Store.dispatch(updateCurrentTime(this.sixteenthPlaying));
-        },80);
-            
+        }, 80);
     }
     handlePause(/*event*/) {
         this.timerWorker!.postMessage('stop');
         (Store.getState().webAudio as any).sound.stopAll(SoundOrigin.composition);
     }
-    schedule() {
+    schedule = () => {
         let currentTime = ((Store.getState().webAudio as any).context as AudioContext).currentTime;
 
         currentTime -= this.startTime!;
@@ -41,7 +40,7 @@ class Sequencer {
         while (this.noteTime! < currentTime + this.scheduleAhead) {
             // Convert noteTime to context time.
             const contextPlayTime = this.noteTime! + this.startTime!;
-            
+
             const trackList = (Store.getState().tracks as any).trackList;
             const soundHandler = (Store.getState().webAudio as any).sound;
             soundHandler.scheduleStop(this.sixteenthPlaying, contextPlayTime, SoundOrigin.composition);
@@ -51,14 +50,19 @@ class Sequencer {
                 const currentNotesToPlay = notesToPlay(this.sixteenthPlaying, currTrackIndex);
                 if (!Utils.isNullUndefinedOrEmpty(currentNotesToPlay)) {
                     for (let j = 0; j < currentNotesToPlay!.length; j++) {
-                        soundHandler.play(currTrackIndex, contextPlayTime, Utils.noteToMIDI(currentNotesToPlay![j].note),
-                            SoundOrigin.composition, this.sixteenthPlaying +  currentNotesToPlay![j].duration);
+                        soundHandler.play(
+                            currTrackIndex,
+                            contextPlayTime,
+                            Utils.noteToMIDI(currentNotesToPlay![j].note),
+                            SoundOrigin.composition,
+                            this.sixteenthPlaying + currentNotesToPlay![j].duration,
+                        );
                     }
                 }
             }
             this.advenceNote();
         }
-    }
+    };
     /**
      * change the current note to plan up in time by one sixteenth note time length
      */
@@ -69,16 +73,17 @@ class Sequencer {
         this.sixteenthPlaying++;
 
         this.noteTime! += 0.25 * secoundsPerBeat;
-        
+
         Store.dispatch(updateCurrentTime(this.sixteenthPlaying));
     }
     init() {
         const schedule = this.schedule;
         const timerWorkerBlob = new Blob([
             'var timeoutID=0;' +
-            'function schedule(){timeoutID=setTimeout(function(){postMessage(\'schedule\'); schedule();},80);}' +
-            'onmessage = function(e) { if (e.data == \'start\') { if (!timeoutID) schedule();} else if (e.data == \'stop\') {if (timeoutID) clearTimeout(timeoutID);' +
-            'timeoutID=0;};}']);
+                "function schedule(){timeoutID=setTimeout(function(){postMessage('schedule'); schedule();},80);}" +
+                "onmessage = function(e) { if (e.data == 'start') { if (!timeoutID) schedule();} else if (e.data == 'stop') {if (timeoutID) clearTimeout(timeoutID);" +
+                'timeoutID=0;};}',
+        ]);
 
         // Obtain a blob URL reference to our worker 'file'.
         const timerWorkerBlobURL = window.URL.createObjectURL(timerWorkerBlob);

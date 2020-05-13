@@ -4,36 +4,31 @@ const Presets = {
     DSKGrandPiano: {
         name: 'DSK Grand Piano',
         id: 0,
-        content: AudioFiles.DSKGrandPiano
+        content: AudioFiles.DSKGrandPiano,
     },
     SlingerlandKit: {
         name: 'Slingerland Kit',
         id: 1,
-        content: AudioFiles.SlingerlandKit
+        content: AudioFiles.SlingerlandKit,
     },
     RockKit: {
         name: 'Rock Kit',
         id: 2,
-        content: AudioFiles.RockKit
-    }
+        content: AudioFiles.RockKit,
+    },
 };
 
 //TODO zmiana nazw
 const presetList = [
     {
         name: 'Acoustic Pianos',
-        presets: [
-            Presets.DSKGrandPiano
-        ]
+        presets: [Presets.DSKGrandPiano],
     },
     {
         name: 'Drums & Percussion',
-        presets: [
-            Presets.SlingerlandKit,
-            Presets.RockKit
-        ]
-    }
-]
+        presets: [Presets.SlingerlandKit, Presets.RockKit],
+    },
+];
 
 const Utils = {};
 
@@ -45,7 +40,7 @@ Utils.getPresetByName = function (name) {
             }
         }
     }
-}
+};
 
 Utils.getPresetById = function (id) {
     for (let i = 0; i < presetList.length; i++) {
@@ -55,7 +50,7 @@ Utils.getPresetById = function (id) {
             }
         }
     }
-}
+};
 
 Utils.getPresetListByName = function (name) {
     for (let i = 0; i < presetList.length; i++) {
@@ -63,9 +58,9 @@ Utils.getPresetListByName = function (name) {
             return presetList[i];
         }
     }
-}
+};
 
-export {Utils};
-export {Presets};
-export {presetList}
+export { Utils };
+export { Presets };
+export { presetList };
 export default presetList;

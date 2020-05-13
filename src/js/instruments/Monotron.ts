@@ -32,8 +32,8 @@ class MonotronVoice extends VoiceSynthBase {
         }
 
         this.output.gain.setValueAtTime(0.0001, this.context.currentTime);
-        this.vco.type = 'sawtooth'
-        this.lfo.type = 'sawtooth'
+        this.vco.type = 'sawtooth';
+        this.lfo.type = 'sawtooth';
         this.vco.frequency.setValueAtTime(frequency + preset.vco.pitch, this.context.currentTime);
         this.lfo.frequency.setValueAtTime(preset.lfo.rate, this.context.currentTime);
         this.lfoGain.gain.setValueAtTime(preset.lfo.int, this.context.currentTime);
@@ -67,7 +67,7 @@ class MonotronVoice extends VoiceSynthBase {
     updatePreset(preset) {
         this.vco.frequency.setValueAtTime(this.frequency + preset.vco.pitch, this.context.currentTime);
         this.lfo.frequency.setValueAtTime(preset.lfo.rate, this.context.currentTime);
-        this.lfoGain.gain.setValueAtTime(preset.lfo.int, this.context.currentTime)
+        this.lfoGain.gain.setValueAtTime(preset.lfo.int, this.context.currentTime);
         this.vcf.frequency.setValueAtTime(preset.vcf.cutoff, this.context.currentTime);
         this.vcf.Q.setValueAtTime(preset.vcf.peak, this.context.currentTime);
         if (preset.mod !== this.mod) {
@@ -86,26 +86,26 @@ class MonotronVoice extends VoiceSynthBase {
 
 class Monotron extends InstrumentBase {
     constructor(preset, audioContext) {
-        super(Instruments.Monotron, audioContext)
+        super(Instruments.Monotron, audioContext);
         this.preset = {
             vco: {
                 pitch: 33.3,
-                knobPitch: 57
+                knobPitch: 57,
             },
             lfo: {
                 rate: 5.2,
                 int: 297,
                 knobRate: 46,
-                knobInt: 97
+                knobInt: 97,
             },
             vcf: {
                 cutoff: 393.3,
                 peak: 16.6,
                 knobCutoff: 72,
-                knobPeak: 57
+                knobPeak: 57,
             },
-            mod: 'pitch'
-        }
+            mod: 'pitch',
+        };
     }
 
     noteOn(note, startTime) {

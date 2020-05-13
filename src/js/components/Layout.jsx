@@ -12,7 +12,7 @@ const Layout = (/*props*/) => {
     return (
         <div className="layout">
             <TopNavBar />
-            <Grid fluid style={{overflow: 'hidden'}}>
+            <Grid fluid style={{ overflow: 'hidden' }}>
                 <Row>
                     <ControlBar />
                 </Row>
@@ -21,8 +21,8 @@ const Layout = (/*props*/) => {
                         <TrackDetails />
                     </Col>
                     <Col xs={10} className="nopadding" id="ComposingCol">
-                            <TrackList />
-                            <CompositionGrid />
+                        <TrackList />
+                        <CompositionGrid />
                         <Col className="keyboard">
                             <Keyboard />
                         </Col>

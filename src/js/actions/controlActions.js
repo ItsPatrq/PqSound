@@ -1,113 +1,113 @@
 export function switchPlayState() {
     return {
-        type: 'SWITCH_PLAY_STATE'
-    }
+        type: 'SWITCH_PLAY_STATE',
+    };
 }
 
 export function changeBPM(BPM) {
     return {
         type: 'CHANGE_BPM',
-        payload: BPM
-    }
+        payload: BPM,
+    };
 }
 
-export function changeTool(tool){
-    return{
+export function changeTool(tool) {
+    return {
         type: 'CHANGE_TOOL',
-        payload: tool
-    }
+        payload: tool,
+    };
 }
 
-export function changeSecoundaryTool(tool){
-    return{
+export function changeSecoundaryTool(tool) {
+    return {
         type: 'CHANGE_SECOUNDARY_TOOL',
-        payload: tool
-    }
+        payload: tool,
+    };
 }
 
-export function changeRegionDrawLength(length){
+export function changeRegionDrawLength(length) {
     return {
         type: 'CHANGE_REGION_DRAW_LENGTH',
-        payload: length
-    }
+        payload: length,
+    };
 }
 
-export function changeNoteDrawLength(length){
+export function changeNoteDrawLength(length) {
     return {
         type: 'CHANGE_NOTE_DRAW_LENGTH',
-        payload: length
-    }
+        payload: length,
+    };
 }
 
-export function updateCurrentTime(newSixteenthNotePlaying){
+export function updateCurrentTime(newSixteenthNotePlaying) {
     return {
         type: 'UPDATE_CURRENT_TIME',
-        payload: newSixteenthNotePlaying
-    }
+        payload: newSixteenthNotePlaying,
+    };
 }
 
-export function updateMidiController(midiController){
+export function updateMidiController(midiController) {
     return {
         type: 'UPDATE_MIDI_CONTROLLER',
-        payload: midiController
-    }
+        payload: midiController,
+    };
 }
 
-export function changeMidiDevice(deviceId){
+export function changeMidiDevice(deviceId) {
     return {
         type: 'CHANGE_MIDI_DEVICE',
-        payload: deviceId
-    }
+        payload: deviceId,
+    };
 }
 
-export function switchAltKey(){
+export function switchAltKey() {
     return {
-        type: 'SWITCH_ALT_KEY'
-    }
+        type: 'SWITCH_ALT_KEY',
+    };
 }
 
-export function initSequencer(sequencer){
+export function initSequencer(sequencer) {
     return {
         type: 'INIT_SEQUENCER',
-        payload: sequencer
-    }
+        payload: sequencer,
+    };
 }
 
-export function changeCurrentTime(newSixteenthNotePlaying){
+export function changeCurrentTime(newSixteenthNotePlaying) {
     return {
         type: 'CHANGE_CURRENT_TIME',
-        payload: newSixteenthNotePlaying
-    }
+        payload: newSixteenthNotePlaying,
+    };
 }
 
-export function switchUploadModalVisibility(){
+export function switchUploadModalVisibility() {
     return {
-        type: 'SWITCH_UPLOAD_MODAL_VISIBILITY'
-    }
+        type: 'SWITCH_UPLOAD_MODAL_VISIBILITY',
+    };
 }
 
-export function switchAboutModalVisibility(){
+export function switchAboutModalVisibility() {
     return {
-        type: 'SWITCH_ABOUT_MODAL_VISIBILITY'
-    }
+        type: 'SWITCH_ABOUT_MODAL_VISIBILITY',
+    };
 }
 
-export function loadControlState(newState){
+export function loadControlState(newState) {
     return {
         type: 'LOAD_CONTROL_STATE',
-        payload: newState
-    }
+        payload: newState,
+    };
 }
 
-export function textInputFocusedSwitch(){
+export function textInputFocusedSwitch() {
     return {
-        type: 'TEXT_INPUT_FOCUSED_SWITCH'
-    }
+        type: 'TEXT_INPUT_FOCUSED_SWITCH',
+    };
 }
 
-export function copyRegion(regionIndex){
+export function copyRegion(regionIndex) {
     return {
         type: 'COPY_REGION',
-        payload: regionIndex
-    }
+        payload: regionIndex,
+    };
 }

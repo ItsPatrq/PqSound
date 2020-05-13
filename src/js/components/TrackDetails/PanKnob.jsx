@@ -23,10 +23,12 @@ class PanKnob extends React.Component {
 
                 const knopf = new Knob(input, new Ui.P2());
                 this.knob = knopf;
-                input.addEventListener('change', (e) => { this.onChange(e, input.id, knopf) });
-            } else{
-                const pan = this.props.pan < 0.001 && this.props.pan > -0.001 ? 0  : this.props.pan;
-                if(Number(this.knob.value) !== pan){
+                input.addEventListener('change', (e) => {
+                    this.onChange(e, input.id, knopf);
+                });
+            } else {
+                const pan = this.props.pan < 0.001 && this.props.pan > -0.001 ? 0 : this.props.pan;
+                if (Number(this.knob.value) !== pan) {
                     this.knob.update(this.props.pan);
                 }
             }
@@ -46,7 +48,9 @@ class PanKnob extends React.Component {
                     type="range"
                     min="-100"
                     max="100"
-                    ref={(input) => { this.initKnob(input); }}
+                    ref={(input) => {
+                        this.initKnob(input);
+                    }}
                 />
             </div>
         );

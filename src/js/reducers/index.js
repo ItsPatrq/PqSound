@@ -13,5 +13,5 @@ export default combineReducers({
     webAudio,
     composition,
     control,
-    trackDetails
-})
+    trackDetails,
+});

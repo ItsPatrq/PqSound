@@ -21,13 +21,13 @@ export abstract class InstrumentBase implements Instrument {
     name: string;
     id: number;
     voices: Voice[];
-    
+
     declare context: AudioContext;
     declare output: AudioNode;
     declare preset: any;
     abstract noteOff(note: number, endTime?: number): void;
     abstract updateNodes(): void;
-    constructor(currEnum, audioContext: AudioContext){
+    constructor(currEnum, audioContext: AudioContext) {
         this.name = currEnum.name;
         this.id = currEnum.id;
         this.voices = [];
@@ -35,27 +35,26 @@ export abstract class InstrumentBase implements Instrument {
             this.context = audioContext;
             this.output = this.context.createGain();
         } else {
-            devLog("Instrument INIT error - no audioContext")
+            devLog('Instrument INIT error - no audioContext');
         }
     }
 
-    updatePreset(newPreset){
-        this.preset = {...this.preset, ...newPreset};
+    updatePreset(newPreset) {
+        this.preset = { ...this.preset, ...newPreset };
         this.updateNodes();
     }
 
-    getNoteName(note){
-        return defaultKeysNames[MIDIToNote(note)] + Math.ceil((MIDIToNote(note) - 2)/12);
+    getNoteName(note) {
+        return defaultKeysNames[MIDIToNote(note)] + Math.ceil((MIDIToNote(note) - 2) / 12);
     }
 
-    stopAll(){
-        for(let i = this.voices.length; i >= 0; i-- ){
-            if(!isNullOrUndefined(this.voices[i])){
+    stopAll() {
+        for (let i = this.voices.length; i >= 0; i--) {
+            if (!isNullOrUndefined(this.voices[i])) {
                 this.noteOff(i);
             }
         }
     }
-    
 }
 
 export default Instrument;

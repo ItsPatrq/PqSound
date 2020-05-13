@@ -1,7 +1,7 @@
 import Store from '../stroe';
 import { updateMidiController, changeMidiDevice } from '../actions/controlActions';
-import {addPlayingNote, removePlayingNote} from '../actions/keyboardActions';
-import {isNullOrUndefined} from './Utils';
+import { addPlayingNote, removePlayingNote } from '../actions/keyboardActions';
+import { isNullOrUndefined } from './Utils';
 import { SoundOrigin } from '../constants/Constants';
 
 class MIDIController {
@@ -13,8 +13,8 @@ class MIDIController {
     constructor() {
         this.devices = {
             input: [],
-            output: []
-        }
+            output: [],
+        };
         this.MIDISupported = false;
         this.selectedInputDevice = null;
         this.selectedOutputDevice = null;
@@ -22,11 +22,13 @@ class MIDIController {
 
     init() {
         if (window.navigator && 'function' === typeof window.navigator.requestMIDIAccess) {
-            return window.navigator.requestMIDIAccess().then(this.connectCallBack.bind(this), this.onMIDIFailure.bind(this));
+            return window.navigator
+                .requestMIDIAccess()
+                .then(this.connectCallBack.bind(this), this.onMIDIFailure.bind(this));
         }
 
         this.MIDISupported = false;
-        console.log('Your browser doesn\'t support WebMIDI API.');
+        console.log("Your browser doesn't support WebMIDI API.");
         Store.dispatch(updateMidiController(this));
         return;
     }
@@ -65,13 +67,13 @@ class MIDIController {
         }
         access.onstatechange = this.onMidiStateChange.bind(this);
         Store.dispatch(updateMidiController(this));
-        if(this.devices.input.length === 1){
+        if (this.devices.input.length === 1) {
             Store.dispatch(changeMidiDevice(this.devices.input[0].id));
         }
     }
     onMIDIFailure(e) {
         this.MIDISupported = false;
-        console.log('Your browser doesn\'t support WebMIDI API.' + e);
+        console.log("Your browser doesn't support WebMIDI API." + e);
         Store.dispatch(updateMidiController(this));
     }
 
@@ -82,17 +84,17 @@ class MIDIController {
     };
 
     changeMidiDevice = (deviceId) => {
-        if(isNullOrUndefined(deviceId)){
-            if(!isNullOrUndefined(this.selectedInputDevice)){
+        if (isNullOrUndefined(deviceId)) {
+            if (!isNullOrUndefined(this.selectedInputDevice)) {
                 this.selectedInputDevice!.onmidimessage = null;
             }
             this.selectedInputDevice = null;
         } else {
-            if(!isNullOrUndefined(this.selectedInputDevice)){
+            if (!isNullOrUndefined(this.selectedInputDevice)) {
                 this.selectedInputDevice!.onmidimessage = null;
             }
-            for(let i = 0; i < this.devices.input.length; i++){
-                if(deviceId === this.devices.input[i].id){
+            for (let i = 0; i < this.devices.input.length; i++) {
+                if (deviceId === this.devices.input[i].id) {
                     this.selectedInputDevice = this.devices.input[i];
                     this.selectedInputDevice.onmidimessage = this.handleMidiMessage.bind(this);
                 }
@@ -100,34 +102,35 @@ class MIDIController {
         }
 
         return this;
-    }
+    };
 
-    handleMidiMessage(event){
+    handleMidiMessage(event) {
         const data = event.data,
-        //cmd = data[0] >> 4,
-        //channel = data[0] & 0xf,
-        type = data[0] & 0xf0, // channel agnostic message type.
-        note = data[1],
-        velocity = data[2];
+            //cmd = data[0] >> 4,
+            //channel = data[0] & 0xf,
+            type = data[0] & 0xf0, // channel agnostic message type.
+            note = data[1],
+            velocity = data[2];
         // with pressure and tilt off
         // note off: 128, cmd: 8
         // note on: 144, cmd: 9
         // pressure / tilt on
         // pressure: 176, cmd 11:
         // bend: 224, cmd: 14
-        if(note > 20 && note < 109){
+        if (note > 20 && note < 109) {
             switch (type) {
                 //noteOn
                 case 144: {
-                    if(velocity > 0){
+                    if (velocity > 0) {
                         this.handleDown(note);
-                    } else { //It seems like some MIDI controllers simply lower velocity to 0 and still send 144 status
+                    } else {
+                        //It seems like some MIDI controllers simply lower velocity to 0 and still send 144 status
                         this.handleUp(note);
                     }
-                     break;
+                    break;
                 }
                 // noteOff
-                case 128:{
+                case 128: {
                     this.handleUp(note);
                     break;
                 }
@@ -136,7 +139,7 @@ class MIDIController {
         //console.log('data', data, 'cmd', cmd, 'channel', channel, 'type', type, 'note', note, 'velocity', velocity);
     }
 
-    updateDevices(){
+    updateDevices() {
         this.devices.input = [];
         this.devices.output = [];
 
@@ -167,26 +170,26 @@ class MIDIController {
                 }
             } else {
                 this.devices.output = [];
-                
+
                 console.log('No output devices detected');
             }
         }
         let inputExists = false;
         let outputExists = false;
-        for(let i = 0; i < this.devices.input.length; i++){
+        for (let i = 0; i < this.devices.input.length; i++) {
             this.devices.input[i].onmidimessage = null;
-            if(this.selectedInputDevice === this.devices.input[i]){
+            if (this.selectedInputDevice === this.devices.input[i]) {
                 inputExists = true;
             }
         }
-        for(let i = 0; i < this.devices.output.length; i++){
-            if(this.selectedOutputDevice === this.devices.output[i]){
+        for (let i = 0; i < this.devices.output.length; i++) {
+            if (this.selectedOutputDevice === this.devices.output[i]) {
                 outputExists = true;
             }
         }
         this.selectedInputDevice = inputExists ? this.selectedInputDevice : null;
         this.selectedOutputDevice = outputExists ? this.selectedOutputDevice : null;
-        if(!isNullOrUndefined(this.selectedInputDevice)){
+        if (!isNullOrUndefined(this.selectedInputDevice)) {
             this.selectedInputDevice.onmidimessage = this.handleMidiMessage.bind(this);
         }
 
@@ -195,9 +198,9 @@ class MIDIController {
 
     getAllRecordingTracks(): number[] {
         const recordingTracksSounds: number[] = [];
-        for (let i = 1; i < Store.getState().tracks.trackList.length; i++) {
-            if (Store.getState().tracks.trackList[i].record) {
-                recordingTracksSounds.push((Store.getState().tracks.trackList[i].index as number));
+        for (let i = 1; i < (Store.getState().tracks as any).trackList.length; i++) {
+            if ((Store.getState().tracks as any).trackList[i].record) {
+                recordingTracksSounds.push((Store.getState().tracks as any).trackList[i].index as number);
             }
         }
         return recordingTracksSounds;
@@ -207,19 +210,24 @@ class MIDIController {
         if ((Store.getState().keyboard as any).notesPlaying.includes(note)) {
             const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
-                (Store.getState().webAudio as any).sound.stop(recordingTracksSounds[i], note)
+                (Store.getState().webAudio as any).sound.stop(recordingTracksSounds[i], note);
             }
             Store.dispatch(removePlayingNote(note));
         }
     }
 
     handleDown(note) {
-        if(!(Store.getState().keyboard as any).notesPlaying.includes(note)){
+        if (!(Store.getState().keyboard as any).notesPlaying.includes(note)) {
             const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
-                (Store.getState().webAudio as any).sound.play(recordingTracksSounds[i], null, note, SoundOrigin.pianoRollNote)
+                (Store.getState().webAudio as any).sound.play(
+                    recordingTracksSounds[i],
+                    null,
+                    note,
+                    SoundOrigin.pianoRollNote,
+                );
             }
-            Store.dispatch(addPlayingNote(note))
+            Store.dispatch(addPlayingNote(note));
         }
     }
 }
