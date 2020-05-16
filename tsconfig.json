@@ -1,4 +1,5 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
     "noImplicitAny": false /* Raise error on expressions and declarations with an implied 'any' type. */,
     "allowSyntheticDefaultImports": true /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */,
@@ -7,18 +8,21 @@
     "jsx": "react" /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */,
     "types": [
       "react",
-      "webmidi"
+      "webmidi",
+      "node"
     ] /* Type declaration files to be included in compilation. */,
-    //"module": ["esNext", "CommonJS"] /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
+    "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
     "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
+    "emitDecoratorMetadata": true,
+    "importHelpers": true,
     "declaration": false /* Generates corresponding '.d.ts' file. */,
     "removeComments": true /* Do not emit comments to output. */,
     "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
     "noUnusedLocals": false /* Report errors on unused locals. */,
     "strict": true /* Enable all strict type-checking options. */,
     "outDir": "./dist/" /* Redirect output structure to the directory. */,
-    "baseUrl": "src" /* Base directory to resolve non-absolute module names. */,
+    "baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
     "typeRoots": [
       "./types",
       "node_modules/@types"
@@ -27,7 +31,8 @@
     "allowJs": true /* Allow javascript files to be compiled. */
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "./src/**/*.test.ts",
   ],
   "include": [
     ".",

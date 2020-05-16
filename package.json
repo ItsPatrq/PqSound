@@ -2,13 +2,13 @@
   "name": "pqsound",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js --env=dev",
+    "start": "node src/server.js --env=dev",
     "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .",
     "dist": "npm run copy & webpack --env=dist",
-    "build": "webpack"
+    "build": "webpack",
+    "start-local": "NODE_ENV2=local && nodemon --config ./utils/nodemon.json"
   },
   "keywords": [
     "express",
@@ -45,18 +45,23 @@
     "hard-source-webpack-plugin": "0.13.1",
     "html-webpack-plugin": "4.3.0",
     "json-loader": "0.5.7",
+    "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
     "redux-devtools-extension": "2.13.8",
     "source-map-loader": "0.2.4",
     "style-loader": "1.2.1",
     "ts-loader": "7.0.3",
+    "ts-node": "^8.10.1",
     "typescript": "3.8.3",
     "webpack": "4.43.0",
     "webpack-dev-middleware": "3.7.2",
     "webpack-hot-middleware": "2.25.0"
   },
   "dependencies": {
+    "@overnightjs/core": "^1.6.15",
+    "@overnightjs/logger": "^1.1.10",
     "express": "4.17.1",
+    "http-status-codes": "^1.4.0",
     "normalize.css": "8.0.1",
     "npm": "6.14.5",
     "react": "16.13.1",
