@@ -5,14 +5,16 @@ import { getInstrument } from './controllers/SamplerController';
 import { Server } from '@overnightjs/core';
 import { Logger } from '@overnightjs/logger';
 import * as webpack from 'webpack';
-import * as config from './webpack.config.js';
-
+import * as config from './webpack.config';
+import { publicPath } from './webpackCfg/defaults';
+import * as express from 'express';
 import * as webpackMiddleware from 'webpack-dev-middleware';
 import * as webpackHotMiddleware from 'webpack-hot-middleware';
 
 export class DemoServer extends Server {
-    private readonly SERVER_START_MSG = '==> 🌎 Listening on port ';
+    private readonly SERVER_START_MSG = '🌎 ==>\x1b[0m http://localhost:';
     private compiler: webpack.Compiler = webpack(config);
+    private webpackInitialized:boolean = false;
     constructor() {
         super(true);
         this.app.use(bodyParser.json());
@@ -20,6 +22,10 @@ export class DemoServer extends Server {
         super.addControllers(new DemoController());
         this.setupFrontEnd();
         this.setupRoutes();
+    }
+
+    private get shouldBuildFront():boolean {
+        return process.env.SERVER_ONLY !== "true" && process.env.NODE_ENV === 'local';
     }
 
     private setupRoutes(): void {
@@ -30,10 +36,10 @@ export class DemoServer extends Server {
     }
 
     private setupFrontEnd(): void {
-        if (process.env.NODE_ENV === 'local') {
+        if (this.shouldBuildFront) {
             Logger.Imp('Starting server in development mode');
             const middleware = webpackMiddleware(this.compiler, {
-                publicPath: config.output.publicPath,
+                publicPath: publicPath,
                 contentBase: 'public/daw',
                 stats: {
                     colors: true,
@@ -52,11 +58,27 @@ export class DemoServer extends Server {
                 res.end();
             });
         } else {
-            this.app.use(this.app.static(__dirname + '/dist'));
+            this.app.use(express.static(__dirname + '/dist/assets'));
             this.app.get('/', function response(req, res) {
                 res.sendFile(path.join(__dirname, 'dist/assets/index.html'));
             });
         }
+    }
+
+    private startFront():void {
+        if(!this.shouldBuildFront || this.webpackInitialized){
+            return;
+        }
+        this.compiler.plugin('done', () => {
+            // Ensures that we log after webpack printed its stats (is there a better way?)
+            setTimeout(() => {
+                console.log('\n✓ The bundle is now ready for serving! \n');
+                console.log(
+                    '  \x1b[33mHMR is active\x1b[0m. The bundle will automatically rebuild and live-update on changes.',
+                );
+            }, 350);
+        });
+        this.webpackInitialized = true;
     }
 
     // private setupControllers(): void {
@@ -71,21 +93,13 @@ export class DemoServer extends Server {
     // }
 
     public start(port: number): void {
+        this.startFront();
         this.app.listen(port, 'localhost', (err) => {
             if (err) {
                 console.log(err);
             }
+
             Logger.Imp(this.SERVER_START_MSG + port);
-        });
-        this.compiler.plugin('done', () => {
-            // Ensures that we log after webpack printed its stats (is there a better way?)
-            setTimeout(() => {
-                console.log('\n✓ The bundle is now ready for serving!\n');
-                console.log('  Open \x1b[33m%s\x1b[0m', 'http://localhost:' + port + '/\n');
-                console.log(
-                    '  \x1b[33mHMR is active\x1b[0m. The bundle will automatically rebuild and live-update on changes.',
-                );
-            }, 350);
         });
     }
 }

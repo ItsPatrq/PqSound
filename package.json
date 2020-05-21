@@ -3,12 +3,10 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/server.js --env=dev",
     "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .",
-    "dist": "npm run copy & webpack --env=dist",
-    "build": "webpack",
-    "start-local": "NODE_ENV2=local && nodemon --config ./utils/nodemon.json"
+    "start:local": "nodemon --config ./utils/nodemon.json",
+    "start:local:so": "env SERVER_ONLY=true nodemon --config ./utils/nodemon.json",
+    "build:heroku": "rm -rf dist && env NODE_ENV=local webpack --mode production --config src/webpack.config.ts"
   },
   "keywords": [
     "express",
@@ -26,6 +24,7 @@
   "author": "Patryq",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.17.6",
     "@types/react": "16.9.35",
     "@types/react-dom": "16.9.7",
     "@types/styled-components": "5.1.0",
@@ -54,6 +53,7 @@
     "ts-node": "^8.10.1",
     "typescript": "3.8.3",
     "webpack": "4.43.0",
+    "webpack-cli": "^3.3.11",
     "webpack-dev-middleware": "3.7.2",
     "webpack-hot-middleware": "2.25.0"
   },

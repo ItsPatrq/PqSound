@@ -3,7 +3,8 @@
         "webmidi"
     ],
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "source.organizeImports": false,
+        "source.fixAll.eslint": false
     },
     "eslint.validate": [
         "javascript",
