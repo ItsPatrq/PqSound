@@ -8,7 +8,7 @@ import * as webpack from 'webpack';
 import * as config from '../webpackCfg/webpack.config';
 import { publicPath } from '../webpackCfg/defaults';
 import * as express from 'express';
-import * as webpackMiddleware from 'webpack-dev-middleware';
+import * as webpackMiddleware from 'webpack-dev-middleware'; //TODO: need to get rid off from production server
 import * as webpackHotMiddleware from 'webpack-hot-middleware';
 
 export class DawApiServer extends Server {
