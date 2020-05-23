@@ -8,7 +8,7 @@ export const webpackProductionSettings: webpack.Configuration = {
     plugins: [
         ...(defaultSettings.plugins as webpack.Plugin[]),
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('prod'),
+            'process.env.NODE_ENV': JSON.stringify('production'),
             'process.env.NODE_HOST': JSON.stringify(process.env.NODE_HOST),
         }),
     ],

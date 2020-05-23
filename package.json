@@ -7,10 +7,10 @@
     "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .",
     "start:local": "nodemon --config ./utils/nodemon.json",
     "start:local:so": "env SERVER_ONLY=true nodemon --config ./utils/nodemon.json",
-    "start:heroku": "npm run build:heroku && node --optimize_for_size --max_old_space_size=460 -r ts-node/register src/start.ts heroku",
+    "start:heroku": "node --optimize_for_size --max_old_space_size=450 -r ts-node/register src/start.ts heroku",
     "": "--------------------------------------------------------------------------",
-    "build:local": "rm -rf dist && cross-env NODE_ENV=local NODE_HOST=local webpack --config src/webpackCfg/webpack.config.ts",
-    "build:heroku": "rm -rf dist && cross-env NODE_ENV=prod NODE_HOST=heroku node --max_old_space_size=460 ./node_modules/webpack/bin/webpack.js --config src/webpackCfg/webpack.config.ts"
+    "build": "rm -rf dist && node --max_old_space_size=450 ./node_modules/webpack/bin/webpack.js --config src/webpackCfg/webpack.config.ts",
+    "build:local": "rm -rf dist && cross-env NODE_ENV=local NODE_HOST=local webpack --config src/webpackCfg/webpack.config.ts"
   },
   "keywords": [
     "express",
