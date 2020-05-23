@@ -7,6 +7,7 @@
     "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .",
     "start:local": "nodemon --config ./utils/nodemon.json",
     "start:local:so": "env SERVER_ONLY=true nodemon --config ./utils/nodemon.json",
+    "start:heroku": "npm run build:heroku && ts-node ./src/start.ts heroku",
     "": "--------------------------------------------------------------------------",
     "build:local": "rm -rf dist && env NODE_ENV=local webpack --config src/webpackCfg/webpack.config.ts",
     "build:heroku": "rm -rf dist && env NODE_ENV=prod env NODE_HOST=heroku webpack --config src/webpackCfg/webpack.config.ts"
@@ -23,6 +24,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ItsMeaga1n/PqSound.git"
+  },
+  "engines": {
+    "node": "10.15.0"
   },
   "author": "Patryq",
   "license": "ISC",
