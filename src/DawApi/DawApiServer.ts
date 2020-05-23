@@ -12,7 +12,8 @@ import * as webpackMiddleware from 'webpack-dev-middleware'; //TODO: need to get
 import * as webpackHotMiddleware from 'webpack-hot-middleware';
 
 export class DawApiServer extends Server {
-    private readonly SERVER_START_MSG = '🌎 ==>\x1b[0m http://localhost:';
+    private readonly SERVER_START_MSG =
+        '🌎 ==>\x1b[0m ' + process.env.hostName === 'localhost' ? 'localhost' : process.env.hostName + ':';
     private compiler: webpack.Compiler = webpack(config);
     private webpackInitialized = false;
     constructor() {
@@ -93,7 +94,7 @@ export class DawApiServer extends Server {
 
     public start(port: number): void {
         this.startFront();
-        this.app.listen(port, 'localhost', (err) => {
+        this.app.listen(port, (err) => {
             if (err) {
                 console.log(err);
             }
