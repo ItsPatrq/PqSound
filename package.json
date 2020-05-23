@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
+    "start": "npm run start:local",
     "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .",
     "start:local": "nodemon --config ./utils/nodemon.json",
     "start:local:so": "env SERVER_ONLY=true nodemon --config ./utils/nodemon.json",
-    "build:heroku": "rm -rf dist && env NODE_ENV=local webpack --mode production --config src/webpack.config.ts"
+    "": "--------------------------------------------------------------------------",
+    "build:local": "rm -rf dist && env NODE_ENV=local webpack --config src/webpackCfg/webpack.config.ts",
+    "build:heroku": "rm -rf dist && env NODE_ENV=prod env NODE_HOST=heroku webpack --config src/webpackCfg/webpack.config.ts"
   },
   "keywords": [
     "express",

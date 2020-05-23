@@ -7,19 +7,17 @@ import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 export const srcPath = path.join(__dirname, './../public/daw/');
 export const publicPath = '/assets/';
 
-
 // Add needed plugins here
 // const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
-
-export const defaultSettings:webpack.Configuration = {
+export const defaultSettings: webpack.Configuration = {
     node: { fs: 'empty' },
     context: path.join(__dirname, '/../'),
     devtool: 'eval-source-map',
     output: {
-        path: path.join(__dirname, '/../dist/assets'),
-        filename: 'boundle.js',
-        publicPath: publicPath
+        path: path.join(__dirname, '/../../dist/assets'),
+        filename: 'bundle.js',
+        publicPath: publicPath,
     },
     resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
@@ -37,11 +35,10 @@ export const defaultSettings:webpack.Configuration = {
             'react/lib/ReactMount': 'react-dom/lib/ReactMount',
         },
     },
-    entry: ['webpack-hot-middleware/client?reload=true', path.join(__dirname, '/../public/daw/index')],
     cache: true,
     plugins: [
         new HtmlWebpackPlugin({
-            template: path.join(__dirname, '/../public/daw/index.html'),
+            template: path.join(srcPath, '/index.html'),
             inject: 'body',
             filename: 'index.html',
         }),
@@ -82,5 +79,5 @@ export const defaultSettings:webpack.Configuration = {
                 loader: 'source-map-loader',
             },
         ],
-    }
-}
+    },
+};

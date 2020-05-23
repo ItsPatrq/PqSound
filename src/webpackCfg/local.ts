@@ -1,15 +1,17 @@
 import { defaultSettings, srcPath } from './defaults';
 import * as webpack from 'webpack';
+import * as path from 'path';
 
 // const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
-export const webpackLocalSettings:webpack.Configuration = {
+export const webpackLocalSettings: webpack.Configuration = {
     ...defaultSettings,
-    mode: 'development',
+    entry: ['webpack-hot-middleware/client?reload=true', path.join(__dirname, '/../public/daw/index')],
     plugins: [
-        ...defaultSettings.plugins as webpack.Plugin[],
+        ...(defaultSettings.plugins as webpack.Plugin[]),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('local'),
+            'process.env.NODE_HOST': JSON.stringify('local'),
         }),
         new webpack.HotModuleReplacementPlugin(),
 
@@ -56,6 +58,6 @@ export const webpackLocalSettings:webpack.Configuration = {
                 exclude: /node_modules/,
                 loader: 'eslint-loader',
             },
-        ]
-    }
+        ],
+    },
 };

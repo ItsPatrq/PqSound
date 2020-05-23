@@ -43,7 +43,7 @@ class SamplerVoice extends VoiceSynthBase {
 
 class Sampler extends InstrumentBase {
     updateNodes(): void {
-        throw new Error('Method not implemented.');
+        console.warn('Method not implemented.');
     }
     constructor(preset = Presets.DSKGrandPiano, audioContext) {
         super(Instruments.Sampler, audioContext);
@@ -53,7 +53,6 @@ class Sampler extends InstrumentBase {
     }
 
     noteOn(note, startTime) {
-        console.log(this);
         if (isNullOrUndefined(this.voices[note])) {
             startTime = startTime || this.context.currentTime;
             const currVoice = new SamplerVoice(this.getBuffers(note), this.preset, this.context);

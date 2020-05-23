@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('fs'),
     path = require('path'),
-    instrumentsPath = path.join(__dirname, '/../../assets/audio/samples/instruments/');
+    instrumentsPath = path.join(__dirname, '/../../../assets/audio/samples/instruments/');
 
 const getSound = function (req, res, filePath, mimeType) {
     const stats = fs.statSync(filePath);

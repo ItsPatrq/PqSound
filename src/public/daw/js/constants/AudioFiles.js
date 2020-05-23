@@ -1,7 +1,7 @@
 'use strict';
-
+import { config } from '../../config';
 const keys = ['C', 'Cs', 'D', 'Ds', 'E', 'F', 'Fs', 'G', 'Gs', 'A', 'As', 'B'];
-const baseURL = 'http://localhost:3000/api/samplerinstrument/';
+const baseURL = config.DawApiUrl + 'api/samplerinstrument/';
 
 const DSKGrandPianoURL = baseURL + 'DSKGrandPiano/DSK_Grand_';
 const DSKGrandPiano = [

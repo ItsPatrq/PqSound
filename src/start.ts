@@ -1,7 +1,7 @@
-import DemoServer from './server';
+import { DawApiServer } from './DawApi/DawApiServer';
 
 // Start the server or run tests
 if (process.argv[2] !== 'test') {
-    const server = new DemoServer();
+    const server = new DawApiServer();
     server.start(3000);
 }

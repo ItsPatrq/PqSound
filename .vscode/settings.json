@@ -4,7 +4,7 @@
     ],
     "editor.codeActionsOnSave": {
         "source.organizeImports": false,
-        "source.fixAll.eslint": false
+        "source.fixAll.eslint": true
     },
     "eslint.validate": [
         "javascript",
