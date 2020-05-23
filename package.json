@@ -9,8 +9,8 @@
     "start:local:so": "env SERVER_ONLY=true nodemon --config ./utils/nodemon.json",
     "start:heroku": "npm run build:heroku && ts-node src/start.ts heroku",
     "": "--------------------------------------------------------------------------",
-    "build:local": "rm -rf dist && env NODE_ENV=local webpack --config src/webpackCfg/webpack.config.ts",
-    "build:heroku": "rm -rf dist && heroku config:set NODE_ENV=prod && heroku config:set NODE_HOST=heroku && webpack --config src/webpackCfg/webpack.config.ts"
+    "build:local": "rm -rf dist && cross-env NODE_ENV=local NODE_HOST=local webpack --config src/webpackCfg/webpack.config.ts",
+    "build:heroku": "rm -rf dist && cross-env NODE_ENV=prod NODE_HOST=heroku webpack --config src/webpackCfg/webpack.config.ts"
   },
   "keywords": [
     "express",
@@ -67,6 +67,7 @@
   "dependencies": {
     "@overnightjs/core": "^1.6.15",
     "@overnightjs/logger": "^1.1.10",
+    "cross-env": "7.0.2",
     "express": "4.17.1",
     "http-status-codes": "^1.4.0",
     "normalize.css": "8.0.1",

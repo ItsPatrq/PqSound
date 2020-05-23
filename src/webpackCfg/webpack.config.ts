@@ -12,4 +12,3 @@ const webpackConfig: webpack.Configuration =
 
 module.exports = webpackConfig;
 module.exports.mode = process.env.NODE_ENV === 'prod' ? 'production' : 'development';
-console.log(module.exports.output);
