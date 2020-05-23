@@ -1,0 +1,13 @@
+{
+    "watch": [
+        "src"
+    ],
+    "ext": "ts",
+    "ignore": [
+        "src/public"
+    ],
+    "env": {
+        "NODE_ENV": "local"
+    },
+    "exec": "ts-node ./src/start.ts dev"
+}
