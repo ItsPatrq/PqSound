@@ -52,7 +52,7 @@
     "redux-devtools-extension": "2.13.8",
     "source-map-loader": "0.2.4",
     "style-loader": "1.2.1",
-    "ts-loader": "7.0.3"
+    "ts-loader": "7.0.5"
   },
   "dependencies": {
     "@overnightjs/core": "^1.6.15",
