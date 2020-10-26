@@ -51,7 +51,7 @@
     "prettier": "^2.0.5",
     "redux-devtools-extension": "2.13.8",
     "source-map-loader": "0.2.4",
-    "style-loader": "1.2.1",
+    "style-loader": "2.0.0",
     "ts-loader": "8.0.7"
   },
   "dependencies": {
