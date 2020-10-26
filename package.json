@@ -47,7 +47,7 @@
     "fork-ts-checker-webpack-plugin": "5.2.0",
     "hard-source-webpack-plugin": "0.13.1",
     "json-loader": "0.5.7",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.6",
     "prettier": "^2.0.5",
     "redux-devtools-extension": "2.13.8",
     "source-map-loader": "0.2.4",
