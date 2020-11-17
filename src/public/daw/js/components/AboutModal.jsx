@@ -16,7 +16,14 @@ const FileUploadModal = (props) => {
             <Modal.Body>
                 <p>
                     PqSound is an online DAW application. It allows you to play virtual instruments live and to create
-                    your own compositions
+                    your own compositions.
+                    <br />
+                    <br />
+                    Feel free to visit my{' '}
+                    <a href="https://itsmeaga1n.github.io/" target="_blank" rel="noreferrer">
+                        website
+                    </a>{' '}
+                    for more of my projects.
                 </p>
                 <br />
                 <div>

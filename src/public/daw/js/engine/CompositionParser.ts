@@ -23,15 +23,11 @@ interface Note {
 }
 
 export const getRegionsByTrackIndex = (trackIndex: number, allRegions?: Region[]): Region[] => {
-    const regionsByTrackIndex: Region[] = [];
     if (!allRegions) {
         allRegions = Store.getState().composition.regionList as Region[];
     }
-    for (let i = 0; i < allRegions.length; i++) {
-        if (allRegions[i].trackIndex === trackIndex) {
-            regionsByTrackIndex.push(allRegions[i]);
-        }
-    }
+    const regionsByTrackIndex = allRegions.filter((x) => x.trackIndex === trackIndex);
+
     return regionsByTrackIndex;
 };
 
@@ -106,24 +102,21 @@ export const notesToDrawParser = (pianoRollNote: number): number[] | null => {
 
 export const notesToPlay = (sixteenthPlaying: number, trackIndex: number): NoteToPlay[] | null => {
     const regions = getRegionsByTrackIndex(trackIndex);
-    if (Utils.isNullUndefinedOrEmpty(regions)) {
-        return null;
-    }
+    const regionsToPlay = regions.filter(
+        (x) => x.start * 16 <= sixteenthPlaying && (x.start + x.regionLength) * 16 >= sixteenthPlaying,
+    );
     const notesToPlay: NoteToPlay[] = [];
-    for (let i = 0; i < regions.length; i++) {
-        if (regions[i].start * 16 <= sixteenthPlaying && (regions[i].end + 1) * 16 >= sixteenthPlaying) {
-            const currRegion = regions[i];
-            for (let j = 0; j < currRegion.notes.length; j++) {
-                if (!Utils.isNullUndefinedOrEmpty(currRegion.notes[j])) {
-                    for (let z = 0; z < currRegion.notes[j].length; z++) {
-                        if (currRegion.notes[j][z].sixteenthNumber + currRegion.start * 16 === sixteenthPlaying) {
-                            notesToPlay.push({ note: j, duration: currRegion.notes[j][z].length });
-                        }
-                    }
-                }
+    regionsToPlay.forEach((currRegion) => {
+        for (let j = 0; j < currRegion.notes.length; j++) {
+            if (Utils.isNullUndefinedOrEmpty(currRegion.notes[j])) {
+                continue;
             }
+            currRegion.notes[j].forEach((currNote) => {
+                if (currNote.sixteenthNumber + currRegion.start * 16 === sixteenthPlaying) {
+                    notesToPlay.push({ note: j, duration: currNote.length });
+                }
+            });
         }
-        return notesToPlay;
-    }
-    return null;
+    });
+    return notesToPlay;
 };

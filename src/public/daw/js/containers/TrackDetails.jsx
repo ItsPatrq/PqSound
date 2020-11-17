@@ -210,7 +210,7 @@ class TrackDetails extends React.Component {
             instrumentComponent = <div className="instrumentInputContainer" />;
         }
         return (
-            <div>
+            <>
                 <Col xs={6} className="trackDetailsContainer">
                     {instrumentComponent}
                     <PluginsList
@@ -280,7 +280,7 @@ class TrackDetails extends React.Component {
                     trackName={this.getTrackName(this.props.trackDetails.selectedPluginTrackIndex)}
                     onPresetChange={this.handlePluginPresetChange.bind(this)}
                 />
-            </div>
+            </>
         );
     }
 }

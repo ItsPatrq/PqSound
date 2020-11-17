@@ -1,4 +1,4 @@
-import { PluginsEnum } from '../constants/Constants';
+import { Plugins, PluginsEnum } from '../constants/Constants';
 
 export interface Plugin {
     name: string;
@@ -32,7 +32,7 @@ export abstract class PluginBase implements Plugin {
     abstract updateNodes(): void;
 
     constructor(currEnum: PluginsEnum, index: number, audioContext: AudioContext) {
-        this.name = 'TODO';
+        this.name = Plugins.find(x => x.id === currEnum)!.name;
         this.id = currEnum;
         this.index = index;
         this.context = audioContext;
