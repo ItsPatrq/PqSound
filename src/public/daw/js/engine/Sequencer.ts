@@ -12,8 +12,12 @@ class Sequencer {
     timeoutId?: number;
     scheduleAhead = 0.2;
     handlePlay() {
+        const audioContext: AudioContext = (Store.getState().webAudio as any).context;
+        if (audioContext.state !== 'running') {
+            audioContext.resume();
+        }
         this.noteTime = 0.0;
-        this.startTime = (Store.getState().webAudio as any).context.currentTime + 0.005;
+        this.startTime = audioContext.currentTime + 0.005;
         this.schedule();
         this.timerWorker!.postMessage('start');
     }

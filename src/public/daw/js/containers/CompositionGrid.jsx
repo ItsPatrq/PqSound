@@ -156,6 +156,9 @@ class CompositionGrid extends React.Component {
                 this.props.composition.pianoRollRegion,
                 this.props.composition.regionList,
             ).trackIndex;
+            if (this.props.audioContext.state !== 'running') {
+                this.props.audioContext.resume();
+            }
             this.props.sound.play(currTrackIndex, null, note, SoundOrigin.pianoRollNote);
             //this.props.dispatch(KeyboardActions.addPlayingNote(note))
         }
@@ -326,6 +329,7 @@ const mapStateToProps = (state) => {
         noteDrawLength: state.control.noteDrawLength,
         keyboard: state.keyboard,
         sound: state.webAudio.sound,
+        audioContext: state.webAudio.context,
         sixteenthPlaying: state.control.sixteenthNotePlaying,
         altClicked: state.control.altClicked,
         copiedRegion: state.control.copiedRegion,

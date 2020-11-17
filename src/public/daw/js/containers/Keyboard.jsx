@@ -351,6 +351,9 @@ class Keyboard extends React.Component {
                 !isNullOrUndefined(this.props.keyboard.keyBindings[note]) &&
                 !this.props.keyboard.notesPlaying.includes(this.props.keyboard.keyBindings[note].MIDINote)
             ) {
+                if (this.props.audioContext.state !== 'running') {
+                    this.props.audioContext.resume();
+                }
                 const recordingTracksSounds = this.getAllRecordingTracks();
                 for (let i = 0; i < recordingTracksSounds.length; i++) {
                     this.props.sound.play(
@@ -522,6 +525,7 @@ const mapStateToProps = (state) => {
         trackList: state.tracks.trackList,
         sound: state.webAudio.sound,
         textInputFocused: state.control.textInputFocused,
+        audioContext: state.webAudio.context,
     };
 };
 
