@@ -2,6 +2,7 @@ import * as React from 'react';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 import { Instruments } from 'constants/Constants';
 import InstrumentModal from './InstrumentModal';
+import Loader from 'react-loader-spinner';
 
 const InstrumentInput = (props) => {
     const availableInstruments = [];
@@ -22,16 +23,28 @@ const InstrumentInput = (props) => {
     }
     return (
         <div className="instrumentInputContainer">
-            <DropdownButton
-                bsStyle="link"
-                title=""
-                className="drop-down outputSelectorDropDown"
-                id="OutputSelectorDropDown"
-            >
-                {availableInstruments}
-            </DropdownButton>
-            <div className="instrumentDetailsInput" onClick={() => props.instrumentModalVisibilitySwitch()}>
-                {props.selectedTrack.instrument.name}
+            <div className="instrumentDetailsInput">
+                <div className="selectedInstrument">
+                    <DropdownButton
+                        bsStyle="link"
+                        title=""
+                        className="drop-down outputSelectorDropDown"
+                        id="OutputSelectorDropDown"
+                        menuAlign="left"
+                    >
+                        {availableInstruments}
+                    </DropdownButton>
+                    <p onClick={() => props.instrumentModalVisibilitySwitch()}>{props.selectedTrack.instrument.name}</p>
+                </div>
+
+                {props.isLoading && (
+                    <div className="instrumentDetailsInput_loading">
+                        <Loader type="Puff" color="#337ab7" height={20} width={20} />
+                        <p>
+                            Loading <br /> samples...
+                        </p>
+                    </div>
+                )}
             </div>
 
             <InstrumentModal

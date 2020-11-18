@@ -8,7 +8,7 @@ import TrackList from 'containers/TrackList';
 import CompositionGrid from 'containers/CompositionGrid';
 import Keyboard from 'containers/Keyboard';
 
-const Layout = (/*props*/) => {
+const Layout = () => {
     return (
         <div className="layout">
             <TopNavBar />

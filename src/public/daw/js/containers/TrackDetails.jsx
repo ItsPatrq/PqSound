@@ -193,6 +193,7 @@ class TrackDetails extends React.Component {
 
     render() {
         let instrumentComponent;
+        console.log(this.props.samplerInstruments);
         if (
             Utils.getTrackByIndex(this.props.trackList, this.props.selected).trackType === TrackTypes.virtualInstrument
         ) {
@@ -204,6 +205,7 @@ class TrackDetails extends React.Component {
                     onSamplerPresetChange={this.handleSamplerPresetChange.bind(this)}
                     onInstrumentChange={this.handleInstrumentChange.bind(this)}
                     onInstrumentPresetChange={this.handleInstrumentPresetChange.bind(this)}
+                    isLoading={this.props.samplerInstruments.some((x) => x.fetching)}
                 />
             );
         } else {
@@ -292,7 +294,7 @@ const mapStateToProps = (state) => {
         selected: state.tracks.selected,
         trackDetails: state.trackDetails,
         samplerInstruments: state.webAudio.samplerInstrumentsSounds.map((value) => {
-            return { name: value.name, loaded: value.loaded, id: value.id };
+            return { name: value.name, loaded: value.loaded, id: value.id, fetching: value.fetching };
         }),
     };
 };

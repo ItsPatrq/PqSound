@@ -65,6 +65,10 @@ class TopNavBar extends React.Component {
         );
     }
 
+    componentDidMount() {
+        this.handleSwitchKeyboardVisibility();
+    }
+
     handleSwitchKeyboardVisibility() {
         const ComposingCol = document.getElementById('ComposingCol');
         if (Utils.isNullOrUndefined(ComposingCol) && this.props.keyboardWidth !== 0) {

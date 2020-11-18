@@ -4,7 +4,7 @@ import { defaultKeyBindings } from 'constants/Constants';
 export default function reducer(
     state = {
         width: 0,
-        firstKey: 0,
+        firstKey: 24,
         show: false,
         notesPlaying: [],
         keyNamesVisible: true,

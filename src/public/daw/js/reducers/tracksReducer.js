@@ -1,7 +1,7 @@
 import * as Utils from 'engine/Utils';
 import Sound from 'engine/Sound';
 import Track from 'engine/Track';
-import { Sampler, Utils as InstrumentsUtils } from 'instruments';
+import { MultiOsc, Utils as InstrumentsUtils } from 'instruments';
 import { Utils as PluginsUtils } from 'plugins';
 import { TrackTypes } from 'constants/Constants';
 import { Utils as SamplerPresetsUtils, Presets as SamplerPresets } from 'constants/SamplerPresets';
@@ -29,7 +29,7 @@ export default function reducer(
                 trackNode: {},
             },
             {
-                name: 'Piano',
+                name: 'multi-oscilator',
                 trackType: TrackTypes.virtualInstrument,
                 instrument: firstInstrument,
                 pluginList: newTrackPluginList,
@@ -281,10 +281,7 @@ export default function reducer(
                             1,
                             0,
                         );
-                        newTrackList[i].instrument = new Sampler(
-                            SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id),
-                            audioContext,
-                        );
+                        newTrackList[i].instrument = new MultiOsc(undefined, audioContext);
                         newTrackList[i].trackNode = new Track(
                             newTrackList[i].pluginList,
                             newTrackList[i].instrument,

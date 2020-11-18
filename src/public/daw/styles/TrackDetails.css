@@ -81,8 +81,23 @@
     margin-left: 0px;
     background-color: transparent;
     display: inline-flex;
+    position: relative;
 }
 
+.instrumentInputContainer .selectedInstrument {
+    display: inline-block;
+}
+.instrumentInputContainer .selectedInstrument p {
+    display: inline-block;
+}
+
+.instrumentInputContainer .selectedInstrument p:hover {
+    text-decoration: underline;
+}
+
+.instrumentInputContainer .outputSelectorDropDown {
+    padding: 3px;
+}
 .panKnob{
     height: 8px;
     width: 100%;
@@ -118,13 +133,26 @@
     text-align: center;
     color: rgb(239, 248, 255);
     display: inline-flex;
+    flex-direction: column;
     cursor: pointer;
 }
 
-.instrumentDetailsInput:hover {
-    text-decoration: underline;
-}
 
+
+.instrumentDetailsInput .instrumentDetailsInput_loading {
+    cursor: auto;
+    text-decoration: none;
+    color: rgba(239, 248, 255, 0.5);
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+}
+.instrumentDetailsInput:hover .instrumentDetailsInput_loading {
+    text-decoration: none;
+}
+.instrumentDetailsInput .instrumentDetailsInput_loading p {
+    margin-left: 5px;
+}
 .trackDetailsContainer {
     display: flex;
     flex-flow: column;

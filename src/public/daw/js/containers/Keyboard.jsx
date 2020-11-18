@@ -335,14 +335,15 @@ class Keyboard extends React.Component {
     }
 
     getBindingName(note) {
-        let name = '';
-        for (let i = 0; i < this.props.keyboard.keyBindings.length; i++) {
-            if (this.props.keyboard.keyBindings[i].MIDINote === noteToMIDI(note)) {
-                name = this.props.keyboard.keyBindings[i].keyboardKey;
-                break;
+        let res = '';
+        this.props.keyboard.keyBindings.some((keyBiding) => {
+            if (keyBiding.MIDINote === noteToMIDI(note)) {
+                res = keyBiding.keyboardKey;
+                return true;
             }
-        }
-        return name;
+        });
+
+        return res;
     }
 
     handleKeyboardKeyDown(note) {
@@ -402,6 +403,7 @@ class Keyboard extends React.Component {
             newFirstVisibleKey--;
         }
         if (newFirstVisibleKey !== this.props.keyboard.firstKey) {
+            console.log(newFirstVisibleKey, this.props.keyboard.firstKey, direction);
             if (Math.floor(newFirstVisibleKey / 12) !== Math.floor(this.props.keyboard.firstKey / 12)) {
                 if (direction > 0) {
                     this.props.dispatch(Actions.changeKeyBindings(12));
