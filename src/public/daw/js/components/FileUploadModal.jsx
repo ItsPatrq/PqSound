@@ -16,7 +16,14 @@ const FileUploadModal = (props) => {
             </Modal.Header>
             <Modal.Body>
                 <Dropzone accept=".json" onDrop={props.onFileUpload}>
-                    <p>Drag or click to upload your exported composition</p>
+                    {({ getRootProps, getInputProps }) => {
+                        return (
+                            <div {...getRootProps()}>
+                                <p>Drag or click to upload your exported composition</p>
+                                <input {...getInputProps()} />
+                            </div>
+                        );
+                    }}
                 </Dropzone>
             </Modal.Body>
             <Modal.Footer>

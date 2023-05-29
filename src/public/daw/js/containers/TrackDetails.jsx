@@ -193,7 +193,6 @@ class TrackDetails extends React.Component {
 
     render() {
         let instrumentComponent;
-        console.log(this.props.samplerInstruments);
         if (
             Utils.getTrackByIndex(this.props.trackList, this.props.selected).trackType === TrackTypes.virtualInstrument
         ) {

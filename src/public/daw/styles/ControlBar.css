@@ -23,7 +23,7 @@
 
 .midiDeviceSelectorName {
     position: absolute;
-    font-size: x-small; 
+    font-size: x-small;
     width: inherit;
     text-align: center;
     top: 8px;
@@ -32,7 +32,8 @@
     overflow: hidden;
 }
 
-.midiDeviceSelectorDropDown {
+button.drop-down.midiDeviceSelectorDropDown {
+    padding: 0;
     background: transparent;
     padding-top: 13px;
     padding-bottom: 0;
@@ -44,7 +45,6 @@
 }
 
 .midiDeviceSelectorDropDown:focus {
-    
     color: rgb(239, 248, 255);
 }
 .midiDeviceSelectorDropDown:hover {
@@ -94,7 +94,7 @@
 
 .projectInfoBoxPropertyName {
     position: absolute;
-    font-size: x-small; 
+    font-size: x-small;
     width: inherit;
     bottom: 6px;
     cursor: default;
@@ -104,7 +104,7 @@
 
 .toolDropdownLabel{
     position: absolute;
-    font-size: x-small; 
+    font-size: x-small;
     width: inherit;
     bottom: -3px;
     cursor: default;

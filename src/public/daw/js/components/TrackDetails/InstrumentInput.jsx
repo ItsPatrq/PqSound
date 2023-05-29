@@ -30,7 +30,6 @@ const InstrumentInput = (props) => {
                         title=""
                         className="drop-down outputSelectorDropDown"
                         id="OutputSelectorDropDown"
-                        menuAlign="left"
                     >
                         {availableInstruments}
                     </DropdownButton>
@@ -39,10 +38,8 @@ const InstrumentInput = (props) => {
 
                 {props.isLoading && (
                     <div className="instrumentDetailsInput_loading">
-                        <Loader type="Puff" color="#337ab7" height={20} width={20} />
-                        <p>
-                            Loading <br /> samples...
-                        </p>
+                        <Loader type="Puff" color="#EFF8FF" height={20} width={20} />
+                        <p>Loading samples</p>
                     </div>
                 )}
             </div>
