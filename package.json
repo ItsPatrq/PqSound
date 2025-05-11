@@ -3,11 +3,10 @@
     "version": "0.1.0",
     "description": "",
     "scripts": {
-        "start": "ts-node ./src/start.ts",
+        "start": "node --max-old-space-size=128 -r ts-node/register  ./src/start.ts",
         "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .",
         "start:local": "nodemon --config ./utils/nodemon.json",
         "start:local:so": "env SERVER_ONLY=true nodemon --config ./utils/nodemon.json",
-        "start:heroku": "node --optimize_for_size --max_old_space_size=450 -r ts-node/register src/start.ts heroku",
         "": "--------------------------------------------------------------------------",
         "build": "rm -rf dist && node ./node_modules/webpack/bin/webpack.js --config src/webpackCfg/webpack.config.ts",
         "build:local": "rm -rf dist && cross-env NODE_ENV=local NODE_HOST=local webpack --config src/webpackCfg/webpack.config.ts"
