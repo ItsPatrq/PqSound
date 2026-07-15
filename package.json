@@ -5,6 +5,7 @@
     "scripts": {
         "start": "node --max-old-space-size=128 -r ts-node/register  ./src/start.ts",
         "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .",
+        "test": "jest",
         "start:local": "nodemon --config ./utils/nodemon.json",
         "start:local:so": "env SERVER_ONLY=true nodemon --config ./utils/nodemon.json",
         "": "--------------------------------------------------------------------------",
@@ -31,6 +32,7 @@
     "license": "ISC",
     "devDependencies": {
         "@flydotio/dockerfile": "^0.2.7",
+        "@types/jest": "^27.5.2",
         "@types/react": "16.9.35",
         "@types/react-dom": "16.9.8",
         "@types/styled-components": "5.1.0",
@@ -46,11 +48,13 @@
         "eslint-plugin-react": "7.21.5",
         "fork-ts-checker-webpack-plugin": "5.2.0",
         "hard-source-webpack-plugin": "0.13.1",
+        "jest": "^27.5.1",
         "json-loader": "0.5.7",
         "prettier": "^2.0.5",
         "redux-devtools-extension": "2.13.8",
         "source-map-loader": "0.2.4",
         "style-loader": "1.2.1",
+        "ts-jest": "^27.1.5",
         "ts-loader": "8.0.7"
     },
     "dependencies": {
