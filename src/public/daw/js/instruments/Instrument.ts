@@ -50,7 +50,7 @@ export abstract class InstrumentBase implements Instrument {
     }
 
     stopAll() {
-        for (let i = this.voices.length; i >= 0; i--) {
+        for (let i = this.voices.length - 1; i >= 0; i--) {
             if (!isNullOrUndefined(this.voices[i])) {
                 this.noteOff(i);
             }
