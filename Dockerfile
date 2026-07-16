@@ -27,8 +27,6 @@ RUN npm ci --include=dev
 # Copy application code
 COPY --link . .
 
-ENV NODE_OPTIONS=--openssl-legacy-provider
-
 # Build application
 RUN npm run build
 
