@@ -54,7 +54,11 @@ export class DawApiServer extends Server {
             this.app.use(middleware);
             this.app.use(webpackHotMiddleware(this.compiler));
             this.app.get('/', function response(req, res) {
-                res.write(middleware.fileSystem.readFileSync(path.join(__dirname, '../../dist/assets/index.html')));
+                res.write(
+                    middleware.context.outputFileSystem!.readFileSync!(
+                        path.join(__dirname, '../../dist/assets/index.html'),
+                    ),
+                );
                 res.end();
             });
         } else {
@@ -69,7 +73,7 @@ export class DawApiServer extends Server {
         if (!this.shouldBuildFront || this.webpackInitialized) {
             return;
         }
-        this.compiler.plugin('done', () => {
+        this.compiler.hooks.done.tap('DawApiServer', () => {
             // Ensures that we log after webpack printed its stats (is there a better way?)
             setTimeout(() => {
                 console.log('\n✓ The bundle is now ready for serving! \n');

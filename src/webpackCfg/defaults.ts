@@ -1,6 +1,6 @@
 'use strict';
 import * as path from 'path';
-import * as ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin = require('mini-css-extract-plugin');
 import * as webpack from 'webpack';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 
@@ -11,7 +11,6 @@ export const publicPath = '/assets/';
 // const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 export const defaultSettings: webpack.Configuration = {
-    node: { fs: 'empty' },
     context: path.join(__dirname, '/../'),
     devtool: 'eval-source-map',
     output: {
@@ -42,9 +41,7 @@ export const defaultSettings: webpack.Configuration = {
             inject: 'body',
             filename: 'index.html',
         }),
-        new webpack.optimize.OccurrenceOrderPlugin(false),
-        new webpack.NoEmitOnErrorsPlugin(),
-        new ExtractTextPlugin('style.css'),
+        new MiniCssExtractPlugin({ filename: 'style.css' }),
         //   new ForkTsCheckerWebpackPlugin({
         //       tsconfig: path.join(__dirname, '/../tsconfig.json')
         //   }) //not working
@@ -52,14 +49,8 @@ export const defaultSettings: webpack.Configuration = {
     module: {
         rules: [
             {
-                test: /\.json?$/,
-                loader: 'json',
-            },
-            {
                 test: /\.css$/,
-                loader: ExtractTextPlugin.extract({
-                    use: 'css-loader',
-                }),
+                use: [MiniCssExtractPlugin.loader, 'css-loader'],
             },
             {
                 test: /\.(png|jpg|gif)$/,
@@ -69,9 +60,9 @@ export const defaultSettings: webpack.Configuration = {
                 test: /\.(tsx?|jsx?)$/,
                 loader: 'ts-loader',
                 exclude: /node_modules/,
-                // options: {
-                //     transpileOnly: true // Transpilation is handled by Fork TS Checker Webpack Plugin
-                // }
+                options: {
+                    transpileOnly: true, // full type-checking is TS 3.9 vs newer deps' .d.ts syntax; type-check separately via `tsc`/IDE
+                },
             },
             {
                 enforce: 'pre',
