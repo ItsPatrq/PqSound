@@ -29,6 +29,7 @@
       "node_modules/@types"
     ] /* List of folders to include type definitions from. */,
     "strictNullChecks": true /* Enable strict null checks. */,
+    "skipLibCheck": true /* Skip type checking of declaration files (avoids errors from third-party .d.ts). */,
     "allowJs": true /* Allow javascript files to be compiled. */
   },
   "exclude": [

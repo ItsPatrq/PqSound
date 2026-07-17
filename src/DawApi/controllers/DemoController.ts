@@ -21,7 +21,7 @@ export class DemoController {
         } catch (err) {
             Logger.Err(err, true);
             return res.status(BAD_REQUEST).json({
-                error: err.message,
+                error: err instanceof Error ? err.message : String(err),
             });
         }
     }
