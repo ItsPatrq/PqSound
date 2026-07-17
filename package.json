@@ -6,6 +6,8 @@
         "start": "node --max-old-space-size=128 -r ts-node/register  ./src/start.ts",
         "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .",
         "test": "jest",
+        "test:e2e": "playwright test --config playwright/playwright.config.ts",
+        "test:e2e:ui": "playwright test --config playwright/playwright.config.ts --ui",
         "start:local": "nodemon --config ./utils/nodemon.json",
         "start:local:so": "env SERVER_ONLY=true nodemon --config ./utils/nodemon.json",
         "": "--------------------------------------------------------------------------",
@@ -32,6 +34,7 @@
     "license": "ISC",
     "devDependencies": {
         "@flydotio/dockerfile": "^0.2.7",
+        "@playwright/test": "^1.61.1",
         "@types/jest": "^27.5.2",
         "@types/react": "16.9.35",
         "@types/react-dom": "16.9.8",
