@@ -31,7 +31,6 @@ export const defaultSettings: webpack.Configuration = {
             plugins: `${srcPath}/js/plugins`,
             styles: `${srcPath}/styles/`,
             config: `${srcPath}/config/` + process.env.REACT_WEBPACK_ENV,
-            'react/lib/ReactMount': 'react-dom/lib/ReactMount',
         },
     },
     cache: true,

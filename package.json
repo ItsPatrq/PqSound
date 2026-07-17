@@ -28,7 +28,7 @@
         "url": "https://github.com/ItsMeaga1n/PqSound.git"
     },
     "engines": {
-        "node": "12.16.3"
+        "node": ">=17.5.0"
     },
     "author": "Patryq",
     "license": "ISC",
