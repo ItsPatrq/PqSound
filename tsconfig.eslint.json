@@ -1,0 +1,7 @@
+{
+    // Lint-only project config: same as tsconfig.json but without the
+    // test-file exclusion, so ESLint (parserOptions.project) can lint *.test.ts.
+    // The production build keeps using tsconfig.json, which excludes tests.
+    "extends": "./tsconfig.json",
+    "exclude": ["node_modules"]
+}
