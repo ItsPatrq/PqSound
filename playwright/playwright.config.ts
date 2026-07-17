@@ -16,6 +16,8 @@ const BASE_URL = `http://localhost:${PORT}`;
 
 export default defineConfig({
     testDir: './ui-integrations',
+    // Keep artifacts inside playwright/ (git-ignored there).
+    outputDir: './test-results',
     // The app boots (webpack dev build) and streams ~85 MB of samples; be patient.
     timeout: 120_000,
     expect: { timeout: 30_000 },
