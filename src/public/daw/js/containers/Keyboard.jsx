@@ -10,278 +10,70 @@ import OptionKeyLeft from 'components/Keyboard/OptionKeyLeft';
 import OptionKeyRight from 'components/Keyboard/OptionKeyRight';
 import { Row } from 'react-bootstrap';
 
+// Maps a physical keyboard key to its 0-based piano key index.
+const KEY_TO_INDEX = {
+    q: 0,
+    2: 1,
+    w: 2,
+    e: 3,
+    4: 4,
+    r: 5,
+    5: 6,
+    t: 7,
+    y: 8,
+    7: 9,
+    u: 10,
+    8: 11,
+    i: 12,
+    9: 13,
+    o: 14,
+    z: 15,
+    s: 16,
+    x: 17,
+    d: 18,
+    c: 19,
+    v: 20,
+    g: 21,
+    b: 22,
+    h: 23,
+    n: 24,
+    j: 25,
+    m: 26,
+    ',': 27,
+    l: 28,
+    '.': 29,
+    ';': 30,
+    '/': 31,
+};
+
 class Keyboard extends React.Component {
     constructor() {
         super();
-        window.onkeydown = ((that) => (e) => {
-            if (!e.ctrlKey && !e.altKey) {
-                switch (e.key) {
-                    case 'q': {
-                        that.handleKeyboardKeyDown(0);
-                        break;
-                    }
-                    case '2': {
-                        that.handleKeyboardKeyDown(1);
-                        break;
-                    }
-                    case 'w': {
-                        that.handleKeyboardKeyDown(2);
-                        break;
-                    }
-                    case 'e': {
-                        that.handleKeyboardKeyDown(3);
-                        break;
-                    }
-                    case '4': {
-                        that.handleKeyboardKeyDown(4);
-                        break;
-                    }
-                    case 'r': {
-                        that.handleKeyboardKeyDown(5);
-                        break;
-                    }
-                    case '5': {
-                        that.handleKeyboardKeyDown(6);
-                        break;
-                    }
-                    case 't': {
-                        that.handleKeyboardKeyDown(7);
-                        break;
-                    }
-                    case 'y': {
-                        that.handleKeyboardKeyDown(8);
-                        break;
-                    }
-                    case '7': {
-                        that.handleKeyboardKeyDown(9);
-                        break;
-                    }
-                    case 'u': {
-                        that.handleKeyboardKeyDown(10);
-                        break;
-                    }
-                    case '8': {
-                        that.handleKeyboardKeyDown(11);
-                        break;
-                    }
-                    case 'i': {
-                        that.handleKeyboardKeyDown(12);
-                        break;
-                    }
-                    case '9': {
-                        that.handleKeyboardKeyDown(13);
-                        break;
-                    }
-                    case 'o': {
-                        that.handleKeyboardKeyDown(14);
-                        break;
-                    }
-                    case 'z': {
-                        that.handleKeyboardKeyDown(15);
-                        break;
-                    }
-                    case 's': {
-                        that.handleKeyboardKeyDown(16);
-                        break;
-                    }
-                    case 'x': {
-                        that.handleKeyboardKeyDown(17);
-                        break;
-                    }
-                    case 'd': {
-                        that.handleKeyboardKeyDown(18);
-                        break;
-                    }
-                    case 'c': {
-                        that.handleKeyboardKeyDown(19);
-                        break;
-                    }
-                    case 'v': {
-                        that.handleKeyboardKeyDown(20);
-                        break;
-                    }
-                    case 'g': {
-                        that.handleKeyboardKeyDown(21);
-                        break;
-                    }
-                    case 'b': {
-                        that.handleKeyboardKeyDown(22);
-                        break;
-                    }
-                    case 'h': {
-                        that.handleKeyboardKeyDown(23);
-                        break;
-                    }
-                    case 'n': {
-                        that.handleKeyboardKeyDown(24);
-                        break;
-                    }
-                    case 'j': {
-                        that.handleKeyboardKeyDown(25);
-                        break;
-                    }
-                    case 'm': {
-                        that.handleKeyboardKeyDown(26);
-                        break;
-                    }
-                    case ',': {
-                        that.handleKeyboardKeyDown(27);
-                        break;
-                    }
-                    case 'l': {
-                        that.handleKeyboardKeyDown(28);
-                        break;
-                    }
-                    case '.': {
-                        that.handleKeyboardKeyDown(29);
-                        break;
-                    }
-                    case ';': {
-                        that.handleKeyboardKeyDown(30);
-                        break;
-                    }
-                    case '/': {
-                        that.handleKeyboardKeyDown(31);
-                        break;
-                    }
-                }
-            }
-            window.onkeyup = function (e) {
-                if (!e.altKey) {
-                    switch (e.key) {
-                        case 'q': {
-                            that.handleKeyboardKeyUp(0);
-                            break;
-                        }
-                        case '2': {
-                            that.handleKeyboardKeyUp(1);
-                            break;
-                        }
-                        case 'w': {
-                            that.handleKeyboardKeyUp(2);
-                            break;
-                        }
-                        case 'e': {
-                            that.handleKeyboardKeyUp(3);
-                            break;
-                        }
-                        case '4': {
-                            that.handleKeyboardKeyUp(4);
-                            break;
-                        }
-                        case 'r': {
-                            that.handleKeyboardKeyUp(5);
-                            break;
-                        }
-                        case '5': {
-                            that.handleKeyboardKeyUp(6);
-                            break;
-                        }
-                        case 't': {
-                            that.handleKeyboardKeyUp(7);
-                            break;
-                        }
-                        case 'y': {
-                            that.handleKeyboardKeyUp(8);
-                            break;
-                        }
-                        case '7': {
-                            that.handleKeyboardKeyUp(9);
-                            break;
-                        }
-                        case 'u': {
-                            that.handleKeyboardKeyUp(10);
-                            break;
-                        }
-                        case '8': {
-                            that.handleKeyboardKeyUp(11);
-                            break;
-                        }
-                        case 'i': {
-                            that.handleKeyboardKeyUp(12);
-                            break;
-                        }
-                        case '9': {
-                            that.handleKeyboardKeyUp(13);
-                            break;
-                        }
-                        case 'o': {
-                            that.handleKeyboardKeyUp(14);
-                            break;
-                        }
-                        case 'z': {
-                            that.handleKeyboardKeyUp(15);
-                            break;
-                        }
-                        case 's': {
-                            that.handleKeyboardKeyUp(16);
-                            break;
-                        }
-                        case 'x': {
-                            that.handleKeyboardKeyUp(17);
-                            break;
-                        }
-                        case 'd': {
-                            that.handleKeyboardKeyUp(18);
-                            break;
-                        }
-                        case 'c': {
-                            that.handleKeyboardKeyUp(19);
-                            break;
-                        }
-                        case 'v': {
-                            that.handleKeyboardKeyUp(20);
-                            break;
-                        }
-                        case 'g': {
-                            that.handleKeyboardKeyUp(21);
-                            break;
-                        }
-                        case 'b': {
-                            that.handleKeyboardKeyUp(22);
-                            break;
-                        }
-                        case 'h': {
-                            that.handleKeyboardKeyUp(23);
-                            break;
-                        }
-                        case 'n': {
-                            that.handleKeyboardKeyUp(24);
-                            break;
-                        }
-                        case 'j': {
-                            that.handleKeyboardKeyUp(25);
-                            break;
-                        }
-                        case 'm': {
-                            that.handleKeyboardKeyUp(26);
-                            break;
-                        }
-                        case ',': {
-                            that.handleKeyboardKeyUp(27);
-                            break;
-                        }
-                        case 'l': {
-                            that.handleKeyboardKeyUp(28);
-                            break;
-                        }
-                        case '.': {
-                            that.handleKeyboardKeyUp(29);
-                            break;
-                        }
-                        case ';': {
-                            that.handleKeyboardKeyUp(30);
-                            break;
-                        }
-                        case '/': {
-                            that.handleKeyboardKeyUp(31);
-                            break;
-                        }
-                    }
-                }
-            };
-        })(this);
+        this.handleGlobalKeyDown = this.handleGlobalKeyDown.bind(this);
+        this.handleGlobalKeyUp = this.handleGlobalKeyUp.bind(this);
+        this.updateDimensions = this.updateDimensions.bind(this);
     }
+
+    handleGlobalKeyDown(e) {
+        if (e.ctrlKey || e.altKey) {
+            return;
+        }
+        const index = KEY_TO_INDEX[e.key];
+        if (index !== undefined) {
+            this.handleKeyboardKeyDown(index);
+        }
+    }
+
+    handleGlobalKeyUp(e) {
+        if (e.altKey) {
+            return;
+        }
+        const index = KEY_TO_INDEX[e.key];
+        if (index !== undefined) {
+            this.handleKeyboardKeyUp(index);
+        }
+    }
+
     getAllRecordingTracks() {
         const recordingTracksSounds = [];
         for (let i = 1; i < this.props.trackList.length; i++) {
@@ -416,11 +208,15 @@ class Keyboard extends React.Component {
     }
 
     componentDidMount() {
-        window.addEventListener('resize', this.updateDimensions.bind(this));
+        window.addEventListener('resize', this.updateDimensions);
+        window.addEventListener('keydown', this.handleGlobalKeyDown);
+        window.addEventListener('keyup', this.handleGlobalKeyUp);
     }
 
     componentWillUnmount() {
-        window.removeEventListener('resize', this.updateDimensions.bind(this));
+        window.removeEventListener('resize', this.updateDimensions);
+        window.removeEventListener('keydown', this.handleGlobalKeyDown);
+        window.removeEventListener('keyup', this.handleGlobalKeyUp);
     }
 
     UNSAFE_componentWillMount() {

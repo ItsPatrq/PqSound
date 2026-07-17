@@ -13,8 +13,8 @@ import * as webpackHotMiddleware from 'webpack-hot-middleware';
 
 export class DawApiServer extends Server {
     private readonly SERVER_START_MSG =
-        '🌎 ==>\x1b[0m ' + process.env.hostName === 'localhost' ? 'localhost' : process.env.hostName + ':';
-    private compiler: webpack.Compiler = webpack(config);
+        '🌎 ==>\x1b[0m ' + (process.env.hostName === 'localhost' ? 'localhost' : process.env.hostName) + ':';
+    private compiler?: webpack.Compiler;
     private webpackInitialized = false;
     constructor() {
         super(true);
@@ -39,6 +39,7 @@ export class DawApiServer extends Server {
     private setupFrontEnd(): void {
         if (this.shouldBuildFront) {
             Logger.Imp('Starting server in development mode');
+            this.compiler = webpack(config);
             const middleware = webpackMiddleware(this.compiler, {
                 publicPath: publicPath,
                 stats: {
@@ -70,7 +71,7 @@ export class DawApiServer extends Server {
     }
 
     private startFront(): void {
-        if (!this.shouldBuildFront || this.webpackInitialized) {
+        if (!this.shouldBuildFront || this.webpackInitialized || !this.compiler) {
             return;
         }
         this.compiler.hooks.done.tap('DawApiServer', () => {

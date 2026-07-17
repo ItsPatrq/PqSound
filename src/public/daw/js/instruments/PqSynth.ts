@@ -78,7 +78,7 @@ class PqSynthVoice extends VoiceSynthBase {
                         const white = Math.random() * 2 - 1;
                         output[j] = (lastOut + 0.02 * white) / 1.02;
                         lastOut = output[j];
-                        output[i] *= 3.5; // (roughly) compensate for gain
+                        output[j] *= 3.5; // (roughly) compensate for gain
                     }
                     this.oscillators[i].source = this.context.createBufferSource();
                     (this.oscillators[i].source as AudioBufferSourceNode).buffer = noiseBuffer;

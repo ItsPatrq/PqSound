@@ -103,7 +103,7 @@ export const notesToDrawParser = (pianoRollNote: number): number[] | null => {
 export const notesToPlay = (sixteenthPlaying: number, trackIndex: number): NoteToPlay[] | null => {
     const regions = getRegionsByTrackIndex(trackIndex);
     const regionsToPlay = regions.filter(
-        (x) => x.start * 16 <= sixteenthPlaying && (x.start + x.regionLength) * 16 >= sixteenthPlaying,
+        (x) => x.start * 16 <= sixteenthPlaying && (x.start + x.regionLength) * 16 > sixteenthPlaying,
     );
     const notesToPlay: NoteToPlay[] = [];
     regionsToPlay.forEach((currRegion) => {

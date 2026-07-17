@@ -57,7 +57,7 @@ class MonotronVoice extends VoiceSynthBase {
             this.lfo.disconnect();
             this.lfoGain.disconnect();
             this.vcf.disconnect();
-        }, Math.floor((time - this.context.currentTime) * 1000));
+        }, Math.floor((time + 0.05 - this.context.currentTime) * 1000));
     }
 
     connect(target) {
@@ -80,6 +80,7 @@ class MonotronVoice extends VoiceSynthBase {
             } else {
                 this.lfoGain.disconnect();
             }
+            this.mod = preset.mod;
         }
     }
 }

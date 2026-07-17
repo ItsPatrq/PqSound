@@ -21,10 +21,9 @@ class MultiOscVoice extends VoiceSynthBase {
             const wave = this.context.createOscillator();
             wave.type = preset.oscilatorType;
             wave.frequency.setValueAtTime(freqyency, this.context.currentTime);
-            wave.detune.setValueAtTime(
-                (-preset.detune + (i * 2 * preset.detune) / (preset.waveNumber - 1)) | 0,
-                this.context.currentTime,
-            );
+            const detuneSpread =
+                preset.waveNumber > 1 ? (i * 2 * preset.detune) / (preset.waveNumber - 1) : preset.detune;
+            wave.detune.setValueAtTime((-preset.detune + detuneSpread) | 0, this.context.currentTime);
             wave.start(startTime);
             wave.connect(this.output);
             this.waves.push(wave);

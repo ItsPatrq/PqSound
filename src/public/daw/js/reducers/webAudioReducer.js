@@ -17,11 +17,11 @@ export default function reducer(
             const newSamplerInstrumentsSounds = [];
             let newSound = null;
             try {
-                newContext = new (window.AudioContext || window.webkitAudioContext)();
+                newContext = new AudioContext();
                 newSound = new Sound(newContext);
             } catch (e) {
-                //TODO: error panel
-                alert('Web Audio API is not supported in this browser');
+                //TODO: surface this in an error panel instead of the console
+                console.error('Web Audio API is not supported in this browser', e);
             }
 
             for (let i = 0; i < SamplerPresets.length; i++) {
