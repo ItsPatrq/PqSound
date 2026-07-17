@@ -46,3 +46,5 @@ playwright/test-results
 graphify-out/cache
 graphify-out/.graphify_analysis.json
 graphify-out/graph.html
+graphify-out/.rebuild.lock
+graphify-out/cost.json
