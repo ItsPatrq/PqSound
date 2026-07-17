@@ -7,6 +7,7 @@ class Delay extends Plugin {
     dryGainNode: GainNode;
     outputGainNode: GainNode;
     wetGainNode: GainNode;
+    private lastIterations?: number;
     constructor(index, audioContext) {
         super(PluginsEnum.Delay, index, audioContext);
         this.preset = {
@@ -35,44 +36,49 @@ class Delay extends Plugin {
         this.output = this.outputGainNode;
     }
     updateNodes() {
-        for (let i = 0; i < this.delayArray.length; i++) {
-            this.delayArray[i].disconnect();
-        }
-        this.wetGainNode.disconnect();
-        this.delayArray.length = 0;
-        for (let i = 0; i < this.preset.iterations; i++) {
-            const delay = this.context.createDelay();
-            delay.delayTime.setValueAtTime(this.preset.delay ? this.preset.delay : 0.000001, this.context.currentTime);
-            const feedback = this.context.createGain();
-            feedback.gain.setValueAtTime(
-                this.preset.feedback ? this.preset.feedback : 0.000001,
-                this.context.currentTime,
-            );
-            const lowCutFilter = this.context.createBiquadFilter();
-            lowCutFilter.type = 'highpass';
-            lowCutFilter.frequency.setValueAtTime(
-                this.preset.lowCut ? this.preset.lowCut : 0.000001,
-                this.context.currentTime,
-            );
-            const highCutFilter = this.context.createBiquadFilter();
-            highCutFilter.type = 'lowpass';
-            highCutFilter.frequency.setValueAtTime(
-                this.preset.highCut ? this.preset.highCut : 0.000001,
-                this.context.currentTime,
-            );
-            if (i !== 0) {
-                this.delayArray[i * 4 - 1].connect(delay);
+        const now = this.context.currentTime;
+        // The delay network topology only depends on `iterations`; when it is unchanged,
+        // update the existing nodes' params in place instead of rebuilding the whole graph.
+        if (this.preset.iterations === this.lastIterations) {
+            for (let i = 0; i < this.preset.iterations; i++) {
+                const [delay, feedback, highCutFilter, lowCutFilter] = this.delayArray.slice(i * 4, i * 4 + 4);
+                delay.delayTime.setValueAtTime(this.preset.delay ? this.preset.delay : 0.000001, now);
+                feedback.gain.setValueAtTime(this.preset.feedback ? this.preset.feedback : 0.000001, now);
+                lowCutFilter.frequency.setValueAtTime(this.preset.lowCut ? this.preset.lowCut : 0.000001, now);
+                highCutFilter.frequency.setValueAtTime(this.preset.highCut ? this.preset.highCut : 0.000001, now);
             }
-            delay.connect(feedback);
-            feedback.connect(highCutFilter);
-            highCutFilter.connect(lowCutFilter);
-            lowCutFilter.connect(this.outputGainNode);
-            this.delayArray.push(delay, feedback, highCutFilter, lowCutFilter);
+        } else {
+            for (let i = 0; i < this.delayArray.length; i++) {
+                this.delayArray[i].disconnect();
+            }
+            this.wetGainNode.disconnect();
+            this.delayArray.length = 0;
+            for (let i = 0; i < this.preset.iterations; i++) {
+                const delay = this.context.createDelay();
+                delay.delayTime.setValueAtTime(this.preset.delay ? this.preset.delay : 0.000001, now);
+                const feedback = this.context.createGain();
+                feedback.gain.setValueAtTime(this.preset.feedback ? this.preset.feedback : 0.000001, now);
+                const lowCutFilter = this.context.createBiquadFilter();
+                lowCutFilter.type = 'highpass';
+                lowCutFilter.frequency.setValueAtTime(this.preset.lowCut ? this.preset.lowCut : 0.000001, now);
+                const highCutFilter = this.context.createBiquadFilter();
+                highCutFilter.type = 'lowpass';
+                highCutFilter.frequency.setValueAtTime(this.preset.highCut ? this.preset.highCut : 0.000001, now);
+                if (i !== 0) {
+                    this.delayArray[i * 4 - 1].connect(delay);
+                }
+                delay.connect(feedback);
+                feedback.connect(highCutFilter);
+                highCutFilter.connect(lowCutFilter);
+                lowCutFilter.connect(this.outputGainNode);
+                this.delayArray.push(delay, feedback, highCutFilter, lowCutFilter);
+            }
+            this.wetGainNode.connect(this.delayArray[0]);
+            this.lastIterations = this.preset.iterations;
         }
-        this.wetGainNode.connect(this.delayArray[0]);
 
-        this.dryGainNode.gain.setValueAtTime(this.preset.dry ? this.preset.dry : 0.000001, this.context.currentTime);
-        this.wetGainNode.gain.setValueAtTime(this.preset.wet ? this.preset.wet : 0.000001, this.context.currentTime);
+        this.dryGainNode.gain.setValueAtTime(this.preset.dry ? this.preset.dry : 0.000001, now);
+        this.wetGainNode.gain.setValueAtTime(this.preset.wet ? this.preset.wet : 0.000001, now);
     }
 }
 

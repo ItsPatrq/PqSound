@@ -7,6 +7,7 @@ class Reverb extends Plugin {
     outputGainNode: GainNode;
     dryGainNode: GainNode;
     wetGainNode: GainNode;
+    private lastImpulseKey?: string;
     constructor(index, audioContext) {
         super(PluginsEnum.Reverb, index, audioContext);
         this.preset = {
@@ -35,19 +36,24 @@ class Reverb extends Plugin {
     }
 
     updateNodes() {
-        const rate = this.context.sampleRate,
-            length = rate * this.preset.sustain,
-            decay = this.preset.decay,
-            impulse = this.context.createBuffer(2, length ? length : 1, rate),
-            impulseL = impulse.getChannelData(0),
-            impulseR = impulse.getChannelData(1);
-        let n;
-        for (let i = 0; i < length; i++) {
-            n = this.preset.reverse ? length - i : i;
-            impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
-            impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
+        // The impulse buffer only depends on sustain/decay/reverse; rebuild only when one changed.
+        const impulseKey = `${this.preset.sustain}|${this.preset.decay}|${this.preset.reverse}`;
+        if (impulseKey !== this.lastImpulseKey) {
+            const rate = this.context.sampleRate,
+                length = rate * this.preset.sustain,
+                decay = this.preset.decay,
+                impulse = this.context.createBuffer(2, length ? length : 1, rate),
+                impulseL = impulse.getChannelData(0),
+                impulseR = impulse.getChannelData(1);
+            let n;
+            for (let i = 0; i < length; i++) {
+                n = this.preset.reverse ? length - i : i;
+                impulseL[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
+                impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, decay);
+            }
+            this.convolver.buffer = impulse;
+            this.lastImpulseKey = impulseKey;
         }
-        this.convolver.buffer = impulse;
         this.dryGainNode.gain.setValueAtTime(this.preset.dry ? this.preset.dry : 0.000001, this.context.currentTime);
         this.wetGainNode.gain.setValueAtTime(this.preset.wet ? this.preset.wet : 0.000001, this.context.currentTime);
     }

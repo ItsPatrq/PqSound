@@ -4,6 +4,7 @@ import Plugin from './Plugin';
 class Distortion extends Plugin {
     gainNode: GainNode;
     distortionNode: WaveShaperNode;
+    private lastDistortion?: number;
 
     constructor(index, audioContext) {
         super(PluginsEnum.Distortion, index, audioContext);
@@ -27,7 +28,11 @@ class Distortion extends Plugin {
             this.preset.outputGain ? this.preset.outputGain : 0.000001,
             this.context.currentTime,
         );
-        this.distortionNode.curve = this.makeDistortionCurve(this.preset.distortion);
+        // The full-samplerate curve only depends on `distortion`; rebuild only when it changed.
+        if (this.preset.distortion !== this.lastDistortion) {
+            this.distortionNode.curve = this.makeDistortionCurve(this.preset.distortion);
+            this.lastDistortion = this.preset.distortion;
+        }
     }
 
     makeDistortionCurve(distortionAmount) {
