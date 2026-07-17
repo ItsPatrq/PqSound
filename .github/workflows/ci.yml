@@ -19,7 +19,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       # eslint without --fix: fail on errors, do not mutate the tree in CI.
       # Warnings do not fail the build (the repo currently has many).
@@ -44,7 +44,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
