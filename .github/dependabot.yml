@@ -1,0 +1,18 @@
+version: 2
+updates:
+  # npm dependency updates + security patches. Free; opens PRs against master.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    # Group the noisy dev/lint tooling so the legacy stack does not flood PRs.
+    groups:
+      dev-dependencies:
+        dependency-type: development
+
+  # Keep the GitHub Actions themselves patched.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
