@@ -26,6 +26,9 @@ jobs:
       - name: Lint
         run: npx eslint --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .
 
+      - name: Typecheck
+        run: npm run typecheck
+
       - name: Unit tests
         run: npm test
 

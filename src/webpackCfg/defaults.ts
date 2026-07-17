@@ -60,7 +60,7 @@ export const defaultSettings: webpack.Configuration = {
                 loader: 'ts-loader',
                 exclude: /node_modules/,
                 options: {
-                    transpileOnly: true, // full type-checking is TS 3.9 vs newer deps' .d.ts syntax; type-check separately via `tsc`/IDE
+                    transpileOnly: true, // keep the build fast; full type-checking runs separately via `npm run typecheck` (tsc --noEmit)
                 },
             },
             {
