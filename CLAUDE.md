@@ -39,7 +39,7 @@ Everything is pinned to a ~2020 snapshot. Inventory of what's outdated and what 
 |---|---|---|
 | Node | `engines` 12.16.3, Docker 17.5.0 + `--openssl-legacy-provider` | Current LTS. The OpenSSL flag exists only because of Webpack 4's md4 hashing — dies with the bundler upgrade. |
 | Bundler | Webpack 4 + dead plugins | Vite is the natural target (plain TS/JSX/CSS app, no exotic loaders). If staying on Webpack 5: `extract-text-webpack-plugin@4.0.0-beta` → `mini-css-extract-plugin`, drop `hard-source-webpack-plugin` (built-in cache), drop `awesome-typescript-loader` (dead, unused anyway — `ts-loader` does the work), drop `eslint-loader` (deprecated) and `node: { fs: 'empty' }`. Webpack aliases (`actions`, `engine`, `components`, …) must be reproduced in the new bundler **and** in `tsconfig` `paths` + Jest `moduleNameMapper`. |
-| TypeScript | 3.9.7 | 5.x. Expect new errors from stricter narrowing; `noImplicitAny: false` masks a lot (engine files carry many implicit/explicit `any`s). |
+| TypeScript | 5.6.3 (upgraded from 3.9.7) | Done. `tsc --noEmit` now parses modern dep `.d.ts` (was blocked on TS 3.9). `skipLibCheck: true` added; toolchain bumped (`ts-jest@29`, `ts-node@10`, `fork-ts-checker@9`, `tslib`). Typecheck runs standalone via `npm run typecheck` (build still uses `ts-loader` `transpileOnly`). `noImplicitAny: false` still masks a lot (engine files carry many implicit/explicit `any`s). ESLint stack (`typescript-eslint@2`) NOT yet upgraded — separate step. |
 | React | 16.13, `ReactDOM.render` | 18+: `createRoot`, drop the `react/lib/ReactMount` alias (dead relic). Legacy lifecycles (`componentWillMount`/`componentWillReceiveProps`) exist in `containers/Keyboard.jsx` — fix before 18. ~10 class components total; feasible to convert to hooks incrementally. |
 | react-bootstrap | 0.31.5 (Bootstrap 3 era, 2017) | Used in 10+ components (modals, grid, nav). Modern react-bootstrap has a completely different API; most layout is custom CSS anyway — evaluate dropping it for plain markup + the existing CSS rather than migrating. |
 | Redux | redux 4 + thunk + `redux-devtools-extension` (deprecated package) + hand-rolled reducers | Redux Toolkit — but **only after** the engine/store decoupling above; RTK's default serializability middleware will scream at the current state shape. |
@@ -61,7 +61,7 @@ Everything is pinned to a ~2020 snapshot. Inventory of what's outdated and what 
 
 1. CI (lint/test/build) + a few engine unit tests as a safety net.
 2. Bundler swap (Vite or Webpack 5) + Node LTS + drop the OpenSSL flag; align `engines` with the Dockerfile.
-3. TypeScript 5 + ESLint 9/typescript-eslint 8.
+3. ~~TypeScript 5~~ (done — TS 5.6.3) + ESLint 9/typescript-eslint 8 (still pending).
 4. React 18 (`createRoot`, fix `Keyboard.jsx` lifecycles); decide react-bootstrap's fate.
 5. Extract audio engine out of Redux state (interface: store holds serializable track/composition descriptors, engine subscribes/exposes an API).
 6. Redux Toolkit; rename `stroe.js` → `store.js` along the way.
