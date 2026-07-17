@@ -29,5 +29,12 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      # Dependency vulnerability scan. Non-blocking: the pinned ~2020 stack has
+      # known advisories that are addressed by the planned upgrades, not here.
+      # Surfaces high+ issues in the log without failing the build.
+      - name: Dependency audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
       - name: Build
         run: npm run build
