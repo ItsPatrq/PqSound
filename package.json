@@ -11,7 +11,7 @@
         "test:e2e:ui": "playwright test --config playwright/playwright.config.ts --ui",
         "start:local": "nodemon --config ./utils/nodemon.json",
         "start:local:so": "env SERVER_ONLY=true nodemon --config ./utils/nodemon.json",
-        "prepare": "git config core.hooksPath .githooks",
+        "prepare": "(git config core.hooksPath .githooks && git config merge.graphify.driver \"graphify merge-driver %O %A %B\") || exit 0",
         "": "--------------------------------------------------------------------------",
         "build": "rm -rf dist && node -r ts-node/register ./node_modules/webpack/bin/webpack.js --config src/webpackCfg/webpack.config.ts",
         "build:local": "rm -rf dist && cross-env NODE_ENV=local NODE_HOST=local node -r ts-node/register ./node_modules/webpack/bin/webpack.js --config src/webpackCfg/webpack.config.ts"

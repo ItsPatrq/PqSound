@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/itsmeaga1n/.local/bin/graphify hook-guard search"
+            "command": "if command -v graphify >/dev/null 2>&1; then graphify hook-guard search; else cat >/dev/null; fi"
           }
         ]
       },
@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/itsmeaga1n/.local/bin/graphify hook-guard read"
+            "command": "if command -v graphify >/dev/null 2>&1; then graphify hook-guard read; else cat >/dev/null; fi"
           }
         ]
       }

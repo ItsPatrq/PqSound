@@ -1,1403 +1,653 @@
 {
-  ".claude/settings.json": {
-    "mtime": 1784314008.7640324,
-    "ast_hash": "ffc30ef49c0ac89928d00f9c1d232a8e",
-    "semantic_hash": "ffc30ef49c0ac89928d00f9c1d232a8e"
-  },
-  ".claude/settings.local.json": {
-    "mtime": 1784314483.5557497,
-    "ast_hash": "99c33516429ec0c7463f62b776926fd8",
-    "semantic_hash": ""
-  },
   ".eslintrc.js": {
-    "mtime": 1784313732.8889294,
+    "mtime": 1784378218.6355934,
     "ast_hash": "3b62ab5d12131d63f32544ce78a44a90",
     "semantic_hash": "3b62ab5d12131d63f32544ce78a44a90"
   },
   ".prettierrc.js": {
-    "mtime": 1685223966.5086515,
+    "mtime": 1784378218.638751,
     "ast_hash": "23e9f4cd013f50c6856f41d4e2c35fd2",
     "semantic_hash": "23e9f4cd013f50c6856f41d4e2c35fd2"
   },
   ".vscode/settings.json": {
-    "mtime": 1784313732.8907206,
+    "mtime": 1784378218.638751,
     "ast_hash": "74826e615cb60dfaaaf13f835fd56165",
     "semantic_hash": "74826e615cb60dfaaaf13f835fd56165"
   },
   "jest.config.js": {
-    "mtime": 1784313732.8917031,
+    "mtime": 1784378219.5795934,
     "ast_hash": "83b86d7020999fe7197abe36b035f2f0",
     "semantic_hash": "83b86d7020999fe7197abe36b035f2f0"
   },
   "package.json": {
-    "mtime": 1784313732.8947918,
-    "ast_hash": "6e4edd07f86deaf6fa7cf00730775b2b",
-    "semantic_hash": "6e4edd07f86deaf6fa7cf00730775b2b"
+    "mtime": 1784379780.3485951,
+    "ast_hash": "9ee7de85fdb58895d8d75f7cf245670e",
+    "semantic_hash": "9ee7de85fdb58895d8d75f7cf245670e"
   },
   "playwright/playwright.config.ts": {
-    "mtime": 1784313732.8958106,
+    "mtime": 1784378219.5937157,
     "ast_hash": "16e85959e07a2c7920f2b294e84ddf23",
     "semantic_hash": "16e85959e07a2c7920f2b294e84ddf23"
   },
   "playwright/shared/fixtures/test.ts": {
-    "mtime": 1784313732.8964128,
+    "mtime": 1784378219.5940645,
     "ast_hash": "d12ee0a3b3e09b541d80c1dfe9b39fea",
     "semantic_hash": "d12ee0a3b3e09b541d80c1dfe9b39fea"
   },
   "playwright/shared/pageObjects/DawPage.ts": {
-    "mtime": 1784313732.8969538,
+    "mtime": 1784378219.5940645,
     "ast_hash": "8b958645f8da0deaa41c920cccd263bd",
     "semantic_hash": "8b958645f8da0deaa41c920cccd263bd"
   },
   "playwright/tsconfig.json": {
-    "mtime": 1784313732.8973134,
+    "mtime": 1784378219.5940645,
     "ast_hash": "fffd9ac3e268d2a97447db4e8cc7f88b",
     "semantic_hash": "fffd9ac3e268d2a97447db4e8cc7f88b"
   },
   "playwright/ui-integrations/app-loads.spec.ts": {
-    "mtime": 1784313732.8977118,
+    "mtime": 1784378219.5940645,
     "ast_hash": "116c45686c4374c83568bb690d2deab5",
     "semantic_hash": "116c45686c4374c83568bb690d2deab5"
   },
   "playwright/ui-integrations/plays-demo.spec.ts": {
-    "mtime": 1784313732.8981626,
+    "mtime": 1784378219.5954273,
     "ast_hash": "3207bcfe609b69ec917b16049c9088cd",
     "semantic_hash": "3207bcfe609b69ec917b16049c9088cd"
   },
   "src/DawApi/DawApiServer.ts": {
-    "mtime": 1784313732.8987598,
+    "mtime": 1784378219.5956006,
     "ast_hash": "d43bfcb6f15606e367db431e26bdefab",
     "semantic_hash": "d43bfcb6f15606e367db431e26bdefab"
   },
   "src/DawApi/controllers/DemoController.test.ts": {
-    "mtime": 1784313732.8991363,
+    "mtime": 1784378219.5962055,
     "ast_hash": "787d03db0b07028cf5cdee3ab4a62a03",
     "semantic_hash": "787d03db0b07028cf5cdee3ab4a62a03"
   },
   "src/DawApi/controllers/DemoController.ts": {
-    "mtime": 1784313732.9007695,
+    "mtime": 1784378219.5967317,
     "ast_hash": "71c331a34fae9b60ec2d622d0c609379",
     "semantic_hash": "71c331a34fae9b60ec2d622d0c609379"
   },
   "src/DawApi/controllers/SamplerController.js": {
-    "mtime": 1784313732.9070766,
+    "mtime": 1784378219.5967317,
     "ast_hash": "25e12003355e4bf9208e850e1affc833",
     "semantic_hash": "25e12003355e4bf9208e850e1affc833"
   },
   "src/DawApi/controllers/index.ts": {
-    "mtime": 1685223966.8383746,
+    "mtime": 1784378219.5967317,
     "ast_hash": "9c3fd4e9b1a3869e8f08566bf518a3da",
     "semantic_hash": "9c3fd4e9b1a3869e8f08566bf518a3da"
   },
   "src/public/daw/config/base.ts": {
-    "mtime": 1685223966.8385231,
+    "mtime": 1784378219.5976865,
     "ast_hash": "8aa2acf77a43486d1fcb9b2404ab70b5",
     "semantic_hash": "8aa2acf77a43486d1fcb9b2404ab70b5"
   },
   "src/public/daw/config/index.ts": {
-    "mtime": 1784313732.9113479,
+    "mtime": 1784378219.5983477,
     "ast_hash": "f4485ca8e23290ad8ecd9523f919e64c",
     "semantic_hash": "f4485ca8e23290ad8ecd9523f919e64c"
   },
   "src/public/daw/config/local.ts": {
-    "mtime": 1685223966.8386467,
+    "mtime": 1784378219.5983477,
     "ast_hash": "0c66553b3eced7c4eb22a6ed03c179b0",
     "semantic_hash": "0c66553b3eced7c4eb22a6ed03c179b0"
   },
   "src/public/daw/index.js": {
-    "mtime": 1685223966.8387315,
+    "mtime": 1784378219.5983477,
     "ast_hash": "4445841117c1ac3876733cfe6ce404ad",
     "semantic_hash": "4445841117c1ac3876733cfe6ce404ad"
   },
   "src/public/daw/js/actions/compositionActions.js": {
-    "mtime": 1685223966.8388407,
+    "mtime": 1784378219.599231,
     "ast_hash": "96474d857cb30022809db78e64523015",
     "semantic_hash": "96474d857cb30022809db78e64523015"
   },
   "src/public/daw/js/actions/controlActions.js": {
-    "mtime": 1685223966.838918,
+    "mtime": 1784378219.5995946,
     "ast_hash": "8a37e801252281b67bd1f9a6764190c1",
     "semantic_hash": "8a37e801252281b67bd1f9a6764190c1"
   },
   "src/public/daw/js/actions/keyboardActions.js": {
-    "mtime": 1685223966.838972,
+    "mtime": 1784378219.5995946,
     "ast_hash": "0deb7cea4d7ca00851124b4c9417f1dc",
     "semantic_hash": "0deb7cea4d7ca00851124b4c9417f1dc"
   },
   "src/public/daw/js/actions/trackDetailsActions.js": {
-    "mtime": 1685223966.8390255,
+    "mtime": 1784378219.5995946,
     "ast_hash": "64cde0ee740d40d7c96ec10793301cb1",
     "semantic_hash": "64cde0ee740d40d7c96ec10793301cb1"
   },
   "src/public/daw/js/actions/trackListActions.js": {
-    "mtime": 1685223966.83907,
+    "mtime": 1784378219.5995946,
     "ast_hash": "412ab52ccc62ced314565536a410b898",
     "semantic_hash": "412ab52ccc62ced314565536a410b898"
   },
   "src/public/daw/js/actions/webAudioActions.js": {
-    "mtime": 1685223966.8391201,
+    "mtime": 1784378219.5995946,
     "ast_hash": "3ef249d208d3c55da6f050b6a97baa03",
     "semantic_hash": "3ef249d208d3c55da6f050b6a97baa03"
   },
   "src/public/daw/js/components/AboutModal.jsx": {
-    "mtime": 1685223966.8392024,
+    "mtime": 1784378219.5995946,
     "ast_hash": "32e771c11c309cd13286a7e7170fbff0",
     "semantic_hash": "32e771c11c309cd13286a7e7170fbff0"
   },
   "src/public/daw/js/components/CompositionGrid/PianoRoll.jsx": {
-    "mtime": 1685223966.8392794,
+    "mtime": 1784378219.6008234,
     "ast_hash": "56ce06a39532af71623a0fb53b153122",
     "semantic_hash": "56ce06a39532af71623a0fb53b153122"
   },
   "src/public/daw/js/components/CompositionGrid/PianoRollKeyboard.jsx": {
-    "mtime": 1685223966.8393455,
+    "mtime": 1784378219.6011736,
     "ast_hash": "725206e9c98549469dfe98979ec2b164",
     "semantic_hash": "725206e9c98549469dfe98979ec2b164"
   },
   "src/public/daw/js/components/CompositionGrid/PianoRollTimeBar.jsx": {
-    "mtime": 1685223966.8394113,
+    "mtime": 1784378219.6011736,
     "ast_hash": "945b26f3ec071ef6c2a138b88cffc5d8",
     "semantic_hash": "945b26f3ec071ef6c2a138b88cffc5d8"
   },
   "src/public/daw/js/components/CompositionGrid/TimeBar.tsx": {
-    "mtime": 1685223966.839459,
+    "mtime": 1784378219.6011736,
     "ast_hash": "8521933b838b95625f457027e0aafab1",
     "semantic_hash": "8521933b838b95625f457027e0aafab1"
   },
   "src/public/daw/js/components/CompositionGrid/TrackCompositionRow.jsx": {
-    "mtime": 1685223966.8395064,
+    "mtime": 1784378219.6011736,
     "ast_hash": "2900b27761cf3ebdd40f91b79f343c26",
     "semantic_hash": "2900b27761cf3ebdd40f91b79f343c26"
   },
   "src/public/daw/js/components/ControlBar/BPMInput.jsx": {
-    "mtime": 1685223966.8395815,
+    "mtime": 1784378219.6011736,
     "ast_hash": "a8400f8943d15246cf58dc0cee643ece",
     "semantic_hash": "a8400f8943d15246cf58dc0cee643ece"
   },
   "src/public/daw/js/components/ControlBar/BarMeter.jsx": {
-    "mtime": 1685223966.8396392,
+    "mtime": 1784378219.602228,
     "ast_hash": "4e1d5e420dc10a941a5791091fff92d6",
     "semantic_hash": "4e1d5e420dc10a941a5791091fff92d6"
   },
   "src/public/daw/js/components/ControlBar/BarsInCompositionInput.jsx": {
-    "mtime": 1685223966.8396838,
+    "mtime": 1784378219.602228,
     "ast_hash": "5c6f4c3ebc85138fbb4b34f45b5060ed",
     "semantic_hash": "5c6f4c3ebc85138fbb4b34f45b5060ed"
   },
   "src/public/daw/js/components/ControlBar/MIDIDeviceSelector.jsx": {
-    "mtime": 1685223966.8397489,
+    "mtime": 1784378219.602228,
     "ast_hash": "11ff606e25cbfa9e89911a0e07ecda1b",
     "semantic_hash": "11ff606e25cbfa9e89911a0e07ecda1b"
   },
   "src/public/daw/js/components/ControlBar/NoteDrawLengthDropdown.jsx": {
-    "mtime": 1685223966.839812,
+    "mtime": 1784378219.602228,
     "ast_hash": "7cff30d92c11563064a2fff1075197aa",
     "semantic_hash": "7cff30d92c11563064a2fff1075197aa"
   },
   "src/public/daw/js/components/ControlBar/ProjectInfoBox.jsx": {
-    "mtime": 1685223966.839883,
+    "mtime": 1784378219.602228,
     "ast_hash": "e64fd1b98d800037c806d3b07195f4ff",
     "semantic_hash": "e64fd1b98d800037c806d3b07195f4ff"
   },
   "src/public/daw/js/components/ControlBar/RegionDrawLengthInput.jsx": {
-    "mtime": 1685223966.839945,
+    "mtime": 1784378219.602228,
     "ast_hash": "7691e8d629e7a0cfbe7d0eb2ef45c83b",
     "semantic_hash": "7691e8d629e7a0cfbe7d0eb2ef45c83b"
   },
   "src/public/daw/js/components/ControlBar/TimeMeter.jsx": {
-    "mtime": 1685223966.8400002,
+    "mtime": 1784378219.602228,
     "ast_hash": "e2317a371dfa988878e48769435e09c2",
     "semantic_hash": "e2317a371dfa988878e48769435e09c2"
   },
   "src/public/daw/js/components/ControlBar/TimeSignature.jsx": {
-    "mtime": 1685223966.840042,
+    "mtime": 1784378219.602228,
     "ast_hash": "0c4e1254fc427a7227385d089b3fdd78",
     "semantic_hash": "0c4e1254fc427a7227385d089b3fdd78"
   },
   "src/public/daw/js/components/ControlBar/ToolDropdown.jsx": {
-    "mtime": 1685223966.8400853,
+    "mtime": 1784378219.602228,
     "ast_hash": "1936e0d548f16237edc1d81c09d0503c",
     "semantic_hash": "1936e0d548f16237edc1d81c09d0503c"
   },
   "src/public/daw/js/components/ControlBar/ToolsSelector.jsx": {
-    "mtime": 1685223966.840132,
+    "mtime": 1784378219.602228,
     "ast_hash": "1d86e1942cfb7a66ae8bf1922f7e741f",
     "semantic_hash": "1d86e1942cfb7a66ae8bf1922f7e741f"
   },
   "src/public/daw/js/components/FileUploadModal.jsx": {
-    "mtime": 1685388351.008057,
+    "mtime": 1784378219.602228,
     "ast_hash": "e5c7f0f223c75b0d703f4e20f027c77c",
     "semantic_hash": "e5c7f0f223c75b0d703f4e20f027c77c"
   },
   "src/public/daw/js/components/Instruments/Monotron.jsx": {
-    "mtime": 1685223966.840279,
+    "mtime": 1784378219.602228,
     "ast_hash": "b76d190fdf9843e6e6b4655ea39879ec",
     "semantic_hash": "b76d190fdf9843e6e6b4655ea39879ec"
   },
   "src/public/daw/js/components/Instruments/MultiOsc.jsx": {
-    "mtime": 1685223966.8403466,
+    "mtime": 1784378219.6050265,
     "ast_hash": "e7d440ce31b32ff947be6fcb4558e63e",
     "semantic_hash": "e7d440ce31b32ff947be6fcb4558e63e"
   },
   "src/public/daw/js/components/Instruments/PqSynth.jsx": {
-    "mtime": 1685223966.84041,
+    "mtime": 1784378219.6050265,
     "ast_hash": "626646f184aaa07fd306901d87288145",
     "semantic_hash": "626646f184aaa07fd306901d87288145"
   },
   "src/public/daw/js/components/Instruments/Sampler.jsx": {
-    "mtime": 1685223966.8404605,
+    "mtime": 1784378219.6050265,
     "ast_hash": "2cf03b643dfc883924550e7309213788",
     "semantic_hash": "2cf03b643dfc883924550e7309213788"
   },
   "src/public/daw/js/components/Keyboard/BlackKey.jsx": {
-    "mtime": 1685223966.8405387,
+    "mtime": 1784378219.6050265,
     "ast_hash": "9b2d42163a93a67318134d008391901b",
     "semantic_hash": "9b2d42163a93a67318134d008391901b"
   },
   "src/public/daw/js/components/Keyboard/DisabledKey.jsx": {
-    "mtime": 1685223966.8405833,
+    "mtime": 1784378219.6058407,
     "ast_hash": "dc08ec81ff6d2bb6e58648376530b3cc",
     "semantic_hash": "dc08ec81ff6d2bb6e58648376530b3cc"
   },
   "src/public/daw/js/components/Keyboard/OptionKeyLeft.jsx": {
-    "mtime": 1685223966.8406358,
+    "mtime": 1784378219.6058407,
     "ast_hash": "7d47569259cf33d63d155bead927deff",
     "semantic_hash": "7d47569259cf33d63d155bead927deff"
   },
   "src/public/daw/js/components/Keyboard/OptionKeyRight.jsx": {
-    "mtime": 1685223966.8406746,
+    "mtime": 1784378219.6058407,
     "ast_hash": "eab13bb48e83dcceeb47d64674a06261",
     "semantic_hash": "eab13bb48e83dcceeb47d64674a06261"
   },
   "src/public/daw/js/components/Keyboard/WhiteKey.jsx": {
-    "mtime": 1685223966.8407211,
+    "mtime": 1784378219.6058407,
     "ast_hash": "90eae2fb3bb4c11af4c78946e361eecd",
     "semantic_hash": "90eae2fb3bb4c11af4c78946e361eecd"
   },
   "src/public/daw/js/components/Layout.jsx": {
-    "mtime": 1685223966.8407738,
+    "mtime": 1784378219.6058407,
     "ast_hash": "25fd6647578c432c3b61abd5622f34fd",
     "semantic_hash": "25fd6647578c432c3b61abd5622f34fd"
   },
   "src/public/daw/js/components/Plugins/Chorus.jsx": {
-    "mtime": 1685223966.8408613,
+    "mtime": 1784378219.6058407,
     "ast_hash": "458d13a93cff0b21ff8bbc31e683b137",
     "semantic_hash": "458d13a93cff0b21ff8bbc31e683b137"
   },
   "src/public/daw/js/components/Plugins/Compressor.jsx": {
-    "mtime": 1685223966.8409243,
+    "mtime": 1784378219.606665,
     "ast_hash": "66ab5439469e414a0906a531389abada",
     "semantic_hash": "66ab5439469e414a0906a531389abada"
   },
   "src/public/daw/js/components/Plugins/Delay.jsx": {
-    "mtime": 1685223966.8409739,
+    "mtime": 1784378219.606665,
     "ast_hash": "d2ecdbf773a34500b44d5109ab7f5ae9",
     "semantic_hash": "d2ecdbf773a34500b44d5109ab7f5ae9"
   },
   "src/public/daw/js/components/Plugins/Distortion.jsx": {
-    "mtime": 1685223966.8410232,
+    "mtime": 1784378219.606665,
     "ast_hash": "221adeb1499e327e8db8cea6080ecf82",
     "semantic_hash": "221adeb1499e327e8db8cea6080ecf82"
   },
   "src/public/daw/js/components/Plugins/Equalizer.jsx": {
-    "mtime": 1685223966.8410795,
+    "mtime": 1784378219.606665,
     "ast_hash": "517f16dd4837ed4c0b85526a5cbda5e8",
     "semantic_hash": "517f16dd4837ed4c0b85526a5cbda5e8"
   },
   "src/public/daw/js/components/Plugins/Reverb.jsx": {
-    "mtime": 1685223966.841133,
+    "mtime": 1784378219.606665,
     "ast_hash": "0e7cce739971027360ab8038ef2db994",
     "semantic_hash": "0e7cce739971027360ab8038ef2db994"
   },
   "src/public/daw/js/components/TrackDetails/AddNewPluginButton.jsx": {
-    "mtime": 1685223966.8412302,
+    "mtime": 1784378219.606665,
     "ast_hash": "29de37d68be652bc0a834c462f44ca04",
     "semantic_hash": "29de37d68be652bc0a834c462f44ca04"
   },
   "src/public/daw/js/components/TrackDetails/InstrumentInput.jsx": {
-    "mtime": 1685387698.5199661,
+    "mtime": 1784378219.6080143,
     "ast_hash": "afdd1deb40ef2e66e1e0d046f9ff6cb2",
     "semantic_hash": "afdd1deb40ef2e66e1e0d046f9ff6cb2"
   },
   "src/public/daw/js/components/TrackDetails/InstrumentModal.jsx": {
-    "mtime": 1685223966.841366,
+    "mtime": 1784378219.6080143,
     "ast_hash": "bcebc19a958b70a0101a39ef0955f199",
     "semantic_hash": "bcebc19a958b70a0101a39ef0955f199"
   },
   "src/public/daw/js/components/TrackDetails/Output.jsx": {
-    "mtime": 1685223966.8414137,
+    "mtime": 1784378219.6080143,
     "ast_hash": "0d5babc0723224c7e3474c36016905a4",
     "semantic_hash": "0d5babc0723224c7e3474c36016905a4"
   },
   "src/public/daw/js/components/TrackDetails/PanKnob.jsx": {
-    "mtime": 1685223966.841489,
+    "mtime": 1784378219.6080143,
     "ast_hash": "de3a36384dac1c2dd5885c78f9329011",
     "semantic_hash": "de3a36384dac1c2dd5885c78f9329011"
   },
   "src/public/daw/js/components/TrackDetails/PluginModal.jsx": {
-    "mtime": 1685223966.841561,
+    "mtime": 1784378219.6080143,
     "ast_hash": "57defc272454f73bdd2ab74ceade9aaa",
     "semantic_hash": "57defc272454f73bdd2ab74ceade9aaa"
   },
   "src/public/daw/js/components/TrackDetails/PluginsList.jsx": {
-    "mtime": 1685223966.84161,
+    "mtime": 1784378219.6080143,
     "ast_hash": "a41b0074370f5daa46869dd5953f19ef",
     "semantic_hash": "a41b0074370f5daa46869dd5953f19ef"
   },
   "src/public/daw/js/components/TrackDetails/SoloMuteButtons.jsx": {
-    "mtime": 1685223966.841672,
+    "mtime": 1784378219.6080143,
     "ast_hash": "94a17f3fffe16d1e5958656b54e8ea27",
     "semantic_hash": "94a17f3fffe16d1e5958656b54e8ea27"
   },
   "src/public/daw/js/components/TrackDetails/TrackName.jsx": {
-    "mtime": 1685223966.8417234,
+    "mtime": 1784378219.6080143,
     "ast_hash": "a1f662f943e01d04f3d9a442f4ac8ea0",
     "semantic_hash": "a1f662f943e01d04f3d9a442f4ac8ea0"
   },
   "src/public/daw/js/components/TrackDetails/VolumeSlider.jsx": {
-    "mtime": 1685223966.8417852,
+    "mtime": 1784378219.6080143,
     "ast_hash": "a89562efc8b56071eab0a2f656d58f64",
     "semantic_hash": "a89562efc8b56071eab0a2f656d58f64"
   },
   "src/public/daw/js/components/TrackList/AddNewTrackModal.jsx": {
-    "mtime": 1685223966.8418899,
+    "mtime": 1784378219.6080143,
     "ast_hash": "33f3beb0484625bf09564fd797f941a5",
     "semantic_hash": "33f3beb0484625bf09564fd797f941a5"
   },
   "src/public/daw/js/components/TrackList/Track.jsx": {
-    "mtime": 1685223966.841962,
+    "mtime": 1784378219.6097655,
     "ast_hash": "cf46e8c87cc9a12e2f9ea160264c1257",
     "semantic_hash": "cf46e8c87cc9a12e2f9ea160264c1257"
   },
   "src/public/daw/js/components/TrackList/TrackListButtons.jsx": {
-    "mtime": 1685223966.84202,
+    "mtime": 1784378219.6097655,
     "ast_hash": "6af9a67ca5c40810d73db1196b459387",
     "semantic_hash": "6af9a67ca5c40810d73db1196b459387"
   },
   "src/public/daw/js/components/shared/Knob/Knob.js": {
-    "mtime": 1685223966.84222,
+    "mtime": 1784378219.6101327,
     "ast_hash": "6a00ce206aace6f6d0b568d79a8fade6",
     "semantic_hash": "6a00ce206aace6f6d0b568d79a8fade6"
   },
   "src/public/daw/js/constants/AudioFiles.js": {
-    "mtime": 1685223966.842505,
+    "mtime": 1784378219.6101327,
     "ast_hash": "6a710cefaf6207eb3e244dd7cbe3d4dc",
     "semantic_hash": "6a710cefaf6207eb3e244dd7cbe3d4dc"
   },
   "src/public/daw/js/constants/Constants.ts": {
-    "mtime": 1685223966.8425803,
+    "mtime": 1784378219.6108184,
     "ast_hash": "5d78687107454f4674835a18b0d756de",
     "semantic_hash": "5d78687107454f4674835a18b0d756de"
   },
   "src/public/daw/js/constants/Demo.js": {
-    "mtime": 1685223966.8429427,
+    "mtime": 1784378219.6108184,
     "ast_hash": "745703e81215124c2233973c1444850b",
     "semantic_hash": "745703e81215124c2233973c1444850b"
   },
   "src/public/daw/js/constants/Icons.js": {
-    "mtime": 1685223966.8430784,
+    "mtime": 1784378219.6108184,
     "ast_hash": "3320ac3302fd653a0490a06bebd11c10",
     "semantic_hash": "3320ac3302fd653a0490a06bebd11c10"
   },
   "src/public/daw/js/constants/SamplerPresets.js": {
-    "mtime": 1685223966.843172,
+    "mtime": 1784378219.6115935,
     "ast_hash": "0d04b449deb0fd867771b309c701c13f",
     "semantic_hash": "0d04b449deb0fd867771b309c701c13f"
   },
   "src/public/daw/js/containers/CompositionGrid.jsx": {
-    "mtime": 1685223966.843281,
+    "mtime": 1784378219.6115935,
     "ast_hash": "eb216f006f64ab0b77db81e25c7bb114",
     "semantic_hash": "eb216f006f64ab0b77db81e25c7bb114"
   },
   "src/public/daw/js/containers/ControlBar.jsx": {
-    "mtime": 1685223966.843354,
+    "mtime": 1784378219.6138852,
     "ast_hash": "eeb493f22c353c4168771b9588601340",
     "semantic_hash": "eeb493f22c353c4168771b9588601340"
   },
   "src/public/daw/js/containers/Keyboard.jsx": {
-    "mtime": 1784313732.9130793,
+    "mtime": 1784378219.6138852,
     "ast_hash": "baf730d93ef904f909f87a52d9732ecc",
     "semantic_hash": "baf730d93ef904f909f87a52d9732ecc"
   },
   "src/public/daw/js/containers/Main.jsx": {
-    "mtime": 1685223966.843528,
+    "mtime": 1784378219.6138852,
     "ast_hash": "2fe4bb9e336f450a5787d7f386bde8b3",
     "semantic_hash": "2fe4bb9e336f450a5787d7f386bde8b3"
   },
   "src/public/daw/js/containers/TopNavBar.jsx": {
-    "mtime": 1685223966.843607,
+    "mtime": 1784378219.6138852,
     "ast_hash": "a8cf331bcdd28bb62b63684dedf0044c",
     "semantic_hash": "a8cf331bcdd28bb62b63684dedf0044c"
   },
   "src/public/daw/js/containers/TrackDetails.jsx": {
-    "mtime": 1685387110.5611959,
+    "mtime": 1784378219.6138852,
     "ast_hash": "e44f0a8c964bb11e456c9fd2935d5b2f",
     "semantic_hash": "e44f0a8c964bb11e456c9fd2935d5b2f"
   },
   "src/public/daw/js/containers/TrackList.jsx": {
-    "mtime": 1685223966.8437722,
+    "mtime": 1784378219.6138852,
     "ast_hash": "3dcd8dc6f190165384bff2e8f76b8f0b",
     "semantic_hash": "3dcd8dc6f190165384bff2e8f76b8f0b"
   },
   "src/public/daw/js/engine/BufferLoader.ts": {
-    "mtime": 1685387020.1108718,
+    "mtime": 1784378219.6138852,
     "ast_hash": "d80433d5c2483c6997308fdcaff76b18",
     "semantic_hash": "d80433d5c2483c6997308fdcaff76b18"
   },
   "src/public/daw/js/engine/CompositionParser.test.ts": {
-    "mtime": 1784313732.9134758,
+    "mtime": 1784378219.6154122,
     "ast_hash": "c4a2a569310b821b2515bc50c819f6ef",
     "semantic_hash": "c4a2a569310b821b2515bc50c819f6ef"
   },
   "src/public/daw/js/engine/CompositionParser.ts": {
-    "mtime": 1784313732.913846,
+    "mtime": 1784378219.6154122,
     "ast_hash": "558fda6dd17bcc1d592b2bd0f13bc132",
     "semantic_hash": "558fda6dd17bcc1d592b2bd0f13bc132"
   },
   "src/public/daw/js/engine/MIDIController.ts": {
-    "mtime": 1685223966.844025,
+    "mtime": 1784378219.6154122,
     "ast_hash": "cf172e08a1232717d157e1e92b79649a",
     "semantic_hash": "cf172e08a1232717d157e1e92b79649a"
   },
   "src/public/daw/js/engine/Sequencer.test.ts": {
-    "mtime": 1784313732.9141457,
+    "mtime": 1784378219.6154122,
     "ast_hash": "41bd52aaffa90435b0c2761b9827d38f",
     "semantic_hash": "41bd52aaffa90435b0c2761b9827d38f"
   },
   "src/public/daw/js/engine/Sequencer.ts": {
-    "mtime": 1685223966.844088,
+    "mtime": 1784378219.6154122,
     "ast_hash": "62896da98b4b4cfab934856b31d46690",
     "semantic_hash": "62896da98b4b4cfab934856b31d46690"
   },
   "src/public/daw/js/engine/Sound.test.ts": {
-    "mtime": 1784313732.914552,
+    "mtime": 1784378219.6154122,
     "ast_hash": "d22d3f998a2d24a8d698198df84a81f1",
     "semantic_hash": "d22d3f998a2d24a8d698198df84a81f1"
   },
   "src/public/daw/js/engine/Sound.ts": {
-    "mtime": 1685223966.8441534,
+    "mtime": 1784378219.6154122,
     "ast_hash": "bcc37439c4f52c5abb6395ae11ee14dc",
     "semantic_hash": "bcc37439c4f52c5abb6395ae11ee14dc"
   },
   "src/public/daw/js/engine/Track.test.ts": {
-    "mtime": 1784313732.9148622,
+    "mtime": 1784378219.6154122,
     "ast_hash": "5dab590d469cddd12eca66aae8fb7951",
     "semantic_hash": "5dab590d469cddd12eca66aae8fb7951"
   },
   "src/public/daw/js/engine/Track.ts": {
-    "mtime": 1685223966.8442178,
+    "mtime": 1784378219.6154122,
     "ast_hash": "74af5bbb9c6c1240e7464c9af526a644",
     "semantic_hash": "74af5bbb9c6c1240e7464c9af526a644"
   },
   "src/public/daw/js/engine/Utils.test.ts": {
-    "mtime": 1784313732.9152007,
+    "mtime": 1784378219.6154122,
     "ast_hash": "4a54178f061925059f93d205a67ecade",
     "semantic_hash": "4a54178f061925059f93d205a67ecade"
   },
   "src/public/daw/js/engine/Utils.ts": {
-    "mtime": 1685223966.8442757,
+    "mtime": 1784378219.6154122,
     "ast_hash": "c3b690d1d42055ca5ca0a9093d626d36",
     "semantic_hash": "c3b690d1d42055ca5ca0a9093d626d36"
   },
   "src/public/daw/js/index.js": {
-    "mtime": 1685223966.8443274,
+    "mtime": 1784378219.6155934,
     "ast_hash": "9d60bca54ccbf39c4086fceb21a2987f",
     "semantic_hash": "9d60bca54ccbf39c4086fceb21a2987f"
   },
   "src/public/daw/js/instruments/Instrument.ts": {
-    "mtime": 1784313732.9158282,
+    "mtime": 1784378219.6155934,
     "ast_hash": "1c0ae8b887f4c18adda71167d6240125",
     "semantic_hash": "1c0ae8b887f4c18adda71167d6240125"
   },
   "src/public/daw/js/instruments/Monotron.ts": {
-    "mtime": 1784313732.9162965,
+    "mtime": 1784378219.617681,
     "ast_hash": "aac4c16902f81a5f7dff8145fc93f8d4",
     "semantic_hash": "aac4c16902f81a5f7dff8145fc93f8d4"
   },
   "src/public/daw/js/instruments/MultiOsc.ts": {
-    "mtime": 1784313732.9166465,
+    "mtime": 1784378219.617681,
     "ast_hash": "931bd6ca78e190c73a1eee92758be15f",
     "semantic_hash": "931bd6ca78e190c73a1eee92758be15f"
   },
   "src/public/daw/js/instruments/PqSynth.ts": {
-    "mtime": 1784313732.9173834,
+    "mtime": 1784378219.617681,
     "ast_hash": "da25a19eb097897970e0d5c141f4bb37",
     "semantic_hash": "da25a19eb097897970e0d5c141f4bb37"
   },
   "src/public/daw/js/instruments/Sampler.ts": {
-    "mtime": 1685223966.8447464,
+    "mtime": 1784378219.617681,
     "ast_hash": "9e89adfce713ff09acaa9617347b4133",
     "semantic_hash": "9e89adfce713ff09acaa9617347b4133"
   },
   "src/public/daw/js/instruments/Voice.ts": {
-    "mtime": 1685223966.8447986,
+    "mtime": 1784378219.617681,
     "ast_hash": "4ff0f346a2b96195e1f86c6828b27507",
     "semantic_hash": "4ff0f346a2b96195e1f86c6828b27507"
   },
   "src/public/daw/js/instruments/index.ts": {
-    "mtime": 1685223966.84486,
+    "mtime": 1784378219.617681,
     "ast_hash": "423275c3e3e0c9b4ceab12004889b282",
     "semantic_hash": "423275c3e3e0c9b4ceab12004889b282"
   },
   "src/public/daw/js/plugins/Chorus.ts": {
-    "mtime": 1685223966.8449564,
+    "mtime": 1784378219.617681,
     "ast_hash": "5e74dd4c764514609170cb2ce9c1f35f",
     "semantic_hash": "5e74dd4c764514609170cb2ce9c1f35f"
   },
   "src/public/daw/js/plugins/Compressor.ts": {
-    "mtime": 1685297827.2749767,
+    "mtime": 1784378219.6191778,
     "ast_hash": "99c139d0690714066d57335d2cc9c5cb",
     "semantic_hash": "99c139d0690714066d57335d2cc9c5cb"
   },
   "src/public/daw/js/plugins/Delay.ts": {
-    "mtime": 1784313732.917924,
+    "mtime": 1784378219.6191778,
     "ast_hash": "744317bae93edfab2808e438d58c4796",
     "semantic_hash": "744317bae93edfab2808e438d58c4796"
   },
   "src/public/daw/js/plugins/Distortion.ts": {
-    "mtime": 1784313732.9183164,
+    "mtime": 1784378219.6191778,
     "ast_hash": "e43abab08a58591b824b7a52ec43a901",
     "semantic_hash": "e43abab08a58591b824b7a52ec43a901"
   },
   "src/public/daw/js/plugins/Equalizer.ts": {
-    "mtime": 1685223966.845191,
+    "mtime": 1784378219.6191778,
     "ast_hash": "2aa658d9b60db565b89f0406132120e3",
     "semantic_hash": "2aa658d9b60db565b89f0406132120e3"
   },
   "src/public/daw/js/plugins/Plugin.ts": {
-    "mtime": 1784313732.9186747,
+    "mtime": 1784378219.6191778,
     "ast_hash": "1f2eec9b7959996f4e9822ca48630bf7",
     "semantic_hash": "1f2eec9b7959996f4e9822ca48630bf7"
   },
   "src/public/daw/js/plugins/Reverb.ts": {
-    "mtime": 1784313732.9190087,
+    "mtime": 1784378219.6191778,
     "ast_hash": "5580d0eb48a14b26929d8186e018c163",
     "semantic_hash": "5580d0eb48a14b26929d8186e018c163"
   },
   "src/public/daw/js/plugins/index.ts": {
-    "mtime": 1685223966.8453689,
+    "mtime": 1784378219.6191778,
     "ast_hash": "c0b0eefcb41cb1e778a549345d43e894",
     "semantic_hash": "c0b0eefcb41cb1e778a549345d43e894"
   },
   "src/public/daw/js/reducers/compositionReducer.js": {
-    "mtime": 1685223966.845469,
+    "mtime": 1784378219.6191778,
     "ast_hash": "ac5f9053cdcc47bf4b577c6b4a17d6fe",
     "semantic_hash": "ac5f9053cdcc47bf4b577c6b4a17d6fe"
   },
   "src/public/daw/js/reducers/controlReducer.js": {
-    "mtime": 1685223966.8455768,
+    "mtime": 1784378219.6195934,
     "ast_hash": "38cbf31ef646ad4463c3252f7986f77a",
     "semantic_hash": "38cbf31ef646ad4463c3252f7986f77a"
   },
   "src/public/daw/js/reducers/index.js": {
-    "mtime": 1685223966.8456285,
+    "mtime": 1784378219.6195934,
     "ast_hash": "dfadfc0758a2b5d6c79b261dba1de738",
     "semantic_hash": "dfadfc0758a2b5d6c79b261dba1de738"
   },
   "src/public/daw/js/reducers/keyboardReducer.js": {
-    "mtime": 1685223966.8457298,
+    "mtime": 1784378219.6195934,
     "ast_hash": "5d1252cdc24c8039bb0ba2c84fb122fc",
     "semantic_hash": "5d1252cdc24c8039bb0ba2c84fb122fc"
   },
   "src/public/daw/js/reducers/trackDetailsReducer.js": {
-    "mtime": 1685223966.8457842,
+    "mtime": 1784378219.6195934,
     "ast_hash": "96bb3f2e971cfa178e3eb3ae88ed255c",
     "semantic_hash": "96bb3f2e971cfa178e3eb3ae88ed255c"
   },
   "src/public/daw/js/reducers/tracksReducer.js": {
-    "mtime": 1685223966.8458416,
+    "mtime": 1784378219.6195934,
     "ast_hash": "c8ef7fe7129fb6e7930c07fb5473fa7c",
     "semantic_hash": "c8ef7fe7129fb6e7930c07fb5473fa7c"
   },
   "src/public/daw/js/reducers/webAudioReducer.js": {
-    "mtime": 1784313732.9193764,
+    "mtime": 1784378219.6195934,
     "ast_hash": "55a01cbe1fa6f7b25d501c590a6e88b3",
     "semantic_hash": "55a01cbe1fa6f7b25d501c590a6e88b3"
   },
   "src/public/daw/js/stroe.js": {
-    "mtime": 1685223966.8459737,
+    "mtime": 1784378219.6195934,
     "ast_hash": "fd0b354c09db9a6ddcc1981f5f95c607",
     "semantic_hash": "fd0b354c09db9a6ddcc1981f5f95c607"
   },
   "src/start.ts": {
-    "mtime": 1685300719.3291,
+    "mtime": 1784378219.6247687,
     "ast_hash": "7ebed7be90c6a97fa357345bacbaff2d",
     "semantic_hash": "7ebed7be90c6a97fa357345bacbaff2d"
   },
   "src/webpackCfg/defaults.ts": {
-    "mtime": 1784313732.9197843,
+    "mtime": 1784378219.6247687,
     "ast_hash": "48e1b4c18dc623d68051208312760a85",
     "semantic_hash": "48e1b4c18dc623d68051208312760a85"
   },
   "src/webpackCfg/local.ts": {
-    "mtime": 1784313732.9201474,
+    "mtime": 1784378219.6265392,
     "ast_hash": "531d62c9614c98437e5b054181a84254",
     "semantic_hash": "531d62c9614c98437e5b054181a84254"
   },
   "src/webpackCfg/prod.ts": {
-    "mtime": 1784313732.9204817,
+    "mtime": 1784378219.6265392,
     "ast_hash": "2f75bce5a34e7572dd54ac823af6238f",
     "semantic_hash": "2f75bce5a34e7572dd54ac823af6238f"
   },
   "src/webpackCfg/webpack.config.ts": {
-    "mtime": 1685223966.847644,
+    "mtime": 1784378219.6265392,
     "ast_hash": "b3d7de807e8887547e2ea51b2e9b059d",
     "semantic_hash": "b3d7de807e8887547e2ea51b2e9b059d"
   },
   "tsconfig.eslint.json": {
-    "mtime": 1784313732.9207866,
+    "mtime": 1784378219.6265392,
     "ast_hash": "5757e7ecc94ee15dffbcb1277d9b0f6a",
     "semantic_hash": "5757e7ecc94ee15dffbcb1277d9b0f6a"
   },
   "tsconfig.json": {
-    "mtime": 1784313732.9212506,
+    "mtime": 1784378219.6265392,
     "ast_hash": "b231c4a4f1d36aed32f6aa90aafddbb7",
     "semantic_hash": "b231c4a4f1d36aed32f6aa90aafddbb7"
   },
   "utils/nodemon.json": {
-    "mtime": 1685305831.600335,
+    "mtime": 1784378219.6265392,
     "ast_hash": "7949d5425cd5215233517e3c95a7672f",
     "semantic_hash": "7949d5425cd5215233517e3c95a7672f"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_A0.wav": {
-    "mtime": 1685307198.519305,
-    "ast_hash": "243711e772630da7bf0d07d9fa16a036",
-    "semantic_hash": "243711e772630da7bf0d07d9fa16a036"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_A1.wav": {
-    "mtime": 1685307198.5238056,
-    "ast_hash": "83b7c518ea9f5e9624312b5fabeb4115",
-    "semantic_hash": "83b7c518ea9f5e9624312b5fabeb4115"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_A2.wav": {
-    "mtime": 1685307198.528309,
-    "ast_hash": "0b08de74516be9ad584a9235083a69d6",
-    "semantic_hash": "0b08de74516be9ad584a9235083a69d6"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_A3.wav": {
-    "mtime": 1685307198.5327313,
-    "ast_hash": "aaa90da9ada750c76d822454c65190dd",
-    "semantic_hash": "aaa90da9ada750c76d822454c65190dd"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_A4.wav": {
-    "mtime": 1685307198.5359583,
-    "ast_hash": "3b7c980c51308e7000dc07558eec4af7",
-    "semantic_hash": "3b7c980c51308e7000dc07558eec4af7"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_A5.wav": {
-    "mtime": 1685307198.539328,
-    "ast_hash": "25041ae5d2413a4134b63a5ed562fa1b",
-    "semantic_hash": "25041ae5d2413a4134b63a5ed562fa1b"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_A6.wav": {
-    "mtime": 1685307198.5427158,
-    "ast_hash": "601ac4e01afb01dc861dcbfdea17ec84",
-    "semantic_hash": "601ac4e01afb01dc861dcbfdea17ec84"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_A7.wav": {
-    "mtime": 1685307198.5460727,
-    "ast_hash": "1946d52eacc0855264d60a9debbb5aac",
-    "semantic_hash": "1946d52eacc0855264d60a9debbb5aac"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_As0.wav": {
-    "mtime": 1685307198.5498745,
-    "ast_hash": "743a8d431f42528ac6bd4a5ae2301247",
-    "semantic_hash": "743a8d431f42528ac6bd4a5ae2301247"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_As1.wav": {
-    "mtime": 1685307198.5531917,
-    "ast_hash": "28d102c7b70d60e09c095544e4942f58",
-    "semantic_hash": "28d102c7b70d60e09c095544e4942f58"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_As2.wav": {
-    "mtime": 1685307198.5575075,
-    "ast_hash": "5d6d3c244bccac3051bf15a55f324b5a",
-    "semantic_hash": "5d6d3c244bccac3051bf15a55f324b5a"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_As3.wav": {
-    "mtime": 1685307198.560946,
-    "ast_hash": "1ac1d216bfa34343af7dcb63857d5e93",
-    "semantic_hash": "1ac1d216bfa34343af7dcb63857d5e93"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_As4.wav": {
-    "mtime": 1685307198.563671,
-    "ast_hash": "9a60e2292fbc9cabc554dcec53abdc21",
-    "semantic_hash": "9a60e2292fbc9cabc554dcec53abdc21"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_As5.wav": {
-    "mtime": 1685307198.567641,
-    "ast_hash": "8f238cf4fb6a04b104e53873424f7783",
-    "semantic_hash": "8f238cf4fb6a04b104e53873424f7783"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_As6.wav": {
-    "mtime": 1685307198.5704222,
-    "ast_hash": "d85a1bc841cdec87030009daccf90956",
-    "semantic_hash": "d85a1bc841cdec87030009daccf90956"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_As7.wav": {
-    "mtime": 1685307198.5733085,
-    "ast_hash": "a9a043e571c3d53bbb31db4a66d758c0",
-    "semantic_hash": "a9a043e571c3d53bbb31db4a66d758c0"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_B0.wav": {
-    "mtime": 1685307198.5776365,
-    "ast_hash": "ff66d76ce9fef5bd65fb36bc5e36eebf",
-    "semantic_hash": "ff66d76ce9fef5bd65fb36bc5e36eebf"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_B1.wav": {
-    "mtime": 1685307198.5808372,
-    "ast_hash": "49f9800e64a64d80955ddf0001d3cd88",
-    "semantic_hash": "49f9800e64a64d80955ddf0001d3cd88"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_B2.wav": {
-    "mtime": 1685307198.58405,
-    "ast_hash": "cb33ec3464572868a1eddcd3fc9c8017",
-    "semantic_hash": "cb33ec3464572868a1eddcd3fc9c8017"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_B3.wav": {
-    "mtime": 1685307198.5868738,
-    "ast_hash": "468f6983255cdf2ba674048a63f80cd3",
-    "semantic_hash": "468f6983255cdf2ba674048a63f80cd3"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_B4.wav": {
-    "mtime": 1685307198.590304,
-    "ast_hash": "389fba4003b2ac8827a2f93494ebfcac",
-    "semantic_hash": "389fba4003b2ac8827a2f93494ebfcac"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_B5.wav": {
-    "mtime": 1685307198.5930843,
-    "ast_hash": "8585712a418776154997e3d588ad4475",
-    "semantic_hash": "8585712a418776154997e3d588ad4475"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_B6.wav": {
-    "mtime": 1685307198.5956392,
-    "ast_hash": "edc9633bd1ea10277990bc757d7a7d09",
-    "semantic_hash": "edc9633bd1ea10277990bc757d7a7d09"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_B7.wav": {
-    "mtime": 1685307198.5992978,
-    "ast_hash": "2a3600dc08a052e4b78a9f77217c4876",
-    "semantic_hash": "2a3600dc08a052e4b78a9f77217c4876"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_C1.wav": {
-    "mtime": 1685307198.6027083,
-    "ast_hash": "e46436387f0e11d159fdd7a6861c1f4f",
-    "semantic_hash": "e46436387f0e11d159fdd7a6861c1f4f"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_C2.wav": {
-    "mtime": 1685307198.6059792,
-    "ast_hash": "2d137fe113ee00fa5e9b31dc5ca0e9d9",
-    "semantic_hash": "2d137fe113ee00fa5e9b31dc5ca0e9d9"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_C3.wav": {
-    "mtime": 1685307198.6097498,
-    "ast_hash": "b635804ba6276b50fa784fec80629773",
-    "semantic_hash": "b635804ba6276b50fa784fec80629773"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_C4.wav": {
-    "mtime": 1685307198.6129544,
-    "ast_hash": "25c77fac20997741c360803d465199e7",
-    "semantic_hash": "25c77fac20997741c360803d465199e7"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_C5.wav": {
-    "mtime": 1685307198.6155863,
-    "ast_hash": "c187daf15110445fb8f203d25c90c63c",
-    "semantic_hash": "c187daf15110445fb8f203d25c90c63c"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_C6.wav": {
-    "mtime": 1685307198.6189802,
-    "ast_hash": "ca1c90b4cf30f29271a3a619bb034f13",
-    "semantic_hash": "ca1c90b4cf30f29271a3a619bb034f13"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_C7.wav": {
-    "mtime": 1685307198.6216002,
-    "ast_hash": "27093ecd6c4d1a30c05f052a202db711",
-    "semantic_hash": "27093ecd6c4d1a30c05f052a202db711"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Cs1.wav": {
-    "mtime": 1685307198.624886,
-    "ast_hash": "5e9603eaa7832db670438c3392ff52df",
-    "semantic_hash": "5e9603eaa7832db670438c3392ff52df"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Cs2.wav": {
-    "mtime": 1685307198.628789,
-    "ast_hash": "1c0e6923383b25359643d0e388c3efd7",
-    "semantic_hash": "1c0e6923383b25359643d0e388c3efd7"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Cs3.wav": {
-    "mtime": 1685307198.6322258,
-    "ast_hash": "0d382e1169a17fca313383bfe2fb0ed7",
-    "semantic_hash": "0d382e1169a17fca313383bfe2fb0ed7"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Cs4.wav": {
-    "mtime": 1685307198.6355793,
-    "ast_hash": "39a7a934b79055bc915c2384425dee30",
-    "semantic_hash": "39a7a934b79055bc915c2384425dee30"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Cs5.wav": {
-    "mtime": 1685307198.6382682,
-    "ast_hash": "caec06ee81185c82603d2eca7ff4938e",
-    "semantic_hash": "caec06ee81185c82603d2eca7ff4938e"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Cs6.wav": {
-    "mtime": 1685307198.6408577,
-    "ast_hash": "a2da3ea6775f3347a1560cb6ef7aa2d9",
-    "semantic_hash": "a2da3ea6775f3347a1560cb6ef7aa2d9"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Cs7.wav": {
-    "mtime": 1685307198.6433566,
-    "ast_hash": "4c9e76759cabd410c93073326103be33",
-    "semantic_hash": "4c9e76759cabd410c93073326103be33"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_D1.wav": {
-    "mtime": 1685307198.6466591,
-    "ast_hash": "172fbf201c7ac6b54f100e06eaf16bcb",
-    "semantic_hash": "172fbf201c7ac6b54f100e06eaf16bcb"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_D2.wav": {
-    "mtime": 1685307198.6503384,
-    "ast_hash": "1fa59e48f012ad0904fc1ae36a2f4506",
-    "semantic_hash": "1fa59e48f012ad0904fc1ae36a2f4506"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_D3.wav": {
-    "mtime": 1685307198.6534812,
-    "ast_hash": "fd1236b70934f97620bc1d5ea1704b55",
-    "semantic_hash": "fd1236b70934f97620bc1d5ea1704b55"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_D4.wav": {
-    "mtime": 1685307198.6564178,
-    "ast_hash": "5855484fdb3c2780763142017777d341",
-    "semantic_hash": "5855484fdb3c2780763142017777d341"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_D5.wav": {
-    "mtime": 1685307198.6588492,
-    "ast_hash": "aa900e475ddfc48fd6a3367d195570ca",
-    "semantic_hash": "aa900e475ddfc48fd6a3367d195570ca"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_D6.wav": {
-    "mtime": 1685307198.6618605,
-    "ast_hash": "b0103d117a31740317a336858cde6037",
-    "semantic_hash": "b0103d117a31740317a336858cde6037"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_D7.wav": {
-    "mtime": 1685307198.66457,
-    "ast_hash": "6a5b7410d37f6957ffd8bb17a4925cfc",
-    "semantic_hash": "6a5b7410d37f6957ffd8bb17a4925cfc"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Ds1.wav": {
-    "mtime": 1685307198.6680024,
-    "ast_hash": "fb28c6f95b8df170e63a866ea0a7c41c",
-    "semantic_hash": "fb28c6f95b8df170e63a866ea0a7c41c"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Ds2.wav": {
-    "mtime": 1685307198.6716132,
-    "ast_hash": "bb5602b11bffd55e478f6b8401a1c1e4",
-    "semantic_hash": "bb5602b11bffd55e478f6b8401a1c1e4"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Ds3.wav": {
-    "mtime": 1685307198.6746655,
-    "ast_hash": "5e0409c081bf152ec0681c5d72dde404",
-    "semantic_hash": "5e0409c081bf152ec0681c5d72dde404"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Ds4.wav": {
-    "mtime": 1685307198.677737,
-    "ast_hash": "17f8556908c5bd84a453b235f7459aba",
-    "semantic_hash": "17f8556908c5bd84a453b235f7459aba"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Ds5.wav": {
-    "mtime": 1685307198.6807544,
-    "ast_hash": "56a8dfb9479547f5961adca40d326a6f",
-    "semantic_hash": "56a8dfb9479547f5961adca40d326a6f"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Ds6.wav": {
-    "mtime": 1685307198.6832597,
-    "ast_hash": "873794d1b91d5e8415eef95154429eda",
-    "semantic_hash": "873794d1b91d5e8415eef95154429eda"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Ds7.wav": {
-    "mtime": 1685307198.6859953,
-    "ast_hash": "29e3c744c82fbac2d84ee55ea41e633e",
-    "semantic_hash": "29e3c744c82fbac2d84ee55ea41e633e"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_E1.wav": {
-    "mtime": 1685307198.690215,
-    "ast_hash": "df1f7d243f8522a25e933334c3e5c833",
-    "semantic_hash": "df1f7d243f8522a25e933334c3e5c833"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_E2.wav": {
-    "mtime": 1685307198.6934497,
-    "ast_hash": "32a06bd8d93360524fbe0e58b4f6b730",
-    "semantic_hash": "32a06bd8d93360524fbe0e58b4f6b730"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_E3.wav": {
-    "mtime": 1685307198.6967366,
-    "ast_hash": "1ce29428d57426019297e16859568768",
-    "semantic_hash": "1ce29428d57426019297e16859568768"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_E4.wav": {
-    "mtime": 1685307198.699831,
-    "ast_hash": "e206fc1344fe4b331f2994b4f0c44bcd",
-    "semantic_hash": "e206fc1344fe4b331f2994b4f0c44bcd"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_E5.wav": {
-    "mtime": 1685307198.7032282,
-    "ast_hash": "e8b646e4f0b6ca9643a47f9f34cbedac",
-    "semantic_hash": "e8b646e4f0b6ca9643a47f9f34cbedac"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_E6.wav": {
-    "mtime": 1685307198.7056532,
-    "ast_hash": "05b75dd6625f609b069c05a629c14dc7",
-    "semantic_hash": "05b75dd6625f609b069c05a629c14dc7"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_E7.wav": {
-    "mtime": 1685307198.708485,
-    "ast_hash": "4e9d2aeb2651627bca63283969722e14",
-    "semantic_hash": "4e9d2aeb2651627bca63283969722e14"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_F1.wav": {
-    "mtime": 1685307198.7115676,
-    "ast_hash": "3d2a65b2e723828b270b774022c509f0",
-    "semantic_hash": "3d2a65b2e723828b270b774022c509f0"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_F2.wav": {
-    "mtime": 1685307198.7153585,
-    "ast_hash": "427da9da3ae824a90894126455ced826",
-    "semantic_hash": "427da9da3ae824a90894126455ced826"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_F3.wav": {
-    "mtime": 1685307198.7184522,
-    "ast_hash": "73503ea9a9923360b7686b0048f76462",
-    "semantic_hash": "73503ea9a9923360b7686b0048f76462"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_F4.wav": {
-    "mtime": 1685307198.721599,
-    "ast_hash": "3f8000b416bd80526cdede28b9c377e0",
-    "semantic_hash": "3f8000b416bd80526cdede28b9c377e0"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_F5.wav": {
-    "mtime": 1685307198.7241378,
-    "ast_hash": "0001fb38cad1d9a606134dd8f13dbd64",
-    "semantic_hash": "0001fb38cad1d9a606134dd8f13dbd64"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_F6.wav": {
-    "mtime": 1685307198.7274024,
-    "ast_hash": "20ae2e4d4ec443ecce3d183e90854163",
-    "semantic_hash": "20ae2e4d4ec443ecce3d183e90854163"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_F7.wav": {
-    "mtime": 1685307198.7302864,
-    "ast_hash": "40bd11e9eac4a091e4ddc14131061cd6",
-    "semantic_hash": "40bd11e9eac4a091e4ddc14131061cd6"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Fs1.wav": {
-    "mtime": 1685307198.7333126,
-    "ast_hash": "608170ad91465fd7e8b93ec6e277f313",
-    "semantic_hash": "608170ad91465fd7e8b93ec6e277f313"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Fs2.wav": {
-    "mtime": 1685307198.7363873,
-    "ast_hash": "a891ef85191446d4c547aa1201c9aea3",
-    "semantic_hash": "a891ef85191446d4c547aa1201c9aea3"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Fs3.wav": {
-    "mtime": 1685307198.7394953,
-    "ast_hash": "a65de5967f759f253c83e0154e3f1e99",
-    "semantic_hash": "a65de5967f759f253c83e0154e3f1e99"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Fs4.wav": {
-    "mtime": 1685307198.7422342,
-    "ast_hash": "2c96bb6b2772007b2cd953867b9cc880",
-    "semantic_hash": "2c96bb6b2772007b2cd953867b9cc880"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Fs5.wav": {
-    "mtime": 1685307198.74483,
-    "ast_hash": "5ade66fe7b954d6318ad487c6dba39e9",
-    "semantic_hash": "5ade66fe7b954d6318ad487c6dba39e9"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Fs6.wav": {
-    "mtime": 1685307198.7478952,
-    "ast_hash": "0d5d3dc8a1649db555bae2b78a2dd824",
-    "semantic_hash": "0d5d3dc8a1649db555bae2b78a2dd824"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Fs7.wav": {
-    "mtime": 1685307198.7504406,
-    "ast_hash": "447ee049863875ab8c094f764b6f756b",
-    "semantic_hash": "447ee049863875ab8c094f764b6f756b"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_G1.wav": {
-    "mtime": 1685307198.7534404,
-    "ast_hash": "8f0c69f94feab95dd868f56fc64162d7",
-    "semantic_hash": "8f0c69f94feab95dd868f56fc64162d7"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_G2.wav": {
-    "mtime": 1685307198.7572412,
-    "ast_hash": "34b06ce9c1f63a7a29eb6e23129bf590",
-    "semantic_hash": "34b06ce9c1f63a7a29eb6e23129bf590"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_G3.wav": {
-    "mtime": 1685307198.760173,
-    "ast_hash": "7532d98714e2525a77513758336b44be",
-    "semantic_hash": "7532d98714e2525a77513758336b44be"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_G4.wav": {
-    "mtime": 1685307198.7628195,
-    "ast_hash": "4dbb726b1175c21897f28df519e5c897",
-    "semantic_hash": "4dbb726b1175c21897f28df519e5c897"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_G5.wav": {
-    "mtime": 1685307198.7655363,
-    "ast_hash": "5802a36569c18f6e33fa49cf6cff6833",
-    "semantic_hash": "5802a36569c18f6e33fa49cf6cff6833"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_G6.wav": {
-    "mtime": 1685307198.7681835,
-    "ast_hash": "27d6791d21eea0c936380c5e283f9536",
-    "semantic_hash": "27d6791d21eea0c936380c5e283f9536"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_G7.wav": {
-    "mtime": 1685307198.770561,
-    "ast_hash": "c43c1c164cccd24cdd5215bbc311ebdf",
-    "semantic_hash": "c43c1c164cccd24cdd5215bbc311ebdf"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Gs1.wav": {
-    "mtime": 1685307198.773769,
-    "ast_hash": "9421749b173eee80f4dc670236a8050c",
-    "semantic_hash": "9421749b173eee80f4dc670236a8050c"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Gs2.wav": {
-    "mtime": 1685307198.7771168,
-    "ast_hash": "a634d5edde2e2aeca906049589df0d8a",
-    "semantic_hash": "a634d5edde2e2aeca906049589df0d8a"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Gs3.wav": {
-    "mtime": 1685307198.7796984,
-    "ast_hash": "77e848f8d9ea41ed74436d945b6364ec",
-    "semantic_hash": "77e848f8d9ea41ed74436d945b6364ec"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Gs4.wav": {
-    "mtime": 1685307198.7830563,
-    "ast_hash": "d182b65a6644c24d952f37209bf5fb39",
-    "semantic_hash": "d182b65a6644c24d952f37209bf5fb39"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Gs5.wav": {
-    "mtime": 1685307198.7858336,
-    "ast_hash": "edc9b406748a7b01569a18ed14cd457a",
-    "semantic_hash": "edc9b406748a7b01569a18ed14cd457a"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Gs6.wav": {
-    "mtime": 1685307198.7882042,
-    "ast_hash": "89840327eb0142366df10c4f5ea92ee1",
-    "semantic_hash": "89840327eb0142366df10c4f5ea92ee1"
-  },
-  "assets/audio/samples/instruments/DSKGrandPiano/DSK_Grand_Gs7.wav": {
-    "mtime": 1685307198.790891,
-    "ast_hash": "5203c1013bae57b13a0ec44f2498619a",
-    "semantic_hash": "5203c1013bae57b13a0ec44f2498619a"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-Crash-1-1.wav": {
-    "mtime": 1685307198.7995284,
-    "ast_hash": "eae9b0897cb8872d8257c8eb5b7ca02a",
-    "semantic_hash": "eae9b0897cb8872d8257c8eb5b7ca02a"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-Crash-1-2.wav": {
-    "mtime": 1685307198.8088973,
-    "ast_hash": "683a5dbecf049e0af231594885f75dce",
-    "semantic_hash": "683a5dbecf049e0af231594885f75dce"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-Crash-2-1.wav": {
-    "mtime": 1685307198.8154883,
-    "ast_hash": "cb5c405b4342ec7a16b9cb3eef6bac5b",
-    "semantic_hash": "cb5c405b4342ec7a16b9cb3eef6bac5b"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-Crash-2-2.wav": {
-    "mtime": 1685307198.8228045,
-    "ast_hash": "3343176212035f6b6ab94ae823bfdee8",
-    "semantic_hash": "3343176212035f6b6ab94ae823bfdee8"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-Floor-1.wav": {
-    "mtime": 1685307198.824054,
-    "ast_hash": "f96bd1a1061aded0f75f56605434b7d9",
-    "semantic_hash": "f96bd1a1061aded0f75f56605434b7d9"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-Floor-2.wav": {
-    "mtime": 1685307198.8249428,
-    "ast_hash": "7dbc721f75f71547a339a4c5aedcb958",
-    "semantic_hash": "7dbc721f75f71547a339a4c5aedcb958"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-HiHat-Open.wav": {
-    "mtime": 1685307198.8269227,
-    "ast_hash": "22a86299587914582b441ecfffe0f7db",
-    "semantic_hash": "22a86299587914582b441ecfffe0f7db"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-HiHat-OpenClose.wav": {
-    "mtime": 1685307198.8273287,
-    "ast_hash": "7ae03e098c1cdeeb5d54cf2a1b4bce09",
-    "semantic_hash": "7ae03e098c1cdeeb5d54cf2a1b4bce09"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-HiHat-Pedal.wav": {
-    "mtime": 1685307198.8274868,
-    "ast_hash": "fc3f0e3cede8f142d177793c37199477",
-    "semantic_hash": "fc3f0e3cede8f142d177793c37199477"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-HiHat-Shank-1.wav": {
-    "mtime": 1685307198.8277113,
-    "ast_hash": "f245a38feeef8fb7056795d9eaed8d11",
-    "semantic_hash": "f245a38feeef8fb7056795d9eaed8d11"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-HiHat-Shank-2.wav": {
-    "mtime": 1685307198.8279977,
-    "ast_hash": "3be5c71b78af4a5d6649d101ec3266f6",
-    "semantic_hash": "3be5c71b78af4a5d6649d101ec3266f6"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-HiHat-Tip-1.wav": {
-    "mtime": 1685307198.8281553,
-    "ast_hash": "0d6711bda0536fd84dced6217fe3f03f",
-    "semantic_hash": "0d6711bda0536fd84dced6217fe3f03f"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-HiHat-Tip-2.wav": {
-    "mtime": 1685307198.828392,
-    "ast_hash": "88cac3b1dd4ba4d00677f87324d40ef5",
-    "semantic_hash": "88cac3b1dd4ba4d00677f87324d40ef5"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-Kick-ff-1.wav": {
-    "mtime": 1685307198.8286679,
-    "ast_hash": "7b5916cb6c57bdc0afd5ae94e92c06d8",
-    "semantic_hash": "7b5916cb6c57bdc0afd5ae94e92c06d8"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-Kick-ff-2.wav": {
-    "mtime": 1685307198.8289418,
-    "ast_hash": "b357c92bab24014fe6e912b69ba133cc",
-    "semantic_hash": "b357c92bab24014fe6e912b69ba133cc"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-Kick-pp-1.wav": {
-    "mtime": 1685307198.8292654,
-    "ast_hash": "b2ef0c49577f5213970e4b674eded97b",
-    "semantic_hash": "b2ef0c49577f5213970e4b674eded97b"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Kit-Kick-pp-2.wav": {
-    "mtime": 1685307198.8297265,
-    "ast_hash": "d0c1c4942406f6bee8c1a8a92ab47329",
-    "semantic_hash": "d0c1c4942406f6bee8c1a8a92ab47329"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Rack-1.wav": {
-    "mtime": 1685307198.8306468,
-    "ast_hash": "629036d8a56373b797ea0ba5848b86f0",
-    "semantic_hash": "629036d8a56373b797ea0ba5848b86f0"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Rack-2.wav": {
-    "mtime": 1685307198.8312109,
-    "ast_hash": "83507d38e9715b1e521855b7dca53623",
-    "semantic_hash": "83507d38e9715b1e521855b7dca53623"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Ride-Bell.wav": {
-    "mtime": 1685307198.842717,
-    "ast_hash": "28da6c83a8c97e5aaddaf0a39d3bf231",
-    "semantic_hash": "28da6c83a8c97e5aaddaf0a39d3bf231"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Ride-Shank.wav": {
-    "mtime": 1685307198.8575125,
-    "ast_hash": "294f456c94aeeab36084629d0bdbf2c7",
-    "semantic_hash": "294f456c94aeeab36084629d0bdbf2c7"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Ride-Tip.wav": {
-    "mtime": 1685307198.8658113,
-    "ast_hash": "54002ee3db2bf78a6c0214b0ae82146e",
-    "semantic_hash": "54002ee3db2bf78a6c0214b0ae82146e"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Snare-ff-1.wav": {
-    "mtime": 1685307198.8670685,
-    "ast_hash": "81c2bbfd6117a28fe255d94521e2d1e4",
-    "semantic_hash": "81c2bbfd6117a28fe255d94521e2d1e4"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Snare-ff-2.wav": {
-    "mtime": 1685307198.8681111,
-    "ast_hash": "f7f775b9be348a12e424a29e4a3bdda8",
-    "semantic_hash": "f7f775b9be348a12e424a29e4a3bdda8"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Snare-ff-3.wav": {
-    "mtime": 1685307198.8689282,
-    "ast_hash": "b6224c57b9d5ed288cbaaec18bec0b62",
-    "semantic_hash": "b6224c57b9d5ed288cbaaec18bec0b62"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Snare-pp-1.wav": {
-    "mtime": 1685307198.8692973,
-    "ast_hash": "e6d1d4ee5628e1e9e60467f94299ef86",
-    "semantic_hash": "e6d1d4ee5628e1e9e60467f94299ef86"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Snare-pp-2.wav": {
-    "mtime": 1685307198.8699234,
-    "ast_hash": "f5022e769ed14964449d1e6d4f9f6e60",
-    "semantic_hash": "f5022e769ed14964449d1e6d4f9f6e60"
-  },
-  "assets/audio/samples/instruments/RockKit/Rock-Snare-pp-3.wav": {
-    "mtime": 1685307198.8702629,
-    "ast_hash": "92c6417dbc7a21ab0c40076319069297",
-    "semantic_hash": "92c6417dbc7a21ab0c40076319069297"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Ludwig-Snare-A.wav": {
-    "mtime": 1685307198.871501,
-    "ast_hash": "d04a8e7556a0dc67feec06b14229d33d",
-    "semantic_hash": "d04a8e7556a0dc67feec06b14229d33d"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Ludwig-Snare-B.wav": {
-    "mtime": 1685307198.8726337,
-    "ast_hash": "56cdb8e7c290f7419e415e4cecfbec85",
-    "semantic_hash": "56cdb8e7c290f7419e415e4cecfbec85"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Ludwig-Snare-C.wav": {
-    "mtime": 1685307198.8735754,
-    "ast_hash": "e3e0330f9442da99f1cfc834b0bd681d",
-    "semantic_hash": "e3e0330f9442da99f1cfc834b0bd681d"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Ludwig-Snare-D.wav": {
-    "mtime": 1685307198.8744614,
-    "ast_hash": "f6b236ebd675670e57fd25b488ba0609",
-    "semantic_hash": "f6b236ebd675670e57fd25b488ba0609"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-FloorTom-A.wav": {
-    "mtime": 1685307198.877058,
-    "ast_hash": "8b272787d602148887da300b00a674f2",
-    "semantic_hash": "8b272787d602148887da300b00a674f2"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-FloorTom-B.wav": {
-    "mtime": 1685307198.8792682,
-    "ast_hash": "1380df1675d9dbf68fc96d5da7cdf1e3",
-    "semantic_hash": "1380df1675d9dbf68fc96d5da7cdf1e3"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-Kick-A.wav": {
-    "mtime": 1685307198.8796885,
-    "ast_hash": "ef9406c8e2996cbfda17e8deb54a23ed",
-    "semantic_hash": "ef9406c8e2996cbfda17e8deb54a23ed"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-Kick-B.wav": {
-    "mtime": 1685307198.8802495,
-    "ast_hash": "c8c81156338f4253542af2d878dbb744",
-    "semantic_hash": "c8c81156338f4253542af2d878dbb744"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-RackTom-A.wav": {
-    "mtime": 1685307198.882508,
-    "ast_hash": "5384dc5fdf7065852d3a52d25a17aca1",
-    "semantic_hash": "5384dc5fdf7065852d3a52d25a17aca1"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-RackTom-B.wav": {
-    "mtime": 1685307198.8843453,
-    "ast_hash": "bec4f29d3c165d8d9374899a01eae0b2",
-    "semantic_hash": "bec4f29d3c165d8d9374899a01eae0b2"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-Sabian-Crash-Left-A.wav": {
-    "mtime": 1685307198.8959172,
-    "ast_hash": "cd1e34ab0e0fe2b17aa9a55660d0d5d5",
-    "semantic_hash": "cd1e34ab0e0fe2b17aa9a55660d0d5d5"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-Sabian-Crash-Left-B.wav": {
-    "mtime": 1685307198.9067159,
-    "ast_hash": "e86606610aa723faa860f20a001cc3c1",
-    "semantic_hash": "e86606610aa723faa860f20a001cc3c1"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-Sabian-Crash-Right-A.wav": {
-    "mtime": 1685307198.915033,
-    "ast_hash": "8baad5acc13fbed794449194ece484b8",
-    "semantic_hash": "8baad5acc13fbed794449194ece484b8"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-Sabian-Crash-Right-B.wav": {
-    "mtime": 1685307198.923917,
-    "ast_hash": "4ac4e2d899623f782dfa69a03fa671cf",
-    "semantic_hash": "4ac4e2d899623f782dfa69a03fa671cf"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-Sabian-Ride-A.wav": {
-    "mtime": 1685307198.937123,
-    "ast_hash": "0977ec6dc676bfa24a0e5b553fe6d4ff",
-    "semantic_hash": "0977ec6dc676bfa24a0e5b553fe6d4ff"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-Sabian-Ride-B.wav": {
-    "mtime": 1685307198.947719,
-    "ast_hash": "ed67163ec7bd57215e4f92cd0aefd077",
-    "semantic_hash": "ed67163ec7bd57215e4f92cd0aefd077"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-SabianHHX-HiHat-Closed-A.wav": {
-    "mtime": 1685307198.9479728,
-    "ast_hash": "8e8a10d44d211f94e92517b7cc43b38d",
-    "semantic_hash": "8e8a10d44d211f94e92517b7cc43b38d"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-SabianHHX-HiHat-Closed-B.wav": {
-    "mtime": 1685307198.9485304,
-    "ast_hash": "e08055dc76691b7de2fbff49470f9258",
-    "semantic_hash": "e08055dc76691b7de2fbff49470f9258"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-SabianHHX-HiHat-Closed-C.wav": {
-    "mtime": 1685307198.9487767,
-    "ast_hash": "7b622953ccd76203510396d50bc49294",
-    "semantic_hash": "7b622953ccd76203510396d50bc49294"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-SabianHHX-HiHat-Closed-D.wav": {
-    "mtime": 1685307198.9490516,
-    "ast_hash": "aab2b17eaf7361756bd4630d6ea85899",
-    "semantic_hash": "aab2b17eaf7361756bd4630d6ea85899"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-SabianHHX-HiHat-Open-A.wav": {
-    "mtime": 1685307198.9507527,
-    "ast_hash": "68f1fabad4e636f9a68ed1ab2bcf5de2",
-    "semantic_hash": "68f1fabad4e636f9a68ed1ab2bcf5de2"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-SabianHHX-HiHat-OpenClose-A.wav": {
-    "mtime": 1685307198.9510303,
-    "ast_hash": "7ef88221e49eb43e786feca22ae191d6",
-    "semantic_hash": "7ef88221e49eb43e786feca22ae191d6"
-  },
-  "assets/audio/samples/instruments/SlingerlandKit/Slingerland-Kit-SabianHHX-HiHat-OpenClose-B.wav": {
-    "mtime": 1685307198.95148,
-    "ast_hash": "b33fc500141f5009fd19c980c21f0ebd",
-    "semantic_hash": "b33fc500141f5009fd19c980c21f0ebd"
-  },
-  ".claude/CLAUDE.md": {
-    "mtime": 1784314008.7578673,
-    "ast_hash": "9b31786b637be3c13978bec4c2330752",
-    "semantic_hash": ""
-  },
-  ".claude/skills/graphify/SKILL.md": {
-    "mtime": 1784314008.7569668,
-    "ast_hash": "f8d5ef667aae74129e01fcca97bbfddd",
-    "semantic_hash": ""
-  },
-  ".claude/skills/graphify/references/add-watch.md": {
-    "mtime": 1784313953.3187525,
-    "ast_hash": "d59d027fe449f06aa03905a01184e779",
-    "semantic_hash": ""
-  },
-  ".claude/skills/graphify/references/exports.md": {
-    "mtime": 1784313953.3189528,
-    "ast_hash": "9da2a2152e60a22f07f05fed5158f287",
-    "semantic_hash": ""
-  },
-  ".claude/skills/graphify/references/extraction-spec.md": {
-    "mtime": 1784313953.3194976,
-    "ast_hash": "42fef56a01698118f7fd722acdadea34",
-    "semantic_hash": ""
-  },
-  ".claude/skills/graphify/references/github-and-merge.md": {
-    "mtime": 1784313953.3196578,
-    "ast_hash": "cde13df085e4c492aeb7ba298a996d0d",
-    "semantic_hash": ""
-  },
-  ".claude/skills/graphify/references/hooks.md": {
-    "mtime": 1784313953.3198318,
-    "ast_hash": "3f545db6ce646650bb9de588f5512a27",
-    "semantic_hash": ""
-  },
-  ".claude/skills/graphify/references/query.md": {
-    "mtime": 1784313953.3203542,
-    "ast_hash": "3c46f8ad006874260614ed8657d02307",
-    "semantic_hash": ""
-  },
-  ".claude/skills/graphify/references/transcribe.md": {
-    "mtime": 1784313953.32051,
-    "ast_hash": "67b6a5fa6c0974e18f60db9f8932fbd8",
-    "semantic_hash": ""
-  },
-  ".claude/skills/graphify/references/update.md": {
-    "mtime": 1784313953.3399906,
-    "ast_hash": "c698309979460d0f02ba616417844399",
-    "semantic_hash": ""
   },
   ".github/dependabot.yml": {
     "mtime": 1784313732.8893704,
@@ -1428,5 +678,15 @@
     "mtime": 1685390325.8807843,
     "ast_hash": "4dad3fe738a4c99b7876ad407219d63c",
     "semantic_hash": ""
+  },
+  ".githooks/post-checkout": {
+    "mtime": 1784379499.168426,
+    "ast_hash": "17c6634c60e112d49e428e4cf716ebb5",
+    "semantic_hash": "17c6634c60e112d49e428e4cf716ebb5"
+  },
+  ".githooks/post-commit": {
+    "mtime": 1784379499.1703174,
+    "ast_hash": "a35efe9b17014ace72e2c304b3bb5c62",
+    "semantic_hash": "a35efe9b17014ace72e2c304b3bb5c62"
   }
 }

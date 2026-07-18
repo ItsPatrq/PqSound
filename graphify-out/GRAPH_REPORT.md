@@ -1,65 +1,73 @@
-# Graph Report - .  (2026-07-17)
+# Graph Report - .  (2026-07-18)
 
 ## Corpus Check
 - cluster-only mode — file stats not available
 
 ## Summary
-- 813 nodes · 1095 edges · 102 communities (69 shown, 33 thin omitted)
+- 823 nodes · 1103 edges · 109 communities (71 shown, 38 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.52)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1035da01`
+- Built from commit: `d5de3699`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Constants.ts
 - devDependencies
-- DawApiServer.ts
 - compilerOptions
+- DawApiServer.ts
 - DawPage
 - TrackDetails
-- MIDIController.ts
-- store
-- ControlBar
+- scripts
+- controlActions.js
 - index.js
+- ControlBar
 - Keyboard
+- trackListActions.js
 - Sampler.ts
-- dependencies
 - TopNavBar
 - TrackList
 - Sampler
-- stroe.js
 - Track
-- CompositionParser.ts
 - Monotron
 - isNullOrUndefined
 - PqSynth
+- MIDIController
+- store
 - CompositionGrid
 - Monotron
 - MultiOsc
-- package.json
-- scripts
+- MIDIController.ts
+- Sound.test.ts
 - AudioFiles.js
+- dependencies
+- stroe.js
+- CompositionParser.ts
 - keywords
-- Sequencer
 - Instrument
 - VolumeSlider
 - Main.jsx
-- Sound
+- post-commit
 - tsconfig.eslint.json
+- post-checkout
 - TimeBar.tsx
 - InstrumentInput.jsx
 - SamplerPresets.js
 - .eslintrc.js
+- file-loader
+- html-webpack-plugin
+- http-status-codes
+- nodemon
 - normalize.css
-- npm
 - @overnightjs/core
+- @overnightjs/logger
 - react-bootstrap
 - react-dom
+- react-dropzone
+- react-loader-spinner
 - react-redux
-- redux-logger
 - redux-thunk
 - ts-node
 - tslib
@@ -81,21 +89,21 @@
 10. `InstrumentBase` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `InstrumentInput()` --references--> `Instruments`  [EXTRACTED]
-  src/public/daw/js/components/TrackDetails/InstrumentInput.jsx → src/public/daw/js/constants/Constants.ts
 - `addTrack()` --references--> `store`  [EXTRACTED]
   src/public/daw/js/actions/trackListActions.js → src/public/daw/js/stroe.js
+- `addNewPlugin()` --references--> `store`  [EXTRACTED]
+  src/public/daw/js/actions/trackListActions.js → src/public/daw/js/stroe.js
+- `InstrumentInput()` --references--> `Instruments`  [EXTRACTED]
+  src/public/daw/js/components/TrackDetails/InstrumentInput.jsx → src/public/daw/js/constants/Constants.ts
 - `initInstrumentContext()` --references--> `store`  [EXTRACTED]
   src/public/daw/js/actions/trackListActions.js → src/public/daw/js/stroe.js
 - `changeTrackInstrument()` --references--> `store`  [EXTRACTED]
-  src/public/daw/js/actions/trackListActions.js → src/public/daw/js/stroe.js
-- `addNewPlugin()` --references--> `store`  [EXTRACTED]
   src/public/daw/js/actions/trackListActions.js → src/public/daw/js/stroe.js
 
 ## Import Cycles
 - None detected.
 
-## Communities (102 total, 33 thin omitted)
+## Communities (109 total, 38 thin omitted)
 
 ### Community 0 - "Constants.ts"
 Cohesion: 0.07
@@ -105,97 +113,109 @@ Nodes (27): defaultKeyBindings, defaultKeysNames, defaultKeysNamesNoOctaveNumber
 Cohesion: 0.04
 Nodes (47): css-loader, eslint, eslint-config-prettier, eslint-plugin-prettier, eslint-plugin-react, @flydotio/dockerfile, fork-ts-checker-webpack-plugin, jest (+39 more)
 
-### Community 2 - "DawApiServer.ts"
-Cohesion: 0.08
-Nodes (19): Controller, express, Get, express, webpack, DemoController, fs, getInstrument() (+11 more)
-
-### Community 3 - "compilerOptions"
+### Community 2 - "compilerOptions"
 Cohesion: 0.05
 Nodes (36): ., ./.eslintrc.js, jest, node_modules/@types, ./src/**/*.test.ts, ./types, webmidi, compileOnSave (+28 more)
+
+### Community 3 - "DawApiServer.ts"
+Cohesion: 0.09
+Nodes (18): Controller, express, Get, express, DemoController, fs, getInstrument(), getSound() (+10 more)
 
 ### Community 4 - "DawPage"
 Cohesion: 0.08
 Nodes (15): DawFixtures, test, DawPage, compilerOptions, esModuleInterop, module, moduleResolution, skipLibCheck (+7 more)
 
-### Community 6 - "MIDIController.ts"
-Cohesion: 0.13
-Nodes (5): changeMidiDevice(), updateMidiController(), addPlayingNote(), removePlayingNote(), MIDIController
+### Community 6 - "scripts"
+Cohesion: 0.09
+Nodes (22): author, description, engines, node, license, name, repository, type (+14 more)
 
-### Community 7 - "store"
+### Community 7 - "controlActions.js"
 Cohesion: 0.10
-Nodes (6): addNewPlugin(), addTrack(), changeTrackInstrument(), initInstrumentContext(), loadTrackState(), store
+Nodes (3): updateCurrentTime(), mockedDispatch, mockedGetState
 
-### Community 9 - "index.js"
+### Community 8 - "index.js"
 Cohesion: 0.13
 Nodes (10): BufferLoader, reducer(), reducer(), reducer(), reducer(), firstInstrument, newMasterPluginList, newTrackPluginList (+2 more)
 
-### Community 11 - "Sampler.ts"
+### Community 12 - "Sampler.ts"
 Cohesion: 0.23
 Nodes (8): Instruments, noteToFrequency(), InstrumentUtils, Utils, InstrumentBase, PqSynthOscillator, Voice, VoiceSynthBase
-
-### Community 12 - "dependencies"
-Cohesion: 0.11
-Nodes (19): cross-env, file-loader, html-webpack-plugin, http-status-codes, nodemon, @overnightjs/logger, dependencies, cross-env (+11 more)
 
 ### Community 15 - "Sampler"
 Cohesion: 0.14
 Nodes (3): MIDIToNote(), Sampler, SamplerVoice
 
-### Community 16 - "stroe.js"
-Cohesion: 0.17
-Nodes (6): SoundOrigin, mockedDispatch, mockedGetState, mockedGetState, app, middleware
-
-### Community 20 - "CompositionParser.ts"
-Cohesion: 0.17
-Nodes (11): getRegionByRegionId(), getRegionIdByBitIndex(), getRegionsByTrackIndex(), Note, Notes, notesToDrawParser(), notesToPlay(), NoteToPlay (+3 more)
-
-### Community 21 - "Monotron"
+### Community 18 - "Monotron"
 Cohesion: 0.21
 Nodes (3): Monotron, Ui(), PanKnob
 
-### Community 27 - "package.json"
-Cohesion: 0.18
-Nodes (10): author, description, engines, node, license, name, repository, type (+2 more)
+### Community 22 - "store"
+Cohesion: 0.24
+Nodes (7): changeTrackInstrument(), initInstrumentContext(), loadTrackState(), getRegionByRegionId(), notesToDrawParser(), Sequencer, store
 
-### Community 28 - "scripts"
-Cohesion: 0.18
-Nodes (11): scripts, build, build:local, lint, start, start:local, start:local:so, test (+3 more)
+### Community 26 - "MIDIController.ts"
+Cohesion: 0.20
+Nodes (3): changeMidiDevice(), addPlayingNote(), removePlayingNote()
 
-### Community 29 - "AudioFiles.js"
+### Community 27 - "Sound.test.ts"
+Cohesion: 0.23
+Nodes (3): SoundOrigin, Sound, mockedGetState
+
+### Community 28 - "AudioFiles.js"
 Cohesion: 0.24
 Nodes (7): baseConfig, config, localConfig, DSKGrandPiano, keys, RockKit, SlingerlandKit
 
-### Community 30 - "keywords"
-Cohesion: 0.25
-Nodes (8): react, redux, node, keywords, react, redux, audio, synth
+### Community 29 - "dependencies"
+Cohesion: 0.20
+Nodes (10): cross-env, npm, dependencies, cross-env, npm, redux-logger, @types/express, webpack (+2 more)
 
-### Community 36 - "tsconfig.eslint.json"
+### Community 30 - "stroe.js"
+Cohesion: 0.22
+Nodes (3): mockedGetState, app, middleware
+
+### Community 31 - "CompositionParser.ts"
+Cohesion: 0.31
+Nodes (8): getRegionIdByBitIndex(), getRegionsByTrackIndex(), Note, Notes, notesToPlay(), NoteToPlay, Region, regionToDrawParser()
+
+### Community 32 - "keywords"
+Cohesion: 0.25
+Nodes (8): react, redux, keywords, react, redux, audio, node, synth
+
+### Community 36 - "post-commit"
+Cohesion: 0.40
+Nodes (4): post-commit script, GRAPHIFY_CHANGED, GRAPHIFY_REBUILD_LOG, PYTHONHASHSEED
+
+### Community 37 - "tsconfig.eslint.json"
 Cohesion: 0.40
 Nodes (4): ./tsconfig.json, exclude, extends, node_modules
 
-### Community 40 - "SamplerPresets.js"
+### Community 38 - "post-checkout"
+Cohesion: 0.50
+Nodes (3): post-checkout script, GRAPHIFY_REBUILD_LOG, PYTHONHASHSEED
+
+### Community 42 - "SamplerPresets.js"
 Cohesion: 0.50
 Nodes (3): presetList, Presets, Utils
 
 ## Knowledge Gaps
-- **155 isolated node(s):** `path`, `name`, `version`, `description`, `start` (+150 more)
+- **156 isolated node(s):** `path`, `DawFixtures`, `target`, `module`, `moduleResolution` (+151 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **33 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **38 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `redux` connect `keywords` to `stroe.js`, `index.js`?**
-  _High betweenness centrality (0.162) - this node is a cross-community bridge._
-- **Why does `keywords` connect `keywords` to `DawApiServer.ts`, `package.json`?**
-  _High betweenness centrality (0.120) - this node is a cross-community bridge._
-- **Why does `dependencies` connect `dependencies` to `DawApiServer.ts`, `normalize.css`, `npm`, `@overnightjs/core`, `react-bootstrap`, `react-dom`, `react-redux`, `redux-logger`, `redux-thunk`, `ts-node`, `tslib`, `typescript`, `webpack-cli`, `webpack-dev-middleware`, `webpack-hot-middleware`, `package.json`, `keywords`?**
-  _High betweenness centrality (0.068) - this node is a cross-community bridge._
-- **What connects `path`, `name`, `version` to the rest of the system?**
-  _155 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `redux` connect `keywords` to `index.js`, `stroe.js`?**
+  _High betweenness centrality (0.159) - this node is a cross-community bridge._
+- **Why does `keywords` connect `keywords` to `DawApiServer.ts`, `scripts`?**
+  _High betweenness centrality (0.118) - this node is a cross-community bridge._
+- **Why does `dependencies` connect `dependencies` to `DawApiServer.ts`, `scripts`, `keywords`, `file-loader`, `html-webpack-plugin`, `http-status-codes`, `nodemon`, `normalize.css`, `@overnightjs/core`, `@overnightjs/logger`, `react-bootstrap`, `react-dom`, `react-dropzone`, `react-loader-spinner`, `react-redux`, `redux-thunk`, `ts-node`, `tslib`, `typescript`, `webpack-cli`, `webpack-dev-middleware`, `webpack-hot-middleware`?**
+  _High betweenness centrality (0.067) - this node is a cross-community bridge._
+- **What connects `path`, `DawFixtures`, `target` to the rest of the system?**
+  _156 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Constants.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.06753246753246753 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.0425531914893617 - nodes in this community are weakly interconnected._
-- **Should `DawApiServer.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.08408408408408409 - nodes in this community are weakly interconnected._
+- **Should `compilerOptions` be split into smaller, more focused modules?**
+  _Cohesion score 0.05405405405405406 - nodes in this community are weakly interconnected._
