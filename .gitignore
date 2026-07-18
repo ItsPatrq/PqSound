@@ -48,3 +48,7 @@ graphify-out/.graphify_analysis.json
 graphify-out/graph.html
 graphify-out/.rebuild.lock
 graphify-out/cost.json
+
+# graphify: machine-specific interpreter pin written by the CLI/hooks
+graphify-out/.graphify_python
+graphify-out/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
