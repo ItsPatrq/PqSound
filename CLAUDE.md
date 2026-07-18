@@ -82,3 +82,15 @@ Each step is independently shippable; don't combine bundler + React + Redux chan
 - No CI is configured (`.github/workflows` does not exist).
 - The Redux store file is `src/public/daw/js/stroe.js` (typo is load-bearing — imports reference it). Searching for `store.js` finds nothing.
 - Client imports use webpack aliases (`engine/...`, `components/...`, `constants/...`) defined in `src/webpackCfg/defaults.ts` — plain Node/ts-node cannot resolve client modules, and Jest currently has no `moduleNameMapper` for them (client code is effectively untestable until that's added).
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Setup (once per machine/session): `uv tool install graphifyy` (the PyPI name has a double y; the CLI is `graphify`). Git hooks and the `graph.json` merge driver are registered automatically by `npm install` (the `prepare` script). Without the CLI everything degrades gracefully - hooks and Claude hook-guards no-op. Indexing scope is controlled by `.graphifyignore` (gitignore syntax, git-ignored paths are excluded automatically).
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

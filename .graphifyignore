@@ -1,0 +1,7 @@
+# gitignore-style; git-ignored paths (node_modules, dist, ...) are already excluded automatically.
+# Binary sample library - nothing to graph, and 150+ wav entries bloat manifest.json / mtime scans.
+assets/
+# Don't index the agent tooling itself (skill docs, settings) - pollutes queries with meta-nodes.
+.claude/
+# Never re-ingest graph output.
+graphify-out/
