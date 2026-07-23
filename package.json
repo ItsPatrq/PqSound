@@ -61,7 +61,7 @@
     },
     "dependencies": {
         "@overnightjs/core": "^1.7.6",
-        "@overnightjs/logger": "^1.1.10",
+        "@overnightjs/logger": "^1.2.1",
         "@types/express": "5.0.6",
         "cross-env": "10.1.0",
         "express": "^5.2.1",
