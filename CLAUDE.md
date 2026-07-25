@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Single project (not a monorepo). A browser DAW (digital audio workstation) built ~2018–2020: Web Audio synths/effects, a step/piano-roll sequencer, WebMIDI input, and sampled instruments. Express backend (`@overnightjs/core`) in `src/DawApi/`, React/Redux client app in `src/public/daw/`, Webpack 4 config in `src/webpackCfg/`. Entry point: `src/start.ts`. Deploys to Fly.io (`fly.toml`, app `pqsound`). Live demo: https://pqsound.fly.dev/.
+Single project (not a monorepo). A browser DAW (digital audio workstation) built ~2018–2020: Web Audio synths/effects, a step/piano-roll sequencer, WebMIDI input, and sampled instruments. Express backend (`@overnightjs/core`) in `src/DawApi/`, React/Redux client app in `src/public/daw/`, Webpack 5 config in `src/webpackCfg/`. Entry point: `src/start.ts`. Deploys to Fly.io (`fly.toml`, app `pqsound`). Live demo: https://pqsound.fly.dev/.
 
 ## Commands
 
@@ -33,39 +33,48 @@ The Redux store holds **non-serializable live objects**: `webAudioReducer` keeps
 
 ## Modernization notes (state of the stack, 2026)
 
-Everything is pinned to a ~2020 snapshot. Inventory of what's outdated and what replacing it implies:
+Partly modernized (2026): TypeScript 5, Webpack 5, Node 17.5.0, Express 5, CI + Jest engine tests + Playwright e2e are in. Still on the ~2020 snapshot: React 16, Redux 4 (hand-rolled), ESLint 7 / typescript-eslint 2, overnightjs. Inventory of what's still outdated and what replacing it implies:
 
 | Area | Current | Target / note |
 |---|---|---|
-| Node | `engines` 12.16.3, Docker 17.5.0 + `--openssl-legacy-provider` | Current LTS. The OpenSSL flag exists only because of Webpack 4's md4 hashing — dies with the bundler upgrade. |
-| Bundler | Webpack 4 + dead plugins | Vite is the natural target (plain TS/JSX/CSS app, no exotic loaders). If staying on Webpack 5: `extract-text-webpack-plugin@4.0.0-beta` → `mini-css-extract-plugin`, drop `hard-source-webpack-plugin` (built-in cache), drop `awesome-typescript-loader` (dead, unused anyway — `ts-loader` does the work), drop `eslint-loader` (deprecated) and `node: { fs: 'empty' }`. Webpack aliases (`actions`, `engine`, `components`, …) must be reproduced in the new bundler **and** in `tsconfig` `paths` + Jest `moduleNameMapper`. |
+| Node | `engines` `>=17.5.0`, Docker `NODE_VERSION=17.5.0` (aligned) | Current LTS. The `--openssl-legacy-provider` flag is **gone** — it existed only for Webpack 4's md4 hashing, and the Webpack 5 upgrade removed the need. Dockerfile no longer sets `NODE_OPTIONS`. |
+| Bundler | **Webpack 5.108.4** + webpack-cli 7.2.1 | Upgrade done. `mini-css-extract-plugin@2` (css-loader 7, style-loader), `html-webpack-plugin@5`, `fork-ts-checker-webpack-plugin@9`, `ts-loader@9` in place. Dead plugins removed: `extract-text-webpack-plugin`, `hard-source-webpack-plugin`, `awesome-typescript-loader`, `eslint-loader`, `node: { fs: 'empty' }` all gone. Remaining: Webpack aliases (`actions`, `engine`, `components`, …) are still NOT reproduced in `tsconfig` `paths` or Jest `moduleNameMapper` — alias-importing client tests can't run (engine tests dodge this with relative imports). |
 | TypeScript | 5.6.3 (upgraded from 3.9.7) | Done. `tsc --noEmit` now parses modern dep `.d.ts` (was blocked on TS 3.9). `skipLibCheck: true` added; toolchain bumped (`ts-jest@29`, `ts-node@10`, `fork-ts-checker@9`, `tslib`). Typecheck runs standalone via `npm run typecheck` (build still uses `ts-loader` `transpileOnly`). `noImplicitAny: false` still masks a lot (engine files carry many implicit/explicit `any`s). ESLint stack (`typescript-eslint@2`) NOT yet upgraded — separate step. |
-| React | 16.13, `ReactDOM.render` | 18+: `createRoot`, drop the `react/lib/ReactMount` alias (dead relic). Legacy lifecycles (`componentWillMount`/`componentWillReceiveProps`) exist in `containers/Keyboard.jsx` — fix before 18. ~10 class components total; feasible to convert to hooks incrementally. |
+| React | 16.13.1, `ReactDOM.render` (`src/public/daw/js/index.js:10`) | 18+: `createRoot`. The `react/lib/ReactMount` alias is already gone. Legacy lifecycle in `containers/Keyboard.jsx:222` already renamed to `UNSAFE_componentWillMount` (18-safe); no `componentWillReceiveProps` left. ~10 class components total; feasible to convert to hooks incrementally. |
 | react-bootstrap | 0.31.5 (Bootstrap 3 era, 2017) | Used in 10+ components (modals, grid, nav). Modern react-bootstrap has a completely different API; most layout is custom CSS anyway — evaluate dropping it for plain markup + the existing CSS rather than migrating. |
 | Redux | redux 4 + thunk + `redux-devtools-extension` (deprecated package) + hand-rolled reducers | Redux Toolkit — but **only after** the engine/store decoupling above; RTK's default serializability middleware will scream at the current state shape. |
 | ESLint | 7 + `@typescript-eslint` 2 | 9 flat config + typescript-eslint 8. Keep the "lint is the formatter" setup or move to standalone Prettier — pick one, update CLAUDE.md. |
-| Server | overnightjs (unmaintained since ~2020), `body-parser` package | Plain Express router (decorator controllers are trivial to inline) + `express.json()`. |
+| Server | overnightjs (unmaintained since ~2020) on **Express 5.2.1**, still importing the `body-parser` package | Plain Express router (decorator controllers are trivial to inline). Express 5 has built-in `express.json()`/`express.urlencoded()` — `body-parser` is now only a transitive dep but `DawApiServer.ts` still imports the standalone package; swap to the built-ins and drop the import. |
 | styled-components | Only `@types/styled-components` installed; the library itself is not used | Remove the types dep. Styling is plain CSS files + `normalize.css`. |
-| Tests | Single test (`DemoController.test.ts`), `testEnvironment: node` | Client tests need a jsdom environment plus mocks for `AudioContext`/`Worker`. Engine logic (`CompositionParser`, `Utils`, scheduling math) is the most testable and most valuable to cover before refactoring. |
-| CI | None | Add lint + test + build workflow first — it's the safety net for everything above. |
+| Tests | Jest: `DemoController.test.ts` + 5 engine tests (`Sound`, `Sequencer`, `Utils`, `CompositionParser`, `Track`). `testEnvironment: node`, no `moduleNameMapper`. Plus Playwright e2e in `playwright/` (`test:e2e`, `test:e2e:ui`). | Engine tests use **relative** imports to sidestep the missing alias mapper; alias-importing client tests still need `moduleNameMapper` + a jsdom env + `AudioContext`/`Worker` mocks. |
+| CI | **Present**: `.github/workflows/ci.yml` + `codeql.yml` | Safety net exists. |
 
-### Known bugs / smells found while surveying (not yet fixed)
+### Known bugs / smells
 
-- `SamplerController.js`: builds the file path as `instrumentsPath + req.url.substring(23)` — magic offset and **no path sanitization** (`../` traversal risk). Should become `express.static` or a sanitized param route. Also routes `ClassicalPiano` which has no sample directory.
-- `DawApiServer.ts`: `SERVER_START_MSG` has an operator-precedence bug — `'🌎 ==>\x1b[0m ' + process.env.hostName === 'localhost'` concatenates before comparing, so the ternary condition is always false.
-- `DawApiServer.ts`: `private compiler = webpack(config)` runs unconditionally, so production instantiates a webpack compiler at boot — this is why `webpack`, `webpack-dev-middleware`, etc. sit in `dependencies` instead of `devDependencies`. Lazy-init it inside `setupFrontEnd()` to sever the runtime dependency.
-- `webAudioReducer.js` `alert()`s on missing Web Audio support (has a `//TODO: error panel`).
-- `webkitAudioContext` fallback can go — every supported browser has unprefixed `AudioContext` now.
+Fixed (kept here so they aren't "rediscovered"):
+- ~~`SamplerController.js` path traversal~~ — now uses `req.params[0]` + `path.resolve` + a `startsWith(instrumentsPath + path.sep)` guard (returns 403 on `../`).
+- ~~`SamplerController.js` dead `ClassicalPiano` mimeType~~ — removed (no sample dir on disk; real ones are `DSKGrandPiano`, `RockKit`, `SlingerlandKit`).
+- ~~`DawApiServer.ts` `SERVER_START_MSG` precedence~~ — the ternary is now parenthesized correctly.
+- ~~eager `webpack(config)` at boot~~ — `compiler` is now optional and only instantiated inside `setupFrontEnd()` when `shouldBuildFront`.
+- ~~`DawApiServer.ts` top-level webpack import (prod module-load coupling)~~ — webpack/config/dev-middleware are now `require()`d lazily inside the `setupFrontEnd()` dev branch; the only remaining webpack reference at module scope is a `import type` (erased at compile). Production start no longer loads the webpack graph. Also swapped the `body-parser` package for the built-in `express.json()`/`express.urlencoded()`.
+- ~~`webAudioReducer.js` `alert()`~~ — now `console.error` (still a `//TODO` to surface an error panel).
+- ~~`webkitAudioContext` fallback~~ — gone; reducer uses bare `new AudioContext()`.
+
+Still open:
+- **Deferred (blocked): move `webpack`/`webpack-cli`/`webpack-dev-middleware`/`webpack-hot-middleware`/`html-webpack-plugin`/`file-loader` from `dependencies` → `devDependencies` and drop the dead `@types/styled-components` dep.** The runtime coupling itself is already gone (lazy import above); this remaining move only matters for `npm prune --omit=dev` shrinking the prod image. It's blocked because regenerating `package-lock.json` locally drops the lockfile's top-level `jest-util@30.4.1` (a pre-existing jest-ecosystem version skew: `jest@27` + `ts-jest@29`), which breaks `npm test`. Do this in a CI-matching env (node 18, `npm ci --legacy-peer-deps`) or after realigning the jest/ts-jest versions — not via a local `npm install`.
+- `DawApiServer.ts:16`: the `SERVER_START_MSG` ternary is correct but pointless — both non-literal branches use `process.env.hostName`. Cosmetic.
+- Redux store file is still `stroe.js` (typo). ~45 explicit/implicit `any`s remain in `engine/` under `noImplicitAny: false`.
+- Jest/ts-jest version skew (`jest@27`, `ts-jest@29`, lockfile `jest-util@30`) makes `npm install` locally drop `jest-util` unless it's force-added; align these versions.
 
 ### Suggested modernization order
 
-1. CI (lint/test/build) + a few engine unit tests as a safety net.
-2. Bundler swap (Vite or Webpack 5) + Node LTS + drop the OpenSSL flag; align `engines` with the Dockerfile.
-3. ~~TypeScript 5~~ (done — TS 5.6.3) + ESLint 9/typescript-eslint 8 (still pending).
-4. React 18 (`createRoot`, fix `Keyboard.jsx` lifecycles); decide react-bootstrap's fate.
+1. ~~CI (lint/test/build) + engine unit tests~~ — done (workflows + Jest engine tests + Playwright e2e).
+2. ~~Bundler swap → Webpack 5 + Node 17.5.0 + drop OpenSSL flag; align `engines`~~ — done.
+3. ~~TypeScript 5~~ (done — TS 5.6.3) + ESLint 9/typescript-eslint 8 (**still pending** — currently ESLint 7.32 + `@typescript-eslint/parser` 2.31).
+4. React 18 (`createRoot` at `index.js:10`); decide react-bootstrap's fate. Remove the dead `@types/styled-components` dep (library already gone) — deferred, needs a lockfile regen (see "Still open").
 5. Extract audio engine out of Redux state (interface: store holds serializable track/composition descriptors, engine subscribes/exposes an API).
-6. Redux Toolkit; rename `stroe.js` → `store.js` along the way.
-7. Server cleanup: drop overnightjs + body-parser, fix `SamplerController` path handling.
+6. Redux Toolkit (still redux 4 + thunk + deprecated `redux-devtools-extension`); rename `stroe.js` → `store.js` along the way.
+7. Server cleanup: drop overnightjs (remaining). Done: `body-parser` → built-in `express.json()`/`express.urlencoded()`, dead `ClassicalPiano` mimeType removed, webpack imports moved behind the dev branch.
 
 Each step is independently shippable; don't combine bundler + React + Redux changes in one branch.
 
@@ -76,10 +85,10 @@ Each step is independently shippable; don't combine bundler + React + Redux chan
 ## Gotchas
 
 - `tsconfig.json` has `strict: true` and `strictNullChecks: true`, but `noImplicitAny: false` — an explicit partial opt-out, not an oversight.
-- `engines.node` is pinned to `12.16.3`, but the `Dockerfile` actually runs Node 17.5.0 with `NODE_OPTIONS=--openssl-legacy-provider` (needed for Webpack 4 on Node 17+ OpenSSL). Don't "fix" this mismatch without checking both places.
+- `engines.node` is `>=17.5.0` and the `Dockerfile` uses `ARG NODE_VERSION=17.5.0` — aligned now. No `--openssl-legacy-provider` / `NODE_OPTIONS` anymore (Webpack 5 dropped the md4 dependency). Don't reintroduce the flag.
 - Controllers under `src/DawApi/controllers/` are a mix of `.ts` and plain `.js` files — this is intentional/legacy, not a build error.
 - Env vars in use: `PORT`, `NODE_ENV`, `NODE_HOST`, `SERVER_ONLY`, `REACT_WEBPACK_ENV`, and a lowercase `hostName` — none are documented elsewhere, so check actual usages (`grep`) before assuming behavior.
-- No CI is configured (`.github/workflows` does not exist).
+- CI is configured: `.github/workflows/ci.yml` and `codeql.yml` exist.
 - The Redux store file is `src/public/daw/js/stroe.js` (typo is load-bearing — imports reference it). Searching for `store.js` finds nothing.
 - Client imports use webpack aliases (`engine/...`, `components/...`, `constants/...`) defined in `src/webpackCfg/defaults.ts` — plain Node/ts-node cannot resolve client modules, and Jest currently has no `moduleNameMapper` for them (client code is effectively untestable until that's added).
 

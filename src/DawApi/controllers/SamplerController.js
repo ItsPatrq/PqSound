@@ -4,7 +4,6 @@ const fs = require('fs'),
     instrumentsPath = path.join(__dirname, '/../../../assets/audio/samples/instruments/');
 
 const mimeTypes = {
-    ClassicalPiano: 'audio/ogg',
     DSKGrandPiano: 'audio/wav',
     SlingerlandKit: 'audio/wav',
     RockKit: 'audio/wav',
