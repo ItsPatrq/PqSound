@@ -42,13 +42,6 @@ playwright-report
 playwright/report
 playwright/test-results
 
-# graphify: track graph.json/manifest.json/GRAPH_REPORT.md, ignore local cache + regenerable HTML viewer
-graphify-out/cache
-graphify-out/.graphify_analysis.json
-graphify-out/graph.html
-graphify-out/.rebuild.lock
-graphify-out/cost.json
-
-# graphify: machine-specific interpreter pin written by the CLI/hooks
-graphify-out/.graphify_python
-graphify-out/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
+# graphify: all output is regenerable machine data rebuilt locally by the
+# post-commit hook. Never tracked — avoids diff churn and keeps trunk clean.
+graphify-out/
