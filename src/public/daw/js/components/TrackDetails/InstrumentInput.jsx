@@ -2,7 +2,7 @@ import * as React from 'react';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 import { Instruments } from 'constants/Constants';
 import InstrumentModal from './InstrumentModal';
-import Loader from 'react-loader-spinner';
+import { Puff } from 'react-loader-spinner';
 
 const InstrumentInput = (props) => {
     const availableInstruments = [];
@@ -38,7 +38,7 @@ const InstrumentInput = (props) => {
 
                 {props.isLoading && (
                     <div className="instrumentDetailsInput_loading">
-                        <Loader type="Puff" color="#EFF8FF" height={20} width={20} />
+                        <Puff color="#EFF8FF" height={20} width={20} />
                         <p>Loading samples</p>
                     </div>
                 )}
