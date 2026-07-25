@@ -1,15 +1,13 @@
 import * as path from 'path';
-import * as bodyParser from 'body-parser';
+import type * as webpack from 'webpack';
 import { DemoController } from './controllers/DemoController';
 import { getInstrument } from './controllers/SamplerController';
 import { Server } from '@overnightjs/core';
 import { Logger } from '@overnightjs/logger';
-import * as webpack from 'webpack';
-import * as config from '../webpackCfg/webpack.config';
 import { publicPath } from '../webpackCfg/defaults';
 import * as express from 'express';
-import * as webpackMiddleware from 'webpack-dev-middleware'; //TODO: need to get rid off from production server
-import * as webpackHotMiddleware from 'webpack-hot-middleware';
+// webpack + dev-middleware are dev-only; they are require()d lazily inside setupFrontEnd()
+// so production never loads them (keeps them out of the runtime dependency graph).
 
 export class DawApiServer extends Server {
     private readonly SERVER_START_MSG =
@@ -18,8 +16,8 @@ export class DawApiServer extends Server {
     private webpackInitialized = false;
     constructor() {
         super(true);
-        this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(express.json());
+        this.app.use(express.urlencoded({ extended: true }));
         super.addControllers(new DemoController());
         this.setupFrontEnd();
         this.setupRoutes();
@@ -39,6 +37,14 @@ export class DawApiServer extends Server {
     private setupFrontEnd(): void {
         if (this.shouldBuildFront) {
             Logger.Imp('Starting server in development mode');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const webpack = require('webpack');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const config = require('../webpackCfg/webpack.config');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const webpackMiddleware = require('webpack-dev-middleware');
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const webpackHotMiddleware = require('webpack-hot-middleware');
             this.compiler = webpack(config);
             const middleware = webpackMiddleware(this.compiler, {
                 publicPath: publicPath,
