@@ -2,7 +2,7 @@
 import * as path from 'path';
 import MiniCssExtractPlugin = require('mini-css-extract-plugin');
 import * as webpack from 'webpack';
-import * as HtmlWebpackPlugin from 'html-webpack-plugin';
+import HtmlWebpackPlugin = require('html-webpack-plugin');
 
 export const srcPath = path.join(__dirname, './../public/daw/');
 export const publicPath = '/assets/';

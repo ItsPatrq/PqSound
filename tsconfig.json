@@ -23,11 +23,13 @@
     "noUnusedLocals": false /* Report errors on unused locals. */,
     "strict": true /* Enable all strict type-checking options. */,
     "outDir": "./dist/" /* Redirect output structure to the directory. */,
+    "rootDir": "./" /* Explicit source root; TS6 (TS5011) requires this when 'outDir' is set. Repo root covers src plus root-level configs (.eslintrc.js, playwright) pulled in by 'include'. */,
     "baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
     "typeRoots": [
       "./types",
       "node_modules/@types"
     ] /* List of folders to include type definitions from. */,
+    "ignoreDeprecations": "6.0" /* Silence TS6 deprecation errors for 'moduleResolution: node' and 'baseUrl'; revisit before TS7. */,
     "strictNullChecks": true /* Enable strict null checks. */,
     "skipLibCheck": true /* Skip type checking of declaration files (avoids errors from third-party .d.ts). */,
     "allowJs": true /* Allow javascript files to be compiled. */
