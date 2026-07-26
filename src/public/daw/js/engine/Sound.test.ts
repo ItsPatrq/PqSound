@@ -17,7 +17,7 @@ const makeContext = (state = 'running') =>
         state,
         currentTime: 1.0,
         resume: jest.fn(),
-    } as any);
+    }) as any;
 
 const makeTrack = (index: number) => ({
     index,

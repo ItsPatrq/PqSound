@@ -8,10 +8,9 @@
     "jsx": "react" /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */,
     "types": [
       "react",
-      "webmidi",
       "node",
       "jest"
-    ] /* Type declaration files to be included in compilation. */,
+    ] /* Type declaration files to be included in compilation. WebMIDI types now ship in the TS DOM lib (@types/webmidi 3 is an empty stub). */,
     "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
     "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
