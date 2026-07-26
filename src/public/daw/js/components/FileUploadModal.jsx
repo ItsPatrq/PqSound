@@ -7,7 +7,7 @@ const FileUploadModal = (props) => {
         <Modal
             backdrop="static"
             show={props.showModal}
-            bsSize="small"
+            size="sm"
             onHide={() => props.modalVisibilitySwitch()}
             dialogClassName="instrumentModal"
         >

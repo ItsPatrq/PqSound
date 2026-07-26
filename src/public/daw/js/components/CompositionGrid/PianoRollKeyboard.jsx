@@ -16,7 +16,7 @@ const PianoRollKeyboard = (props) => {
                     key={i.toString()}
                     placement="right"
                     overlay={getTooltip(noteToMIDI(i))}
-                    delayShow={500}
+                    delay={{ show: 500, hide: 0 }}
                 >
                     <div
                         className="pianoRollKey sharp"
@@ -34,7 +34,7 @@ const PianoRollKeyboard = (props) => {
                         key={i.toString()}
                         placement="right"
                         overlay={getTooltip(noteToMIDI(i))}
-                        delayShow={500}
+                        delay={{ show: 500, hide: 0 }}
                     >
                         <div
                             className="pianoRollKey short"
@@ -53,7 +53,7 @@ const PianoRollKeyboard = (props) => {
                         key={i.toString()}
                         placement="right"
                         overlay={getTooltip(noteToMIDI(i))}
-                        delayShow={500}
+                        delay={{ show: 500, hide: 0 }}
                     >
                         <div
                             className="pianoRollKey long"
@@ -68,7 +68,7 @@ const PianoRollKeyboard = (props) => {
         }
     }
     keys.push(
-        <OverlayTrigger key="0" placement="right" overlay={getTooltip(noteToMIDI(0))} delayShow={500}>
+        <OverlayTrigger key="0" placement="right" overlay={getTooltip(noteToMIDI(0))} delay={{ show: 500, hide: 0 }}>
             <div
                 className="pianoRollKey"
                 style={{ height: 20 + 'px' }}

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import { Col, Row, Button, ButtonGroup, Glyphicon, FormControl } from 'react-bootstrap';
+import { Col, Row, Button, ButtonGroup, FormControl } from 'react-bootstrap';
+import { ArrowUp, ArrowDown, X } from 'react-bootstrap-icons';
 import { TrackTypes } from 'constants/Constants';
 import { samplerIcon, virtualInstrumentIcon, auxIcon } from 'constants/Icons';
 
@@ -20,8 +21,8 @@ const Track = (props) => {
         if (props.trackDetails.record) {
             buttonRecord = (
                 <Button
-                    bsSize="xsmall"
-                    bsStyle="danger"
+                    size="sm"
+                    variant="danger"
                     onClick={(e) => {
                         props.onRecordButtonClicked(props.trackDetails.index);
                         e.stopPropagation();
@@ -33,7 +34,7 @@ const Track = (props) => {
         } else {
             buttonRecord = (
                 <Button
-                    bsSize="xsmall"
+                    size="sm"
                     onClick={(e) => {
                         props.onRecordButtonClicked(props.trackDetails.index);
                         e.stopPropagation();
@@ -49,8 +50,8 @@ const Track = (props) => {
     if (props.trackDetails.solo) {
         buttonSolo = (
             <Button
-                bsSize="xsmall"
-                bsStyle="warning"
+                size="sm"
+                variant="warning"
                 onClick={(e) => {
                     props.onSoloButtonClicked(props.trackDetails.index);
                     e.stopPropagation();
@@ -62,7 +63,7 @@ const Track = (props) => {
     } else {
         buttonSolo = (
             <Button
-                bsSize="xsmall"
+                size="sm"
                 onClick={(e) => {
                     props.onSoloButtonClicked(props.trackDetails.index);
                     e.stopPropagation();
@@ -75,8 +76,8 @@ const Track = (props) => {
     if (props.trackDetails.mute) {
         buttonMute = (
             <Button
-                bsSize="xsmall"
-                bsStyle="info"
+                size="sm"
+                variant="info"
                 onClick={(e) => {
                     props.onMuteButtonClicked(props.trackDetails.index);
                     e.stopPropagation();
@@ -88,7 +89,7 @@ const Track = (props) => {
     } else {
         buttonMute = (
             <Button
-                bsSize="xsmall"
+                size="sm"
                 onClick={(e) => {
                     props.onMuteButtonClicked(props.trackDetails.index);
                     e.stopPropagation();
@@ -101,26 +102,26 @@ const Track = (props) => {
     if (props.trackDetails.index > 1) {
         buttonIndexDown = (
             <Button
-                bsSize="xsmall"
+                size="sm"
                 onClick={(e) => {
                     props.onIndexDown(props.trackDetails.index);
                     e.stopPropagation();
                 }}
             >
-                <Glyphicon glyph="arrow-up" />
+                <ArrowUp />
             </Button>
         );
     }
     if (props.trackDetails.index + 1 < props.trackListLength) {
         buttonIndexUp = (
             <Button
-                bsSize="xsmall"
+                size="sm"
                 onClick={(e) => {
                     props.onIndexUp(props.trackDetails.index);
                     e.stopPropagation();
                 }}
             >
-                <Glyphicon glyph="arrow-down" />
+                <ArrowDown />
             </Button>
         );
     }
@@ -163,9 +164,9 @@ const Track = (props) => {
                             props.handleRemove(props.trackDetails.index);
                             e.stopPropagation();
                         }}
-                        bsSize="xsmall"
+                        size="sm"
                     >
-                        <Glyphicon glyph="remove" />
+                        <X />
                     </Button>
                 </ButtonGroup>
                 <FormControl

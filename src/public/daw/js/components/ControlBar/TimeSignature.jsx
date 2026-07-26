@@ -7,7 +7,7 @@ const TimeSignature = () => {
             <OverlayTrigger
                 placement="bottom"
                 overlay={<Tooltip id={'tooltipTimeSignature'}>{'Time Signature'}</Tooltip>}
-                delayShow={500}
+                delay={{ show: 500, hide: 0 }}
             >
                 <div className="timeSignatureDisplay">4/4</div>
             </OverlayTrigger>

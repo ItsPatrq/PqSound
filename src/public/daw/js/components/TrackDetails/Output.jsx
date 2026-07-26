@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { MenuItem, DropdownButton, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Dropdown, DropdownButton, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const Output = (props) => {
     const availableAuxTracks = [];
     const isEnabled = props.auxTracks.length > 1;
     for (let i = 0; i < props.auxTracks.length; i++) {
         availableAuxTracks.push(
-            <MenuItem
+            <Dropdown.Item
                 key={props.auxTracks[i].index}
                 eventKey={props.auxTracks[i].index}
                 onClick={() => {
@@ -14,7 +14,7 @@ const Output = (props) => {
                 }}
             >
                 {props.auxTracks[i].name}
-            </MenuItem>,
+            </Dropdown.Item>,
         );
     }
     return (
@@ -22,12 +22,12 @@ const Output = (props) => {
             <OverlayTrigger
                 placement="bottom"
                 overlay={<Tooltip id={'tooltipTimeSignature'}>{'Output AUX'}</Tooltip>}
-                delayShow={500}
+                delay={{ show: 500, hide: 0 }}
             >
                 <div style={{ margin: 'auto' }}>
                     <DropdownButton
                         disabled={!isEnabled}
-                        bsStyle="link"
+                        variant="link"
                         className="drop-down outputSelectorDropDown"
                         title={props.dropDownTitle}
                         id="OutputSelectorDropDown"

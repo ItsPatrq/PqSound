@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MenuItem, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import SamplerPresets from 'constants/SamplerPresets';
 import { Utils as SamplerPresetsUtils } from 'constants/SamplerPresets';
 
@@ -11,7 +11,7 @@ const Sampler = (props) => {
         const availablePresets = [];
         for (let j = 0; j < SamplerPresets[i].presets.length; j++) {
             availablePresets.push(
-                <MenuItem
+                <Dropdown.Item
                     key={SamplerPresets[i].presets[j].id.toString()}
                     eventKey={SamplerPresets[i].presets[j].id.toString()}
                     onClick={() => {
@@ -22,14 +22,14 @@ const Sampler = (props) => {
                     }}
                 >
                     {SamplerPresets[i].presets[j].name}
-                </MenuItem>,
+                </Dropdown.Item>,
             );
         }
         allPresets.push(
             <DropdownButton
                 id={'preset-drop-down-' + i}
                 key={i}
-                bsStyle="default"
+                variant="secondary"
                 className="drop-down"
                 title={SamplerPresets[i].name}
             >

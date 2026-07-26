@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, Grid, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 
 import TopNavBar from 'containers/TopNavBar';
 import ControlBar from 'containers/ControlBar';
@@ -12,7 +12,7 @@ const Layout = () => {
     return (
         <div className="layout">
             <TopNavBar />
-            <Grid fluid style={{ overflow: 'hidden' }}>
+            <Container fluid style={{ overflow: 'hidden' }}>
                 <Row>
                     <ControlBar />
                 </Row>
@@ -28,7 +28,7 @@ const Layout = () => {
                         </Col>
                     </Col>
                 </Row>
-            </Grid>
+            </Container>
         </div>
     );
 };

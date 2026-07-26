@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Col, Button, Glyphicon } from 'react-bootstrap';
+import { Col, Button } from 'react-bootstrap';
+import { PlayFill, PauseFill, StopFill } from 'react-bootstrap-icons';
 import { connect } from 'react-redux';
 import Sequencer from 'engine/Sequencer';
 import * as Actions from 'actions/controlActions';
@@ -211,14 +212,14 @@ class ControlBar extends React.Component {
                     />
                 </div>
                 <Col xs={2} className="controlButtons">
-                    <Button onClick={this.handlePlay.bind(this)}>
-                        <Glyphicon glyph="play" />
+                    <Button aria-label="Play" onClick={this.handlePlay.bind(this)}>
+                        <PlayFill />
                     </Button>
-                    <Button onClick={this.handlePause.bind(this)}>
-                        <Glyphicon glyph="pause" />
+                    <Button aria-label="Pause" onClick={this.handlePause.bind(this)}>
+                        <PauseFill />
                     </Button>
-                    <Button onClick={this.handleStop.bind(this)}>
-                        <Glyphicon glyph="stop" />
+                    <Button aria-label="Stop" onClick={this.handleStop.bind(this)}>
+                        <StopFill />
                     </Button>
                 </Col>
             </Col>

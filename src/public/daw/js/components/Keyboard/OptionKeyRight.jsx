@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Button, Glyphicon } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import { ChevronRight } from 'react-bootstrap-icons';
 
 const OptionKeyRight = (props) => {
     return (
@@ -7,26 +8,26 @@ const OptionKeyRight = (props) => {
             <div className="shiftKeyDiv">
                 <Button
                     className="shiftKeyDiv"
-                    bsSize="lg"
-                    bsStyle="link"
+                    size="lg"
+                    variant="link"
                     onClick={() => {
                         props.onChangeKeyboardRange(1);
                     }}
                 >
-                    <Glyphicon glyph="chevron-right" />
+                    <ChevronRight />
                 </Button>
             </div>
             <div className="shiftKeyDiv">
                 <Button
                     className="shiftKeyDiv"
-                    bsSize="lg"
-                    bsStyle="link"
+                    size="lg"
+                    variant="link"
                     onClick={() => {
                         props.onChangeKeyboardRange(12);
                     }}
                 >
-                    <Glyphicon glyph="chevron-right" />
-                    <Glyphicon glyph="chevron-right" />
+                    <ChevronRight />
+                    <ChevronRight />
                 </Button>
             </div>
         </div>

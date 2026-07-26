@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MenuItem, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { Instruments } from 'constants/Constants';
 import InstrumentModal from './InstrumentModal';
 import { Puff } from 'react-loader-spinner';
@@ -9,7 +9,7 @@ const InstrumentInput = (props) => {
     for (const property in Instruments) {
         if (Instruments.hasOwnProperty(property)) {
             availableInstruments.push(
-                <MenuItem
+                <Dropdown.Item
                     key={(Instruments[property].id + 1).toString()}
                     eventKey={(Instruments[property].id + 1).toString()}
                     onClick={() => {
@@ -17,7 +17,7 @@ const InstrumentInput = (props) => {
                     }}
                 >
                     {Instruments[property].name}
-                </MenuItem>,
+                </Dropdown.Item>,
             );
         }
     }
@@ -26,7 +26,7 @@ const InstrumentInput = (props) => {
             <div className="instrumentDetailsInput">
                 <div className="selectedInstrument">
                     <DropdownButton
-                        bsStyle="link"
+                        variant="link"
                         title=""
                         className="drop-down outputSelectorDropDown"
                         id="OutputSelectorDropDown"

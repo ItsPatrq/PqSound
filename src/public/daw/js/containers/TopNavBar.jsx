@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import {
     switchKeyboardVisibility,
@@ -204,57 +204,55 @@ class TopNavBar extends React.Component {
         const showHideKeyNames = this.props.keyNamesVisible ? 'Hide key names' : 'Show key names';
         const showHideBindNames = this.props.keyBindVisible ? 'Hide key bindings' : 'Show key bindings';
         const showHideKeyNamesMenuItem = this.props.keyboardVisible ? (
-            <MenuItem eventKey={3.2} onClick={() => this.handleSwitchKeyNameVisibility()}>
+            <NavDropdown.Item eventKey={3.2} onClick={() => this.handleSwitchKeyNameVisibility()}>
                 {showHideKeyNames}
-            </MenuItem>
+            </NavDropdown.Item>
         ) : null;
         const showHideBindNamesMenuItem = this.props.keyboardVisible ? (
-            <MenuItem eventKey={3.3} onClick={() => this.handleSwitchKeyBindVisibility()}>
+            <NavDropdown.Item eventKey={3.3} onClick={() => this.handleSwitchKeyBindVisibility()}>
                 {showHideBindNames}
-            </MenuItem>
+            </NavDropdown.Item>
         ) : null;
         const showHidePianoroll = this.props.pianoRollVisible ? 'Hide Piano Roll' : 'Show Piano Roll';
         const showHidePianorollMenuItem = !Utils.isNullOrUndefined(this.props.pianoRollRegion) ? (
-            <MenuItem eventKey={3.4} onClick={() => this.handleSwitchPianoRollVisibility()}>
+            <NavDropdown.Item eventKey={3.4} onClick={() => this.handleSwitchPianoRollVisibility()}>
                 {showHidePianoroll}
-            </MenuItem>
+            </NavDropdown.Item>
         ) : null;
 
         return (
-            <Navbar inverse fixedTop collapseOnSelect fluid>
-                <Navbar.Header>
-                    <Navbar.Brand>
-                        <a onClick={() => this.homeClicked()}>PqSound</a>
-                    </Navbar.Brand>
-                    <Navbar.Toggle />
-                </Navbar.Header>
-                <Navbar.Collapse>
-                    <Nav>
-                        <NavItem eventKey={1} onClick={() => this.homeClicked()}>
-                            Home
-                        </NavItem>
-                        <NavItem eventKey={2} onClick={this.aboutModalVisibilitySwitch.bind(this)}>
-                            About
-                        </NavItem>
-                        <NavDropdown eventKey={3} title="Show" id="basic-nav-dropdown">
-                            <MenuItem eventKey={3.1} onClick={() => this.handleSwitchKeyboardVisibility()}>
-                                {showHideKeyboard}
-                            </MenuItem>
-                            {showHideKeyNamesMenuItem}
-                            {showHideBindNamesMenuItem}
-                            {showHidePianorollMenuItem}
-                        </NavDropdown>
-                        <NavItem eventKey={4} onClick={this.fileUploadModalVisibilitySwitch.bind(this)}>
-                            Import
-                        </NavItem>
-                        <NavItem eventKey={5} onClick={this.export.bind(this)}>
-                            Export
-                        </NavItem>
-                        <NavItem eventKey={6} onClick={this.loadDemo.bind(this)}>
-                            Load demo
-                        </NavItem>
-                    </Nav>
-                </Navbar.Collapse>
+            <Navbar bg="dark" variant="dark" fixed="top" collapseOnSelect expand="lg">
+                <Container fluid>
+                    <Navbar.Brand onClick={() => this.homeClicked()}>PqSound</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="main-navbar-nav" />
+                    <Navbar.Collapse id="main-navbar-nav">
+                        <Nav>
+                            <Nav.Link eventKey={1} onClick={() => this.homeClicked()}>
+                                Home
+                            </Nav.Link>
+                            <Nav.Link eventKey={2} onClick={this.aboutModalVisibilitySwitch.bind(this)}>
+                                About
+                            </Nav.Link>
+                            <NavDropdown title="Show" id="basic-nav-dropdown">
+                                <NavDropdown.Item eventKey={3.1} onClick={() => this.handleSwitchKeyboardVisibility()}>
+                                    {showHideKeyboard}
+                                </NavDropdown.Item>
+                                {showHideKeyNamesMenuItem}
+                                {showHideBindNamesMenuItem}
+                                {showHidePianorollMenuItem}
+                            </NavDropdown>
+                            <Nav.Link eventKey={4} onClick={this.fileUploadModalVisibilitySwitch.bind(this)}>
+                                Import
+                            </Nav.Link>
+                            <Nav.Link eventKey={5} onClick={this.export.bind(this)}>
+                                Export
+                            </Nav.Link>
+                            <Nav.Link eventKey={6} onClick={this.loadDemo.bind(this)}>
+                                Load demo
+                            </Nav.Link>
+                        </Nav>
+                    </Navbar.Collapse>
+                </Container>
                 <FileUploadModal
                     showModal={this.props.control.showUploadModal}
                     modalVisibilitySwitch={this.fileUploadModalVisibilitySwitch.bind(this)}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import AddNewPluginButton from 'components/TrackDetails/AddNewPluginButton';
-import { Glyphicon } from 'react-bootstrap';
+import { X } from 'react-bootstrap-icons';
 
 const PluginList = (props) => {
     const pluginList = [];
@@ -21,7 +21,7 @@ const PluginList = (props) => {
                         props.onPluginRemove(props.trackIndex, props.pluginList[i].index);
                     }}
                 >
-                    <Glyphicon glyph="remove" />
+                    <X />
                 </div>
             </div>,
         );

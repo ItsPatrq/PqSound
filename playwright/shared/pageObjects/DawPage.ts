@@ -4,8 +4,8 @@ import { expect, Locator, Page } from '@playwright/test';
  * Page object for the PqSound DAW single-page app.
  *
  * Selectors lean on stable, human-visible anchors (the navbar brand, the
- * "Load demo" menu item, the transport buttons' bootstrap glyphicons) rather
- * than on test ids, since the app source carries none.
+ * "Load demo" menu item, the transport buttons' aria-labels) rather than on
+ * test ids, since the app source carries none.
  */
 export class DawPage {
     readonly page: Page;
@@ -23,10 +23,11 @@ export class DawPage {
         this.brand = page.locator('.navbar-brand');
         this.loadDemoItem = page.getByText('Load demo', { exact: true });
         this.controlBar = page.locator('.controlBar');
-        // Transport buttons render as <button><span class="glyphicon glyphicon-*"></span></button>.
-        this.playButton = page.locator('.controlButtons button', { has: page.locator('.glyphicon-play') });
-        this.pauseButton = page.locator('.controlButtons button', { has: page.locator('.glyphicon-pause') });
-        this.stopButton = page.locator('.controlButtons button', { has: page.locator('.glyphicon-stop') });
+        // Transport buttons render as <button aria-label="Play"><svg class="bi bi-play-fill"/></button>
+        // (react-bootstrap-icons); anchor on the stable aria-labels.
+        this.playButton = page.locator('.controlButtons button[aria-label="Play"]');
+        this.pauseButton = page.locator('.controlButtons button[aria-label="Pause"]');
+        this.stopButton = page.locator('.controlButtons button[aria-label="Stop"]');
     }
 
     async goto(): Promise<void> {

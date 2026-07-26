@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { tools } from 'constants/Constants';
 
 const ToolDropdown = (props) => {
@@ -8,22 +8,22 @@ const ToolDropdown = (props) => {
     for (const property in tools) {
         if (tools.hasOwnProperty(property)) {
             toolsMenuItems.push(
-                <MenuItem
+                <Dropdown.Item
                     key={(tools[property].id + 1).toString()}
                     eventKey={(tools[property].id + 1).toString()}
                     onClick={() => props.onToolChange(tools[property].id)}
                 >
                     {tools[property].name}
-                </MenuItem>,
+                </Dropdown.Item>,
             );
             secoundaryToolsMenuITems.push(
-                <MenuItem
+                <Dropdown.Item
                     key={(tools[property].id + 1).toString()}
                     eventKey={(tools[property].id + 1).toString()}
                     onClick={() => props.onSecoundaryToolChange(tools[property].id)}
                 >
                     {tools[property].name}
-                </MenuItem>,
+                </Dropdown.Item>,
             );
         }
     }
@@ -36,11 +36,11 @@ const ToolDropdown = (props) => {
     };
     return (
         <div className="toolsContainer">
-            <DropdownButton bsStyle="link" className="toolInput" title={getToolName(props.tool)} id="leftClickTools">
+            <DropdownButton variant="link" className="toolInput" title={getToolName(props.tool)} id="leftClickTools">
                 {toolsMenuItems}
             </DropdownButton>
             <DropdownButton
-                bsStyle="link"
+                variant="link"
                 className="toolInput"
                 title={getToolName(props.secoundaryTool)}
                 id="altClickTools"

@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { Button, Glyphicon } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import { Plus } from 'react-bootstrap-icons';
 
 const TrackListButtons = (props) => {
     return (
         <div className="trackListButtons">
-            <Button bsStyle="primary" onClick={props.onAddNewTrack}>
-                <Glyphicon glyph="plus" />
+            <Button variant="primary" onClick={props.onAddNewTrack}>
+                <Plus />
             </Button>
-            <Button bsStyle={props.isAnySolo ? 'warning' : 'default'} onClick={props.onSoloAllClicked}>
+            <Button variant={props.isAnySolo ? 'warning' : 'secondary'} onClick={props.onSoloAllClicked}>
                 S
             </Button>
         </div>
