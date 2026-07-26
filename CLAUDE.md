@@ -33,11 +33,11 @@ The Redux store holds **non-serializable live objects**: `webAudioReducer` keeps
 
 ## Modernization notes (state of the stack, 2026)
 
-Partly modernized (2026): TypeScript 5, Webpack 5, Node 17.5.0, Express 5, CI + Jest engine tests + Playwright e2e are in. Still on the ~2020 snapshot: React 16, Redux 4 (hand-rolled), ESLint 7 / typescript-eslint 2, overnightjs. Inventory of what's still outdated and what replacing it implies:
+Partly modernized (2026): TypeScript 5, Webpack 5, Node 22 (LTS), Express 5, CI + Jest engine tests + Playwright e2e are in. Still on the ~2020 snapshot: React 16, Redux 4 (hand-rolled), ESLint 7 / typescript-eslint 2, overnightjs. Inventory of what's still outdated and what replacing it implies:
 
 | Area | Current | Target / note |
 |---|---|---|
-| Node | `engines` `>=17.5.0`, Docker `NODE_VERSION=17.5.0` (aligned) | Current LTS. The `--openssl-legacy-provider` flag is **gone** — it existed only for Webpack 4's md4 hashing, and the Webpack 5 upgrade removed the need. Dockerfile no longer sets `NODE_OPTIONS`. |
+| Node | **Node 22.23.1 (LTS)**: `engines` `>=22.0.0`, Docker `NODE_VERSION=22.23.1`, CI `node-version: 22`, `.nvmrc` `22.23.1` (all aligned) | On current LTS. Node 22 ships npm 10 (strict peer-dep resolution) — the Dockerfile build-stage `npm ci` uses `--legacy-peer-deps` to match CI and the lockfile. The `--openssl-legacy-provider` flag is **gone** (Webpack 5 dropped the md4 need); Dockerfile sets no `NODE_OPTIONS`. Don't reintroduce the flag. |
 | Bundler | **Webpack 5.108.4** + webpack-cli 7.2.1 | Upgrade done. `mini-css-extract-plugin@2` (css-loader 7, style-loader), `html-webpack-plugin@5`, `fork-ts-checker-webpack-plugin@9`, `ts-loader@9` in place. Dead plugins removed: `extract-text-webpack-plugin`, `hard-source-webpack-plugin`, `awesome-typescript-loader`, `eslint-loader`, `node: { fs: 'empty' }` all gone. Remaining: Webpack aliases (`actions`, `engine`, `components`, …) are still NOT reproduced in `tsconfig` `paths` or Jest `moduleNameMapper` — alias-importing client tests can't run (engine tests dodge this with relative imports). |
 | TypeScript | 5.6.3 (upgraded from 3.9.7) | Done. `tsc --noEmit` now parses modern dep `.d.ts` (was blocked on TS 3.9). `skipLibCheck: true` added; toolchain bumped (`ts-jest@29`, `ts-node@10`, `fork-ts-checker@9`, `tslib`). Typecheck runs standalone via `npm run typecheck` (build still uses `ts-loader` `transpileOnly`). `noImplicitAny: false` still masks a lot (engine files carry many implicit/explicit `any`s). ESLint stack (`typescript-eslint@2`) NOT yet upgraded — separate step. |
 | React | 16.13.1, `ReactDOM.render` (`src/public/daw/js/index.js:10`) | 18+: `createRoot`. The `react/lib/ReactMount` alias is already gone. Legacy lifecycle in `containers/Keyboard.jsx:222` already renamed to `UNSAFE_componentWillMount` (18-safe); no `componentWillReceiveProps` left. ~10 class components total; feasible to convert to hooks incrementally. |
@@ -85,7 +85,7 @@ Each step is independently shippable; don't combine bundler + React + Redux chan
 ## Gotchas
 
 - `tsconfig.json` has `strict: true` and `strictNullChecks: true`, but `noImplicitAny: false` — an explicit partial opt-out, not an oversight.
-- `engines.node` is `>=17.5.0` and the `Dockerfile` uses `ARG NODE_VERSION=17.5.0` — aligned now. No `--openssl-legacy-provider` / `NODE_OPTIONS` anymore (Webpack 5 dropped the md4 dependency). Don't reintroduce the flag.
+- `engines.node` is `>=22.0.0`, the `Dockerfile` uses `ARG NODE_VERSION=22.23.1`, CI runs `node-version: 22`, and `.nvmrc` is `22.23.1` — all aligned on Node 22 LTS. The Docker build-stage `npm ci` needs `--legacy-peer-deps` (npm 10 strict peers). No `--openssl-legacy-provider` / `NODE_OPTIONS` anymore (Webpack 5 dropped the md4 dependency). Don't reintroduce the flag.
 - Controllers under `src/DawApi/controllers/` are a mix of `.ts` and plain `.js` files — this is intentional/legacy, not a build error.
 - Env vars in use: `PORT`, `NODE_ENV`, `NODE_HOST`, `SERVER_ONLY`, `REACT_WEBPACK_ENV`, and a lowercase `hostName` — none are documented elsewhere, so check actual usages (`grep`) before assuming behavior.
 - CI is configured: `.github/workflows/ci.yml` and `codeql.yml` exist.
