@@ -29,7 +29,7 @@ const TimeMeter = (props) => {
         <OverlayTrigger
             placement="bottom"
             overlay={<Tooltip id={'tooltipTimeSignature'}>{'Playhead Position (SMPTE)'}</Tooltip>}
-            delayShow={500}
+            delay={{ show: 500, hide: 0 }}
         >
             <div className="clockWrap">
                 <div className="clockTime">

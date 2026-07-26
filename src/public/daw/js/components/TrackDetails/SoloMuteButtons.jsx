@@ -6,9 +6,8 @@ const SoloMuteButtons = (props) => {
     if (props.trackDetails.mute) {
         buttonMute = (
             <Button
-                block={true}
-                className="btn-block"
-                bsStyle="info"
+                className="w-100"
+                variant="info"
                 onClick={() => props.onMuteButtonClicked(props.trackDetails.index)}
             >
                 M
@@ -16,11 +15,7 @@ const SoloMuteButtons = (props) => {
         );
     } else {
         buttonMute = (
-            <Button
-                block={true}
-                className="btn-block"
-                onClick={() => props.onMuteButtonClicked(props.trackDetails.index)}
-            >
+            <Button className="w-100" onClick={() => props.onMuteButtonClicked(props.trackDetails.index)}>
                 M
             </Button>
         );
@@ -28,9 +23,8 @@ const SoloMuteButtons = (props) => {
     if (props.trackDetails.solo) {
         buttonSolo = (
             <Button
-                block={true}
-                className="btn-block"
-                bsStyle="warning"
+                className="w-100"
+                variant="warning"
                 onClick={() => props.onSoloButtonClicked(props.trackDetails.index)}
             >
                 S
@@ -38,11 +32,7 @@ const SoloMuteButtons = (props) => {
         );
     } else {
         buttonSolo = (
-            <Button
-                block={true}
-                className="btn-block"
-                onClick={() => props.onSoloButtonClicked(props.trackDetails.index)}
-            >
+            <Button className="w-100" onClick={() => props.onSoloButtonClicked(props.trackDetails.index)}>
                 S
             </Button>
         );
@@ -52,7 +42,7 @@ const SoloMuteButtons = (props) => {
     }
     return (
         <div className="soloMuteButtons">
-            <ButtonGroup justified>
+            <ButtonGroup className="w-100">
                 <Col xs={6} className="nopadding">
                     {buttonSolo}
                 </Col>

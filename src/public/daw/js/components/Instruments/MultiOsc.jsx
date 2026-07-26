@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MenuItem, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { oscillatorTypes } from 'constants/Constants';
 
 require('styles/Instruments/MultiOsc.css');
@@ -18,13 +18,13 @@ const MultiOsc = (props) => {
     const oscillatorTypesDropdownItems = [];
     for (let i = 0; i < oscillatorTypes.length; i++) {
         oscillatorTypesDropdownItems.push(
-            <MenuItem
+            <Dropdown.Item
                 key={oscillatorTypes[i]}
                 eventKey={oscillatorTypes[i]}
                 onClick={() => handleChange(null, null, null, null, oscillatorTypes[i])}
             >
                 {oscillatorTypes[i]}
-            </MenuItem>,
+            </Dropdown.Item>,
         );
     }
     return (
@@ -36,7 +36,7 @@ const MultiOsc = (props) => {
                 <p>Oscilator type: </p>
                 <DropdownButton
                     id={'oscilator-types-drop-down'}
-                    bsStyle="default"
+                    variant="secondary"
                     className="drop-down"
                     title={props.instrument.preset.oscilatorType}
                 >

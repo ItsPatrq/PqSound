@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MenuItem, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { oscillatorTypes } from 'constants/Constants';
 
 require('styles/Instruments/PqSynth.css');
@@ -18,51 +18,51 @@ const PqSynth = (props) => {
         const octaveShifts = [];
         for (let j = 0; j < oscillatorTypes.length; j++) {
             shapeTypes.push(
-                <MenuItem
+                <Dropdown.Item
                     key={'oscilator' + i + 'shape' + oscillatorTypes[j]}
                     eventKey={'oscilator' + i + 'shape' + oscillatorTypes[j]}
                     onClick={() => handleChange('waveForm', true, i, oscillatorTypes[j])}
                 >
                     {oscillatorTypes[j]}
-                </MenuItem>,
+                </Dropdown.Item>,
             );
         }
         shapeTypes.push(
-            <MenuItem
+            <Dropdown.Item
                 key={'oscilator' + i + 'shapeWhiteNoise'}
                 eventKey={'oscilator' + i + 'shapeWhiteNoise'}
                 onClick={() => handleChange('waveForm', true, i, 'whiteNoise')}
             >
                 {'white noise'}
-            </MenuItem>,
+            </Dropdown.Item>,
         );
         shapeTypes.push(
-            <MenuItem
+            <Dropdown.Item
                 key={'oscilator' + i + 'shapePinkNoise'}
                 eventKey={'oscilator' + i + 'shapePinkNoise'}
                 onClick={() => handleChange('waveForm', true, i, 'pinkNoise')}
             >
                 {'pink noise'}
-            </MenuItem>,
+            </Dropdown.Item>,
         );
         shapeTypes.push(
-            <MenuItem
+            <Dropdown.Item
                 key={'oscilator' + i + 'brownianPinkNoise'}
                 eventKey={'oscilator' + i + 'brownianPinkNoise'}
                 onClick={() => handleChange('waveForm', true, i, 'brownianNoise')}
             >
                 {'brownian noise'}
-            </MenuItem>,
+            </Dropdown.Item>,
         );
         for (let j = 0; j < 7; j++) {
             octaveShifts.push(
-                <MenuItem
+                <Dropdown.Item
                     key={'oscilator' + i + 'octShift' + (j - 3)}
                     eventKey={'oscilator' + i + 'octShift' + (j - 3)}
                     onClick={() => handleChange('frequencyModOct', true, i, j - 3)}
                 >
                     {j - 3 === 0 ? 'none' : j - 3}
-                </MenuItem>,
+                </Dropdown.Item>,
             );
         }
         oscillators.push(
@@ -96,7 +96,7 @@ const PqSynth = (props) => {
                     </div>
                     <DropdownButton
                         id={'oscilator-types-drop-down'}
-                        bsStyle="link"
+                        variant="link"
                         className="waveformSelector"
                         title={props.instrument.preset.oscillators[i].waveForm}
                     >
@@ -126,7 +126,7 @@ const PqSynth = (props) => {
                         </div>
                         <DropdownButton
                             id={'oscilator-types-drop-down'}
-                            bsStyle="link"
+                            variant="link"
                             className="waveformSelector"
                             title={
                                 props.instrument.preset.oscillators[i].frequencyModOct

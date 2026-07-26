@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { MenuItem, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { Plugins } from 'constants/Constants';
 
 const AddNewPluginButton = (props) => {
     const availablePlugins = [];
     for (let i = 0; i < Plugins.length; i++) {
         availablePlugins.push(
-            <MenuItem
+            <Dropdown.Item
                 key={Plugins[i].id}
                 eventKey={Plugins[i].id}
                 onClick={() => {
@@ -14,14 +14,14 @@ const AddNewPluginButton = (props) => {
                 }}
             >
                 {Plugins[i].name}
-            </MenuItem>,
+            </Dropdown.Item>,
         );
     }
     return (
         <div className="addNewPluginButton">
             <div style={{ margin: 'auto' }}>
                 <DropdownButton
-                    bsStyle="link"
+                    variant="link"
                     className="drop-down outputSelectorDropDown"
                     title="Add new plugin"
                     id="OutputSelectorDropDown"

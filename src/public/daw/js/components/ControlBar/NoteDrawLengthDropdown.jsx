@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { noteLengths } from 'constants/Constants';
 
 const NoteDrawLengthDropdown = (props) => {
@@ -8,19 +8,19 @@ const NoteDrawLengthDropdown = (props) => {
         for (const property in noteLengths) {
             if (noteLengths.hasOwnProperty(property)) {
                 noteLengthsMenuItems.push(
-                    <MenuItem
+                    <Dropdown.Item
                         key={(noteLengths[property].id + 1).toString()}
                         eventKey={(noteLengths[property].id + 1).toString()}
                         onClick={() => props.onNoteDrawLengthChange(noteLengths[property].id)}
                     >
                         {noteLengths[property].name}
-                    </MenuItem>,
+                    </Dropdown.Item>,
                 );
             }
         }
 
         return (
-            <DropdownButton bsStyle="default" className="drop-down" title="Note draw length" id={props.id}>
+            <DropdownButton variant="secondary" className="drop-down" title="Note draw length" id={props.id}>
                 {noteLengthsMenuItems}
             </DropdownButton>
         );

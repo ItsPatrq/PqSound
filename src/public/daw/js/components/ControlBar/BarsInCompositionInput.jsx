@@ -19,7 +19,7 @@ const BarsInCompositionInput = (props) => {
             <OverlayTrigger
                 placement="bottom"
                 overlay={<Tooltip id={'tooltipTimeSignature'}>{'Bars in composition'}</Tooltip>}
-                delayShow={500}
+                delay={{ show: 500, hide: 0 }}
             >
                 <div className="barsInCompositionDisplay">
                     <input

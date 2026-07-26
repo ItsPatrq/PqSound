@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { MenuItem, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 const MIDIDeviceSelector = (props) => {
     const availableDevices = [];
     availableDevices.push(
-        <MenuItem
+        <Dropdown.Item
             key="selectNoneMidiDevice"
             eventKey="selectNoneMidiDevice"
             onClick={() => {
@@ -12,12 +12,12 @@ const MIDIDeviceSelector = (props) => {
             }}
         >
             None
-        </MenuItem>,
+        </Dropdown.Item>,
     );
     const isEnabled = props.devices.length > 0;
     for (let i = 0; i < props.devices.length; i++) {
         availableDevices.push(
-            <MenuItem
+            <Dropdown.Item
                 key={props.devices[i].id}
                 eventKey={props.devices[i].id}
                 onClick={() => {
@@ -25,7 +25,7 @@ const MIDIDeviceSelector = (props) => {
                 }}
             >
                 {props.devices[i].name}
-            </MenuItem>,
+            </Dropdown.Item>,
         );
     }
     return (
@@ -33,7 +33,7 @@ const MIDIDeviceSelector = (props) => {
             <div className="midiDeviceSelectorName">MIDI device</div>
             <DropdownButton
                 disabled={!isEnabled}
-                bsStyle="link"
+                variant="link"
                 className="drop-down midiDeviceSelectorDropDown"
                 title={props.dropDownTitle}
                 id="MidiDeviceSelectorDropDown"

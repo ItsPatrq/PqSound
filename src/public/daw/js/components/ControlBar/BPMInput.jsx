@@ -20,7 +20,7 @@ const BPMInput = (props) => {
             <OverlayTrigger
                 placement="bottom"
                 overlay={<Tooltip id={'tooltipTimeSignature'}>{'Tempo'}</Tooltip>}
-                delayShow={500}
+                delay={{ show: 500, hide: 0 }}
             >
                 <div className="bpmDisplay">
                     <input
