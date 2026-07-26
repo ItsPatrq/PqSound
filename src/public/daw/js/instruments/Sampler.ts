@@ -31,9 +31,12 @@ class SamplerVoice extends VoiceSynthBase {
         time = time || this.context.currentTime;
         this.output.gain.setValueAtTime(1, time);
         this.output.gain.linearRampToValueAtTime(0.00001, time + this.preset.release + 0.001);
-        setTimeout(() => {
-            this.source.disconnect();
-        }, Math.floor((time + this.preset.release - this.context.currentTime) * 1000));
+        setTimeout(
+            () => {
+                this.source.disconnect();
+            },
+            Math.floor((time + this.preset.release - this.context.currentTime) * 1000),
+        );
     }
 
     connect(target) {

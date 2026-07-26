@@ -23,8 +23,9 @@ jobs:
 
       # eslint without --fix: fail on errors, do not mutate the tree in CI.
       # Warnings do not fail the build (the repo currently has many).
+      # Flat config (eslint.config.js) auto-discovers files and ignores.
       - name: Lint
-        run: npx eslint --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .
+        run: npx eslint .
 
       - name: Typecheck
         run: npm run typecheck

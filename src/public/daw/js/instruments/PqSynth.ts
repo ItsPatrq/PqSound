@@ -154,28 +154,31 @@ class PqSynthVoice extends VoiceSynthBase {
     stop(time) {
         time = time || this.context.currentTime;
         this.output.gain.exponentialRampToValueAtTime(0.0001, time + 0.1);
-        setTimeout(() => {
-            for (let i = 0; i < this.preset.oscillators.length; i++) {
-                if (this.preset.oscillators[i].active) {
-                    if (
-                        this.preset.oscillators[i].waveForm === 'whiteNoise' ||
-                        this.preset.oscillators[i].waveForm === 'pinkNoise' ||
-                        this.preset.oscillators[i].waveForm === 'brownianNoise'
-                    ) {
-                    } else {
-                        this.oscillators[i].source.disconnect();
-                        if (this.preset.oscillators[i].frequencyModLfo) {
-                            this.oscillators[i].fqLfoModifier.disconnect();
-                            this.oscillators[i].widthFqLfoModifier.disconnect();
+        setTimeout(
+            () => {
+                for (let i = 0; i < this.preset.oscillators.length; i++) {
+                    if (this.preset.oscillators[i].active) {
+                        if (
+                            this.preset.oscillators[i].waveForm === 'whiteNoise' ||
+                            this.preset.oscillators[i].waveForm === 'pinkNoise' ||
+                            this.preset.oscillators[i].waveForm === 'brownianNoise'
+                        ) {
+                        } else {
+                            this.oscillators[i].source.disconnect();
+                            if (this.preset.oscillators[i].frequencyModLfo) {
+                                this.oscillators[i].fqLfoModifier.disconnect();
+                                this.oscillators[i].widthFqLfoModifier.disconnect();
+                            }
+                        }
+                        if (this.preset.oscillators[i].amplitudeModLfo) {
+                            this.oscillators[i].amplitudeLfoModifier.disconnect();
+                            this.oscillators[i].widthAmplitudeLfoModifier.disconnect();
                         }
                     }
-                    if (this.preset.oscillators[i].amplitudeModLfo) {
-                        this.oscillators[i].amplitudeLfoModifier.disconnect();
-                        this.oscillators[i].widthAmplitudeLfoModifier.disconnect();
-                    }
                 }
-            }
-        }, Math.floor((time - this.context.currentTime) * 1000));
+            },
+            Math.floor((time - this.context.currentTime) * 1000),
+        );
     }
 
     connect(target) {
