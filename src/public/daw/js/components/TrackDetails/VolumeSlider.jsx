@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Col } from 'react-bootstrap';
 import { isNullOrUndefined } from 'engine/Utils';
 
 class VolumeSlider extends React.Component {
@@ -37,7 +36,7 @@ class VolumeSlider extends React.Component {
     render() {
         return (
             <div className="volumeSectionDiv">
-                <Col xs={6} className="nopadding">
+                <div className="pq-col-6 nopadding">
                     <div className="volumeValue">{Math.floor(this.props.volume * 100)}%</div>
                     <input
                         className="volumeSlider"
@@ -48,8 +47,8 @@ class VolumeSlider extends React.Component {
                         value={this.props.volume * 100}
                         onChange={(event) => this.props.onVolumeChange(this.props.trackIndex, event.target.value)}
                     />
-                </Col>
-                <Col xs={6} className="nopadding">
+                </div>
+                <div className="pq-col-6 nopadding">
                     <div className="volumeValue">
                         {Math.floor(
                             this.state.volumes.left > this.state.volumes.right
@@ -65,7 +64,7 @@ class VolumeSlider extends React.Component {
                             this.initCanvas(input);
                         }}
                     ></canvas>
-                </Col>
+                </div>
             </div>
         );
     }

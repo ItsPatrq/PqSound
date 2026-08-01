@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import Modal from 'components/Modal';
 import SamplerComponent from 'components/Instruments/Sampler';
 import MonotronComponent from 'components/Instruments/Monotron';
 import MultiOscComponent from 'components/Instruments/MultiOsc';
@@ -49,19 +49,13 @@ const InstrumentModal = (props) => {
     }
     return (
         <Modal
-            backdrop="static"
             show={props.showModal}
             size="lg"
+            title={modalHeader}
             onHide={() => props.modalVisibilitySwitch()}
             dialogClassName="instrumentModal"
         >
-            <Modal.Header closeButton>
-                <Modal.Title>{modalHeader}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>{modalBody}</Modal.Body>
-            <Modal.Footer>
-                <Button onClick={() => props.modalVisibilitySwitch()}>Close</Button>
-            </Modal.Footer>
+            {modalBody}
         </Modal>
     );
 };

@@ -1,10 +1,12 @@
 .distortionModal {
-    background-color: #3d0202;
+    background-color: var(--pq-panel-alt);
     font-family: "Source Sans Pro", Arial, sans-serif;
-    color: #eaeeef;
+    color: var(--pq-text);
     width: 100%;
     margin: auto;
     padding: 8px;
+    border: 1px solid var(--pq-border);
+    border-radius: 6px;
 }
 
 .distortionControlRow {

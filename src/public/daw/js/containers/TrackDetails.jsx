@@ -1,14 +1,9 @@
 import * as React from 'react';
-import { Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import VolumeSlider from 'components/TrackDetails/VolumeSlider';
-import PanKnob from 'components/TrackDetails/PanKnob';
 import InstrumentInput from 'components/TrackDetails/InstrumentInput';
 import PluginsList from 'components/TrackDetails/PluginsList';
-import TrackName from 'components/TrackDetails/TrackName';
 import Output from 'components/TrackDetails/Output';
-import SoloMuteButtons from 'components/TrackDetails/SoloMuteButtons';
-import PluginModal from 'components/TrackDetails/PluginModal';
+import Oscilloscope from 'components/TrackDetails/Oscilloscope';
 import * as Actions from 'actions/trackDetailsActions';
 import {
     changeTrackVolume,
@@ -24,11 +19,12 @@ import {
 } from 'actions/trackListActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
-import { TrackTypes } from 'constants/Constants';
+import { TrackTypes, Instruments } from 'constants/Constants';
 
 class TrackDetails extends React.Component {
     constructor() {
         super();
+        this.state = { tab: 'track' };
     }
 
     getTrackName(index) {
@@ -78,7 +74,9 @@ class TrackDetails extends React.Component {
     handleInstrumentChange(instrumentId) {
         if (instrumentId !== this.getTrackInstrument(this.props.selected).id) {
             this.props.dispatch(changeTrackInstrument(instrumentId, this.props.selected));
-            this.props.dispatch(Actions.instrumentModalVisibilitySwitch());
+            // Open the details panel (idempotent) so the new instrument's editor shows;
+            // must NOT toggle, or it fights the name-click toggle and desyncs.
+            this.props.dispatch(Actions.instrumentModalVisibilitySwitch(true));
         }
     }
 
@@ -191,97 +189,171 @@ class TrackDetails extends React.Component {
         this.props.dispatch(updateInstrumentPreset(newPreset, this.props.selected));
     }
 
+    // Live EQ band control. The engine Equalizer plugin exposes 3 linear gains
+    // (lowFilterGain/midFilterGain/highFilterGain, 1.0 = unity). We dispatch a
+    // partial preset — the reducer merges it and calls the plugin's updateNodes().
+    handleEqChange(trackIndex, pluginIndex, gainKey, value) {
+        const gain = parseInt(value) / 100;
+        this.props.dispatch(changePluginPreset(trackIndex, pluginIndex, { [gainKey]: gain }));
+    }
+
     render() {
-        let instrumentComponent;
-        if (
-            Utils.getTrackByIndex(this.props.trackList, this.props.selected).trackType === TrackTypes.virtualInstrument
-        ) {
-            instrumentComponent = (
-                <InstrumentInput
-                    instrumentModalVisibilitySwitch={this.instrumentModalVisibilitySwitch.bind(this)}
-                    showModal={this.props.trackDetails.showInstrumentModal}
-                    selectedTrack={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
-                    onSamplerPresetChange={this.handleSamplerPresetChange.bind(this)}
-                    onInstrumentChange={this.handleInstrumentChange.bind(this)}
-                    onInstrumentPresetChange={this.handleInstrumentPresetChange.bind(this)}
-                    isLoading={this.props.samplerInstruments.some((x) => x.fetching)}
-                />
-            );
-        } else {
-            instrumentComponent = <div className="instrumentInputContainer" />;
-        }
+        const isMaster = this.state.tab === 'master';
+        const index = isMaster ? 0 : this.props.selected;
+        const track = Utils.getTrackByIndex(this.props.trackList, index);
+        const isInstrument = !isMaster && track.trackType === TrackTypes.virtualInstrument;
+
+        const pan = Math.round(Utils.normalizePan(track.pan));
+        const panLabel = Utils.panLabel(track.pan);
+
+        const vol = track.volume;
+        const db = Utils.volumeToDb(vol);
+
+        // 5-band design strip, but the engine Equalizer is 3-band — only LOW/MID/HIGH
+        // map to real gains; LO-MID/HI-MID stay disabled. Active only when the shown
+        // track has an Equalizer plugin in its chain.
+        const eqPlugin = track.pluginList.find((p) => p.name === 'Equalizer');
+        const eqBands = [
+            { label: 'LOW', key: 'lowFilterGain' },
+            { label: 'LO-MID', key: null },
+            { label: 'MID', key: 'midFilterGain' },
+            { label: 'HI-MID', key: null },
+            { label: 'HIGH', key: 'highFilterGain' },
+        ];
+
         return (
-            <>
-                <Col xs={6} className="trackDetailsContainer">
-                    {instrumentComponent}
+            <div className="pq-channel">
+                <div className="pq-ch-head">
+                    <span className="pq-ch-eyebrow">CHANNEL</span>
+                    <div className="pq-ch-tabs">
+                        <button
+                            className={'pq-ch-tab' + (isMaster ? '' : ' is-active')}
+                            onClick={() => this.setState({ tab: 'track' })}
+                        >
+                            TRACK
+                        </button>
+                        <button
+                            className={'pq-ch-tab' + (isMaster ? ' is-active' : '')}
+                            onClick={() => this.setState({ tab: 'master' })}
+                        >
+                            MASTER
+                        </button>
+                    </div>
+                </div>
+
+                <div className="pq-ch-title">
+                    <div className="pq-ch-name">{this.getTrackName(index)}</div>
+                    {isInstrument ? (
+                        <InstrumentInput
+                            onEdit={this.instrumentModalVisibilitySwitch.bind(this)}
+                            showModal={this.props.trackDetails.showInstrumentModal}
+                            selectedTrack={track}
+                            isLoading={
+                                track.instrument.id === Instruments.Sampler.id &&
+                                !!track.instrument.preset &&
+                                this.props.samplerInstruments.some(
+                                    (x) => x.id === track.instrument.preset.id && x.fetching,
+                                )
+                            }
+                        />
+                    ) : (
+                        <div className="pq-ch-inst">{isMaster ? 'MASTER BUS' : 'AUX'}</div>
+                    )}
+                </div>
+
+                <div className="pq-ch-section">
+                    <div className="pq-ch-label">OSCILLOSCOPE</div>
+                    <div className="pq-scope">
+                        <Oscilloscope key={index} trackNode={track.trackNode} />
+                    </div>
+                </div>
+
+                <div className="pq-ch-section">
+                    <div className="pq-ch-label">EQUALIZER{eqPlugin ? '' : ' · no EQ in chain'}</div>
+                    <div className="pq-eq">
+                        {eqBands.map((b) => {
+                            const active = !!eqPlugin && !!b.key;
+                            const gain = active ? (eqPlugin.preset[b.key] ?? 1) : 1;
+                            const db = active && gain > 0.0001 ? Math.round(20 * Math.log10(gain)) : null;
+                            return (
+                                <div className="pq-eq-band" key={b.label}>
+                                    <span className="pq-eq-db">
+                                        {db === null ? '' : db > 0 ? '+' + db : db} {active ? 'dB' : ''}
+                                    </span>
+                                    <input
+                                        className="pq-eq-slider"
+                                        type="range"
+                                        min="0"
+                                        max="200"
+                                        value={Math.round(gain * 100)}
+                                        orient="vertical"
+                                        disabled={!active}
+                                        onChange={
+                                            active
+                                                ? (e) =>
+                                                      this.handleEqChange(index, eqPlugin.index, b.key, e.target.value)
+                                                : undefined
+                                        }
+                                    />
+                                    <span className="pq-eq-band-name">{b.label}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <div className="pq-ch-section">
+                    <div className="pq-ch-label">PLUGIN CHAIN</div>
                     <PluginsList
-                        pluginList={Utils.getTrackByIndex(this.props.trackList, this.props.selected).pluginList}
+                        pluginList={track.pluginList}
                         onPluginAdd={this.handleAddPlugin.bind(this)}
-                        trackIndex={this.props.selected}
+                        trackIndex={index}
                         onPluginRemove={this.handleRemovePlugin.bind(this)}
                         onPluginModalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
                     />
-                    <Output
-                        auxTracks={this.getAvailableAuxTracks()}
-                        dropDownTitle={this.getOutputName(
-                            Utils.getTrackByIndex(this.props.trackList, this.props.selected).output,
-                        )}
-                        onOutputChange={this.handleOutputChange.bind(this)}
+                </div>
+
+                {isInstrument && (
+                    <div className="pq-ch-section">
+                        <div className="pq-ch-label">OUTPUT</div>
+                        <Output
+                            auxTracks={this.getAvailableAuxTracks()}
+                            dropDownTitle={this.getOutputName(track.output)}
+                            onOutputChange={this.handleOutputChange.bind(this)}
+                        />
+                    </div>
+                )}
+
+                <div className="pq-ch-fader">
+                    <div className="pq-ch-fader-row">
+                        <span className="pq-ch-label">PAN</span>
+                        <span className="pq-ch-val">{panLabel}</span>
+                    </div>
+                    <input
+                        className="pq-h-slider"
+                        type="range"
+                        min="-100"
+                        max="100"
+                        value={pan}
+                        onChange={(e) => this.handlePanChange(index, Number(e.target.value))}
                     />
-                    <PanKnob
-                        pan={Utils.getTrackByIndex(this.props.trackList, this.props.selected).pan}
-                        onPanChange={this.handlePanChange.bind(this)}
-                        trackIndex={this.props.selected}
+                </div>
+
+                <div className="pq-ch-fader">
+                    <div className="pq-ch-fader-row">
+                        <span className="pq-ch-label">VOLUME</span>
+                        <span className="pq-ch-val">{db} dB</span>
+                    </div>
+                    <input
+                        className="pq-h-slider"
+                        type="range"
+                        min="0"
+                        max="200"
+                        value={Math.round(vol * 100)}
+                        onChange={(e) => this.onVolumeChange(index, e.target.value)}
                     />
-                    <VolumeSlider
-                        volume={Utils.getTrackByIndex(this.props.trackList, this.props.selected).volume}
-                        onVolumeChange={this.onVolumeChange.bind(this)}
-                        trackIndex={this.props.selected}
-                        trackNode={Utils.getTrackByIndex(this.props.trackList, this.props.selected).trackNode}
-                    />
-                    <SoloMuteButtons
-                        trackDetails={Utils.getTrackByIndex(this.props.trackList, this.props.selected)}
-                        onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
-                        onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
-                    />
-                    <TrackName name={this.getTrackName(this.props.selected)} />
-                </Col>
-                <Col xs={6} className="trackDetailsContainer">
-                    <div className="instrumentInputContainer" />
-                    <PluginsList
-                        pluginList={Utils.getTrackByIndex(this.props.trackList, 0).pluginList}
-                        onPluginAdd={this.handleAddPlugin.bind(this)}
-                        trackIndex={0}
-                        onPluginRemove={this.handleRemovePlugin.bind(this)}
-                        onPluginModalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
-                    />
-                    <Output auxTracks={[]} dropDownTitle="Stereo out" />
-                    <PanKnob
-                        pan={Utils.getTrackByIndex(this.props.trackList, 0).pan}
-                        onPanChange={this.handlePanChange.bind(this)}
-                        trackIndex={0}
-                    />
-                    <VolumeSlider
-                        volume={Utils.getTrackByIndex(this.props.trackList, 0).volume}
-                        onVolumeChange={this.onVolumeChange.bind(this)}
-                        trackIndex={0}
-                        trackNode={Utils.getTrackByIndex(this.props.trackList, 0).trackNode}
-                    />
-                    <SoloMuteButtons
-                        trackDetails={Utils.getTrackByIndex(this.props.trackList, 0)}
-                        onSoloButtonClicked={this.handleSoloButtonClicked.bind(this)}
-                        onMuteButtonClicked={this.handleMuteButtonClicked.bind(this)}
-                    />
-                    <TrackName name={this.getTrackName(0)} />
-                </Col>
-                <PluginModal
-                    modalVisibilitySwitch={this.handlePluginModalVisibilitySwitch.bind(this)}
-                    showModal={this.props.trackDetails.showPluginModal}
-                    plugin={this.getSelectedPlugin()}
-                    trackName={this.getTrackName(this.props.trackDetails.selectedPluginTrackIndex)}
-                    onPresetChange={this.handlePluginPresetChange.bind(this)}
-                />
-            </>
+                </div>
+            </div>
         );
     }
 }

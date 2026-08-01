@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Row } from 'react-bootstrap';
 import { keyNotes, defaultKeysNames } from 'constants/Constants';
 import { isNullOrUndefined, noteToMIDI } from 'engine/Utils';
 
@@ -14,9 +13,9 @@ const PianoRoll = (props) => {
         let rowClassName;
         const notes = [];
         if (keyNotes[i]) {
-            rowClassName = 'nopadding keyRow black';
+            rowClassName = 'nopadding pq-inline-row keyRow black';
         } else {
-            rowClassName = 'nopadding keyRow white';
+            rowClassName = 'nopadding pq-inline-row keyRow white';
         }
         if (!isNullOrUndefined(props.notes[i])) {
             for (let j = 0; j < props.notes[i].length; j++) {
@@ -35,7 +34,7 @@ const PianoRoll = (props) => {
             }
         }
         keyRows.push(
-            <Row
+            <div
                 className={rowClassName}
                 key={'pianRollKeyRow' + i}
                 onClick={(e) => handleRowClicked(i, e)}
@@ -46,7 +45,7 @@ const PianoRoll = (props) => {
                 onMouseUp={(event) => props.onUp(event, noteToMIDI(i))}
             >
                 {notes}
-            </Row>,
+            </div>,
         );
     }
 

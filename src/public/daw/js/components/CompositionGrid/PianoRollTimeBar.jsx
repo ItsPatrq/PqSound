@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Row } from 'react-bootstrap';
 
 const PianoRollTimeBar = (props) => {
     const beats = [];
@@ -38,7 +37,7 @@ const PianoRollTimeBar = (props) => {
         );
     }
     return (
-        <Row className="pianoRollTimeBar" style={{ width: 30 * props.bits * 16 + 'px' }}>
+        <div className="pq-inline-row pianoRollTimeBar" style={{ width: 30 * props.bits * 16 + 'px' }}>
             <div className="pianoRollTimeBarContent">
                 {beats}
                 <svg
@@ -48,7 +47,7 @@ const PianoRollTimeBar = (props) => {
                     <polygon points="2,2 10,8 18,2"></polygon>
                 </svg>
             </div>
-        </Row>
+        </div>
     );
 };
 

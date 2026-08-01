@@ -1,33 +1,26 @@
 import * as React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import Dropdown from 'components/Dropdown';
 import { Plugins } from 'constants/Constants';
 
 const AddNewPluginButton = (props) => {
     const availablePlugins = [];
     for (let i = 0; i < Plugins.length; i++) {
-        availablePlugins.push(
-            <Dropdown.Item
-                key={Plugins[i].id}
-                eventKey={Plugins[i].id}
-                onClick={() => {
-                    props.onPluginAdd(props.trackIndex, Plugins[i].id);
-                }}
-            >
-                {Plugins[i].name}
-            </Dropdown.Item>,
-        );
+        const id = Plugins[i].id;
+        availablePlugins.push({
+            key: id,
+            label: Plugins[i].name,
+            onClick: () => props.onPluginAdd(props.trackIndex, id),
+        });
     }
     return (
         <div className="addNewPluginButton">
             <div style={{ margin: 'auto' }}>
-                <DropdownButton
-                    variant="link"
+                <Dropdown
+                    items={availablePlugins}
                     className="drop-down outputSelectorDropDown"
                     title="Add new plugin"
                     id="OutputSelectorDropDown"
-                >
-                    {availablePlugins}
-                </DropdownButton>
+                />
             </div>
         </div>
     );

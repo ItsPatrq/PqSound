@@ -1,0 +1,62 @@
+/* PqSound re-skin — bottom view bar (design): Piano Roll / Mixer view toggles on
+ * the left, master OUT meter on the right. Its own grid row above the footer. */
+.pq-viewbar {
+    height: var(--pq-viewbar-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    background: var(--pq-panel-alt);
+    border-top: 1px solid var(--pq-border);
+    position: relative;
+    z-index: 20;
+    user-select: none;
+}
+
+.pq-viewbar-views {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pq-viewbar-btn {
+    height: 26px;
+    padding: 0 12px;
+    font-size: 11.5px;
+    border-radius: 5px;
+}
+.pq-viewbar-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+/* master OUT — two vertical level bars (ported from the header) */
+.pq-viewbar-out {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.pq-viewbar-out-label {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--pq-text-faint);
+}
+.pq-viewbar-out-meter {
+    display: flex;
+    gap: 2px;
+    height: 20px;
+    align-items: flex-end;
+}
+.pq-viewbar-out-bar {
+    width: 3px;
+    height: 20px;
+    background: var(--pq-control);
+    border-radius: 1px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+}
+.pq-viewbar-out-fill {
+    width: 100%;
+    height: 6%;
+}

@@ -82,8 +82,21 @@ describe('Sequencer', () => {
             sequencer.schedule();
 
             expect(state.webAudio.sound.scheduleStop).toHaveBeenCalledTimes(2);
-            expect(state.webAudio.sound.scheduleStop).toHaveBeenNthCalledWith(1, 0, 0, SoundOrigin.composition);
-            expect(state.webAudio.sound.scheduleStop).toHaveBeenNthCalledWith(2, 1, 0.125, SoundOrigin.composition);
+            // 4th arg (loop-end flush index) is undefined when the loop is disabled.
+            expect(state.webAudio.sound.scheduleStop).toHaveBeenNthCalledWith(
+                1,
+                0,
+                0,
+                SoundOrigin.composition,
+                undefined,
+            );
+            expect(state.webAudio.sound.scheduleStop).toHaveBeenNthCalledWith(
+                2,
+                1,
+                0.125,
+                SoundOrigin.composition,
+                undefined,
+            );
             expect(sequencer.sixteenthPlaying).toBe(2);
         });
 

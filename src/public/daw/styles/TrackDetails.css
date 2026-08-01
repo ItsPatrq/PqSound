@@ -27,32 +27,48 @@
 
 .pluginList{
     width: 100%;
-    color: rgba(239, 248, 255, 0.801);
-    background-color: rgb(60, 71, 75);
+    color: var(--pq-text-dim);
+    background-color: var(--pq-panel-alt);
     display: flex;
     flex-direction: column;
     height: 100%;
     height: -webkit-fill-available;
     overflow: hidden;
 }
-
-#TrackDetailsCol {
-    height: calc(100vh - 100px);
-
-}
 .soloMuteButtons{
-    background-color: rgb(82, 97, 102);
     position: absolute;
     bottom: 20px;
-    border: 1px solid #212121;
-    text-align: center;
+    display: flex;
     width: 100%;
     height: 37.5px;
+    gap: 1px;
+}
+.soloMuteBtn {
+    flex: 1 1 0;
+    background-color: var(--pq-control);
+    border: 1px solid var(--pq-control-border);
+    color: var(--pq-text-dim);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.soloMuteBtn:hover {
+    background-color: var(--pq-control-hi);
+}
+.soloBtn.is-active {
+    background-color: var(--pq-warn);
+    border-color: var(--pq-warn);
+    color: #1a1400;
+}
+.muteBtn.is-active {
+    background-color: var(--pq-accent);
+    border-color: var(--pq-accent);
+    color: #04121a;
 }
 
 .pluginRow {
-    border-bottom: 1px solid #212121;
-    background-color: rgb(74, 90, 94);
+    border-bottom: 1px solid var(--pq-border-soft);
+    background-color: var(--pq-control);
     width: 100%;
     height: 30px;
     position: relative;
@@ -103,7 +119,7 @@
     width: 100%;
 }
 .panKnobDiv {
-    background-color: rgb(82, 97, 102);
+    background-color: var(--pq-control);
     padding: 10px;
     margin: auto;
     height: 92px;
@@ -114,7 +130,7 @@
 }
 
 .output {
-    background-color: rgb(82, 97, 102);
+    background-color: var(--pq-panel-alt);
     display: inline-flex;
     margin-left: 0px;
     align-content: flex-start;
@@ -159,9 +175,9 @@
     padding: 0;
     border-right-style: solid;
     border-right-width: thin;
-    border-right-color: #212121;
+    border-right-color: var(--pq-border-soft);
     overflow: hidden;
-    background-color: rgb(82, 97, 102);
+    background-color: var(--pq-panel-alt);
     height: 100%;
     height: -webkit-fill-available;
   }
@@ -195,4 +211,269 @@
 }
 .outputSelectorDropDown:hover {
     color: rgb(239, 248, 255);
+}
+
+/* ============================================================
+   Stage 8 — CHANNEL panel (design comp right column, 300px)
+   TrackDetails render()'s new .pq-channel layout. Reuses the
+   real InstrumentInput / PluginsList / Output wiring; adds the
+   TRACK/MASTER tab, live oscilloscope, EQ placeholder, and
+   horizontal pan/volume faders.
+   ============================================================ */
+.pq-channel {
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+    gap: 16px;
+    color: var(--pq-text);
+    font-size: 12px;
+}
+
+/* header: CHANNEL eyebrow + TRACK/MASTER segmented toggle */
+.pq-ch-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.pq-ch-eyebrow,
+.pq-ch-label {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--pq-text-faint);
+}
+.pq-ch-tabs {
+    display: flex;
+    border: 1px solid var(--pq-control-border);
+    border-radius: 5px;
+    overflow: hidden;
+}
+.pq-ch-tab {
+    padding: 4px 12px;
+    background: var(--pq-control);
+    border: none;
+    color: var(--pq-text-dim);
+    font-family: inherit;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+}
+.pq-ch-tab + .pq-ch-tab {
+    border-left: 1px solid var(--pq-control-border);
+}
+.pq-ch-tab:hover {
+    background: var(--pq-control-hi);
+}
+.pq-ch-tab.is-active {
+    background: var(--pq-accent);
+    color: #04121a;
+}
+
+/* title: track name + instrument (InstrumentInput reused) */
+.pq-ch-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-left: 2px solid var(--pq-accent);
+    padding-left: 10px;
+}
+.pq-ch-name {
+    font-size: 17px;
+    color: var(--pq-text-hi);
+}
+.pq-ch-inst {
+    font-family: var(--pq-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--pq-text-faint);
+}
+/* instrument name + Edit button row (Edit is the sole editor trigger) */
+.pq-ch-inst-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+}
+.pq-ch-inst-row .pq-ch-inst {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pq-ch-inst-loading {
+    font-family: var(--pq-mono);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    color: var(--pq-accent);
+    white-space: nowrap;
+}
+.pq-ch-edit {
+    height: 22px;
+    padding: 0 10px;
+    border-radius: 4px;
+    border: 1px solid var(--pq-control-border);
+    background: var(--pq-control);
+    color: var(--pq-text-dim);
+    cursor: pointer;
+    font-size: 10px;
+    transition:
+        color 0.12s,
+        border-color 0.12s,
+        background 0.12s;
+}
+.pq-ch-edit:hover {
+    color: var(--pq-text);
+    border-color: var(--pq-control-border-hi);
+}
+.pq-ch-edit.is-active {
+    background: var(--pq-accent-16);
+    border-color: var(--pq-accent);
+    color: var(--pq-accent);
+}
+
+/* sections */
+.pq-ch-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* oscilloscope */
+.pq-scope {
+    background: var(--pq-inset);
+    border: 1px solid var(--pq-border);
+    border-radius: 6px;
+    padding: 6px;
+    overflow: hidden;
+}
+.pq-scope-canvas {
+    display: block;
+    width: 100%;
+    height: 84px;
+}
+
+/* equalizer — visual placeholder (see render() comment) */
+.pq-eq {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 6px;
+    background: var(--pq-inset);
+    border: 1px solid var(--pq-border);
+    border-radius: 6px;
+    padding: 12px 8px 8px;
+}
+.pq-eq-band {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+.pq-eq-slider {
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    width: 6px;
+    height: 64px;
+    accent-color: var(--pq-accent);
+    cursor: pointer;
+}
+.pq-eq-slider:disabled {
+    opacity: 0.32;
+    cursor: not-allowed;
+}
+.pq-eq-db {
+    font-family: var(--pq-mono);
+    font-size: 8px;
+    letter-spacing: 0.02em;
+    color: var(--pq-text-dim);
+    min-height: 10px;
+    white-space: nowrap;
+}
+.pq-eq-band-name {
+    font-family: var(--pq-mono);
+    font-size: 7.5px;
+    letter-spacing: 0.04em;
+    color: var(--pq-text-faint);
+    white-space: nowrap;
+}
+
+/* horizontal pan / volume faders */
+.pq-ch-fader {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.pq-ch-fader-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.pq-ch-val {
+    font-family: var(--pq-mono);
+    font-size: 11px;
+    color: var(--pq-accent);
+}
+.pq-h-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--pq-control);
+    accent-color: var(--pq-accent);
+    cursor: pointer;
+}
+.pq-h-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--pq-accent);
+    border: 2px solid var(--pq-bg);
+    cursor: pointer;
+}
+
+/* reused components, re-scoped for the channel column */
+.pq-channel .instrumentInputContainer {
+    height: auto;
+    min-height: 0;
+    display: block;
+}
+.pq-channel .instrumentDetailsInput {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    color: var(--pq-text-dim);
+    text-align: left;
+}
+/* Sample-fetch indicator (Sampler preset loading) — sits on its own line under the
+   instrument name, not inline, so it can't collide with the name / MASTER toggle. */
+.pq-channel .instrumentDetailsInput_loading {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--pq-accent);
+}
+.pq-channel .selectedInstrument p {
+    font-family: var(--pq-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--pq-text-faint);
+    margin: 0;
+}
+.pq-channel .pluginList {
+    height: auto;
+    background: transparent;
+    overflow: visible;
+}
+.pq-channel .output {
+    background: var(--pq-control);
+    border: 1px solid var(--pq-control-border);
+    border-radius: 5px;
+    height: 32px;
+    align-items: center;
 }

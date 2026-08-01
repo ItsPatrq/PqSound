@@ -1,59 +1,152 @@
+/* Tracks panel — re-skinned to PqSound.dc.html. Heights kept to stay aligned
+ * with the timeline grid (CompositionGrid lanes are 65px). */
 .trackList {
-    border-style: solid;
-    border-width: thin;
-    border-color: #212121;
-    height: calc(100vh - 100px);
+    background: var(--pq-panel, #101315);
+    border-right: 1px solid var(--pq-border, #23282c);
+    height: calc(100vh - 90px);
     overflow: hidden;
     padding: 0px;
 }
 
 .trackListContent {
-    height: calc(100vh - 134px);
-    overflow: hidden;
-}
-
-.trackListButtons {
-    height: 34px;
-}
-
-.trackRow {
-    height: 65px;
-    background-color: rgb(82, 97, 102);
+    height: calc(100vh - 124px);
+    overflow-y: auto;
     overflow-x: hidden;
-    border-style: solid;
-    border-bottom-width: thin;
-    border-color: #212121;
 }
 
-.trackRow.selected {
-    background-color: #607D8B;
+/* Panel header: TRACKS · N + controls */
+.pq-tracks-head {
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--pq-border-soft, #1c2124);
+}
+.pq-tracks-title {
+    font-size: 9px;
+    letter-spacing: 0.13em;
+    color: var(--pq-text-faint, #5d656b);
+}
+.pq-tracks-btn {
+    width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    line-height: 0;
+    color: var(--pq-text-dim, #9aa2a8);
+    border-radius: 4px;
 }
 
-.trackTypeSelectDiv {
-    display: inline-flex;
-    margin-left: 0px;
-    align-content: flex-start;
-    width: 270px;
+/* Track lane row (65px to align with the CompositionGrid timeline lanes) */
+.pq-track-lane {
+    height: 65px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--pq-border-faint, #16191c);
+    border-left: 2px solid transparent;
+    background: transparent;
+}
+.pq-track-lane:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+.pq-track-lane.is-selected {
+    background: #1a1e22;
+    border-left-color: var(--pq-accent, #3fb0e0);
 }
 
-.trackTypeItemDiv {
-    width: 135px;
-    height: 60px;
-    font-size: 15px;
-    border-style: solid;
-    border-width: thin;
-    border-color: #212121;
-
+.pq-track-main {
+    flex: 1;
+    min-width: 0;
 }
-
-.trackNameFormControl {
-    background-color: transparent;
+.pq-track-name {
+    width: 100%;
     border: none;
     outline: none;
-    width: 100%;
-    text-align: center;
-    overflow: hidden;
+    background: transparent;
+    color: #dde1e4;
+    font-size: 12px;
+    font-family: var(--pq-sans);
+    padding: 0;
     white-space: nowrap;
-    color: #212121;
-    margin-top: 25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pq-track-name:focus {
+    color: var(--pq-text-hi, #f2f5f6);
+}
+.pq-track-meta {
+    font-size: 9px;
+    color: var(--pq-text-faint, #5d656b);
+    letter-spacing: 0.05em;
+    margin-top: 3px;
+}
+.pq-track-vol {
+    margin-top: 6px;
+    height: 2px;
+    background: var(--pq-border-soft, #1c2124);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.pq-track-vol-fill {
+    height: 100%;
+    background: #3f4a52;
+}
+.pq-track-lane.is-selected .pq-track-vol-fill {
+    background: var(--pq-accent, #3fb0e0);
+}
+
+.pq-track-chips,
+.pq-track-reorder {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* solo/mute/record chips */
+.pq-track-chip {
+    width: 17px;
+    height: 13px;
+    display: grid;
+    place-items: center;
+    border-radius: 3px;
+    font-family: var(--pq-mono);
+    font-size: 8.5px;
+    cursor: pointer;
+    user-select: none;
+    background: #1c2125;
+    color: #6f777d;
+}
+.pq-track-chip.is-active {
+    background: var(--pq-accent, #3fb0e0);
+    color: #0b0d0e;
+}
+.pq-track-chip.is-rec.is-active {
+    background: rgba(200, 70, 60, 0.85);
+}
+
+/* reorder / remove micro-controls */
+.pq-lane-icon {
+    width: 13px;
+    height: 13px;
+    display: grid;
+    place-items: center;
+    border-radius: 3px;
+    font-size: 8px;
+    line-height: 1;
+    color: var(--pq-text-faint, #5d656b);
+    cursor: pointer;
+    user-select: none;
+}
+.pq-lane-icon:hover {
+    color: var(--pq-text, #e4e7e9);
+    background: #1c2125;
+}
+.pq-lane-icon.is-empty {
+    visibility: hidden;
+    cursor: default;
 }

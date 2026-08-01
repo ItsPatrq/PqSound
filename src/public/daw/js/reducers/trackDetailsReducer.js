@@ -11,7 +11,8 @@ export default function reducer(
         case 'INSTRUMENT_MODAL_VISIBILITY_SWITCH': {
             return {
                 ...state,
-                showInstrumentModal: !state.showInstrumentModal,
+                // undefined payload = toggle; explicit true/false = set.
+                showInstrumentModal: action.payload === undefined ? !state.showInstrumentModal : action.payload,
             };
         }
         case 'PLUGIN_MODAL_VISIBILITY_SWITCH': {

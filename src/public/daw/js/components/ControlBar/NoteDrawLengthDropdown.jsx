@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import Dropdown from 'components/Dropdown';
 import { noteLengths } from 'constants/Constants';
 
 const NoteDrawLengthDropdown = (props) => {
@@ -7,23 +7,16 @@ const NoteDrawLengthDropdown = (props) => {
         const noteLengthsMenuItems = [];
         for (const property in noteLengths) {
             if (noteLengths.hasOwnProperty(property)) {
-                noteLengthsMenuItems.push(
-                    <Dropdown.Item
-                        key={(noteLengths[property].id + 1).toString()}
-                        eventKey={(noteLengths[property].id + 1).toString()}
-                        onClick={() => props.onNoteDrawLengthChange(noteLengths[property].id)}
-                    >
-                        {noteLengths[property].name}
-                    </Dropdown.Item>,
-                );
+                const id = noteLengths[property].id;
+                noteLengthsMenuItems.push({
+                    key: (id + 1).toString(),
+                    label: noteLengths[property].name,
+                    onClick: () => props.onNoteDrawLengthChange(id),
+                });
             }
         }
 
-        return (
-            <DropdownButton variant="secondary" className="drop-down" title="Note draw length" id={props.id}>
-                {noteLengthsMenuItems}
-            </DropdownButton>
-        );
+        return <Dropdown className="drop-down" title="Note draw length" id={props.id} items={noteLengthsMenuItems} />;
     } else {
         return null;
     }

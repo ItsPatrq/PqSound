@@ -1,0 +1,171 @@
+/*
+ * PqSound re-skin — app layout shell.
+ * Fixed-viewport CSS grid: header (56) / body (1fr, scrolls internally) / footer (34).
+ * Pinning the footer as its own grid row fixes the Stage-3 "footer under the fold"
+ * bug without touching the keyboard's absolute bottom-overlay positioning.
+ *
+ * The inner body no longer uses bootstrap Container/Row/Col — those were replaced by
+ * the dependency-free flex classes below (.pq-composer / .pq-body / .pq-row / .pq-col-*).
+ * These reproduce bootstrap 5's exact box model (flex:0 0 auto + width:<pct>, a -12px
+ * row gutter cancelled by 12px col padding) and — critically — set NO position/transform,
+ * so the absolutely-positioned timeline (.timeBar/.svgContainer) and the keyboard overlay
+ * (.keyboard, top:100%) keep the exact same containing block (.pq-body-wrap) and geometry
+ * they had under bootstrap. That containing-block invariance is what the earlier blind
+ * teardown broke; preserving it is the whole game.
+ */
+.pq-shell {
+    display: grid;
+    grid-template-rows: var(--pq-header-h) minmax(0, 1fr) var(--pq-viewbar-h, 40px) var(--pq-footer-h) auto;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Body row: the 1fr cell. Scrolls internally so tall content (the keyboard
+   overlay) never pushes the footer off-screen. */
+.pq-body-wrap {
+    position: relative;
+    min-height: 0;
+    overflow: auto;
+}
+
+/* Body grid (design comp): TRACKS rail | timeline (center, 1fr) | 300px CHANNEL.
+   Was a bootstrap-derived flex row of nested .pq-col-% — which, after the
+   react-bootstrap 0.31→2.10 (bootstrap 5) bump, stacked instead of sitting
+   side-by-side. Now an explicit 3-track grid: each panel root fills one cell. */
+.pq-body {
+    display: grid;
+    grid-template-columns: var(--pq-tracks-w) minmax(0, 1fr) var(--pq-channel-w);
+    height: 100%;
+    overflow: hidden;
+}
+/* Stage 7: when the instrument editor column is open (InstrumentPanel renders a
+   .pq-instrument-col between the rail and timeline), widen the grid to 4 tracks.
+   When closed the panel renders null, so the default 3-col template applies. */
+.pq-body:has(.pq-instrument-col) {
+    grid-template-columns: var(--pq-tracks-w) var(--pq-instrument-w, 320px) minmax(0, 1fr) var(--pq-channel-w);
+}
+/* Stage 9: FX editor column (FxPanel .pq-fx-col) sits between timeline and channel. */
+.pq-body:has(.pq-fx-col) {
+    grid-template-columns: var(--pq-tracks-w) minmax(0, 1fr) var(--pq-fx-w, 300px) var(--pq-channel-w);
+}
+/* both editor columns open at once */
+.pq-body:has(.pq-instrument-col):has(.pq-fx-col) {
+    grid-template-columns:
+        var(--pq-tracks-w) var(--pq-instrument-w, 320px) minmax(0, 1fr) var(--pq-fx-w, 300px)
+        var(--pq-channel-w);
+}
+.pq-fx-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: calc(100vh - 90px);
+    overflow-y: auto;
+    background: var(--pq-panel);
+    border-left: 1px solid var(--pq-border);
+}
+.pq-instrument-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: calc(100vh - 90px);
+    overflow-y: auto;
+    background: var(--pq-panel);
+    border-right: 1px solid var(--pq-border);
+}
+.pq-inst-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px 0;
+}
+.pq-inst-close {
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    background: none;
+    border: none;
+    border-radius: 5px;
+    color: var(--pq-text-dim);
+    cursor: pointer;
+}
+.pq-inst-close:hover {
+    background: var(--pq-control);
+    color: var(--pq-text);
+}
+.pq-inst-title {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 14px 12px;
+    border-bottom: 1px solid var(--pq-border-soft);
+}
+.pq-inst-editor {
+    padding: 12px 14px;
+    overflow-x: auto;
+}
+/* Kept as a generic flex-row utility (inner rows still use it). */
+.pq-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -12px;
+    margin-right: -12px;
+}
+
+/* Panel roots each fill one grid cell — neutralize the leftover bootstrap
+   .pq-col-% widths + gutter padding these roots still carry. */
+.pq-body > .trackList,
+.pq-body > .compositionPanel,
+.pq-body > .compositionPanelPianoRoll,
+.pq-body > .pq-channel-col {
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    padding: 0;
+    margin: 0;
+}
+/* Edit (piano-roll) view: TrackList renders null, so the roll panel spans the
+   rail + center cells, leaving the channel column in place. */
+.pq-body > .compositionPanelPianoRoll {
+    grid-column: 1 / 3;
+}
+/* Channel column (was #TrackDetailsCol, wrongly on the left). Stacks the
+   track + master detail blocks full-width instead of two 50% bootstrap cols. */
+.pq-channel-col {
+    height: calc(100vh - 90px);
+    overflow-y: auto;
+    background: var(--pq-panel);
+    border-left: 1px solid var(--pq-border);
+}
+.pq-channel-col .trackDetailsContainer {
+    width: 100%;
+    border-right: none;
+}
+.pq-col-2,
+.pq-col-6,
+.pq-col-10,
+.pq-col-12 {
+    flex: 0 0 auto;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+.pq-col-2 {
+    width: 16.6667%;
+}
+.pq-col-6 {
+    width: 50%;
+}
+.pq-col-10 {
+    width: 83.3333%;
+}
+.pq-col-12 {
+    width: 100%;
+}
+
+/* Inner horizontal strips that were bootstrap <Row> (piano-roll key rows, the
+   time rulers). Their content is absolutely positioned, so this only needs to
+   provide the flex box the Row used to. */
+.pq-inline-row {
+    display: flex;
+    flex-wrap: wrap;
+}

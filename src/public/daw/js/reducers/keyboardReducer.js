@@ -4,7 +4,7 @@ import { defaultKeyBindings } from 'constants/Constants';
 export default function reducer(
     state = {
         width: 0,
-        firstKey: 24,
+        firstKey: 27, // C3 — the visible range always starts on a C
         show: false,
         notesPlaying: [],
         keyNamesVisible: true,

@@ -1,83 +1,66 @@
 import * as React from 'react';
 import { keyboardWidths, defaultKeysNamesNoOctaveNumber, defaultKeysNames } from 'constants/Constants';
 import { noteToMIDI } from 'engine/Utils';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { isNullOrUndefined } from 'engine/Utils';
 
 const PianoRollKeyboard = (props) => {
-    const getTooltip = (index) => {
-        return <Tooltip id={'tooltip' + index}>{props.instrument.getNoteName(index)}</Tooltip>;
-    };
+    // Note-name hint, formerly a react-bootstrap Tooltip — now a native title attribute.
+    const noteName = (index) => props.instrument.getNoteName(index);
     const keys = [];
     for (let i = 87; i > 0; i--) {
         if (keyboardWidths[i].sharp) {
             keys.push(
-                <OverlayTrigger
+                <div
                     key={i.toString()}
-                    placement="right"
-                    overlay={getTooltip(noteToMIDI(i))}
-                    delay={{ show: 500, hide: 0 }}
-                >
-                    <div
-                        className="pianoRollKey sharp"
-                        onMouseEnter={(event) => props.onDown(event, noteToMIDI(i))}
-                        onMouseDown={(event) => props.onDown(event, noteToMIDI(i))}
-                        onMouseLeave={(event) => props.onUp(event, noteToMIDI(i))}
-                        onMouseUp={(event) => props.onUp(event, noteToMIDI(i))}
-                    />
-                </OverlayTrigger>,
+                    className="pianoRollKey sharp"
+                    title={noteName(noteToMIDI(i))}
+                    onMouseEnter={(event) => props.onDown(event, noteToMIDI(i))}
+                    onMouseDown={(event) => props.onDown(event, noteToMIDI(i))}
+                    onMouseLeave={(event) => props.onUp(event, noteToMIDI(i))}
+                    onMouseUp={(event) => props.onUp(event, noteToMIDI(i))}
+                />,
             );
         } else {
             if (['F', 'E', 'B', 'C'].includes(defaultKeysNamesNoOctaveNumber[i])) {
                 keys.push(
-                    <OverlayTrigger
+                    <div
                         key={i.toString()}
-                        placement="right"
-                        overlay={getTooltip(noteToMIDI(i))}
-                        delay={{ show: 500, hide: 0 }}
+                        className="pianoRollKey short"
+                        title={noteName(noteToMIDI(i))}
+                        onMouseEnter={(event) => props.onDown(event, noteToMIDI(i))}
+                        onMouseDown={(event) => props.onDown(event, noteToMIDI(i))}
+                        onMouseLeave={(event) => props.onUp(event, noteToMIDI(i))}
+                        onMouseUp={(event) => props.onUp(event, noteToMIDI(i))}
                     >
-                        <div
-                            className="pianoRollKey short"
-                            onMouseEnter={(event) => props.onDown(event, noteToMIDI(i))}
-                            onMouseDown={(event) => props.onDown(event, noteToMIDI(i))}
-                            onMouseLeave={(event) => props.onUp(event, noteToMIDI(i))}
-                            onMouseUp={(event) => props.onUp(event, noteToMIDI(i))}
-                        >
-                            {defaultKeysNamesNoOctaveNumber[i] === 'C' ? defaultKeysNames[i] : null}
-                        </div>
-                    </OverlayTrigger>,
+                        {defaultKeysNamesNoOctaveNumber[i] === 'C' ? defaultKeysNames[i] : null}
+                    </div>,
                 );
             } else {
                 keys.push(
-                    <OverlayTrigger
+                    <div
                         key={i.toString()}
-                        placement="right"
-                        overlay={getTooltip(noteToMIDI(i))}
-                        delay={{ show: 500, hide: 0 }}
-                    >
-                        <div
-                            className="pianoRollKey long"
-                            onMouseEnter={(event) => props.onDown(event, noteToMIDI(i))}
-                            onMouseDown={(event) => props.onDown(event, noteToMIDI(i))}
-                            onMouseLeave={(event) => props.onUp(event, noteToMIDI(i))}
-                            onMouseUp={(event) => props.onUp(event, noteToMIDI(i))}
-                        />
-                    </OverlayTrigger>,
+                        className="pianoRollKey long"
+                        title={noteName(noteToMIDI(i))}
+                        onMouseEnter={(event) => props.onDown(event, noteToMIDI(i))}
+                        onMouseDown={(event) => props.onDown(event, noteToMIDI(i))}
+                        onMouseLeave={(event) => props.onUp(event, noteToMIDI(i))}
+                        onMouseUp={(event) => props.onUp(event, noteToMIDI(i))}
+                    />,
                 );
             }
         }
     }
     keys.push(
-        <OverlayTrigger key="0" placement="right" overlay={getTooltip(noteToMIDI(0))} delay={{ show: 500, hide: 0 }}>
-            <div
-                className="pianoRollKey"
-                style={{ height: 20 + 'px' }}
-                onMouseEnter={(event) => props.onDown(event, noteToMIDI(0))}
-                onMouseDown={(event) => props.onDown(event, noteToMIDI(0))}
-                onMouseLeave={(event) => props.onUp(event, noteToMIDI(0))}
-                onMouseUp={(event) => props.onUp(event, noteToMIDI(0))}
-            />
-        </OverlayTrigger>,
+        <div
+            key="0"
+            className="pianoRollKey"
+            title={noteName(noteToMIDI(0))}
+            style={{ height: 20 + 'px' }}
+            onMouseEnter={(event) => props.onDown(event, noteToMIDI(0))}
+            onMouseDown={(event) => props.onDown(event, noteToMIDI(0))}
+            onMouseLeave={(event) => props.onUp(event, noteToMIDI(0))}
+            onMouseUp={(event) => props.onUp(event, noteToMIDI(0))}
+        />,
     );
     return (
         <div className="pianoRollKeyboard">

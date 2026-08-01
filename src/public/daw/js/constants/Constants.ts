@@ -122,36 +122,51 @@ export const SoundOrigin = {
 };
 
 /**
- * widths in pixels for every piano key to determine if need to be displayed
+ * Keyboard key geometry (Stage 11 — 42px inset re-skin).
+ *
+ * `keyboardWidths[i].startWidth` is the left offset (in real px) of key i, in the
+ * same coordinate system as `.whiteKey`'s CSS `width` and `keyboard.width`
+ * (= ComposingCol.offsetWidth). Whites flow via CSS float at WHITE_KEY_WIDTH;
+ * blacks are absolutely positioned by their startWidth delta. Because all three
+ * (this table, the CSS widths, and the Keyboard.jsx offsets) share one unit,
+ * scaling every geometry constant by the SAME factor is a pure horizontal zoom:
+ * black/white alignment is preserved exactly, only the physical key size shrinks
+ * (so more octaves fit the unchanged container width). The source numbers below
+ * are the original 66px-key layout; KEYBOARD_SCALE maps them to the 42px design.
  */
+export const WHITE_KEY_WIDTH = 46;
+const ORIG_WHITE_KEY_WIDTH = 66;
+const KEYBOARD_SCALE = WHITE_KEY_WIDTH / ORIG_WHITE_KEY_WIDTH;
+// Reserved left offset before the first octave (left option key + slack); the
+// range/scroll math in Keyboard.jsx subtracts this from the container width.
+export const KEYBOARD_BASE_OFFSET = Math.round(122 * KEYBOARD_SCALE);
+const OCTAVE_WIDTH = Math.round(462 * KEYBOARD_SCALE); // 7 white keys
+
+// How many octaves the (now fixed-size, inset/centered) keyboard shows at once.
+export const KEYBOARD_VISIBLE_OCTAVES = 2;
+// Fixed render width (px). The keyboard shows a constant ~2-octave span centered in
+// the composing area, independent of its width — the render/clamp math in
+// Keyboard.jsx uses this as `keyboard.width` (budget = this - KEYBOARD_BASE_OFFSET),
+// replacing the old ComposingCol.offsetWidth coupling.
+export const KEYBOARD_VIEW_WIDTH = KEYBOARD_VISIBLE_OCTAVES * OCTAVE_WIDTH + KEYBOARD_BASE_OFFSET;
+
 const keyboardWidths = [
     { sharp: false, startWidth: 0 },
-    { sharp: true, startWidth: 47 },
-    { sharp: false, startWidth: 66 },
+    { sharp: true, startWidth: Math.round(47 * KEYBOARD_SCALE) },
+    { sharp: false, startWidth: WHITE_KEY_WIDTH },
 ];
-const octaveKeysWidth = [
-    { sharp: false, startWidth: 0 },
-    { sharp: true, startWidth: 55 },
-    { sharp: false, startWidth: 66 },
-    { sharp: true, startWidth: 123 },
-    { sharp: false, startWidth: 122 },
-    { sharp: false, startWidth: 198 },
-    { sharp: true, startWidth: 254 },
-    { sharp: false, startWidth: 264 },
-    { sharp: true, startWidth: 322 },
-    { sharp: false, startWidth: 330 },
-    { sharp: true, startWidth: 389 },
-    { sharp: false, startWidth: 396 },
-];
+// per-octave (C..B) source offsets at the original 66px scale
+const octaveKeysWidth = [0, 55, 66, 123, 122, 198, 254, 264, 322, 330, 389, 396];
+const octaveKeysSharp = [false, true, false, true, false, false, true, false, true, false, true, false];
 for (let i = 0; i < 7; i++) {
     for (let j = 0; j < 12; j++) {
         keyboardWidths.push({
-            sharp: octaveKeysWidth[j].sharp,
-            startWidth: octaveKeysWidth[j].startWidth + 122 + i * 462,
+            sharp: octaveKeysSharp[j],
+            startWidth: Math.round(octaveKeysWidth[j] * KEYBOARD_SCALE) + KEYBOARD_BASE_OFFSET + i * OCTAVE_WIDTH,
         });
     }
 }
-keyboardWidths.push({ sharp: false, startWidth: keyboardWidths[86].startWidth + 66 });
+keyboardWidths.push({ sharp: false, startWidth: keyboardWidths[86].startWidth + WHITE_KEY_WIDTH });
 export { keyboardWidths };
 
 /**
@@ -177,37 +192,36 @@ defaultKeysNamesNoOctaveNumber.push('C');
 
 export { defaultKeysNamesNoOctaveNumber };
 
-export const defaultKeyBindings = [
-    { MIDINote: 45, keyboardKey: 'q' },
-    { MIDINote: 46, keyboardKey: '2' },
-    { MIDINote: 47, keyboardKey: 'w' },
-    { MIDINote: 48, keyboardKey: 'e' },
-    { MIDINote: 49, keyboardKey: '4' },
-    { MIDINote: 50, keyboardKey: 'r' },
-    { MIDINote: 51, keyboardKey: '5' },
-    { MIDINote: 52, keyboardKey: 't' },
-    { MIDINote: 53, keyboardKey: 'y' },
-    { MIDINote: 54, keyboardKey: '7' },
-    { MIDINote: 55, keyboardKey: 'u' },
-    { MIDINote: 56, keyboardKey: '8' },
-    { MIDINote: 57, keyboardKey: 'i' },
-    { MIDINote: 58, keyboardKey: '9' },
-    { MIDINote: 59, keyboardKey: 'o' },
-    { MIDINote: 60, keyboardKey: 'z' },
-    { MIDINote: 61, keyboardKey: 's' },
-    { MIDINote: 62, keyboardKey: 'x' },
-    { MIDINote: 63, keyboardKey: 'd' },
-    { MIDINote: 64, keyboardKey: 'c' },
-    { MIDINote: 65, keyboardKey: 'v' },
-    { MIDINote: 66, keyboardKey: 'g' },
-    { MIDINote: 67, keyboardKey: 'b' },
-    { MIDINote: 68, keyboardKey: 'h' },
-    { MIDINote: 69, keyboardKey: 'n' },
-    { MIDINote: 70, keyboardKey: 'j' },
-    { MIDINote: 71, keyboardKey: 'm' },
-    { MIDINote: 72, keyboardKey: ',' },
-    { MIDINote: 73, keyboardKey: 'l' },
-    { MIDINote: 74, keyboardKey: '.' },
-    { MIDINote: 75, keyboardKey: ';' },
-    { MIDINote: 76, keyboardKey: '/' },
+// Two-octave computer-keyboard piano, C-based (FL-style): the upper row is the
+// low octave and the lower row the high octave, chromatic C→B in each, with the
+// number keys (2 3 5 6 7) and s d g h j falling on the black notes. Index i here
+// is also KEY_TO_INDEX[key] in Keyboard.jsx — keep the two in the same order.
+export const keyboardKeyOrder = [
+    'q',
+    '2',
+    'w',
+    '3',
+    'e',
+    'r',
+    '5',
+    't',
+    '6',
+    'y',
+    '7',
+    'u', // C3..B3
+    'z',
+    's',
+    'x',
+    'd',
+    'c',
+    'v',
+    'g',
+    'b',
+    'h',
+    'n',
+    'j',
+    'm', // C4..B4
 ];
+// Bindings start at C3 (MIDI 48) = the default first visible key, so the on-key
+// shortcut labels line up with the visible keys. Octave-shift keeps them in sync.
+export const defaultKeyBindings = keyboardKeyOrder.map((keyboardKey, i) => ({ MIDINote: 48 + i, keyboardKey }));

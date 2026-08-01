@@ -41,6 +41,12 @@ export function switchPianorollVisibility(show) {
         payload: show,
     };
 }
+export function switchMixerVisibility(show) {
+    return {
+        type: 'SWITCH_MIXER_VISIBILITY',
+        payload: show,
+    };
+}
 export function updateTrackComposition(newPianoKey, newQuarterIndex, newSixteenthIndex) {
     return {
         type: 'UPDATE_TRACK_COMPOSITION',
@@ -112,5 +118,19 @@ export function trackIndexDown(newIndex) {
     return {
         type: 'REGION_TRACK_INDEX_DOWN',
         payload: newIndex,
+    };
+}
+
+export function switchLoop(enabled) {
+    return {
+        type: 'SWITCH_LOOP',
+        payload: enabled,
+    };
+}
+
+export function changeLoopRange(start, end) {
+    return {
+        type: 'CHANGE_LOOP_RANGE',
+        payload: { start: start, end: end },
     };
 }

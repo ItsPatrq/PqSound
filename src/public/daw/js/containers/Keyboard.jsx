@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { SoundOrigin, keyboardWidths, defaultKeysNames } from 'constants/Constants';
+import {
+    SoundOrigin,
+    keyboardWidths,
+    defaultKeysNames,
+    KEYBOARD_BASE_OFFSET,
+    KEYBOARD_VIEW_WIDTH,
+} from 'constants/Constants';
 import { isNullOrUndefined, getTrackByIndex, noteToMIDI } from 'engine/Utils';
 import * as Actions from 'actions/keyboardActions';
 import WhiteKey from 'components/Keyboard/WhiteKey';
@@ -8,42 +14,35 @@ import BlackKey from 'components/Keyboard/BlackKey';
 import DisabledKey from 'components/Keyboard/DisabledKey';
 import OptionKeyLeft from 'components/Keyboard/OptionKeyLeft';
 import OptionKeyRight from 'components/Keyboard/OptionKeyRight';
-import { Row } from 'react-bootstrap';
 
-// Maps a physical keyboard key to its 0-based piano key index.
+// Maps a physical keyboard key to its 0-based binding index. Same order as
+// `keyboardKeyOrder`/`defaultKeyBindings` in Constants (C-based, 2 octaves) so the
+// shortcut a key triggers is exactly the one drawn on the aligned visible key.
 const KEY_TO_INDEX = {
     q: 0,
     2: 1,
     w: 2,
-    e: 3,
-    4: 4,
+    3: 3,
+    e: 4,
     r: 5,
     5: 6,
     t: 7,
-    y: 8,
-    7: 9,
-    u: 10,
-    8: 11,
-    i: 12,
-    9: 13,
-    o: 14,
-    z: 15,
-    s: 16,
-    x: 17,
-    d: 18,
-    c: 19,
-    v: 20,
-    g: 21,
-    b: 22,
-    h: 23,
-    n: 24,
-    j: 25,
-    m: 26,
-    ',': 27,
-    l: 28,
-    '.': 29,
-    ';': 30,
-    '/': 31,
+    6: 8,
+    y: 9,
+    7: 10,
+    u: 11,
+    z: 12,
+    s: 13,
+    x: 14,
+    d: 15,
+    c: 16,
+    v: 17,
+    g: 18,
+    b: 19,
+    h: 20,
+    n: 21,
+    j: 22,
+    m: 23,
 };
 
 class Keyboard extends React.Component {
@@ -176,33 +175,21 @@ class Keyboard extends React.Component {
         }
     }
 
+    // Octave stepping (direction = ±12). firstKey stays locked on a C so the visible
+    // range always starts on C, clamped to the octaves whose 2-octave window fits the
+    // 88 keys. The key-bindings shift by the same delta so the on-key shortcut labels
+    // stay aligned with the visible keys.
     changeKeyboardRange(direction) {
+        const MIN_FIRST = 15; // C2
+        const MAX_FIRST = 63; // C6 (C6..C8 = 63..87 still fits)
         let newFirstVisibleKey = this.props.keyboard.firstKey + direction;
-        if (newFirstVisibleKey < 0) {
-            newFirstVisibleKey = 0;
-        } else if (newFirstVisibleKey > 87) {
-            newFirstVisibleKey = 87;
-        }
-        if (direction > 0 && keyboardWidths[newFirstVisibleKey].sharp) {
-            newFirstVisibleKey++;
-        } else if (direction < 0 && keyboardWidths[newFirstVisibleKey].sharp) {
-            newFirstVisibleKey--;
-        }
-        while (
-            keyboardWidths[newFirstVisibleKey].startWidth + this.props.keyboard.width - 122 >
-            keyboardWidths[87].startWidth + 122
-        ) {
-            newFirstVisibleKey--;
+        if (newFirstVisibleKey < MIN_FIRST) {
+            newFirstVisibleKey = MIN_FIRST;
+        } else if (newFirstVisibleKey > MAX_FIRST) {
+            newFirstVisibleKey = MAX_FIRST;
         }
         if (newFirstVisibleKey !== this.props.keyboard.firstKey) {
-            console.log(newFirstVisibleKey, this.props.keyboard.firstKey, direction);
-            if (Math.floor(newFirstVisibleKey / 12) !== Math.floor(this.props.keyboard.firstKey / 12)) {
-                if (direction > 0) {
-                    this.props.dispatch(Actions.changeKeyBindings(12));
-                } else {
-                    this.props.dispatch(Actions.changeKeyBindings(-12));
-                }
-            }
+            this.props.dispatch(Actions.changeKeyBindings(newFirstVisibleKey - this.props.keyboard.firstKey));
             this.props.dispatch(Actions.changeFirstKeyboardKey(newFirstVisibleKey));
         }
     }
@@ -223,28 +210,12 @@ class Keyboard extends React.Component {
         this.updateDimensions();
     }
 
+    // The keyboard is a fixed-size (~2-octave) inset panel; its width is a constant,
+    // no longer measured off the composing area. (Range stays C-locked & clamped in
+    // changeKeyboardRange.)
     updateDimensions() {
-        if (this.props.keyboard.show) {
-            const ComposingCol = document.getElementById('ComposingCol');
-            if (isNullOrUndefined(ComposingCol)) {
-                if (this.props.keyboard.width !== 0) {
-                    this.props.dispatch(Actions.updateWidth(0));
-                }
-            } else if (ComposingCol.offsetWidth !== this.props.keyboard.width) {
-                if (ComposingCol.offsetWidth > this.props.keyboard.width) {
-                    let newFirstVisibleKey = this.props.keyboard.firstKey;
-                    while (
-                        keyboardWidths[newFirstVisibleKey].startWidth + ComposingCol.offsetWidth - 122 >
-                        keyboardWidths[87].startWidth + 122
-                    ) {
-                        newFirstVisibleKey--;
-                    }
-                    if (newFirstVisibleKey !== this.props.keyboard.firstKey) {
-                        this.props.dispatch(Actions.changeFirstKeyboardKey(newFirstVisibleKey));
-                    }
-                }
-                this.props.dispatch(Actions.updateWidth(ComposingCol.offsetWidth));
-            }
+        if (this.props.keyboard.show && this.props.keyboard.width !== KEYBOARD_VIEW_WIDTH) {
+            this.props.dispatch(Actions.updateWidth(KEYBOARD_VIEW_WIDTH));
         }
     }
 
@@ -259,7 +230,7 @@ class Keyboard extends React.Component {
             while (
                 currVisible < 88 &&
                 keyboardWidths[currVisible].startWidth - keyboardWidths[firstVisibleKey].startWidth <=
-                    this.props.keyboard.width - 122
+                    this.props.keyboard.width - KEYBOARD_BASE_OFFSET
             ) {
                 if (keyboardWidths[currVisible].sharp) {
                     blackKeysToRender.push(
@@ -300,15 +271,12 @@ class Keyboard extends React.Component {
                 <div className="keyboardBody">
                     <div className="colorLine"></div>
                     <OptionKeyLeft onChangeKeyboardRange={this.changeKeyboardRange.bind(this)} />
-                    <Row className="keysRow">
+                    <div className="keysRow">
                         {whiteKeysToRender}
                         {blackKeysToRender}
                         <DisabledKey />
-                    </Row>
-                    <OptionKeyRight
-                        margin={this.props.keyboard.width - 66}
-                        onChangeKeyboardRange={this.changeKeyboardRange.bind(this)}
-                    />
+                    </div>
+                    <OptionKeyRight onChangeKeyboardRange={this.changeKeyboardRange.bind(this)} />
                 </div>
             );
         }

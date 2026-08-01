@@ -1,56 +1,24 @@
 import * as React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
-import { Instruments } from 'constants/Constants';
-import InstrumentModal from './InstrumentModal';
-import { Puff } from 'react-loader-spinner';
 
+/**
+ * Instrument row in the CHANNEL panel: shows the current instrument name and an
+ * Edit button. Edit is now the sole trigger for the instrument editor column
+ * (InstrumentPanel) — instrument selection AND per-instrument tweaking both live
+ * inside that editor. The old click-the-name toggle + inline type dropdown are
+ * gone (they desynced the panel and split "select" from "edit").
+ */
 const InstrumentInput = (props) => {
-    const availableInstruments = [];
-    for (const property in Instruments) {
-        if (Instruments.hasOwnProperty(property)) {
-            availableInstruments.push(
-                <Dropdown.Item
-                    key={(Instruments[property].id + 1).toString()}
-                    eventKey={(Instruments[property].id + 1).toString()}
-                    onClick={() => {
-                        props.onInstrumentChange(Instruments[property].id);
-                    }}
-                >
-                    {Instruments[property].name}
-                </Dropdown.Item>,
-            );
-        }
-    }
     return (
-        <div className="instrumentInputContainer">
-            <div className="instrumentDetailsInput">
-                <div className="selectedInstrument">
-                    <DropdownButton
-                        variant="link"
-                        title=""
-                        className="drop-down outputSelectorDropDown"
-                        id="OutputSelectorDropDown"
-                    >
-                        {availableInstruments}
-                    </DropdownButton>
-                    <p onClick={() => props.instrumentModalVisibilitySwitch()}>{props.selectedTrack.instrument.name}</p>
-                </div>
-
-                {props.isLoading && (
-                    <div className="instrumentDetailsInput_loading">
-                        <Puff color="#EFF8FF" height={20} width={20} />
-                        <p>Loading samples</p>
-                    </div>
-                )}
-            </div>
-
-            <InstrumentModal
-                modalVisibilitySwitch={props.instrumentModalVisibilitySwitch}
-                showModal={props.showModal}
-                track={props.selectedTrack}
-                onSamplerPresetChange={props.onSamplerPresetChange}
-                onInstrumentPresetChange={props.onInstrumentPresetChange}
-            />
+        <div className="pq-ch-inst-row">
+            <span className="pq-ch-inst">{props.selectedTrack.instrument.name}</span>
+            {props.isLoading && <span className="pq-ch-inst-loading">loading samples…</span>}
+            <button
+                className={'pq-ch-edit' + (props.showModal ? ' is-active' : '')}
+                onClick={() => props.onEdit()}
+                title="Edit instrument"
+            >
+                Edit
+            </button>
         </div>
     );
 };

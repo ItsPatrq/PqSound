@@ -1,261 +1,177 @@
 import * as React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import PqKnob from 'components/shared/PqKnob';
 import { oscillatorTypes } from 'constants/Constants';
 
-require('styles/Instruments/PqSynth.css');
+require('styles/Instruments/InstrumentEditor.css');
+
+const WAVES = [
+    ...oscillatorTypes.map((w) => ({ key: w, label: w })),
+    { key: 'whiteNoise', label: 'white' },
+    { key: 'pinkNoise', label: 'pink' },
+    { key: 'brownianNoise', label: 'brown' },
+];
+const OCTAVES = [-3, -2, -1, 0, 1, 2, 3];
 
 const PqSynth = (props) => {
-    const handleChange = (param, oscillator, oscilatorNumber, value) => {
-        const newPreset = JSON.parse(JSON.stringify(props.instrument.preset));
-        if (oscillator) {
-            newPreset.oscillators[oscilatorNumber][param] = value;
-        }
+    const [oscIndex, setOscIndex] = React.useState(0);
+    const preset = props.instrument.preset;
+    const osc = preset.oscillators[oscIndex];
+
+    const set = (param, value) => {
+        const newPreset = JSON.parse(JSON.stringify(preset));
+        newPreset.oscillators[oscIndex][param] = value;
         props.onPresetChange(newPreset);
     };
-    const oscillators = [];
-    for (let i = 0; i < 3; i++) {
-        const shapeTypes = [];
-        const octaveShifts = [];
-        for (let j = 0; j < oscillatorTypes.length; j++) {
-            shapeTypes.push(
-                <Dropdown.Item
-                    key={'oscilator' + i + 'shape' + oscillatorTypes[j]}
-                    eventKey={'oscilator' + i + 'shape' + oscillatorTypes[j]}
-                    onClick={() => handleChange('waveForm', true, i, oscillatorTypes[j])}
-                >
-                    {oscillatorTypes[j]}
-                </Dropdown.Item>,
-            );
-        }
-        shapeTypes.push(
-            <Dropdown.Item
-                key={'oscilator' + i + 'shapeWhiteNoise'}
-                eventKey={'oscilator' + i + 'shapeWhiteNoise'}
-                onClick={() => handleChange('waveForm', true, i, 'whiteNoise')}
-            >
-                {'white noise'}
-            </Dropdown.Item>,
-        );
-        shapeTypes.push(
-            <Dropdown.Item
-                key={'oscilator' + i + 'shapePinkNoise'}
-                eventKey={'oscilator' + i + 'shapePinkNoise'}
-                onClick={() => handleChange('waveForm', true, i, 'pinkNoise')}
-            >
-                {'pink noise'}
-            </Dropdown.Item>,
-        );
-        shapeTypes.push(
-            <Dropdown.Item
-                key={'oscilator' + i + 'brownianPinkNoise'}
-                eventKey={'oscilator' + i + 'brownianPinkNoise'}
-                onClick={() => handleChange('waveForm', true, i, 'brownianNoise')}
-            >
-                {'brownian noise'}
-            </Dropdown.Item>,
-        );
-        for (let j = 0; j < 7; j++) {
-            octaveShifts.push(
-                <Dropdown.Item
-                    key={'oscilator' + i + 'octShift' + (j - 3)}
-                    eventKey={'oscilator' + i + 'octShift' + (j - 3)}
-                    onClick={() => handleChange('frequencyModOct', true, i, j - 3)}
-                >
-                    {j - 3 === 0 ? 'none' : j - 3}
-                </Dropdown.Item>,
-            );
-        }
-        oscillators.push(
-            <div className="pqSynthOscilator" key={i.toString()}>
-                <div className="pqSynthOscilatorTag">
-                    <h2>oscillator {i + 1}</h2>
-                </div>
-                <div className="pqSynthSwitch">
-                    <label>
-                        <input
-                            type="radio"
-                            value="standby"
-                            checked={props.instrument.preset.oscillators[i].active}
-                            onChange={() => handleChange('active', true, i, true)}
-                        />
-                        On
-                    </label>
-                    <label>
-                        <input
-                            type="radio"
-                            value="pitch"
-                            checked={!props.instrument.preset.oscillators[i].active}
-                            onChange={() => handleChange('active', true, i, false)}
-                        />
-                        Off
-                    </label>
-                </div>
-                <div className="waveformSection">
-                    <div className="waveformSelectorLabel">
-                        <h3>waveform:</h3>
-                    </div>
-                    <DropdownButton
-                        id={'oscilator-types-drop-down'}
-                        variant="link"
-                        className="waveformSelector"
-                        title={props.instrument.preset.oscillators[i].waveForm}
-                    >
-                        {shapeTypes}
-                    </DropdownButton>
-                </div>
-                <div className="frequencyModSection">
-                    <div className="sectionLabel">
-                        <h3>simple frequency modifier</h3>
-                    </div>
-                    <div className="frequencyModOctPercent">
-                        <label>shift (in %): {props.instrument.preset.oscillators[i].frequencyModPercent}</label>
-                        <input
-                            type="range"
-                            value={props.instrument.preset.oscillators[i].frequencyModPercent}
-                            step="0.01"
-                            min="-100"
-                            max="100"
-                            onChange={(event) =>
-                                handleChange('frequencyModPercent', true, i, Number(event.target.value))
-                            }
-                        />
-                    </div>
-                    <div className="frequencyModOctSelector">
-                        <div className="frequencyModOctSelectorLabel">
-                            <h3>shift (in octaves)</h3>
-                        </div>
-                        <DropdownButton
-                            id={'oscilator-types-drop-down'}
-                            variant="link"
-                            className="waveformSelector"
-                            title={
-                                props.instrument.preset.oscillators[i].frequencyModOct
-                                    ? props.instrument.preset.oscillators[i].frequencyModOct
-                                    : 'none'
-                            }
-                        >
-                            {octaveShifts}
-                        </DropdownButton>
-                    </div>
-                    <div className="sectionLabel">
-                        <h3>LFO frequency modifier</h3>
-                    </div>
-                    <div className="pqSynthSwitch">
-                        <label>
-                            <input
-                                type="radio"
-                                value="standby"
-                                checked={props.instrument.preset.oscillators[i].frequencyModLfo}
-                                onChange={() => handleChange('frequencyModLfo', true, i, true)}
-                            />
-                            On
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                value="pitch"
-                                checked={!props.instrument.preset.oscillators[i].frequencyModLfo}
-                                onChange={() => handleChange('frequencyModLfo', true, i, false)}
-                            />
-                            Off
-                        </label>
-                    </div>
-                    <div className="frequencyModLfoSlider">
-                        <label>frequency (Hz): {props.instrument.preset.oscillators[i].frequencyModLfoHz}</label>
-                        <input
-                            type="range"
-                            value={props.instrument.preset.oscillators[i].frequencyModLfoHz}
-                            step="0.01"
-                            min="0.1"
-                            max="1000"
-                            onChange={(event) => handleChange('frequencyModLfoHz', true, i, Number(event.target.value))}
-                        />
-                    </div>
-                    <div className="frequencyModLfoSlider">
-                        <label>width: {props.instrument.preset.oscillators[i].frequencyModLfoWidth}</label>
-                        <input
-                            type="range"
-                            value={props.instrument.preset.oscillators[i].frequencyModLfoWidth}
-                            step="0.01"
-                            min="0.01"
-                            max="1000"
-                            onChange={(event) =>
-                                handleChange('frequencyModLfoWidth', true, i, Number(event.target.value))
-                            }
-                        />
-                    </div>
-                </div>
-                <div className="amplitudeModSection">
-                    <div className="sectionLabel">
-                        <h2>amplitude simple modifier</h2>
-                    </div>
-                    <div className="frequencyModLfoSlider">
-                        <label>scale (in %): {props.instrument.preset.oscillators[i].amplitudeModPercent}</label>
-                        <input
-                            type="range"
-                            value={props.instrument.preset.oscillators[i].amplitudeModPercent}
-                            step="1"
-                            min="0"
-                            max="100"
-                            onChange={(event) =>
-                                handleChange('amplitudeModPercent', true, i, Number(event.target.value))
-                            }
-                        />
-                    </div>
-                    <div className="sectionLabel">
-                        <h2>amplitude lfo modifier</h2>
-                    </div>
-                    <div className="pqSynthSwitch">
-                        <label>
-                            <input
-                                type="radio"
-                                value="standby"
-                                checked={props.instrument.preset.oscillators[i].amplitudeModLfo}
-                                onChange={() => handleChange('amplitudeModLfo', true, i, true)}
-                            />
-                            On
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                value="pitch"
-                                checked={!props.instrument.preset.oscillators[i].amplitudeModLfo}
-                                onChange={() => handleChange('amplitudeModLfo', true, i, false)}
-                            />
-                            Off
-                        </label>
-                    </div>
-                    <div className="frequencyModLfoSlider">
-                        <label>frequency (in Hz): {props.instrument.preset.oscillators[i].amplitudeModLfoHz}</label>
-                        <input
-                            type="range"
-                            value={props.instrument.preset.oscillators[i].amplitudeModLfoHz}
-                            step="0.01"
-                            min="0.1"
-                            max="20"
-                            onChange={(event) => handleChange('amplitudeModLfoHz', true, i, Number(event.target.value))}
-                        />
-                    </div>
-                    <div className="frequencyModLfoSlider">
-                        <label>width: {props.instrument.preset.oscillators[i].amplitudeModLfoWidth}</label>
-                        <input
-                            type="range"
-                            value={props.instrument.preset.oscillators[i].amplitudeModLfoWidth}
-                            step="0.01"
-                            min="0"
-                            max="1"
-                            onChange={(event) =>
-                                handleChange('amplitudeModLfoWidth', true, i, Number(event.target.value))
-                            }
-                        />
-                    </div>
-                </div>
-            </div>,
-        );
-    }
+
     return (
-        <div className="pqSynthContainer">
-            <div className="pqSynthOscilatorsContainer">{oscillators}</div>
+        <div className="pq-inst-body">
+            <div className="pq-inst-sec">
+                <div className="pq-inst-sec-head">
+                    <span>OSCILLATOR</span>
+                </div>
+                <div className="pq-seg">
+                    {preset.oscillators.map((o, i) => (
+                        <button
+                            key={i}
+                            className={'pq-seg-btn' + (i === oscIndex ? ' is-active' : '')}
+                            onClick={() => setOscIndex(i)}
+                        >
+                            {'Osc ' + (i + 1)}
+                        </button>
+                    ))}
+                    <button
+                        className={'pq-seg-btn' + (osc.active ? ' is-active' : '')}
+                        onClick={() => set('active', !osc.active)}
+                        title="Toggle oscillator"
+                    >
+                        {osc.active ? 'On' : 'Off'}
+                    </button>
+                </div>
+            </div>
+
+            <div className="pq-inst-sec">
+                <div className="pq-inst-sec-head">
+                    <span>WAVEFORM</span>
+                </div>
+                <div className="pq-seg">
+                    {WAVES.map((w) => (
+                        <button
+                            key={w.key}
+                            className={'pq-seg-btn' + (osc.waveForm === w.key ? ' is-active' : '')}
+                            onClick={() => set('waveForm', w.key)}
+                        >
+                            {w.label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="pq-inst-sec">
+                <div className="pq-inst-sec-head">
+                    <span>OCTAVE</span>
+                </div>
+                <div className="pq-seg">
+                    {OCTAVES.map((o) => (
+                        <button
+                            key={o}
+                            className={'pq-seg-btn' + ((osc.frequencyModOct || 0) === o ? ' is-active' : '')}
+                            onClick={() => set('frequencyModOct', o)}
+                        >
+                            {o > 0 ? '+' + o : o}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="pq-inst-sec">
+                <div className="pq-inst-sec-head">
+                    <span>FREQUENCY MOD</span>
+                </div>
+                <div className="pq-seg">
+                    <button
+                        className={'pq-seg-btn' + (osc.frequencyModLfo ? ' is-active' : '')}
+                        onClick={() => set('frequencyModLfo', !osc.frequencyModLfo)}
+                    >
+                        {osc.frequencyModLfo ? 'LFO On' : 'LFO Off'}
+                    </button>
+                </div>
+                <div className="pq-knob-grid">
+                    <PqKnob
+                        label="SHIFT %"
+                        value={osc.frequencyModPercent}
+                        min={-100}
+                        max={100}
+                        step={0.01}
+                        display={Math.round(osc.frequencyModPercent)}
+                        onChange={(v) => set('frequencyModPercent', Number(v))}
+                    />
+                    <PqKnob
+                        label="LFO HZ"
+                        value={osc.frequencyModLfoHz}
+                        min={0.1}
+                        max={1000}
+                        step={0.01}
+                        display={Number(osc.frequencyModLfoHz).toFixed(1)}
+                        disabled={!osc.frequencyModLfo}
+                        onChange={(v) => set('frequencyModLfoHz', Number(v))}
+                    />
+                    <PqKnob
+                        label="LFO WIDTH"
+                        value={osc.frequencyModLfoWidth}
+                        min={0.01}
+                        max={1000}
+                        step={0.01}
+                        display={Number(osc.frequencyModLfoWidth).toFixed(1)}
+                        disabled={!osc.frequencyModLfo}
+                        onChange={(v) => set('frequencyModLfoWidth', Number(v))}
+                    />
+                </div>
+            </div>
+
+            <div className="pq-inst-sec">
+                <div className="pq-inst-sec-head">
+                    <span>AMPLITUDE MOD</span>
+                </div>
+                <div className="pq-seg">
+                    <button
+                        className={'pq-seg-btn' + (osc.amplitudeModLfo ? ' is-active' : '')}
+                        onClick={() => set('amplitudeModLfo', !osc.amplitudeModLfo)}
+                    >
+                        {osc.amplitudeModLfo ? 'LFO On' : 'LFO Off'}
+                    </button>
+                </div>
+                <div className="pq-knob-grid">
+                    <PqKnob
+                        label="SCALE %"
+                        value={osc.amplitudeModPercent}
+                        min={0}
+                        max={100}
+                        step={1}
+                        display={Math.round(osc.amplitudeModPercent)}
+                        onChange={(v) => set('amplitudeModPercent', Number(v))}
+                    />
+                    <PqKnob
+                        label="LFO HZ"
+                        value={osc.amplitudeModLfoHz}
+                        min={0.1}
+                        max={20}
+                        step={0.01}
+                        display={Number(osc.amplitudeModLfoHz).toFixed(1)}
+                        disabled={!osc.amplitudeModLfo}
+                        onChange={(v) => set('amplitudeModLfoHz', Number(v))}
+                    />
+                    <PqKnob
+                        label="LFO WIDTH"
+                        value={osc.amplitudeModLfoWidth}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        display={Number(osc.amplitudeModLfoWidth).toFixed(2)}
+                        disabled={!osc.amplitudeModLfo}
+                        onChange={(v) => set('amplitudeModLfoWidth', Number(v))}
+                    />
+                </div>
+            </div>
         </div>
     );
 };

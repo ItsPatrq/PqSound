@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import Modal from 'components/Modal';
 import EqualizerComponent from 'components/Plugins/Equalizer';
 import CompressorComponent from 'components/Plugins/Compressor';
 import DistortionComponent from 'components/Plugins/Distortion';
@@ -41,19 +41,13 @@ const InstrumentModal = (props) => {
         }
         return (
             <Modal
-                backdrop="static"
                 show={props.showModal}
                 size="sm"
+                title={modalHeader}
                 onHide={() => props.modalVisibilitySwitch()}
                 dialogClassName="instrumentModal"
             >
-                <Modal.Header closeButton>
-                    <Modal.Title>{modalHeader}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>{modalBody}</Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={() => props.modalVisibilitySwitch()}>Close</Button>
-                </Modal.Footer>
+                {modalBody}
             </Modal>
         );
     } else {

@@ -27,7 +27,7 @@ class PanKnob extends React.Component {
                     this.onChange(e, input.id, knopf);
                 });
             } else {
-                const pan = this.props.pan < 0.001 && this.props.pan > -0.001 ? 0 : this.props.pan;
+                const pan = Utils.normalizePan(this.props.pan);
                 if (Number(this.knob.value) !== pan) {
                     this.knob.update(this.props.pan);
                 }
@@ -42,7 +42,7 @@ class PanKnob extends React.Component {
     render() {
         return (
             <div className="panKnobDiv">
-                <p>Pan: {this.props.pan < 0.001 && this.props.pan > -0.001 ? 0 : this.props.pan}</p>
+                <p>Pan: {Utils.normalizePan(this.props.pan)}</p>
                 <input
                     id="pan"
                     type="range"

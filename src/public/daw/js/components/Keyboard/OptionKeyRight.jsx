@@ -1,36 +1,16 @@
 import * as React from 'react';
-import { Button } from 'react-bootstrap';
-import { ChevronRight } from 'react-bootstrap-icons';
+import { ChevronRight } from 'components/Icons';
 
+// One clean control per side = shift the visible range up one octave.
 const OptionKeyRight = (props) => {
     return (
-        <div className="optionKey right" style={{ marginLeft: props.margin + 'px' }}>
-            <div className="shiftKeyDiv">
-                <Button
-                    className="shiftKeyDiv"
-                    size="lg"
-                    variant="link"
-                    onClick={() => {
-                        props.onChangeKeyboardRange(1);
-                    }}
-                >
-                    <ChevronRight />
-                </Button>
-            </div>
-            <div className="shiftKeyDiv">
-                <Button
-                    className="shiftKeyDiv"
-                    size="lg"
-                    variant="link"
-                    onClick={() => {
-                        props.onChangeKeyboardRange(12);
-                    }}
-                >
-                    <ChevronRight />
-                    <ChevronRight />
-                </Button>
-            </div>
-        </div>
+        <button
+            className="optionKey right optionKeyBtn"
+            title="Octave up"
+            onClick={() => props.onChangeKeyboardRange(12)}
+        >
+            <ChevronRight />
+        </button>
     );
 };
 

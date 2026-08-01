@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import TrackCompositionRow from 'components/CompositionGrid/TrackCompositionRow';
 import PianoRoll from 'components/CompositionGrid/PianoRoll';
@@ -221,7 +220,7 @@ class CompositionGrid extends React.Component {
             const bitsNumber = currRegion.regionLength;
             const currTrackIndex = currRegion.trackIndex;
             return (
-                <Col xs={12} className="nopadding compositionPanelPianoRoll">
+                <div className="pq-col-12 nopadding compositionPanelPianoRoll">
                     <PianoRollTimeBar
                         bits={bitsNumber}
                         scroll={this.state.scrollPianoRollX}
@@ -263,7 +262,7 @@ class CompositionGrid extends React.Component {
                     >
                         <rect className="currTimeLine"> </rect>
                     </svg>
-                </Col>
+                </div>
             );
         } else {
             /**
@@ -286,7 +285,7 @@ class CompositionGrid extends React.Component {
                 return a.props.trackIndex - b.props.trackIndex;
             });
             return (
-                <Col xs={10} className="nopadding compositionPanel">
+                <div className="pq-col-10 nopadding compositionPanel">
                     <TimeBar
                         bits={this.props.composition.barsInComposition}
                         scroll={this.state.scrollCompositionX}
@@ -312,7 +311,7 @@ class CompositionGrid extends React.Component {
                     >
                         <rect className="currTimeLine"> </rect>
                     </svg>
-                </Col>
+                </div>
             );
         }
     }
