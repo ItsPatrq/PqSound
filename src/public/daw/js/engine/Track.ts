@@ -90,12 +90,12 @@ class Track {
         this.instrument.connect(this.input);
     }
 
-    changeVolume(newVolume, changeTime) {
+    changeVolume(newVolume, changeTime?) {
         changeTime = changeTime || this.context!.currentTime;
         this.gainNode!.gain.setValueAtTime(newVolume, changeTime);
     }
 
-    changePan(newPan, changeTime) {
+    changePan(newPan, changeTime?) {
         changeTime = changeTime || this.context!.currentTime;
         this.panNode!.pan.setValueAtTime(newPan / 100, changeTime);
     }

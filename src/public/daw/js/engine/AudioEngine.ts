@@ -3,6 +3,7 @@ import Sound from './Sound';
 // an import cycle with the modules that construct them.
 import type Sequencer from './Sequencer';
 import type MIDIController from './MIDIController';
+import type Track from './Track';
 
 /**
  * Owns every live, non-serializable object that used to sit inside store state:
@@ -24,6 +25,12 @@ class AudioEngine {
     private buffersByInstrumentName: Map<string, AudioBuffer[]> = new Map();
     private sequencer: Sequencer | null = null;
     private midiController: MIDIController | null = null;
+    /**
+     * Live per-track Web Audio graphs, keyed by the track's stable `id` — not
+     * by its index, which is renumbered whenever a track is removed or
+     * reordered.
+     */
+    private trackNodes: Map<number, Track> = new Map();
 
     /**
      * Creates the AudioContext and the Sound dispatcher. Idempotent: a second
@@ -104,6 +111,57 @@ class AudioEngine {
         return this.midiController;
     }
 
+    /* ---- track graphs ---- */
+
+    setTrackNode(trackId: number, node: Track): void {
+        this.trackNodes.set(trackId, node);
+    }
+
+    getTrackNode(trackId: number): Track | undefined {
+        return this.trackNodes.get(trackId);
+    }
+
+    removeTrackNode(trackId: number): void {
+        this.trackNodes.delete(trackId);
+    }
+
+    clearTrackNodes(): void {
+        this.trackNodes.clear();
+    }
+
+    /**
+     * Per-node operations. They are no-ops for an unknown id so callers do not
+     * have to guard against a track whose graph has not been built yet (the
+     * store is populated before `INIT_INSTRUMENT_CONTEXT` runs).
+     */
+    applyTrackVolume(trackId: number, volume: number): void {
+        this.trackNodes.get(trackId)?.changeVolume(volume);
+    }
+
+    applyTrackPan(trackId: number, pan: number): void {
+        this.trackNodes.get(trackId)?.changePan(pan);
+    }
+
+    applyTrackMute(trackId: number): void {
+        this.trackNodes.get(trackId)?.updateMuteState();
+    }
+
+    applyTrackSolo(trackId: number, solo: boolean, anySolo: boolean): void {
+        this.trackNodes.get(trackId)?.updateSoloState(solo, anySolo);
+    }
+
+    applyTrackInstrument(trackId: number, instrument: any): void {
+        this.trackNodes.get(trackId)?.updateInstrument(instrument);
+    }
+
+    /**
+     * Rebuilds a track's plugin chain, optionally re-pointing it at a new
+     * destination input node.
+     */
+    refreshTrackNode(trackId: number, destinationInput?: AudioNode): void {
+        this.trackNodes.get(trackId)?.updateTrackNode(destinationInput);
+    }
+
     /** Test seam: drops every live object the engine owns. */
     reset(): void {
         this.context = null;
@@ -111,6 +169,7 @@ class AudioEngine {
         this.sequencer = null;
         this.midiController = null;
         this.buffersByInstrumentName.clear();
+        this.trackNodes.clear();
     }
 }
 

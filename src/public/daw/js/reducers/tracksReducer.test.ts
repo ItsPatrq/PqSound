@@ -5,22 +5,12 @@ import reducer from 'reducers/tracksReducer';
 import { TrackTypes } from 'constants/Constants';
 
 /**
- * Characterization tests for tracksReducer, written ahead of the engine/store
- * decoupling (#156) so the routing/index arithmetic and the audio-graph
- * side effects are pinned down before the live `trackNode` objects move out of
- * state. They deliberately describe today's behaviour, side effects included.
+ * tracksReducer is now pure: descriptors only, no `new`, no audio-node calls.
+ * These cover the routing and index arithmetic; the audio-graph side effects
+ * that used to live here are covered in actions/trackListActions.test.ts.
  *
  * Reaches the reducer through the webpack aliases, which Jest can now resolve.
  */
-
-const makeTrackNode = (): any => ({
-    updateSoloState: jest.fn(),
-    updateMuteState: jest.fn(),
-    updateTrackNode: jest.fn(),
-    updateInstrument: jest.fn(),
-    changeVolume: jest.fn(),
-    changePan: jest.fn(),
-});
 
 /** Master (index 0) + two virtual-instrument tracks routed into it. */
 const makeState = (): any => ({
@@ -34,9 +24,9 @@ const makeState = (): any => ({
             record: false,
             mute: false,
             index: 0,
+            id: 0,
             output: null,
             input: [1, 2],
-            trackNode: makeTrackNode(),
         },
         {
             name: 'track one',
@@ -48,9 +38,9 @@ const makeState = (): any => ({
             mute: false,
             solo: false,
             index: 1,
+            id: 1,
             output: 0,
             input: [],
-            trackNode: makeTrackNode(),
         },
         {
             name: 'track two',
@@ -62,11 +52,12 @@ const makeState = (): any => ({
             mute: false,
             solo: false,
             index: 2,
+            id: 2,
             output: 0,
             input: [],
-            trackNode: makeTrackNode(),
         },
     ],
+    nextTrackId: 3,
     selected: 1,
     anyVirtualInstrumentSolo: false,
     anyAuxSolo: false,
@@ -141,30 +132,20 @@ describe('tracksReducer', () => {
     });
 
     describe('CHANGE_TRACK_MUTE_STATE', () => {
-        it('toggles mute and pushes it into the audio graph', () => {
-            const initial = makeState();
-            const node = initial.trackList[1].trackNode;
-
-            const state: any = reducer(initial, { type: 'CHANGE_TRACK_MUTE_STATE', payload: 1 });
+        it('toggles mute', () => {
+            const state: any = reducer(makeState(), { type: 'CHANGE_TRACK_MUTE_STATE', payload: 1 });
 
             expect(trackAt(state, 1).mute).toBe(true);
-            expect(node.updateMuteState).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('CHANGE_TRACK_SOLO_STATE', () => {
-        it('raises anyVirtualInstrumentSolo and tells every track about it', () => {
-            const initial = makeState();
-            const soloed = initial.trackList[1].trackNode;
-            const other = initial.trackList[2].trackNode;
-
-            const state: any = reducer(initial, { type: 'CHANGE_TRACK_SOLO_STATE', payload: 1 });
+        it('raises anyVirtualInstrumentSolo', () => {
+            const state: any = reducer(makeState(), { type: 'CHANGE_TRACK_SOLO_STATE', payload: 1 });
 
             expect(trackAt(state, 1).solo).toBe(true);
             expect(state.anyVirtualInstrumentSolo).toBe(true);
             expect(state.anyAuxSolo).toBe(false);
-            expect(soloed.updateSoloState).toHaveBeenCalledWith(true, true);
-            expect(other.updateSoloState).toHaveBeenCalledWith(false, true);
         });
 
         it('clears the flag when the last solo is switched off', () => {
@@ -180,33 +161,27 @@ describe('tracksReducer', () => {
     });
 
     describe('CHANGE_TRACK_VOLUME / CHANGE_TRACK_PAN', () => {
-        it('stores the volume and forwards it to the track node', () => {
-            const initial = makeState();
-            const node = initial.trackList[1].trackNode;
-
-            const state: any = reducer(initial, { type: 'CHANGE_TRACK_VOLUME', payload: { index: 1, volume: 0.25 } });
+        it('stores the volume', () => {
+            const state: any = reducer(makeState(), {
+                type: 'CHANGE_TRACK_VOLUME',
+                payload: { index: 1, volume: 0.25 },
+            });
 
             expect(trackAt(state, 1).volume).toBe(0.25);
-            expect(node.changeVolume).toHaveBeenCalledWith(0.25);
         });
 
-        it('stores the pan and forwards it to the track node', () => {
-            const initial = makeState();
-            const node = initial.trackList[2].trackNode;
-
-            const state: any = reducer(initial, { type: 'CHANGE_TRACK_PAN', payload: { index: 2, pan: -0.5 } });
+        it('stores the pan', () => {
+            const state: any = reducer(makeState(), { type: 'CHANGE_TRACK_PAN', payload: { index: 2, pan: -0.5 } });
 
             expect(trackAt(state, 2).pan).toBe(-0.5);
-            expect(node.changePan).toHaveBeenCalledWith(-0.5);
         });
     });
 
     describe('CHANGE_TRACK_OUTPUT', () => {
-        it('rewires the routing lists on both ends and the audio graph', () => {
+        it('rewires the routing lists on both ends', () => {
             const initial = makeState();
             // Make track 2 an aux so track 1 has somewhere else to go.
             initial.trackList[2].trackType = TrackTypes.aux;
-            const node = initial.trackList[1].trackNode;
 
             const state: any = reducer(initial, {
                 type: 'CHANGE_TRACK_OUTPUT',
@@ -216,7 +191,6 @@ describe('tracksReducer', () => {
             expect(trackAt(state, 1).output).toBe(2);
             expect(trackAt(state, 0).input).not.toContain(1);
             expect(trackAt(state, 2).input).toContain(1);
-            expect(node.updateTrackNode).toHaveBeenCalledWith(2);
         });
     });
 
@@ -249,23 +223,6 @@ describe('tracksReducer', () => {
         });
     });
 
-    describe('UPDATE_ALL_TRACK_NODES', () => {
-        it('replays mute and solo state into the audio graph', () => {
-            const initial = makeState();
-            initial.trackList[1].mute = true;
-            initial.trackList[2].solo = true;
-            initial.anyVirtualInstrumentSolo = true;
-            const muted = initial.trackList[1].trackNode;
-            const soloed = initial.trackList[2].trackNode;
-
-            reducer(initial, { type: 'UPDATE_ALL_TRACK_NODES' });
-
-            expect(muted.updateMuteState).toHaveBeenCalledTimes(1);
-            expect(muted.updateSoloState).toHaveBeenCalledWith(false, true);
-            expect(soloed.updateSoloState).toHaveBeenCalledWith(true, true);
-        });
-    });
-
     describe('ADD_NEW_TRACK_MODAL_VISIBILITY_SWITCH', () => {
         it('toggles the modal flag', () => {
             const state: any = reducer(makeState(), { type: 'ADD_NEW_TRACK_MODAL_VISIBILITY_SWITCH' });
@@ -275,21 +232,28 @@ describe('tracksReducer', () => {
     });
 
     describe('ADD_TRACK', () => {
-        // Regression: the reducer called `new Sampler(...)` without importing it,
-        // so adding a virtual-instrument track threw a ReferenceError.
-        it('constructs a Sampler for a virtual-instrument track', () => {
-            const initial = makeState();
-            const audioContext = {
-                createGain: () => ({ connect: jest.fn(), gain: { value: 1, setValueAtTime: jest.fn() } }),
-            };
-            initial.trackList[0].trackNode = { ...makeTrackNode(), input: {} } as any;
+        it('appends a descriptor with the id handed to it and bumps nextTrackId', () => {
+            const state: any = reducer(makeState(), {
+                type: 'ADD_TRACK',
+                payload: { trackType: TrackTypes.aux, instrument: null, pluginList: [], id: 3 },
+            });
 
-            expect(() =>
-                reducer(initial, {
-                    type: 'ADD_TRACK',
-                    payload: { trackType: TrackTypes.virtualInstrument, audioContext },
-                }),
-            ).not.toThrow(ReferenceError);
+            expect(state.trackList).toHaveLength(4);
+            expect(state.trackList[3].id).toBe(3);
+            expect(state.trackList[3].index).toBe(3);
+            expect(state.nextTrackId).toBe(4);
+            expect(trackAt(state, 0).input).toContain(3);
         });
+    });
+
+    it('keeps track ids stable when indices are renumbered', () => {
+        const removed: any = reducer(makeState(), { type: 'REMOVE_TRACK', payload: 1 });
+
+        // "track two" kept id 2 even though its index moved from 2 to 1.
+        expect(trackAt(removed, 1).id).toBe(2);
+
+        const reordered: any = reducer(makeState(), { type: 'TRACK_INDEX_UP', payload: 1 });
+        expect(trackAt(reordered, 2).id).toBe(1);
+        expect(trackAt(reordered, 1).id).toBe(2);
     });
 });

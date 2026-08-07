@@ -1,12 +1,12 @@
 import * as Utils from 'engine/Utils';
-import Track from 'engine/Track';
-import { MultiOsc, Sampler, Utils as InstrumentsUtils } from 'instruments';
-import { Utils as PluginsUtils } from 'plugins';
 import { TrackTypes } from 'constants/Constants';
-import { Utils as SamplerPresetsUtils, Presets as SamplerPresets } from 'constants/SamplerPresets';
 
 /**
- * Those let-s are for initializing purpose
+ * Track descriptors only. The live Web Audio graph for each track lives in
+ * engine/AudioEngine, keyed by the track's stable `id`; instruments and
+ * plugins are built by the thunks in actions/trackListActions and handed to
+ * this reducer already constructed. Nothing here calls `new` or touches an
+ * audio node — see #156.
  */
 const newMasterPluginList = [];
 const newTrackPluginList = [];
@@ -23,9 +23,9 @@ export default function reducer(
                 record: false,
                 mute: false,
                 index: 0,
+                id: 0,
                 output: null, //output: context.destination
                 input: [1],
-                trackNode: {},
             },
             {
                 name: 'multi-oscilator',
@@ -38,11 +38,14 @@ export default function reducer(
                 mute: false,
                 solo: false,
                 index: 1,
+                id: 1,
                 output: 0,
                 input: [],
-                trackNode: {},
             },
         ],
+        // Ids are handed out from here and never reused, so the engine's track
+        // registry survives the renumbering that remove/reorder does to `index`.
+        nextTrackId: 2,
         selected: 1,
         anyVirtualInstrumentSolo: false,
         anyAuxSolo: false,
@@ -53,52 +56,26 @@ export default function reducer(
     switch (action.type) {
         case 'ADD_TRACK': {
             const newTrackList = [...state.trackList];
-            const newPluginList = [];
             newTrackList[0].input.push(state.trackList.length);
-            const newInstrument =
-                action.payload.trackType === TrackTypes.virtualInstrument
-                    ? new Sampler(
-                          SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id),
-                          action.payload.audioContext,
-                      )
-                    : null;
             newTrackList.push({
                 name: 'Default',
                 trackType: action.payload.trackType,
-                instrument: newInstrument,
-                pluginList: newPluginList,
+                instrument: action.payload.instrument,
+                pluginList: action.payload.pluginList,
                 volume: 1.0,
                 pan: 0,
                 record: false,
                 mute: false,
                 solo: false,
                 index: state.trackList.length,
+                id: action.payload.id,
                 output: 0,
                 input: [],
-                trackNode: new Track(
-                    newPluginList,
-                    newInstrument,
-                    Utils.getTrackByIndex(newTrackList, 0).trackNode.input,
-                    action.payload.audioContext,
-                    1.0,
-                    0,
-                ),
             });
-            if (action.payload.trackType === TrackTypes.virtualInstrument) {
-                if (state.anyAuxSolo) {
-                    newTrackList[newTrackList.length - 1].trackNode.updateSoloState(false, true);
-                } else {
-                    newTrackList[newTrackList.length - 1].trackNode.updateSoloState(
-                        false,
-                        state.anyVirtualInstrumentSolo,
-                    );
-                }
-            } else if (action.payload.trackType === TrackTypes.aux) {
-                newTrackList[newTrackList.length - 1].trackNode.updateSoloState(false, state.anyAuxSolo);
-            }
             return {
                 ...state,
                 trackList: newTrackList,
+                nextTrackId: action.payload.id + 1,
             };
         }
         case 'REMOVE_TRACK': {
@@ -166,17 +143,6 @@ export default function reducer(
                     }
                 }
             }
-            for (let i = 1; i < newTrackList.length; i++) {
-                if (newTrackList[i].trackType === TrackTypes.virtualInstrument) {
-                    if (newAnyAuxSolo && newTrackList[i].output === 0) {
-                        newTrackList[i].trackNode.updateSoloState(false, true);
-                    } else {
-                        newTrackList[i].trackNode.updateSoloState(newTrackList[i].solo, newAnyVirtualInstrumentSolo);
-                    }
-                } else if (newTrackList[i].trackType === TrackTypes.aux) {
-                    newTrackList[i].trackNode.updateSoloState(newTrackList[i].solo, newAnyAuxSolo);
-                }
-            }
             return {
                 ...state,
                 trackList: newTrackList,
@@ -189,7 +155,6 @@ export default function reducer(
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload) {
                     newTrackList[i].mute = !newTrackList[i].mute;
-                    newTrackList[i].trackNode.updateMuteState();
                     break;
                 }
             }
@@ -247,33 +212,10 @@ export default function reducer(
         }
         case 'INIT_INSTRUMENT_CONTEXT': {
             const newTrackList = [...state.trackList];
-            const { index, audioContext } = action.payload;
-            if (Utils.isNullOrUndefined(index)) {
-                //TODO: Get rid of
-                newTrackList[newTrackList.length - 1].instrument.initContext(audioContext);
-                newTrackList[newTrackList.length - 1].trackNode.initContext(audioContext);
-                newTrackList[0].trackNode.initContext();
-            } else {
-                for (let i = 0; i < newTrackList.length; i++) {
-                    if (newTrackList[i].index === index) {
-                        newTrackList[0].trackNode = new Track(
-                            newTrackList[0].pluginList,
-                            null,
-                            null,
-                            audioContext,
-                            1,
-                            0,
-                        );
-                        newTrackList[i].instrument = new MultiOsc(undefined, audioContext);
-                        newTrackList[i].trackNode = new Track(
-                            newTrackList[i].pluginList,
-                            newTrackList[i].instrument,
-                            newTrackList[0].trackNode.input,
-                            audioContext,
-                            1,
-                            0,
-                        );
-                    }
+            const { index, instrument } = action.payload;
+            for (let i = 0; i < newTrackList.length; i++) {
+                if (newTrackList[i].index === index) {
+                    newTrackList[i].instrument = instrument;
                 }
             }
             return {
@@ -286,7 +228,6 @@ export default function reducer(
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
                     newTrackList[i].volume = action.payload.volume;
-                    newTrackList[i].trackNode.changeVolume(action.payload.volume);
                 }
             }
             return {
@@ -299,7 +240,6 @@ export default function reducer(
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
                     newTrackList[i].pan = action.payload.pan;
-                    newTrackList[i].trackNode.changePan(action.payload.pan);
                 }
             }
             return {
@@ -311,13 +251,7 @@ export default function reducer(
             const newTrackList = [...state.trackList];
             for (let i = 0; i < newTrackList.length; i++) {
                 if (newTrackList[i].index === action.payload.index) {
-                    const newInstrument = InstrumentsUtils.getNewInstrumentByIndex(
-                        action.payload.trackInstrumentId,
-                        undefined,
-                        action.payload.audioContext,
-                    );
-                    newTrackList[i].instrument = newInstrument;
-                    newTrackList[i].trackNode.updateInstrument(newInstrument);
+                    newTrackList[i].instrument = action.payload.instrument;
                     break;
                 }
             }
@@ -339,7 +273,6 @@ export default function reducer(
                     }
                     newTrackList[i].output = action.payload.outputIndex;
                     Utils.getTrackByIndex(newTrackList, action.payload.outputIndex).input.push(action.payload.index);
-                    newTrackList[i].trackNode.updateTrackNode(action.payload.outputIndex);
                     break;
                 }
             }
@@ -352,19 +285,6 @@ export default function reducer(
             return {
                 ...state,
                 showAddNewTrackModal: !state.showAddNewTrackModal,
-            };
-        }
-        case 'UPDATE_INSTRUMENT_PRESET': {
-            const newTrackList = [...state.trackList];
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload.index) {
-                    newTrackList[i].instrument.updatePreset(action.payload.preset);
-                    break;
-                }
-            }
-            return {
-                ...state,
-                trackList: newTrackList,
             };
         }
         case 'TRACK_INDEX_UP': {
@@ -444,14 +364,7 @@ export default function reducer(
         case 'ADD_NEW_PLUGIN': {
             const newTrackList = [...state.trackList];
             const currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
-            currTrack.pluginList.push(
-                PluginsUtils.getNewPluginByIndex(
-                    action.payload.pluginId,
-                    currTrack.pluginList.length,
-                    action.payload.audioContext,
-                ),
-            );
-            currTrack.trackNode.updateTrackNode();
+            currTrack.pluginList.push(action.payload.plugin);
             return {
                 ...state,
                 trackList: newTrackList,
@@ -469,133 +382,26 @@ export default function reducer(
                     break;
                 }
             }
-            currTrack.trackNode.updateTrackNode();
-            return {
-                ...state,
-                trackList: newTrackList,
-            };
-        }
-        case 'CHANGE_PLUGIN_PRESET': {
-            const newTrackList = [...state.trackList];
-            const currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
-            for (let i = 0; i < currTrack.pluginList.length; i++) {
-                if (currTrack.pluginList[i].index === action.payload.pluginIndex) {
-                    currTrack.pluginList[i].updatePreset(action.payload.preset);
-                    break;
-                }
-            }
             return {
                 ...state,
                 trackList: newTrackList,
             };
         }
         case 'LOAD_TRACK_STATE': {
-            const { stateToLoad, audioContext } = action.payload;
-            const newState = Utils.copy(stateToLoad);
-
-            const newPluginList = [];
-            for (let j = 0; j < newState.trackList[0].pluginList.length; j++) {
-                newPluginList.push(
-                    PluginsUtils.getNewPluginByIndex(
-                        newState.trackList[0].pluginList[j].id,
-                        newPluginList.length,
-                        audioContext,
-                    ),
-                );
-            }
-            newState.trackList[0].pluginList = newPluginList;
-            for (let j = 0; j < newState.trackList[0].pluginList.length; j++) {
-                newState.trackList[0].pluginList[j].updatePreset(stateToLoad.trackList[0].pluginList[j].preset);
-            }
-            newState.trackList[0].trackNode = state.trackList[0].trackNode;
-            newState.trackList[0].trackNode.pluginNodeList = newPluginList;
-            newState.trackList[0].trackNode.updateTrackNode();
-
-            for (let i = 1; i < newState.trackList.length; i++) {
-                if (newState.trackList[i].trackType === TrackTypes.aux) {
-                    const newPluginList = [];
-                    for (let j = 0; j < newState.trackList[i].pluginList.length; j++) {
-                        newPluginList.push(
-                            PluginsUtils.getNewPluginByIndex(
-                                newState.trackList[i].pluginList[j].id,
-                                newPluginList.length,
-                                audioContext,
-                            ),
-                        );
-                    }
-                    newState.trackList[i].pluginList = newPluginList;
-                    for (let j = 0; j < newState.trackList[i].pluginList.length; j++) {
-                        newState.trackList[i].pluginList[j].updatePreset(stateToLoad.trackList[i].pluginList[j].preset);
-                    }
-                    newState.trackList[i].trackNode = new Track(
-                        newState.trackList[i].pluginList,
-                        null,
-                        Utils.getTrackByIndex(newState.trackList, newState.trackList[i].output).trackNode.input,
-                        audioContext,
-                        newState.trackList[i].volume,
-                        newState.trackList[i].pan,
-                    );
-                }
-                newState.trackList[i].index = newState.trackList[i].index;
-            }
-            for (let i = 1; i < newState.trackList.length; i++) {
-                if (newState.trackList[i].trackType !== TrackTypes.aux) {
-                    const newInstrument = InstrumentsUtils.getNewInstrumentByIndex(
-                        stateToLoad.trackList[i].instrument.id,
-                        undefined,
-                        audioContext,
-                    );
-                    newInstrument.updatePreset(stateToLoad.trackList[i].instrument.preset);
-                    newState.trackList[i].instrument = newInstrument;
-                    const newPluginList = [];
-                    for (let j = 0; j < newState.trackList[i].pluginList.length; j++) {
-                        newPluginList.push(
-                            PluginsUtils.getNewPluginByIndex(
-                                newState.trackList[i].pluginList[j].id,
-                                newPluginList.length,
-                                audioContext,
-                            ),
-                        );
-                    }
-                    newState.trackList[i].pluginList = newPluginList;
-                    for (let j = 0; j < newState.trackList[i].pluginList.length; j++) {
-                        newState.trackList[i].pluginList[j].updatePreset(stateToLoad.trackList[i].pluginList[j].preset);
-                    }
-                    newState.trackList[i].trackNode = new Track(
-                        newState.trackList[i].pluginList,
-                        newState.trackList[i].instrument,
-                        Utils.getTrackByIndex(newState.trackList, newState.trackList[i].output).trackNode.input,
-                        audioContext,
-                        newState.trackList[i].volume,
-                        newState.trackList[i].pan,
-                    );
-                }
-                newState.trackList[i].index = newState.trackList[i].index;
-            }
-            return {
-                ...newState,
-            };
-        }
-        case 'UPDATE_ALL_TRACK_NODES': {
-            const newTrackList = [...state.trackList];
-
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].mute) {
-                    newTrackList[i].trackNode.updateMuteState();
-                }
-                if (newTrackList[i].trackType === TrackTypes.virtualInstrument) {
-                    if (state.anyAuxSolo && newTrackList[i].output === 0) {
-                        newTrackList[i].trackNode.updateSoloState(false, true);
-                    } else {
-                        newTrackList[i].trackNode.updateSoloState(newTrackList[i].solo, state.anyVirtualInstrumentSolo);
-                    }
-                } else if (newTrackList[i].trackType === TrackTypes.aux) {
-                    newTrackList[i].trackNode.updateSoloState(newTrackList[i].solo, state.anyAuxSolo);
-                }
-            }
+            // The thunk has already built the instruments, plugins and track
+            // graphs; this only swaps in the finished descriptors.
             return {
                 ...state,
-                trackList: newTrackList,
+                ...action.payload,
+            };
+        }
+        case 'UPDATE_INSTRUMENT_PRESET':
+        case 'CHANGE_PLUGIN_PRESET': {
+            // The preset itself lives on the live instrument/plugin object and
+            // is updated by the thunk; this only re-renders the subscribers.
+            return {
+                ...state,
+                trackList: [...state.trackList],
             };
         }
     }
