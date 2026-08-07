@@ -228,7 +228,7 @@ class CompositionGrid extends React.Component {
                         changeCurrSixteenth={this.handleChangeCurrentSixteenth.bind(this)}
                     />
                     <PianoRollKeyboard
-                        instrument={getTrackByIndex(this.props.trackList, currTrackIndex).instrument}
+                        instrument={AudioEngine.getInstrument(getTrackByIndex(this.props.trackList, currTrackIndex).id)}
                         onDown={this.handleDown.bind(this)}
                         onUp={this.handleUp.bind(this)}
                         scroll={this.state.scrollPianoRollY}

@@ -12,6 +12,13 @@ import { Utils as SamplerPresetsUtils, Presets as SamplerPresets } from 'constan
  * in AudioEngine by the track's stable `id` (see #156).
  */
 
+/**
+ * The serializable half of an instrument. The live object stays in
+ * AudioEngine; the store only carries what the UI renders.
+ */
+const describeInstrument = (instrument) =>
+    instrument ? { id: instrument.id, name: instrument.name, preset: instrument.preset } : null;
+
 const trackIdByIndex = (trackList, index) => {
     const track = Utils.getTrackByIndex(trackList, index);
     return track ? track.id : undefined;
@@ -60,11 +67,12 @@ export function addTrack(newTrackType) {
             nextTrackId,
             new Track(pluginList, instrument, destinationInput(trackList, 0), audioContext, 1.0, 0),
         );
+        AudioEngine.setInstrument(nextTrackId, instrument);
         dispatch({
             type: 'ADD_TRACK',
             payload: {
                 trackType: newTrackType,
-                instrument: instrument,
+                instrument: describeInstrument(instrument),
                 pluginList: pluginList,
                 id: nextTrackId,
             },
@@ -88,6 +96,7 @@ export function removeTrack(index) {
         });
         if (removedId !== undefined) {
             AudioEngine.removeTrackNode(removedId);
+            AudioEngine.removeInstrument(removedId);
         }
     };
 }
@@ -137,11 +146,12 @@ export function initInstrumentContext(newIndex) {
             track.id,
             new Track(track.pluginList, instrument, masterNode.input, audioContext, 1, 0),
         );
+        AudioEngine.setInstrument(track.id, instrument);
         dispatch({
             type: 'INIT_INSTRUMENT_CONTEXT',
             payload: {
                 index: newIndex,
-                instrument: instrument,
+                instrument: describeInstrument(instrument),
             },
         });
     };
@@ -187,11 +197,12 @@ export function changeTrackInstrument(newTrackInstrumentId, newIndex) {
             type: 'CHANGE_TRACK_INSTRUMENT',
             payload: {
                 index: newIndex,
-                instrument: instrument,
+                instrument: describeInstrument(instrument),
             },
         });
         const trackId = trackIdByIndex(getState().tracks.trackList, newIndex);
         if (trackId !== undefined) {
+            AudioEngine.setInstrument(trackId, instrument);
             AudioEngine.applyTrackInstrument(trackId, instrument);
         }
     };
@@ -247,9 +258,10 @@ export function changeMuteState(index) {
 
 export function updateInstrumentPreset(newPreset, newTrackIndex) {
     return function (dispatch, getState) {
-        const track = Utils.getTrackByIndex(getState().tracks.trackList, newTrackIndex);
-        if (track && track.instrument) {
-            track.instrument.updatePreset(newPreset);
+        const trackId = trackIdByIndex(getState().tracks.trackList, newTrackIndex);
+        const instrument = trackId === undefined ? undefined : AudioEngine.getInstrument(trackId);
+        if (instrument) {
+            instrument.updatePreset(newPreset);
         }
         dispatch({
             type: 'UPDATE_INSTRUMENT_PRESET',
@@ -362,6 +374,7 @@ export function loadTrackState(newState) {
 
         // Every other track is rebuilt from scratch under a fresh id.
         AudioEngine.clearTrackNodes();
+        AudioEngine.clearInstruments();
         if (masterNode) {
             AudioEngine.setTrackNode(masterId, masterNode);
         }
@@ -379,7 +392,8 @@ export function loadTrackState(newState) {
                 );
                 instrument.updatePreset(newState.trackList[i].instrument.preset);
             }
-            track.instrument = instrument;
+            track.instrument = describeInstrument(instrument);
+            AudioEngine.setInstrument(track.id, instrument);
             AudioEngine.setTrackNode(
                 track.id,
                 new Track(

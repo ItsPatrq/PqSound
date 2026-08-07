@@ -122,6 +122,36 @@ describe('AudioEngine', () => {
         });
     });
 
+    describe('instruments', () => {
+        it('stores and returns the live instrument for a track id', () => {
+            const instrument = { noteOn: jest.fn() };
+
+            AudioEngine.setInstrument(3, instrument);
+
+            expect(AudioEngine.getInstrument(3)).toBe(instrument);
+        });
+
+        it('treats a null instrument as a removal (aux tracks have none)', () => {
+            AudioEngine.setInstrument(3, { noteOn: jest.fn() });
+
+            AudioEngine.setInstrument(3, null);
+
+            expect(AudioEngine.getInstrument(3)).toBeUndefined();
+        });
+
+        it('removes and clears', () => {
+            AudioEngine.setInstrument(3, {});
+            AudioEngine.setInstrument(4, {});
+
+            AudioEngine.removeInstrument(3);
+            expect(AudioEngine.getInstrument(3)).toBeUndefined();
+            expect(AudioEngine.getInstrument(4)).toBeDefined();
+
+            AudioEngine.clearInstruments();
+            expect(AudioEngine.getInstrument(4)).toBeUndefined();
+        });
+    });
+
     describe('instrument buffers', () => {
         it('stores and returns buffers by instrument name', () => {
             const buffers = [{} as AudioBuffer, {} as AudioBuffer];

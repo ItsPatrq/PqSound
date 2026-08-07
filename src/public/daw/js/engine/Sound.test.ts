@@ -1,5 +1,6 @@
 import * as EngineStore from './EngineStore';
 import Sound from './Sound';
+import AudioEngine from './AudioEngine';
 import { SoundOrigin } from '../constants/Constants';
 
 jest.mock('./EngineStore', () => ({
@@ -8,7 +9,14 @@ jest.mock('./EngineStore', () => ({
     dispatch: jest.fn(),
 }));
 
+// Instruments live in the engine registry now, keyed by the track's id.
+jest.mock('./AudioEngine', () => ({
+    __esModule: true,
+    default: { getInstrument: jest.fn() },
+}));
+
 const mockedGetState = EngineStore.getState as jest.Mock;
+const mockedGetInstrument = AudioEngine.getInstrument as jest.Mock;
 
 const makeContext = (state = 'running') =>
     ({
@@ -17,13 +25,18 @@ const makeContext = (state = 'running') =>
         resume: jest.fn(),
     }) as any;
 
-const makeTrack = (index: number) => ({
-    index,
-    instrument: {
-        noteOn: jest.fn(),
-        noteOff: jest.fn(),
-    },
-});
+/**
+ * Builds a track descriptor plus the live instrument the engine would hand
+ * back for it, and wires the registry mock to return the right one per id.
+ */
+const registeredInstruments: Record<number, any> = {};
+const makeTrack = (index: number) => {
+    const id = index + 100;
+    const instrument = { noteOn: jest.fn(), noteOff: jest.fn() };
+    registeredInstruments[id] = instrument;
+    mockedGetInstrument.mockImplementation((trackId: number) => registeredInstruments[trackId]);
+    return { index, id, instrument };
+};
 
 describe('Sound', () => {
     afterEach(() => {

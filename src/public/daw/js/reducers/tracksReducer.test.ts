@@ -77,6 +77,16 @@ describe('tracksReducer', () => {
         expect(state.selected).toBe(1);
     });
 
+    it('ships an instrument placeholder the UI can read before the context exists', () => {
+        // Regression: a null placeholder crashed the first render, since the
+        // channel strip and instrument panel read .id/.name/.preset directly.
+        const state: any = reducer(undefined, { type: '@@INIT' });
+
+        expect(state.trackList[1].instrument).toEqual(
+            expect.objectContaining({ id: null, name: '', preset: null }),
+        );
+    });
+
     it('ignores unknown actions', () => {
         const state = makeState();
 
@@ -220,6 +230,31 @@ describe('tracksReducer', () => {
             expect(state.trackList.map((track: any) => track.index)).toEqual([0, 1]);
             expect(trackAt(state, 1).name).toBe('track two');
             expect(trackAt(state, 0).input).not.toContain(2);
+        });
+    });
+
+    describe('UPDATE_INSTRUMENT_PRESET', () => {
+        it('keeps the descriptor preset in step with the live instrument', () => {
+            const initial = makeState();
+            initial.trackList[1].instrument = { id: 1, name: 'MultiOsc', preset: { gain: 0 } };
+
+            const state: any = reducer(initial, {
+                type: 'UPDATE_INSTRUMENT_PRESET',
+                payload: { index: 1, preset: { gain: 0.5 } },
+            });
+
+            expect(trackAt(state, 1).instrument).toEqual({ id: 1, name: 'MultiOsc', preset: { gain: 0.5 } });
+            // Descriptors are replaced, not mutated in place.
+            expect(trackAt(state, 1).instrument).not.toBe(initial.trackList[1].instrument);
+        });
+
+        it('leaves tracks without an instrument alone', () => {
+            const state: any = reducer(makeState(), {
+                type: 'UPDATE_INSTRUMENT_PRESET',
+                payload: { index: 0, preset: { gain: 1 } },
+            });
+
+            expect(trackAt(state, 0).instrument).toBeUndefined();
         });
     });
 

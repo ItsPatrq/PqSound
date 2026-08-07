@@ -24,6 +24,10 @@ jest.mock('engine/AudioEngine', () => ({
         applyTrackMute: jest.fn(),
         applyTrackSolo: jest.fn(),
         applyTrackInstrument: jest.fn(),
+        setInstrument: jest.fn(),
+        getInstrument: jest.fn(),
+        removeInstrument: jest.fn(),
+        clearInstruments: jest.fn(),
         refreshTrackNode: jest.fn(),
     },
 }));
@@ -35,9 +39,16 @@ jest.mock('engine/Track', () => ({
 }));
 jest.mock('instruments', () => ({
     __esModule: true,
-    MultiOsc: jest.fn().mockImplementation(() => ({ id: 'multi-osc' })),
-    Sampler: jest.fn().mockImplementation(() => ({ id: 'sampler' })),
-    Utils: { getNewInstrumentByIndex: jest.fn(() => ({ id: 'new-instrument', updatePreset: jest.fn() })) },
+    MultiOsc: jest.fn().mockImplementation(() => ({ id: 1, name: 'MultiOsc', preset: {} })),
+    Sampler: jest.fn().mockImplementation(() => ({ id: 0, name: 'Sampler', preset: {} })),
+    Utils: {
+        getNewInstrumentByIndex: jest.fn(() => ({
+            id: 5,
+            name: 'PqSynth',
+            preset: { gain: 0 },
+            updatePreset: jest.fn(),
+        })),
+    },
 }));
 jest.mock('plugins', () => ({
     __esModule: true,
@@ -60,7 +71,7 @@ const makeTracksState = (): any => ({
             pluginList: [],
             solo: false,
             mute: false,
-            instrument: { updatePreset: jest.fn() },
+            instrument: { id: 1, name: 'MultiOsc', preset: {} },
         },
         {
             name: 'two',
@@ -72,7 +83,7 @@ const makeTracksState = (): any => ({
             pluginList: [],
             solo: false,
             mute: false,
-            instrument: { updatePreset: jest.fn() },
+            instrument: { id: 1, name: 'MultiOsc', preset: {} },
         },
     ],
     nextTrackId: 10,
@@ -172,10 +183,16 @@ describe('trackListActions', () => {
             const { dispatch } = run(actions.addTrack(TrackTypes.virtualInstrument));
 
             expect(engine.setTrackNode).toHaveBeenCalledWith(10, expect.anything());
+            expect(engine.setInstrument).toHaveBeenCalledWith(10, expect.objectContaining({ name: 'Sampler' }));
+            // The store gets the serializable descriptor, not the live object.
             expect(dispatch).toHaveBeenCalledWith(
                 expect.objectContaining({
                     type: 'ADD_TRACK',
-                    payload: expect.objectContaining({ id: 10, trackType: TrackTypes.virtualInstrument }),
+                    payload: expect.objectContaining({
+                        id: 10,
+                        trackType: TrackTypes.virtualInstrument,
+                        instrument: { id: 0, name: 'Sampler', preset: {} },
+                    }),
                 }),
             );
             expect(engine.applyTrackSolo).toHaveBeenCalledWith(10, false, false);
@@ -188,17 +205,22 @@ describe('trackListActions', () => {
 
             expect(dispatch).toHaveBeenCalledWith({ type: 'REMOVE_TRACK', payload: 2 });
             expect(engine.removeTrackNode).toHaveBeenCalledWith(9);
+            expect(engine.removeInstrument).toHaveBeenCalledWith(9);
         });
     });
 
     describe('changeTrackInstrument', () => {
-        it('builds the instrument here and hands it to both the store and the node', () => {
+        it('registers the live instrument and dispatches only its descriptor', () => {
             const { dispatch } = run(actions.changeTrackInstrument(3, 1));
 
             const dispatched = dispatch.mock.calls[0][0];
             expect(dispatched.type).toBe('CHANGE_TRACK_INSTRUMENT');
-            expect(dispatched.payload.instrument).toBeDefined();
-            expect(engine.applyTrackInstrument).toHaveBeenCalledWith(7, dispatched.payload.instrument);
+            expect(dispatched.payload.instrument).toEqual({ id: 5, name: 'PqSynth', preset: { gain: 0 } });
+            expect(dispatched.payload.instrument.updatePreset).toBeUndefined();
+
+            const live = engine.setInstrument.mock.calls[0][1];
+            expect(engine.setInstrument).toHaveBeenCalledWith(7, live);
+            expect(engine.applyTrackInstrument).toHaveBeenCalledWith(7, live);
         });
     });
 
@@ -218,13 +240,18 @@ describe('trackListActions', () => {
     });
 
     describe('updateInstrumentPreset', () => {
-        it('updates the live instrument before dispatching', () => {
-            const tracks = makeTracksState();
+        it('updates the instrument held by the engine, not one in state', () => {
+            const live = { updatePreset: jest.fn() };
+            engine.getInstrument.mockReturnValue(live);
 
-            const { dispatch } = run(actions.updateInstrumentPreset({ gain: 1 }, 1), tracks);
+            const { dispatch } = run(actions.updateInstrumentPreset({ gain: 1 }, 1));
 
-            expect(tracks.trackList[1].instrument.updatePreset).toHaveBeenCalledWith({ gain: 1 });
-            expect(dispatch).toHaveBeenCalled();
+            expect(engine.getInstrument).toHaveBeenCalledWith(7);
+            expect(live.updatePreset).toHaveBeenCalledWith({ gain: 1 });
+            expect(dispatch).toHaveBeenCalledWith({
+                type: 'UPDATE_INSTRUMENT_PRESET',
+                payload: { index: 1, preset: { gain: 1 } },
+            });
         });
     });
 });
