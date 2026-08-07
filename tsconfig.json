@@ -24,6 +24,19 @@
     "outDir": "./dist/" /* Redirect output structure to the directory. */,
     "rootDir": "./" /* Explicit source root; TS6 (TS5011) requires this when 'outDir' is set. Repo root covers src plus root-level configs (.eslintrc.js, playwright) pulled in by 'include'. */,
     "baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
+    "paths": {
+      /* Mirrors the webpack aliases in src/webpackCfg/defaults.ts and the Jest moduleNameMapper in jest.config.js. Keep the three in sync. */
+      "actions/*": ["src/public/daw/js/actions/*"],
+      "reducers/*": ["src/public/daw/js/reducers/*"],
+      "components/*": ["src/public/daw/js/components/*"],
+      "containers/*": ["src/public/daw/js/containers/*"],
+      "engine/*": ["src/public/daw/js/engine/*"],
+      "constants/*": ["src/public/daw/js/constants/*"],
+      "instruments": ["src/public/daw/js/instruments"],
+      "instruments/*": ["src/public/daw/js/instruments/*"],
+      "plugins": ["src/public/daw/js/plugins"],
+      "plugins/*": ["src/public/daw/js/plugins/*"]
+    },
     "typeRoots": [
       "./types",
       "node_modules/@types"

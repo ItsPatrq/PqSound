@@ -42,13 +42,6 @@ export function changeSelectedTrack(newIndex) {
     };
 }
 
-export function initTrackSound(newIndex) {
-    return {
-        type: 'INIT_TRACK_SOUND',
-        payload: newIndex,
-    };
-}
-
 export function initInstrumentContext(newIndex) {
     const audioContext = AudioEngine.getContext();
     return {

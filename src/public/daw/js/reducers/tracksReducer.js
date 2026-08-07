@@ -1,7 +1,6 @@
 import * as Utils from 'engine/Utils';
-import Sound from 'engine/Sound';
 import Track from 'engine/Track';
-import { MultiOsc, Utils as InstrumentsUtils } from 'instruments';
+import { MultiOsc, Sampler, Utils as InstrumentsUtils } from 'instruments';
 import { Utils as PluginsUtils } from 'plugins';
 import { TrackTypes } from 'constants/Constants';
 import { Utils as SamplerPresetsUtils, Presets as SamplerPresets } from 'constants/SamplerPresets';
@@ -244,22 +243,6 @@ export default function reducer(
                 ...state,
                 trackList: newTrackList,
                 selected: action.payload,
-            };
-        }
-        case 'INIT_TRACK_SOUND': {
-            const newTrackList = [...state.trackList];
-            if (Utils.isNullOrUndefined(action.payload)) {
-                newTrackList[newTrackList.length - 1].sound = new Sound(newTrackList.length - 1);
-            } else {
-                for (let i = 0; i < newTrackList.length; i++) {
-                    if (newTrackList[i].index === action.payload) {
-                        newTrackList[i].sound = new Sound(action.payload);
-                    }
-                }
-            }
-            return {
-                ...state,
-                trackList: newTrackList,
             };
         }
         case 'INIT_INSTRUMENT_CONTEXT': {
