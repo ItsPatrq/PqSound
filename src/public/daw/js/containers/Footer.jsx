@@ -142,7 +142,7 @@ class Footer extends React.Component {
 
 const mapStateToProps = (state) => ({
     midiController: state.control.midiController,
-    sampleRate: state.webAudio.context ? state.webAudio.context.sampleRate : null,
+    sampleRate: state.webAudio.sampleRate,
     firstKey: state.keyboard.firstKey,
     keyboardVisible: state.keyboard.show,
     keyboardWidth: state.keyboard.width,

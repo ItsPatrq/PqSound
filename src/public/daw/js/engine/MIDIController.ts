@@ -1,4 +1,5 @@
 import Store from '../stroe';
+import AudioEngine from './AudioEngine';
 import { updateMidiController, changeMidiDevice } from '../actions/controlActions';
 import { addPlayingNote, removePlayingNote } from '../actions/keyboardActions';
 import { isNullOrUndefined } from './Utils';
@@ -210,7 +211,7 @@ class MIDIController {
         if ((Store.getState().keyboard as any).notesPlaying.includes(note)) {
             const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
-                (Store.getState().webAudio as any).sound.stop(recordingTracksSounds[i], note);
+                AudioEngine.getSound()!.stop(recordingTracksSounds[i], note);
             }
             Store.dispatch(removePlayingNote(note));
         }
@@ -220,12 +221,7 @@ class MIDIController {
         if (!(Store.getState().keyboard as any).notesPlaying.includes(note)) {
             const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
-                (Store.getState().webAudio as any).sound.play(
-                    recordingTracksSounds[i],
-                    null,
-                    note,
-                    SoundOrigin.pianoRollNote,
-                );
+                AudioEngine.getSound()!.play(recordingTracksSounds[i], null, note, SoundOrigin.pianoRollNote);
             }
             Store.dispatch(addPlayingNote(note));
         }

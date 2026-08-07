@@ -1,4 +1,4 @@
-import Store from '../stroe';
+import AudioEngine from '../engine/AudioEngine';
 import { Instruments } from '../constants/Constants';
 import { Presets } from '../constants/SamplerPresets';
 import { isNullOrUndefined, MIDIToNote, devLog } from '../engine/Utils';
@@ -57,8 +57,13 @@ class Sampler extends InstrumentBase {
 
     noteOn(note, startTime) {
         if (isNullOrUndefined(this.voices[note])) {
+            const buffer = this.getBuffers(note);
+            // Samples for this instrument have not finished decoding yet.
+            if (buffer === undefined || buffer === null) {
+                return;
+            }
             startTime = startTime || this.context.currentTime;
-            const currVoice = new SamplerVoice(this.getBuffers(note), this.preset, this.context);
+            const currVoice = new SamplerVoice(buffer, this.preset, this.context);
             currVoice.connect(this.output);
             currVoice.start(startTime);
             this.voices[note] = currVoice;
@@ -95,12 +100,8 @@ class Sampler extends InstrumentBase {
     }
 
     getBuffers(note) {
-        const samplerInstruments = (Store.getState().webAudio as any).samplerInstrumentsSounds;
-        for (let i = 0; i < samplerInstruments.length; i++) {
-            if (samplerInstruments[i].name === this.preset.name) {
-                return samplerInstruments[i].buffer[MIDIToNote(note)];
-            }
-        }
+        const buffers = AudioEngine.getInstrumentBuffers(this.preset.name);
+        return buffers ? buffers[MIDIToNote(note)] : undefined;
     }
 }
 

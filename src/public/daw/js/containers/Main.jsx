@@ -42,7 +42,6 @@ class Main extends React.Component {
 }
 const mapStateToProps = (state) => {
     return {
-        webAudio: state.webAudio,
         control: state.control,
     };
 };

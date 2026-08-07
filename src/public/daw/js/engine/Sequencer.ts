@@ -1,4 +1,5 @@
 import Store from '../stroe';
+import AudioEngine from './AudioEngine';
 import { notesToPlay } from './CompositionParser';
 import { updateCurrentTime } from '../actions/controlActions';
 import * as Utils from './Utils';
@@ -12,10 +13,8 @@ class Sequencer {
     timeoutId?: number;
     scheduleAhead = 0.2;
     handlePlay() {
-        const audioContext: AudioContext = (Store.getState().webAudio as any).context;
-        if (audioContext.state !== 'running') {
-            audioContext.resume();
-        }
+        const audioContext = AudioEngine.getContext()!;
+        AudioEngine.resume();
         this.noteTime = 0.0;
         this.startTime = audioContext.currentTime + 0.005;
         this.schedule();
@@ -24,17 +23,17 @@ class Sequencer {
     handleStop(/*event*/) {
         this.timerWorker!.postMessage('stop');
         setTimeout(() => {
-            (Store.getState().webAudio as any).sound.stopAll(SoundOrigin.composition);
+            AudioEngine.getSound()!.stopAll(SoundOrigin.composition);
             this.sixteenthPlaying = 0;
             Store.dispatch(updateCurrentTime(this.sixteenthPlaying));
         }, 80);
     }
     handlePause(/*event*/) {
         this.timerWorker!.postMessage('stop');
-        (Store.getState().webAudio as any).sound.stopAll(SoundOrigin.composition);
+        AudioEngine.getSound()!.stopAll(SoundOrigin.composition);
     }
     schedule = () => {
-        let currentTime = ((Store.getState().webAudio as any).context as AudioContext).currentTime;
+        let currentTime = AudioEngine.getContext()!.currentTime;
 
         currentTime -= this.startTime!;
 
@@ -46,7 +45,7 @@ class Sequencer {
             const contextPlayTime = this.noteTime! + this.startTime!;
 
             const trackList = (Store.getState().tracks as any).trackList;
-            const soundHandler = (Store.getState().webAudio as any).sound;
+            const soundHandler = AudioEngine.getSound()!;
             // When the play position is sitting on loopStart (i.e. it just wrapped),
             // flush any note whose end fell at/after the loop end — otherwise the exact
             // endIndex match is skipped by the wrap and the note hangs.
