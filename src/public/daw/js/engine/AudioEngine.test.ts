@@ -94,6 +94,34 @@ describe('AudioEngine', () => {
         });
     });
 
+    describe('sequencer and MIDI controller registry', () => {
+        it('hands back whatever the app shell registered', () => {
+            const sequencer = { handlePlay: jest.fn() } as any;
+            const midiController = { init: jest.fn() } as any;
+
+            AudioEngine.setSequencer(sequencer);
+            AudioEngine.setMidiController(midiController);
+
+            expect(AudioEngine.getSequencer()).toBe(sequencer);
+            expect(AudioEngine.getMidiController()).toBe(midiController);
+        });
+
+        it('returns null before anything is registered', () => {
+            expect(AudioEngine.getSequencer()).toBeNull();
+            expect(AudioEngine.getMidiController()).toBeNull();
+        });
+
+        it('drops both on reset', () => {
+            AudioEngine.setSequencer({} as any);
+            AudioEngine.setMidiController({} as any);
+
+            AudioEngine.reset();
+
+            expect(AudioEngine.getSequencer()).toBeNull();
+            expect(AudioEngine.getMidiController()).toBeNull();
+        });
+    });
+
     describe('instrument buffers', () => {
         it('stores and returns buffers by instrument name', () => {
             const buffers = [{} as AudioBuffer, {} as AudioBuffer];

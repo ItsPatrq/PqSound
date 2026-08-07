@@ -3,7 +3,8 @@ import Layout from 'components/Layout';
 import { connect } from 'react-redux';
 import { initializeWebAudio, fetchSamplerInstrument } from 'actions/webAudioActions';
 import { initInstrumentContext } from 'actions/trackListActions';
-import { initSequencer } from 'actions/controlActions';
+import AudioEngine from 'engine/AudioEngine';
+import MIDIController from 'engine/MIDIController';
 import Sequencer from 'engine/Sequencer';
 
 require('styles/reset.css');
@@ -28,22 +29,25 @@ class Main extends React.Component {
          * TODO: get rid of that. This is becaouse TrackList -> Instruments get initialized before whole Store, which makes Context unreachable
          */
         this.props.dispatch(initInstrumentContext(1));
-        this.props.control.midiController.init();
+        // The MIDIController and the Sequencer are live objects owned by the
+        // engine, not by store state. Build them here at app mount and register
+        // them; the store only ever sees their serializable snapshots.
+        const midiController = new MIDIController();
+        AudioEngine.setMidiController(midiController);
+        midiController.init();
         // Sequencer lifecycle used to live in ControlBar's constructor; ControlBar
         // is gone (Stage 3), so init the scheduler here at app mount.
         const sequencer = new Sequencer();
         sequencer.init();
-        this.props.dispatch(initSequencer(sequencer));
+        AudioEngine.setSequencer(sequencer);
     }
 
     render() {
         return <Layout />;
     }
 }
-const mapStateToProps = (state) => {
-    return {
-        control: state.control,
-    };
+const mapStateToProps = () => {
+    return {};
 };
 //REDUX connection
 export default connect(mapStateToProps)(Main);

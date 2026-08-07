@@ -1,3 +1,5 @@
+import AudioEngine from 'engine/AudioEngine';
+
 export function switchPlayState() {
     return {
         type: 'SWITCH_PLAY_STATE',
@@ -46,17 +48,28 @@ export function updateCurrentTime(newSixteenthNotePlaying) {
     };
 }
 
-export function updateMidiController(midiController) {
+/**
+ * `midiState` is the serializable snapshot produced by
+ * `MIDIController.toState()`; the controller instance itself stays in the
+ * engine layer.
+ */
+export function updateMidiState(midiState) {
     return {
-        type: 'UPDATE_MIDI_CONTROLLER',
-        payload: midiController,
+        type: 'UPDATE_MIDI_STATE',
+        payload: midiState,
     };
 }
 
+// Selecting a device rewires `onmidimessage` on a live MIDIPort, so it runs in
+// the engine and only the resulting snapshot is dispatched.
 export function changeMidiDevice(deviceId) {
-    return {
-        type: 'CHANGE_MIDI_DEVICE',
-        payload: deviceId,
+    return function (dispatch) {
+        const midiController = AudioEngine.getMidiController();
+        if (!midiController) {
+            return;
+        }
+        midiController.changeMidiDevice(deviceId);
+        dispatch(updateMidiState(midiController.toState()));
     };
 }
 
@@ -66,17 +79,18 @@ export function switchAltKey() {
     };
 }
 
-export function initSequencer(sequencer) {
-    return {
-        type: 'INIT_SEQUENCER',
-        payload: sequencer,
-    };
-}
-
+// Moving the playhead has to move the scheduler's cursor too — a mutation, so
+// it happens here rather than inside the reducer.
 export function changeCurrentTime(newSixteenthNotePlaying) {
-    return {
-        type: 'CHANGE_CURRENT_TIME',
-        payload: newSixteenthNotePlaying,
+    return function (dispatch) {
+        const sequencer = AudioEngine.getSequencer();
+        if (sequencer) {
+            sequencer.sixteenthPlaying = newSixteenthNotePlaying;
+        }
+        dispatch({
+            type: 'CHANGE_CURRENT_TIME',
+            payload: newSixteenthNotePlaying,
+        });
     };
 }
 

@@ -26,27 +26,24 @@ class Footer extends React.Component {
 
     /* ---- MIDI device selector (ported from ControlBar) ---- */
     midiTitle() {
-        const mc = this.props.midiController;
-        if (!mc.MIDISupported) return 'Web MIDI not supported';
-        if (mc.devices.input.length === 0) return 'No devices detected';
-        if (Utils.isNullOrUndefined(mc.selectedInputDevice)) return 'No device selected';
-        return mc.selectedInputDevice.name;
+        const { midi } = this.props;
+        if (!midi.supported) return 'Web MIDI not supported';
+        if (midi.inputs.length === 0) return 'No devices detected';
+        const selected = midi.inputs.find((device) => device.id === midi.selectedInputId);
+        if (Utils.isNullOrUndefined(selected)) return 'No device selected';
+        return selected.name;
     }
 
     selectDevice(deviceId) {
-        const mc = this.props.midiController;
-        const sel = mc.selectedInputDevice;
-        if (
-            !(deviceId === null && Utils.isNullOrUndefined(sel)) &&
-            (Utils.isNullOrUndefined(sel) || deviceId !== sel.id)
-        ) {
+        const selectedId = this.props.midi.selectedInputId;
+        if (deviceId !== selectedId) {
             this.props.dispatch(changeMidiDevice(deviceId));
         }
         this.setState({ midiOpen: false });
     }
 
     toggleMidi() {
-        if (this.props.midiController.devices.input.length > 0) {
+        if (this.props.midi.inputs.length > 0) {
             this.setState((s) => ({ midiOpen: !s.midiOpen }));
         }
     }
@@ -69,9 +66,9 @@ class Footer extends React.Component {
         return `OCT ${low}–${low + KEYBOARD_VISIBLE_OCTAVES}`;
     }
     render() {
-        const { midiController, sampleRate, keyboardVisible } = this.props;
+        const { midi, sampleRate, keyboardVisible } = this.props;
         const { midiOpen } = this.state;
-        const devices = midiController.devices.input;
+        const devices = midi.inputs;
         const devicesEnabled = devices.length > 0;
 
         const stat = (label, value, valueColor) => (
@@ -99,9 +96,7 @@ class Footer extends React.Component {
                                 width: 6,
                                 height: 6,
                                 borderRadius: '50%',
-                                background: !Utils.isNullOrUndefined(midiController.selectedInputDevice)
-                                    ? C.accent
-                                    : '#4b5560',
+                                background: !Utils.isNullOrUndefined(midi.selectedInputId) ? C.accent : '#4b5560',
                             }}
                         />
                         <span className="pq-footer-select-name">{this.midiTitle()}</span>
@@ -141,7 +136,7 @@ class Footer extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    midiController: state.control.midiController,
+    midi: state.control.midi,
     sampleRate: state.webAudio.sampleRate,
     firstKey: state.keyboard.firstKey,
     keyboardVisible: state.keyboard.show,

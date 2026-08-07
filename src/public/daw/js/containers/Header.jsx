@@ -20,6 +20,7 @@ import { loadTrackState, updateAllTrackNodes, changeRecordState } from 'actions/
 import { KEYBOARD_VIEW_WIDTH } from 'constants/Constants';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
+import AudioEngine from 'engine/AudioEngine';
 import { tools, TrackTypes } from 'constants/Constants';
 import FileUploadModal from 'components/FileUploadModal';
 import AboutModal from 'components/AboutModal';
@@ -92,13 +93,13 @@ class Header extends React.Component {
         const { controlState } = this.props;
         if (!controlState.playing) {
             this.props.dispatch(switchPlayState());
-            controlState.sequencer.handlePlay();
+            AudioEngine.getSequencer().handlePlay();
         }
     }
     handleStop() {
         const { controlState } = this.props;
         if (controlState.playing) this.props.dispatch(switchPlayState());
-        controlState.sequencer.handleStop();
+        AudioEngine.getSequencer().handleStop();
     }
     toggleRecord() {
         // Arm/disarm recording on the currently-selected track. Keyboard/MIDI note
@@ -174,8 +175,8 @@ class Header extends React.Component {
     /* ---- menu: import / export / demo (ported from TopNavBar) ---- */
     getExportData() {
         const tempControl = Utils.copy(this.props.control);
-        delete tempControl['midiController'];
-        delete tempControl['sequencer'];
+        // MIDI device selection is per-session hardware state, not composition data.
+        delete tempControl['midi'];
         const tempTracks = Utils.copy(this.props.tracks);
         for (let i = 0; i < tempTracks.trackList.length; i++) {
             delete tempTracks.trackList[i]['trackNode'];
