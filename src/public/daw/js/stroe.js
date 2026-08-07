@@ -1,11 +1,11 @@
-import { applyMiddleware, createStore } from 'redux';
-import { createLogger } from 'redux-logger';
-import thunk from 'redux-thunk';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { applyMiddleware, compose, createStore } from 'redux';
+import { thunk } from 'redux-thunk';
 
 import reducer from './reducers';
 
-const middleware = applyMiddleware(thunk);
+// Redux DevTools, when the browser extension is installed. Replaces the
+// deprecated redux-devtools-extension package's composeWithDevTools.
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore(reducer, composeWithDevTools(middleware));
+const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
 export default store;
