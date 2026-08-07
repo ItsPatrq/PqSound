@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import { TrackTypes } from 'constants/Constants';
 
 /**
@@ -84,10 +83,6 @@ const Track = (props) => {
             </div>
         </div>
     );
-};
-
-Track.propTypes = {
-    trackDetails: PropTypes.object.isRequired,
 };
 
 export default Track;
