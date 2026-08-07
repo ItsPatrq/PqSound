@@ -1,4 +1,4 @@
-import Store from '../stroe';
+import * as EngineStore from './EngineStore';
 import AudioEngine from './AudioEngine';
 import { updateMidiState, changeMidiDevice } from '../actions/controlActions';
 import { addPlayingNote, removePlayingNote } from '../actions/keyboardActions';
@@ -30,7 +30,7 @@ class MIDIController {
 
         this.MIDISupported = false;
         console.log("Your browser doesn't support WebMIDI API.");
-        Store.dispatch(updateMidiState(this.toState()));
+        EngineStore.dispatch(updateMidiState(this.toState()));
         return;
     }
     connectCallBack(access) {
@@ -67,15 +67,15 @@ class MIDIController {
             }
         }
         access.onstatechange = this.onMidiStateChange.bind(this);
-        Store.dispatch(updateMidiState(this.toState()));
+        EngineStore.dispatch(updateMidiState(this.toState()));
         if (this.devices.input.length === 1) {
-            Store.dispatch(changeMidiDevice(this.devices.input[0].id));
+            EngineStore.dispatch(changeMidiDevice(this.devices.input[0].id));
         }
     }
     onMIDIFailure(e) {
         this.MIDISupported = false;
         console.log("Your browser doesn't support WebMIDI API." + e);
-        Store.dispatch(updateMidiState(this.toState()));
+        EngineStore.dispatch(updateMidiState(this.toState()));
     }
 
     onMidiStateChange = (/*e*/) => {
@@ -194,7 +194,7 @@ class MIDIController {
             this.selectedInputDevice.onmidimessage = this.handleMidiMessage.bind(this);
         }
 
-        Store.dispatch(updateMidiState(this.toState()));
+        EngineStore.dispatch(updateMidiState(this.toState()));
     }
 
     /**
@@ -211,31 +211,31 @@ class MIDIController {
 
     getAllRecordingTracks(): number[] {
         const recordingTracksSounds: number[] = [];
-        for (let i = 1; i < (Store.getState().tracks as any).trackList.length; i++) {
-            if ((Store.getState().tracks as any).trackList[i].record) {
-                recordingTracksSounds.push((Store.getState().tracks as any).trackList[i].index as number);
+        for (let i = 1; i < (EngineStore.getState().tracks as any).trackList.length; i++) {
+            if ((EngineStore.getState().tracks as any).trackList[i].record) {
+                recordingTracksSounds.push((EngineStore.getState().tracks as any).trackList[i].index as number);
             }
         }
         return recordingTracksSounds;
     }
 
     handleUp(note) {
-        if ((Store.getState().keyboard as any).notesPlaying.includes(note)) {
+        if ((EngineStore.getState().keyboard as any).notesPlaying.includes(note)) {
             const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
                 AudioEngine.getSound()!.stop(recordingTracksSounds[i], note);
             }
-            Store.dispatch(removePlayingNote(note));
+            EngineStore.dispatch(removePlayingNote(note));
         }
     }
 
     handleDown(note) {
-        if (!(Store.getState().keyboard as any).notesPlaying.includes(note)) {
+        if (!(EngineStore.getState().keyboard as any).notesPlaying.includes(note)) {
             const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
                 AudioEngine.getSound()!.play(recordingTracksSounds[i], null, note, SoundOrigin.pianoRollNote);
             }
-            Store.dispatch(addPlayingNote(note));
+            EngineStore.dispatch(addPlayingNote(note));
         }
     }
 }

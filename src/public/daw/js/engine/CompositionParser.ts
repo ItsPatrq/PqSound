@@ -1,4 +1,4 @@
-import Store from '../stroe';
+import * as EngineStore from './EngineStore';
 import * as Utils from './Utils';
 
 interface Region {
@@ -24,7 +24,7 @@ interface Note {
 
 export const getRegionsByTrackIndex = (trackIndex: number, allRegions?: Region[]): Region[] => {
     if (!allRegions) {
-        allRegions = Store.getState().composition.regionList as Region[];
+        allRegions = EngineStore.getState().composition.regionList as Region[];
     }
     const regionsByTrackIndex = allRegions.filter((x) => x.trackIndex === trackIndex);
 
@@ -68,7 +68,7 @@ export const getRegionIdByBitIndex = (trackIndex: number, bitIndex: number): num
 
 export const getRegionByRegionId = (regionId: number, regionList?: Region[]): Region | null => {
     if (!regionList) {
-        regionList = Store.getState().composition.regionList as Region[];
+        regionList = EngineStore.getState().composition.regionList as Region[];
     }
     for (let i = 0; i < regionList.length; i++) {
         if (regionList[i].id === regionId) {
@@ -79,7 +79,7 @@ export const getRegionByRegionId = (regionId: number, regionList?: Region[]): Re
 };
 
 export const notesToDrawParser = (pianoRollNote: number): number[] | null => {
-    const region = getRegionByRegionId(Store.getState().composition.pianoRollRegion);
+    const region = getRegionByRegionId(EngineStore.getState().composition.pianoRollRegion);
     if (region === null) {
         return null;
     }

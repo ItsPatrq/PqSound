@@ -1,16 +1,14 @@
-import Store from '../stroe';
+import * as EngineStore from './EngineStore';
 import Sound from './Sound';
 import { SoundOrigin } from '../constants/Constants';
 
-jest.mock('../stroe', () => ({
+jest.mock('./EngineStore', () => ({
     __esModule: true,
-    default: {
-        getState: jest.fn(),
-        dispatch: jest.fn(),
-    },
+    getState: jest.fn(),
+    dispatch: jest.fn(),
 }));
 
-const mockedGetState = Store.getState as jest.Mock;
+const mockedGetState = EngineStore.getState as jest.Mock;
 
 const makeContext = (state = 'running') =>
     ({
