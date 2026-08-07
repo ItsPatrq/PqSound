@@ -20,6 +20,7 @@ import {
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 import { TrackTypes, Instruments } from 'constants/Constants';
+import AudioEngine from 'engine/AudioEngine';
 
 class TrackDetails extends React.Component {
     constructor() {
@@ -264,7 +265,7 @@ class TrackDetails extends React.Component {
                 <div className="pq-ch-section">
                     <div className="pq-ch-label">OSCILLOSCOPE</div>
                     <div className="pq-scope">
-                        <Oscilloscope key={index} trackNode={track.trackNode} />
+                        <Oscilloscope key={index} trackNode={AudioEngine.getTrackNode(track.id)} />
                     </div>
                 </div>
 

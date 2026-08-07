@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Store from '../stroe';
 import { switchPianorollVisibility, switchMixerVisibility } from 'actions/compositionActions';
 import * as Utils from 'engine/Utils';
+import AudioEngine from 'engine/AudioEngine';
 
 const C = {
     control: '#191d21',
@@ -32,7 +33,7 @@ class ViewBar extends React.Component {
 
     tickMeter() {
         const master = Store.getState().tracks.trackList[0];
-        const node = master && master.trackNode;
+        const node = master && AudioEngine.getTrackNode(master.id);
         let left = 0;
         let right = 0;
         if (node && typeof node.getAverageVolume === 'function') {

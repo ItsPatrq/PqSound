@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { isNullOrUndefined, volumeToDb, normalizePan, panLabel } from 'engine/Utils';
 import { readAccent } from 'engine/Theme';
+import AudioEngine from 'engine/AudioEngine';
 import {
     changeTrackVolume,
     changeTrackPan,
@@ -71,7 +72,7 @@ class Mixer extends React.Component {
                     {track.name}
                 </div>
                 <div className="pq-mix-fader-row">
-                    <MixerMeter trackNode={track.trackNode} />
+                    <MixerMeter trackNode={AudioEngine.getTrackNode(track.id)} />
                     <input
                         className="pq-mix-fader"
                         type="range"

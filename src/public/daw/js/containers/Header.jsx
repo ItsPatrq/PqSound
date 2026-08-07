@@ -179,7 +179,6 @@ class Header extends React.Component {
         delete tempControl['midi'];
         const tempTracks = Utils.copy(this.props.tracks);
         for (let i = 0; i < tempTracks.trackList.length; i++) {
-            delete tempTracks.trackList[i]['trackNode'];
             if (tempTracks.trackList.trackType === TrackTypes.virtualInstrument) {
                 tempTracks.trackList[i].instrument = {
                     preset: tempTracks.trackList[i].instrument.preset,
