@@ -8,7 +8,7 @@ interface TimeBarProps {
 }
 
 export const TimeBar: React.FunctionComponent<TimeBarProps> = (props: TimeBarProps) => {
-    const beats: JSX.Element[] = [];
+    const beats: React.JSX.Element[] = [];
     for (let i = 0; i <= props.bits; i++) {
         beats.push(
             <div
