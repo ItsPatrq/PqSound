@@ -82,9 +82,7 @@ describe('tracksReducer', () => {
         // channel strip and instrument panel read .id/.name/.preset directly.
         const state: any = reducer(undefined, { type: '@@INIT' });
 
-        expect(state.trackList[1].instrument).toEqual(
-            expect.objectContaining({ id: null, name: '', preset: null }),
-        );
+        expect(state.trackList[1].instrument).toEqual(expect.objectContaining({ id: null, name: '', preset: null }));
     });
 
     it('ignores unknown actions', () => {
