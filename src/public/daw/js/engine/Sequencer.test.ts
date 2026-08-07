@@ -1,4 +1,5 @@
 import Store from '../stroe';
+import AudioEngine from './AudioEngine';
 import Sequencer from './Sequencer';
 import { updateCurrentTime } from '../actions/controlActions';
 import { SoundOrigin } from '../constants/Constants';
@@ -11,22 +12,44 @@ jest.mock('../stroe', () => ({
     },
 }));
 
+// The AudioContext and the Sound dispatcher live in AudioEngine, not in store state.
+jest.mock('./AudioEngine', () => ({
+    __esModule: true,
+    default: {
+        getContext: jest.fn(),
+        getSound: jest.fn(),
+        resume: jest.fn(),
+    },
+}));
+
 jest.mock('../actions/controlActions', () => ({
     updateCurrentTime: jest.fn((time) => ({ type: 'UPDATE_CURRENT_TIME', payload: time })),
 }));
 
 const mockedGetState = Store.getState as jest.Mock;
 const mockedDispatch = Store.dispatch as jest.Mock;
+const mockedGetContext = AudioEngine.getContext as jest.Mock;
+const mockedGetSound = AudioEngine.getSound as jest.Mock;
 
-const makeState = ({ currentTime = 0, BPM = 120, regionList = [] as any[], trackList = [{ index: 0 }] } = {}) => ({
-    webAudio: {
+/**
+ * Builds the store slices the Sequencer reads and, alongside them, the live
+ * audio doubles it now pulls from AudioEngine. The returned `audio` field is
+ * what assertions look at; it is deliberately not part of store state.
+ */
+const makeState = ({ currentTime = 0, BPM = 120, regionList = [] as any[], trackList = [{ index: 0 }] } = {}) => {
+    const audio = {
         context: { currentTime, state: 'running', resume: jest.fn() },
         sound: { play: jest.fn(), scheduleStop: jest.fn(), stopAll: jest.fn() },
-    },
-    tracks: { trackList },
-    control: { BPM },
-    composition: { regionList },
-});
+    };
+    mockedGetContext.mockReturnValue(audio.context);
+    mockedGetSound.mockReturnValue(audio.sound);
+    return {
+        audio,
+        tracks: { trackList },
+        control: { BPM },
+        composition: { regionList },
+    };
+};
 
 describe('Sequencer', () => {
     afterEach(() => {
@@ -81,16 +104,10 @@ describe('Sequencer', () => {
 
             sequencer.schedule();
 
-            expect(state.webAudio.sound.scheduleStop).toHaveBeenCalledTimes(2);
+            expect(state.audio.sound.scheduleStop).toHaveBeenCalledTimes(2);
             // 4th arg (loop-end flush index) is undefined when the loop is disabled.
-            expect(state.webAudio.sound.scheduleStop).toHaveBeenNthCalledWith(
-                1,
-                0,
-                0,
-                SoundOrigin.composition,
-                undefined,
-            );
-            expect(state.webAudio.sound.scheduleStop).toHaveBeenNthCalledWith(
+            expect(state.audio.sound.scheduleStop).toHaveBeenNthCalledWith(1, 0, 0, SoundOrigin.composition, undefined);
+            expect(state.audio.sound.scheduleStop).toHaveBeenNthCalledWith(
                 2,
                 1,
                 0.125,
@@ -120,8 +137,8 @@ describe('Sequencer', () => {
 
             sequencer.schedule();
 
-            expect(state.webAudio.sound.play).toHaveBeenCalledTimes(1);
-            expect(state.webAudio.sound.play).toHaveBeenCalledWith(
+            expect(state.audio.sound.play).toHaveBeenCalledTimes(1);
+            expect(state.audio.sound.play).toHaveBeenCalledWith(
                 0, // track index
                 10.125, // startTime + noteTime of sixteenth 1
                 69, // noteToMIDI(48)
@@ -139,7 +156,7 @@ describe('Sequencer', () => {
 
             sequencer.schedule();
 
-            expect(state.webAudio.sound.play).not.toHaveBeenCalled();
+            expect(state.audio.sound.play).not.toHaveBeenCalled();
         });
     });
 
@@ -162,11 +179,11 @@ describe('Sequencer', () => {
             sequencer.handleStop();
 
             expect(sequencer.timerWorker!.postMessage).toHaveBeenCalledWith('stop');
-            expect(state.webAudio.sound.stopAll).not.toHaveBeenCalled();
+            expect(state.audio.sound.stopAll).not.toHaveBeenCalled();
 
             jest.runAllTimers();
 
-            expect(state.webAudio.sound.stopAll).toHaveBeenCalledWith(SoundOrigin.composition);
+            expect(state.audio.sound.stopAll).toHaveBeenCalledWith(SoundOrigin.composition);
             expect(sequencer.sixteenthPlaying).toBe(0);
             expect(updateCurrentTime).toHaveBeenCalledWith(0);
         });
@@ -182,7 +199,7 @@ describe('Sequencer', () => {
             sequencer.handlePause();
 
             expect(sequencer.timerWorker!.postMessage).toHaveBeenCalledWith('stop');
-            expect(state.webAudio.sound.stopAll).toHaveBeenCalledWith(SoundOrigin.composition);
+            expect(state.audio.sound.stopAll).toHaveBeenCalledWith(SoundOrigin.composition);
         });
     });
 });

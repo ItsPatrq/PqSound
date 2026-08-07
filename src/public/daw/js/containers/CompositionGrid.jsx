@@ -8,6 +8,7 @@ import PianoRollTimeBar from 'components/CompositionGrid/PianoRollTimeBar';
 import { showPianoRoll, addRegion, removeRegion, addNote, removeNote, pasteRegion } from 'actions/compositionActions';
 import { changeCurrentTime, copyRegion } from 'actions/controlActions';
 import { getRegionIdByBitIndex, getRegionByRegionId, notesToDrawParser } from 'engine/CompositionParser';
+import AudioEngine from 'engine/AudioEngine';
 import { tools, SoundOrigin } from 'constants/Constants';
 import { pencilIcon, eraserIcon, copyIcon } from 'constants/Icons';
 import { getTrackByIndex, isNullOrUndefined } from 'engine/Utils';
@@ -139,7 +140,7 @@ class CompositionGrid extends React.Component {
             this.props.composition.pianoRollRegion,
             this.props.composition.regionList,
         ).trackIndex;
-        this.props.sound.stop(currTrackIndex, note);
+        AudioEngine.getSound().stop(currTrackIndex, note);
         //    this.props.dispatch(KeyboardActions.removePlayingNote(note));
         //}
         return false;
@@ -155,10 +156,8 @@ class CompositionGrid extends React.Component {
                 this.props.composition.pianoRollRegion,
                 this.props.composition.regionList,
             ).trackIndex;
-            if (this.props.audioContext.state !== 'running') {
-                this.props.audioContext.resume();
-            }
-            this.props.sound.play(currTrackIndex, null, note, SoundOrigin.pianoRollNote);
+            AudioEngine.resume();
+            AudioEngine.getSound().play(currTrackIndex, null, note, SoundOrigin.pianoRollNote);
             //this.props.dispatch(KeyboardActions.addPlayingNote(note))
         }
         return false;
@@ -327,8 +326,6 @@ const mapStateToProps = (state) => {
         regionDrawLength: state.control.regionDrawLength,
         noteDrawLength: state.control.noteDrawLength,
         keyboard: state.keyboard,
-        sound: state.webAudio.sound,
-        audioContext: state.webAudio.context,
         sixteenthPlaying: state.control.sixteenthNotePlaying,
         altClicked: state.control.altClicked,
         copiedRegion: state.control.copiedRegion,

@@ -35,7 +35,7 @@ export default class Sound {
         this.playingSounds[origin].length = 0;
     }
 
-    play(trackIndex, contextPlayTime, note, origin, endIndex) {
+    play(trackIndex, contextPlayTime, note, origin, endIndex?) {
         if (Utils.isNullOrUndefined(contextPlayTime)) {
             contextPlayTime = this.context.currentTime + 0.001;
         }

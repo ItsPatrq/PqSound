@@ -8,6 +8,7 @@ import {
     KEYBOARD_VIEW_WIDTH,
 } from 'constants/Constants';
 import { isNullOrUndefined, getTrackByIndex, noteToMIDI } from 'engine/Utils';
+import AudioEngine from 'engine/AudioEngine';
 import * as Actions from 'actions/keyboardActions';
 import WhiteKey from 'components/Keyboard/WhiteKey';
 import BlackKey from 'components/Keyboard/BlackKey';
@@ -90,7 +91,7 @@ class Keyboard extends React.Component {
         if (this.props.keyboard.notesPlaying.includes(note)) {
             const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
-                this.props.sound.stop(recordingTracksSounds[i], note);
+                AudioEngine.getSound().stop(recordingTracksSounds[i], note);
             }
             this.props.dispatch(Actions.removePlayingNote(note));
         }
@@ -107,7 +108,7 @@ class Keyboard extends React.Component {
         ) {
             const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
-                this.props.sound.play(recordingTracksSounds[i], null, note, SoundOrigin.keyboard);
+                AudioEngine.getSound().play(recordingTracksSounds[i], null, note, SoundOrigin.keyboard);
             }
             this.props.dispatch(Actions.addPlayingNote(note));
         }
@@ -143,12 +144,10 @@ class Keyboard extends React.Component {
                 !isNullOrUndefined(this.props.keyboard.keyBindings[note]) &&
                 !this.props.keyboard.notesPlaying.includes(this.props.keyboard.keyBindings[note].MIDINote)
             ) {
-                if (this.props.audioContext.state !== 'running') {
-                    this.props.audioContext.resume();
-                }
+                AudioEngine.resume();
                 const recordingTracksSounds = this.getAllRecordingTracks();
                 for (let i = 0; i < recordingTracksSounds.length; i++) {
-                    this.props.sound.play(
+                    AudioEngine.getSound().play(
                         recordingTracksSounds[i],
                         null,
                         this.props.keyboard.keyBindings[note].MIDINote,
@@ -168,7 +167,10 @@ class Keyboard extends React.Component {
             ) {
                 const recordingTracksSounds = this.getAllRecordingTracks();
                 for (let i = 0; i < recordingTracksSounds.length; i++) {
-                    this.props.sound.stop(recordingTracksSounds[i], this.props.keyboard.keyBindings[note].MIDINote);
+                    AudioEngine.getSound().stop(
+                        recordingTracksSounds[i],
+                        this.props.keyboard.keyBindings[note].MIDINote,
+                    );
                 }
                 this.props.dispatch(Actions.removePlayingNote(this.props.keyboard.keyBindings[note].MIDINote));
             }
@@ -289,9 +291,7 @@ const mapStateToProps = (state) => {
     return {
         keyboard: state.keyboard,
         trackList: state.tracks.trackList,
-        sound: state.webAudio.sound,
         textInputFocused: state.control.textInputFocused,
-        audioContext: state.webAudio.context,
     };
 };
 
