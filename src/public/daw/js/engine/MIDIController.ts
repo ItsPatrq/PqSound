@@ -1,6 +1,6 @@
 import Store from '../stroe';
 import AudioEngine from './AudioEngine';
-import { updateMidiController, changeMidiDevice } from '../actions/controlActions';
+import { updateMidiState, changeMidiDevice } from '../actions/controlActions';
 import { addPlayingNote, removePlayingNote } from '../actions/keyboardActions';
 import { isNullOrUndefined } from './Utils';
 import { SoundOrigin } from '../constants/Constants';
@@ -30,7 +30,7 @@ class MIDIController {
 
         this.MIDISupported = false;
         console.log("Your browser doesn't support WebMIDI API.");
-        Store.dispatch(updateMidiController(this));
+        Store.dispatch(updateMidiState(this.toState()));
         return;
     }
     connectCallBack(access) {
@@ -67,7 +67,7 @@ class MIDIController {
             }
         }
         access.onstatechange = this.onMidiStateChange.bind(this);
-        Store.dispatch(updateMidiController(this));
+        Store.dispatch(updateMidiState(this.toState()));
         if (this.devices.input.length === 1) {
             Store.dispatch(changeMidiDevice(this.devices.input[0].id));
         }
@@ -75,7 +75,7 @@ class MIDIController {
     onMIDIFailure(e) {
         this.MIDISupported = false;
         console.log("Your browser doesn't support WebMIDI API." + e);
-        Store.dispatch(updateMidiController(this));
+        Store.dispatch(updateMidiState(this.toState()));
     }
 
     onMidiStateChange = (/*e*/) => {
@@ -194,7 +194,19 @@ class MIDIController {
             this.selectedInputDevice.onmidimessage = this.handleMidiMessage.bind(this);
         }
 
-        Store.dispatch(updateMidiController(this));
+        Store.dispatch(updateMidiState(this.toState()));
+    }
+
+    /**
+     * Serializable snapshot for the store: the UI only ever renders device
+     * names and which input is selected, never the live MIDIPort objects.
+     */
+    toState(): { supported: boolean; inputs: { id: string; name: string }[]; selectedInputId: string | null } {
+        return {
+            supported: this.MIDISupported,
+            inputs: this.devices.input.map((device) => ({ id: device.id, name: device.name })),
+            selectedInputId: isNullOrUndefined(this.selectedInputDevice) ? null : this.selectedInputDevice.id,
+        };
     }
 
     getAllRecordingTracks(): number[] {

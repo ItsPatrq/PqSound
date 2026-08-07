@@ -1,5 +1,4 @@
 import * as Constants from 'constants/Constants';
-import MIDIController from 'engine/MIDIController';
 
 export default function reducer(
     state = {
@@ -16,11 +15,15 @@ export default function reducer(
         maxRegionDrawLength: 16,
         sixteenthNotePlaying: 0,
         altClicked: false,
-        sequencer: null,
         showUploadModal: false,
         showAboutModal: false,
         textInputFocused: false,
-        midiController: new MIDIController(),
+        // Serializable mirror of the MIDIController the engine owns.
+        midi: {
+            supported: false,
+            inputs: [],
+            selectedInputId: null,
+        },
     },
     action,
 ) {
@@ -68,34 +71,21 @@ export default function reducer(
             };
         }
         case 'CHANGE_CURRENT_TIME': {
-            state.sequencer.sixteenthPlaying = action.payload;
             return {
                 ...state,
                 sixteenthNotePlaying: action.payload,
             };
         }
-        case 'UPDATE_MIDI_CONTROLLER': {
+        case 'UPDATE_MIDI_STATE': {
             return {
                 ...state,
-                midiController: action.payload,
-            };
-        }
-        case 'CHANGE_MIDI_DEVICE': {
-            return {
-                ...state,
-                midiController: state.midiController.changeMidiDevice(action.payload),
+                midi: action.payload,
             };
         }
         case 'SWITCH_ALT_KEY': {
             return {
                 ...state,
                 altClicked: !state.altClicked,
-            };
-        }
-        case 'INIT_SEQUENCER': {
-            return {
-                ...state,
-                sequencer: action.payload,
             };
         }
         case 'SWITCH_UPLOAD_MODAL_VISIBILITY': {
