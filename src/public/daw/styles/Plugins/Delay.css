@@ -1,18 +1,19 @@
 .delayModal {
-    background-color: #091f49;
+    background-color: var(--pq-panel-alt);
     font-family: "Source Sans Pro", Arial, sans-serif;
-    color: #e8e8ff;
+    color: var(--pq-text);
     width: 100%;
     margin: auto;
     padding: 10px;
-    border: #212121 solid thick;
+    border: 1px solid var(--pq-border);
+    border-radius: 6px;
 }
 
 .delayControlRow {
     margin-top: 8px;
     padding-left: 4px;
-    padding-right: 4px;    
+    padding-right: 4px;
     font-size: small;
-    border-left: #4576d1 solid thin;
-    border-right: #4576d1 solid thin;
+    border-left: var(--pq-border-soft) solid thin;
+    border-right: var(--pq-border-soft) solid thin;
 }

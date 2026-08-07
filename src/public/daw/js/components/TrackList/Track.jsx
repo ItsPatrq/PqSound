@@ -1,185 +1,91 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import { Col, Row, Button, ButtonGroup, FormControl } from 'react-bootstrap';
-import { ArrowUp, ArrowDown, X } from 'react-bootstrap-icons';
 import { TrackTypes } from 'constants/Constants';
-import { samplerIcon, virtualInstrumentIcon, auxIcon } from 'constants/Icons';
+
+/**
+ * Track lane header — re-skinned to the PqSound.dc.html design.
+ * Wired to real track state: select (row), solo/mute/record chips, inline
+ * rename, reorder, remove. Row height stays 65px to align with the timeline
+ * grid lanes (CompositionGrid) until that panel is re-skinned too.
+ * All static styling lives in styles/TrackList.css; only the volume-bar width
+ * (data-driven) stays inline.
+ */
+const instrumentLabel = (t) => {
+    if (t.trackType === TrackTypes.aux) return 'AUX · BUS';
+    if (t.trackType === TrackTypes.audio) return 'AUDIO';
+    const name = t.instrument && t.instrument.name ? t.instrument.name : 'instrument';
+    return name.toUpperCase();
+};
 
 const Track = (props) => {
-    const handleTrackNameChange = (event) => {
-        props.handleTrackNameChange(event, props.trackDetails.index);
+    const t = props.trackDetails;
+    const selected = props.selected === t.index;
+    const stop = (fn) => (e) => {
+        e.stopPropagation();
+        fn();
     };
-    const getTrackRowClassName = () => {
-        if (props.selected === props.trackDetails.index) {
-            return 'trackRow selected';
-        } else {
-            return 'trackRow';
-        }
-    };
-    let buttonRecord, buttonSolo, buttonMute, buttonIndexUp, buttonIndexDown;
-    if (props.trackDetails.trackType !== TrackTypes.aux) {
-        if (props.trackDetails.record) {
-            buttonRecord = (
-                <Button
-                    size="sm"
-                    variant="danger"
-                    onClick={(e) => {
-                        props.onRecordButtonClicked(props.trackDetails.index);
-                        e.stopPropagation();
-                    }}
-                >
-                    R
-                </Button>
-            );
-        } else {
-            buttonRecord = (
-                <Button
-                    size="sm"
-                    onClick={(e) => {
-                        props.onRecordButtonClicked(props.trackDetails.index);
-                        e.stopPropagation();
-                    }}
-                >
-                    R
-                </Button>
-            );
-        }
-    } else {
-        buttonRecord = null;
-    }
-    if (props.trackDetails.solo) {
-        buttonSolo = (
-            <Button
-                size="sm"
-                variant="warning"
-                onClick={(e) => {
-                    props.onSoloButtonClicked(props.trackDetails.index);
-                    e.stopPropagation();
-                }}
-            >
-                S
-            </Button>
-        );
-    } else {
-        buttonSolo = (
-            <Button
-                size="sm"
-                onClick={(e) => {
-                    props.onSoloButtonClicked(props.trackDetails.index);
-                    e.stopPropagation();
-                }}
-            >
-                S
-            </Button>
-        );
-    }
-    if (props.trackDetails.mute) {
-        buttonMute = (
-            <Button
-                size="sm"
-                variant="info"
-                onClick={(e) => {
-                    props.onMuteButtonClicked(props.trackDetails.index);
-                    e.stopPropagation();
-                }}
-            >
-                M
-            </Button>
-        );
-    } else {
-        buttonMute = (
-            <Button
-                size="sm"
-                onClick={(e) => {
-                    props.onMuteButtonClicked(props.trackDetails.index);
-                    e.stopPropagation();
-                }}
-            >
-                M
-            </Button>
-        );
-    }
-    if (props.trackDetails.index > 1) {
-        buttonIndexDown = (
-            <Button
-                size="sm"
-                onClick={(e) => {
-                    props.onIndexDown(props.trackDetails.index);
-                    e.stopPropagation();
-                }}
-            >
-                <ArrowUp />
-            </Button>
-        );
-    }
-    if (props.trackDetails.index + 1 < props.trackListLength) {
-        buttonIndexUp = (
-            <Button
-                size="sm"
-                onClick={(e) => {
-                    props.onIndexUp(props.trackDetails.index);
-                    e.stopPropagation();
-                }}
-            >
-                <ArrowDown />
-            </Button>
-        );
-    }
-    const getIcon = () => {
-        switch (props.trackDetails.trackType) {
-            case TrackTypes.aux: {
-                return auxIcon;
-            }
-            case TrackTypes.virtualInstrument: {
-                if (props.trackDetails.instrument.name === 'Sampler') {
-                    return samplerIcon;
-                } else {
-                    return virtualInstrumentIcon;
-                }
-            }
-        }
-    };
-    //TODO: text input not triggering piano
-    return (
-        <Row
-            className={getTrackRowClassName()}
-            onClick={() => props.handleRowClicked(props.trackDetails.index)}
-            style={{ marginLeft: 0, marginRight: 0 }}
+
+    const chip = (label, on, kind, onClick) => (
+        <span
+            className={'pq-track-chip' + (kind === 'R' ? ' is-rec' : '') + (on ? ' is-active' : '')}
+            onClick={stop(onClick)}
+            title={label}
         >
-            <Col xs={2} className="nopadding">
-                <p> {props.trackDetails.index} </p>
-                {buttonIndexDown}
-                {buttonIndexUp}
-            </Col>
-            <Col xs={2} className="nopadding">
-                <img src={getIcon()} />
-            </Col>
-            <Col xs={8} className="nopadding">
-                <ButtonGroup style={{ display: 'inline-flex', position: 'absolute', right: '0' }}>
-                    {buttonSolo}
-                    {buttonMute}
-                    {buttonRecord}
-                    <Button
-                        onClick={(e) => {
-                            props.handleRemove(props.trackDetails.index);
-                            e.stopPropagation();
-                        }}
-                        size="sm"
-                    >
-                        <X />
-                    </Button>
-                </ButtonGroup>
-                <FormControl
-                    className="trackNameFormControl"
-                    value={props.trackDetails.name}
-                    onChange={handleTrackNameChange}
+            {label}
+        </span>
+    );
+
+    const vol = Math.max(0, Math.min(100, (t.volume || 0) * 100));
+
+    return (
+        <div
+            className={'pq-track-lane' + (selected ? ' is-selected' : '')}
+            onClick={() => props.handleRowClicked(t.index)}
+        >
+            <div className="pq-track-main">
+                <input
+                    className="pq-track-name"
+                    value={t.name}
+                    onChange={(e) => props.handleTrackNameChange(e, t.index)}
                     onFocus={props.onInputFocusSwitch}
                     onBlur={props.onInputFocusSwitch}
+                    onClick={(e) => e.stopPropagation()}
                 />
-            </Col>
-        </Row>
+                <div className="pq-track-meta pq-mono">{instrumentLabel(t)}</div>
+                <div className="pq-track-vol">
+                    <div className="pq-track-vol-fill" style={{ width: vol + '%' }} />
+                </div>
+            </div>
+
+            <div className="pq-track-chips">
+                {chip('S', t.solo, 'S', () => props.onSoloButtonClicked(t.index))}
+                {chip('M', t.mute, 'M', () => props.onMuteButtonClicked(t.index))}
+                {t.trackType !== TrackTypes.aux && chip('R', t.record, 'R', () => props.onRecordButtonClicked(t.index))}
+            </div>
+
+            <div className="pq-track-reorder">
+                {t.index > 1 ? (
+                    <span className="pq-lane-icon" onClick={stop(() => props.onIndexDown(t.index))} title="Move up">
+                        ▲
+                    </span>
+                ) : (
+                    <span className="pq-lane-icon is-empty">▲</span>
+                )}
+                {t.index + 1 < props.trackListLength ? (
+                    <span className="pq-lane-icon" onClick={stop(() => props.onIndexUp(t.index))} title="Move down">
+                        ▼
+                    </span>
+                ) : (
+                    <span className="pq-lane-icon is-empty">▼</span>
+                )}
+                <span className="pq-lane-icon" onClick={stop(() => props.handleRemove(t.index))} title="Remove track">
+                    ×
+                </span>
+            </div>
+        </div>
     );
 };
+
 Track.propTypes = {
     trackDetails: PropTypes.object.isRequired,
 };

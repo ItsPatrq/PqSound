@@ -74,8 +74,6 @@
         "normalize.css": "8.0.1",
         "npm": "^12.0.1",
         "react": "16.14.0",
-        "react-bootstrap": "2.10.10",
-        "react-bootstrap-icons": "1.11.6",
         "react-dom": "16.14.0",
         "react-dropzone": "16.0.0",
         "react-loader-spinner": "6.1.6",

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Col } from 'react-bootstrap';
 import Track from 'components/TrackList/Track';
 import * as trackListActions from 'actions/trackListActions';
 import * as compositionActions from 'actions/compositionActions';
@@ -146,8 +145,9 @@ class TrackList extends React.Component {
                 return a.props.trackDetails.index - b.props.trackDetails.index;
             });
             return (
-                <Col xs={2} className="trackList">
+                <div className="pq-col-2 trackList">
                     <TrackListButtons
+                        trackCount={this.props.trackList.length - 1}
                         onAddNewTrack={this.handleSwitchModalVisibility.bind(this)}
                         onSoloAllClicked={this.handleSoloAllClicked.bind(this)}
                         isAnySolo={this.props.anyActive}
@@ -160,7 +160,7 @@ class TrackList extends React.Component {
                         modalVisibilitySwitch={this.handleSwitchModalVisibility.bind(this)}
                         onAddNewTrack={this.addTrack.bind(this)}
                     />
-                </Col>
+                </div>
             );
         }
     }

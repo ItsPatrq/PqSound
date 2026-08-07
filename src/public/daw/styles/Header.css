@@ -1,0 +1,77 @@
+/* PqSound re-skin header — hover states the inline styles can't express. */
+.pq-header {
+    height: var(--pq-header-h);
+    display: grid;
+    grid-template-columns: 236px minmax(0, 1fr) auto;
+    align-items: center;
+    background: var(--pq-panel-alt);
+    border-bottom: 1px solid var(--pq-border);
+    position: relative;
+    z-index: 30;
+}
+
+.pq-btn {
+    cursor: pointer;
+    background: var(--pq-control);
+    color: var(--pq-text-dimmer);
+    border: 1px solid var(--pq-control-border);
+    border-radius: 5px;
+    transition: filter 0.1s ease, background 0.1s ease, color 0.1s ease;
+}
+.pq-btn:hover {
+    filter: brightness(1.25);
+}
+.pq-btn.is-active {
+    background: var(--pq-accent-16);
+    border-color: var(--pq-accent-55);
+    color: var(--pq-text-hi);
+}
+
+.pq-tool {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    font-family: var(--pq-mono);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.pq-share:hover {
+    background: var(--pq-control-hi);
+}
+
+.pq-menu-item:hover {
+    background: #232a2e;
+}
+
+.pq-header-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--pq-border);
+    margin: 0 8px;
+}
+
+/* Click-to-edit BPM / BARS readouts */
+.pq-header-editable {
+    cursor: text;
+    padding: 1px 3px;
+    margin: -1px -3px;
+    border-radius: 4px;
+    transition: background 0.1s ease;
+}
+.pq-header-editable:hover {
+    background: var(--pq-control);
+}
+.pq-header-edit {
+    width: 42px;
+    height: 15px;
+    padding: 0 2px;
+    background: var(--pq-inset);
+    border: 1px solid var(--pq-accent-55);
+    border-radius: 3px;
+    color: var(--pq-text-hi);
+    font-size: 12px;
+    font-weight: 500;
+    outline: none;
+}

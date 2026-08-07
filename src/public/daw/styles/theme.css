@@ -1,0 +1,251 @@
+/*
+ * PqSound design-system tokens — from PqSound.dc.html design comp.
+ * Dark DAW palette + IBM Plex Mono numerics. Shared across the re-skin.
+ */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root {
+    /* surfaces */
+    --pq-bg: #0b0d0e;
+    --pq-panel: #101315;
+    --pq-panel-alt: #131618;
+    --pq-inset: #0e1113;
+    --pq-control: #191d21;
+    --pq-control-hi: #21262a;
+
+    /* borders */
+    --pq-border: #23282c;
+    --pq-border-soft: #1c2124;
+    --pq-border-faint: #16191c;
+    --pq-control-border: #2a3035;
+    --pq-control-border-hi: #3a4349;
+
+    /* text */
+    --pq-text: #e4e7e9;
+    --pq-text-hi: #f2f5f6;
+    --pq-text-mid: #cfd4d7;
+    --pq-text-dim: #9aa2a8;
+    --pq-text-dimmer: #838b91;
+    --pq-text-faint: #5d656b;
+
+    /* accent (matches design accentColor default) */
+    --pq-accent: #3fb0e0;
+    --pq-accent-glow: rgba(63, 176, 224, 0.6);
+    --pq-accent-16: rgba(63, 176, 224, 0.16);
+    --pq-accent-55: rgba(63, 176, 224, 0.55);
+
+    /* meters */
+    --pq-warn: #c9a24a;
+    --pq-peak: #d2544b;
+    --pq-rec: #e0655a;
+
+    --pq-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --pq-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --pq-header-h: 56px;
+    --pq-footer-h: 34px;
+
+    /* body grid columns (design comp: tracks rail | timeline | 300px channel) */
+    --pq-tracks-w: 250px;
+    --pq-channel-w: 300px;
+}
+
+/* Global dark shell for the re-skinned app */
+.pq-app {
+    min-height: 100vh;
+    background: var(--pq-bg);
+    color: var(--pq-text);
+    font-family: var(--pq-sans);
+    -webkit-font-smoothing: antialiased;
+    font-size: 13px;
+}
+.pq-app * {
+    box-sizing: border-box;
+}
+
+.pq-app ::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+}
+.pq-app ::-webkit-scrollbar-track {
+    background: var(--pq-inset);
+}
+.pq-app ::-webkit-scrollbar-thumb {
+    background: #2a3136;
+    border-radius: 6px;
+    border: 2px solid var(--pq-inset);
+}
+.pq-app ::-webkit-scrollbar-thumb:hover {
+    background: var(--pq-control-border-hi);
+}
+
+.pq-mono {
+    font-family: var(--pq-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- shared dropdown (replaces react-bootstrap DropdownButton) ---- */
+.pq-dropdown {
+    position: relative;
+    display: inline-block;
+}
+.pq-dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 10px;
+    background: var(--pq-control);
+    border: 1px solid var(--pq-control-border);
+    border-radius: 5px;
+    color: var(--pq-text);
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    line-height: 1.2;
+}
+.pq-dropdown-toggle:hover:not(:disabled) {
+    background: var(--pq-control-hi);
+    border-color: var(--pq-control-border-hi);
+}
+.pq-dropdown-toggle:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+.pq-dropdown-toggle.is-open {
+    border-color: var(--pq-accent);
+}
+.pq-dropdown-caret {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid currentColor;
+    opacity: 0.7;
+}
+.pq-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 60;
+    min-width: 100%;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 4px;
+    background: var(--pq-panel-alt);
+    border: 1px solid var(--pq-control-border);
+    border-radius: 7px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+.pq-dropdown-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    white-space: nowrap;
+    padding: 6px 10px;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    color: var(--pq-text);
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+}
+.pq-dropdown-item:hover {
+    background: var(--pq-control);
+}
+.pq-dropdown-item.is-active {
+    color: var(--pq-accent);
+}
+
+/* ---- shared button (replaces react-bootstrap Button) ---- */
+.pq-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 16px;
+    background: var(--pq-control);
+    border: 1px solid var(--pq-control-border);
+    border-radius: 5px;
+    color: var(--pq-text);
+    font-size: 12.5px;
+    font-family: inherit;
+    cursor: pointer;
+}
+.pq-button:hover {
+    background: var(--pq-control-hi);
+    border-color: var(--pq-control-border-hi);
+}
+
+/* ---- shared modal (replaces react-bootstrap Modal) ---- */
+.pq-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.6);
+}
+.pq-modal-dialog {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+    max-height: calc(100vh - 48px);
+    background: var(--pq-panel);
+    border: 1px solid var(--pq-control-border);
+    border-radius: 10px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+    color: var(--pq-text);
+}
+.pq-modal-sm {
+    max-width: 380px;
+}
+.pq-modal-lg {
+    max-width: 860px;
+}
+.pq-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--pq-border);
+}
+.pq-modal-title {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--pq-text-hi);
+}
+.pq-modal-close {
+    width: 26px;
+    height: 26px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    background: none;
+    border: none;
+    border-radius: 5px;
+    color: var(--pq-text-dim);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+.pq-modal-close:hover {
+    background: var(--pq-control);
+    color: var(--pq-text);
+}
+.pq-modal-body {
+    padding: 16px;
+    overflow-y: auto;
+}
+.pq-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--pq-border);
+}

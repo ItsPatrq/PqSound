@@ -1,79 +1,78 @@
 import * as React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import Dropdown from 'components/Dropdown';
+import PqKnob from 'components/shared/PqKnob';
 import SamplerPresets from 'constants/SamplerPresets';
 import { Utils as SamplerPresetsUtils } from 'constants/SamplerPresets';
 
-require('styles/Instruments/Sampler.css');
+require('styles/Instruments/InstrumentEditor.css');
 
 const Sampler = (props) => {
-    const allPresets = [];
+    const preset = props.instrument.preset;
+    const presetGroups = [];
     for (let i = 0; i < SamplerPresets.length; i++) {
         const availablePresets = [];
         for (let j = 0; j < SamplerPresets[i].presets.length; j++) {
-            availablePresets.push(
-                <Dropdown.Item
-                    key={SamplerPresets[i].presets[j].id.toString()}
-                    eventKey={SamplerPresets[i].presets[j].id.toString()}
-                    onClick={() => {
-                        const newPreset = SamplerPresetsUtils.getPresetById(SamplerPresets[i].presets[j].id);
-                        newPreset.attack = props.instrument.preset.attack;
-                        newPreset.release = props.instrument.preset.release;
-                        props.onPresetChange(newPreset);
-                    }}
-                >
-                    {SamplerPresets[i].presets[j].name}
-                </Dropdown.Item>,
-            );
+            const presetId = SamplerPresets[i].presets[j].id;
+            availablePresets.push({
+                key: presetId.toString(),
+                label: SamplerPresets[i].presets[j].name,
+                onClick: () => {
+                    const newPreset = SamplerPresetsUtils.getPresetById(presetId);
+                    newPreset.attack = preset.attack;
+                    newPreset.release = preset.release;
+                    props.onPresetChange(newPreset);
+                },
+            });
         }
-        allPresets.push(
-            <DropdownButton
+        presetGroups.push(
+            <Dropdown
                 id={'preset-drop-down-' + i}
                 key={i}
-                variant="secondary"
                 className="drop-down"
                 title={SamplerPresets[i].name}
-            >
-                {availablePresets}
-            </DropdownButton>,
+                items={availablePresets}
+            />,
         );
     }
-    const handleChange = (newAttack, newRelease) => {
-        props.onPresetChange({
-            ...props.instrument.preset,
-            attack: newAttack ? Number(newAttack) : props.instrument.preset.attack,
-            release: newRelease ? Number(newRelease) : props.instrument.preset.release,
-        });
+    const handleChange = (patch) => {
+        props.onPresetChange({ ...preset, ...patch });
     };
     return (
-        <div className="samplerContainer">
-            <div className="samplerPresetInstrument">
-                <div className="brandName">SAMPLER</div>
-                <div className="presetName">
-                    <p>Selected preset: {props.instrument.preset.name}</p>
+        <div className="pq-inst-body">
+            <div className="pq-inst-sec">
+                <div className="pq-inst-sec-head">
+                    <span>PRESET</span>
                 </div>
-                {allPresets}
+                <div className="pq-inst-preset-row">
+                    <div className="pq-inst-preset-name">{preset.name}</div>
+                    <div className="pq-inst-preset-groups">{presetGroups}</div>
+                </div>
             </div>
-            <div className="samplerSliderContainer">
-                <label>Attack: {props.instrument.preset.attack}</label>
-                <input
-                    type="range"
-                    value={props.instrument.preset.attack}
-                    step="0.02"
-                    min="0"
-                    max="4"
-                    onChange={(event) => handleChange(event.target.value)}
-                />
-            </div>
-            <div className="samplerSliderContainer">
-                <label>Release: {props.instrument.preset.release}</label>
-                <input
-                    type="range"
-                    value={props.instrument.preset.release}
-                    step="0.02"
-                    min="0"
-                    max="4"
-                    onChange={(event) => handleChange(null, event.target.value)}
-                />
+
+            <div className="pq-inst-sec">
+                <div className="pq-inst-sec-head">
+                    <span>ENVELOPE</span>
+                </div>
+                <div className="pq-knob-grid">
+                    <PqKnob
+                        label="ATTACK"
+                        value={preset.attack}
+                        min={0}
+                        max={4}
+                        step={0.02}
+                        display={Number(preset.attack).toFixed(2)}
+                        onChange={(v) => handleChange({ attack: Number(v) })}
+                    />
+                    <PqKnob
+                        label="RELEASE"
+                        value={preset.release}
+                        min={0}
+                        max={4}
+                        step={0.02}
+                        display={Number(preset.release).toFixed(2)}
+                        onChange={(v) => handleChange({ release: Number(v) })}
+                    />
+                </div>
             </div>
         </div>
     );

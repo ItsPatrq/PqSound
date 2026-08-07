@@ -3,31 +3,36 @@ import { expect, Locator, Page } from '@playwright/test';
 /**
  * Page object for the PqSound DAW single-page app.
  *
- * Selectors lean on stable, human-visible anchors (the navbar brand, the
- * "Load demo" menu item, the transport buttons' aria-labels) rather than on
- * test ids, since the app source carries none.
+ * Selectors lean on stable, human-visible anchors from the dark-re-skin Header
+ * (the `.pq-brand` wordmark, the transport buttons' `title` attributes, the
+ * `···` overflow menu's "Load demo" item) rather than on test ids, since the
+ * app source carries none. The old Bootstrap navbar/`.controlBar` DOM is gone —
+ * transport now lives in `.pq-header`.
  */
 export class DawPage {
     readonly page: Page;
     readonly appRoot: Locator;
     readonly brand: Locator;
+    readonly header: Locator;
+    readonly menuButton: Locator;
     readonly loadDemoItem: Locator;
-    readonly controlBar: Locator;
     readonly playButton: Locator;
-    readonly pauseButton: Locator;
+    readonly recordButton: Locator;
     readonly stopButton: Locator;
 
     constructor(page: Page) {
         this.page = page;
         this.appRoot = page.locator('#app');
-        this.brand = page.locator('.navbar-brand');
-        this.loadDemoItem = page.getByText('Load demo', { exact: true });
-        this.controlBar = page.locator('.controlBar');
-        // Transport buttons render as <button aria-label="Play"><svg class="bi bi-play-fill"/></button>
-        // (react-bootstrap-icons); anchor on the stable aria-labels.
-        this.playButton = page.locator('.controlButtons button[aria-label="Play"]');
-        this.pauseButton = page.locator('.controlButtons button[aria-label="Pause"]');
-        this.stopButton = page.locator('.controlButtons button[aria-label="Stop"]');
+        // Brand wordmark: the `.pq-brand` wrapper joins its "Pq" + "Sound" spans → "PqSound".
+        this.brand = page.locator('.pq-brand');
+        this.header = page.locator('.pq-header');
+        // Transport + menu buttons render as <button title="…">…</button>; anchor on the titles.
+        this.menuButton = this.header.locator('button[title="Menu"]');
+        // "Load demo" lives inside the `···` overflow menu (hidden until it's opened).
+        this.loadDemoItem = this.page.getByText('Load demo', { exact: true });
+        this.playButton = this.header.locator('button[title="Play"]');
+        this.recordButton = this.header.locator('button[title="Record"]');
+        this.stopButton = this.header.locator('button[title="Stop"]');
     }
 
     async goto(): Promise<void> {
@@ -37,12 +42,19 @@ export class DawPage {
     /** Waits until the React app has mounted (placeholder replaced by real UI). */
     async waitForAppReady(): Promise<void> {
         await expect(this.brand).toBeVisible();
-        await expect(this.controlBar).toBeVisible();
+        await expect(this.header).toBeVisible();
         // The initial "Loading application..." placeholder must be gone.
         await expect(this.appRoot.locator('.application-placeholder')).toHaveCount(0);
     }
 
+    /** Opens the `···` overflow menu that holds import/export/demo actions. */
+    async openMenu(): Promise<void> {
+        await this.menuButton.click();
+        await expect(this.loadDemoItem).toBeVisible();
+    }
+
     async loadDemo(): Promise<void> {
+        await this.openMenu();
         await this.loadDemoItem.click();
     }
 
@@ -55,11 +67,11 @@ export class DawPage {
     }
 
     /**
-     * Returns the transport clock text (bar/beat/tick + SMPTE), which the
-     * sequencer updates as the playhead advances. Used to detect playback.
+     * Returns the transport clock text (bar.beat + SMPTE), which the sequencer
+     * updates as the playhead advances. Used to detect playback.
      */
     async playheadText(): Promise<string> {
-        return (await this.controlBar.innerText()).replace(/\s+/g, ' ').trim();
+        return (await this.header.innerText()).replace(/\s+/g, ' ').trim();
     }
 
     /** Polls until the playhead clock text changes from `previous`, proving playback advanced. */

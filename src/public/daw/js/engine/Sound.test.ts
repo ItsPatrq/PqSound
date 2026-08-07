@@ -132,6 +132,27 @@ describe('Sound', () => {
                 { trackIndex: 0, note: 62, origin: SoundOrigin.composition, endIndex: 8 },
             ]);
         });
+
+        it('flushes notes whose endIndex is at/after the loop end when the loop wraps', () => {
+            const track = makeTrack(0);
+            mockedGetState.mockReturnValue({ tracks: { trackList: [track] } });
+            const sound = new Sound(makeContext());
+            sound.playingSounds[SoundOrigin.composition] = [
+                { trackIndex: 0, note: 60, origin: SoundOrigin.composition, endIndex: 30 }, // inside loop → keep
+                { trackIndex: 0, note: 62, origin: SoundOrigin.composition, endIndex: 32 }, // == loopEnd → flush
+                { trackIndex: 0, note: 64, origin: SoundOrigin.composition, endIndex: 33 }, // > loopEnd → flush
+            ];
+
+            // Wrapped back to sixteenth 0; loopEnd sixteenth = 32.
+            sound.scheduleStop(0, 5.0, SoundOrigin.composition, 32);
+
+            expect(track.instrument.noteOff).toHaveBeenCalledTimes(2);
+            expect(track.instrument.noteOff).toHaveBeenCalledWith(62, 5.0);
+            expect(track.instrument.noteOff).toHaveBeenCalledWith(64, 5.0);
+            expect(sound.playingSounds[SoundOrigin.composition]).toEqual([
+                { trackIndex: 0, note: 60, origin: SoundOrigin.composition, endIndex: 30 },
+            ]);
+        });
     });
 
     describe('stopAll', () => {

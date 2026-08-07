@@ -72,6 +72,24 @@ export const MIDIToNote = (note) => {
     return note - 21;
 };
 
+/**
+ * Snap a near-centre pan value (float noise around 0) to exactly 0.
+ */
+export const normalizePan = (pan) => (pan < 0.001 && pan > -0.001 ? 0 : pan);
+
+/**
+ * Rounded pan (-100..100) → mixer label: 'C', 'L<n>', 'R<n>'.
+ */
+export const panLabel = (pan) => {
+    const p = Math.round(normalizePan(pan));
+    return p === 0 ? 'C' : p < 0 ? 'L' + Math.abs(p) : 'R' + p;
+};
+
+/**
+ * Linear track volume (0..2) → dB string, '-∞' at/near silence.
+ */
+export const volumeToDb = (volume) => (volume > 0.0001 ? (20 * Math.log10(volume)).toFixed(1) : '-∞');
+
 export const copy = (data) => {
     if (!(data instanceof AudioContext)) {
         let v, key;

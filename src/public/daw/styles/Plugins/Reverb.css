@@ -1,11 +1,12 @@
 .reverbModal {
-    background-color: #0f270c;
+    background-color: var(--pq-panel-alt);
     font-family: "Source Sans Pro", Arial, sans-serif;
-    color: #e8e8ff;
+    color: var(--pq-text);
     width: 100%;
     margin: auto;
     padding: 10px;
-    border: #212121 solid thick;
+    border: 1px solid var(--pq-border);
+    border-radius: 6px;
 }
 
 .reverbControlRow {
@@ -16,12 +17,12 @@
 }
 
 .reverbControlRow:first-child{
-    border-left: #55d145 solid thin;
-    border-right: #55d145 solid thin;
-    border-top: #55d145 solid thick;    
+    border-left: var(--pq-border-soft) solid thin;
+    border-right: var(--pq-border-soft) solid thin;
+    border-top: var(--pq-accent) solid 2px;    
 }
 .reverbControlRow:last-child{
-    border-left: #55d145 solid thin;
-    border-right: #55d145 solid thin;
-    border-bottom: #55d145 solid thick;
+    border-left: var(--pq-border-soft) solid thin;
+    border-right: var(--pq-border-soft) solid thin;
+    border-bottom: var(--pq-accent) solid 2px;
 }

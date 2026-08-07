@@ -1,19 +1,16 @@
 import * as React from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import Modal from 'components/Modal';
 
-const FileUploadModal = (props) => {
+const AboutModal = (props) => {
     return (
         <Modal
-            backdrop="static"
             show={props.showModal}
             size="lg"
+            title="About"
             onHide={() => props.modalVisibilitySwitch()}
             dialogClassName="instrumentModal"
         >
-            <Modal.Header closeButton>
-                <Modal.Title>About</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+            <div>
                 <p>
                     PqSound is an online DAW application. It allows you to play virtual instruments live and to create
                     your own compositions.
@@ -102,12 +99,9 @@ const FileUploadModal = (props) => {
                         CC 3.0 BY
                     </a>
                 </div>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button onClick={() => props.modalVisibilitySwitch()}>Close</Button>
-            </Modal.Footer>
+            </div>
         </Modal>
     );
 };
 
-export default FileUploadModal;
+export default AboutModal;

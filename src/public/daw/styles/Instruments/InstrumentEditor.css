@@ -1,0 +1,183 @@
+/* Simplified instrument editor UI — shared across Sampler / PqSynth / Monotron /
+   MultiOsc (design comp: donut-knob grid + segmented pill selectors). Rendered
+   inside the .pq-instrument-col editor body (Layout.css). All four instrument
+   components require this file; the old per-instrument stylesheets are retired. */
+
+.pq-inst-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-family: var(--pq-sans);
+    color: var(--pq-text);
+}
+
+/* --- section eyebrow + divider --- */
+.pq-inst-sec {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.pq-inst-sec-head {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.pq-inst-sec-head > span {
+    font-family: var(--pq-mono);
+    font-size: 9px;
+    letter-spacing: 0.13em;
+    color: var(--pq-text-faint);
+    white-space: nowrap;
+}
+.pq-inst-sec-head::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--pq-border-soft);
+}
+
+/* --- segmented pill selector (mod / waveform / osc tabs / on-off) --- */
+.pq-seg {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+.pq-seg-btn {
+    flex: 1 0 auto;
+    min-width: 44px;
+    height: 26px;
+    padding: 0 10px;
+    border-radius: 4px;
+    border: 1px solid var(--pq-control-border);
+    background: var(--pq-control);
+    color: var(--pq-text-dim);
+    cursor: pointer;
+    font-size: 10px;
+    letter-spacing: 0.03em;
+    text-transform: capitalize;
+    transition:
+        color 0.12s,
+        border-color 0.12s,
+        background 0.12s;
+}
+.pq-seg-btn:hover {
+    color: var(--pq-text);
+    border-color: var(--pq-control-border-hi);
+}
+.pq-seg-btn.is-active {
+    background: var(--pq-accent-16);
+    border-color: var(--pq-accent);
+    color: var(--pq-accent);
+}
+
+/* --- donut knob grid --- */
+.pq-knob-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px 10px;
+}
+.pq-knob {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+}
+.pq-knob-dial {
+    position: relative;
+    width: 52px;
+    height: 52px;
+}
+.pq-knob-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 225deg,
+        var(--pq-accent) 0 var(--pq-knob-deg, 0deg),
+        var(--pq-control) var(--pq-knob-deg, 0deg) 270deg,
+        transparent 270deg 360deg
+    );
+    -webkit-mask-image: radial-gradient(farthest-side, transparent 63%, #000 65%);
+    mask-image: radial-gradient(farthest-side, transparent 63%, #000 65%);
+    pointer-events: none;
+}
+.pq-knob-val {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: var(--pq-mono);
+    font-size: 10px;
+    color: var(--pq-text-mid);
+    pointer-events: none;
+}
+/* transparent range overlay — captures drag/click on the dial */
+.pq-knob-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+}
+.pq-knob-input:disabled {
+    cursor: default;
+}
+.pq-knob-label {
+    font-family: var(--pq-mono);
+    font-size: 8.5px;
+    letter-spacing: 0.06em;
+    color: var(--pq-text-dimmer);
+    text-align: center;
+}
+.pq-knob.is-disabled {
+    opacity: 0.4;
+}
+
+/* --- footer actions (Restore / Save) --- */
+.pq-inst-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+.pq-inst-btn {
+    flex: 1;
+    height: 28px;
+    border-radius: 5px;
+    border: 1px solid var(--pq-control-border);
+    background: var(--pq-control);
+    color: var(--pq-text-dim);
+    cursor: pointer;
+    font-size: 11px;
+}
+.pq-inst-btn:hover {
+    color: var(--pq-text);
+    border-color: var(--pq-control-border-hi);
+}
+.pq-inst-btn.is-primary {
+    background: var(--pq-accent);
+    border-color: var(--pq-accent);
+    color: #08121a;
+    font-weight: 500;
+}
+.pq-inst-btn.is-primary:hover {
+    filter: brightness(1.1);
+    color: #08121a;
+}
+
+/* --- sampler preset picker + info --- */
+.pq-inst-preset-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.pq-inst-preset-name {
+    font-size: 11.5px;
+    color: var(--pq-text-mid);
+}
+.pq-inst-preset-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}

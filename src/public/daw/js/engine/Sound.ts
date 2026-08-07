@@ -13,10 +13,15 @@ export default class Sound {
         this.playingSounds = [[], [], []]; // trackindex, note, origin, endindex
     }
 
-    scheduleStop(sixteenthPlaying: number, contextPlayTime: number, origin: number) {
+    scheduleStop(sixteenthPlaying: number, contextPlayTime: number, origin: number, loopEndSixteenth?: number) {
         for (let i = this.playingSounds[origin].length - 1; i >= 0; i--) {
             const currNote = this.playingSounds[origin][i];
-            if (currNote.endIndex === sixteenthPlaying) {
+            // On a loop wrap the play position jumps past loopEndSixteenth, so a note
+            // whose endIndex sits at/after the loop end would never match the exact
+            // comparison and would drone forever. Flush those at the boundary too.
+            const reachedEnd = currNote.endIndex === sixteenthPlaying;
+            const pastLoopEnd = loopEndSixteenth !== undefined && currNote.endIndex >= loopEndSixteenth;
+            if (reachedEnd || pastLoopEnd) {
                 this.stop(currNote.trackIndex, currNote.note, contextPlayTime);
                 this.playingSounds[origin].splice(i, 1);
             }

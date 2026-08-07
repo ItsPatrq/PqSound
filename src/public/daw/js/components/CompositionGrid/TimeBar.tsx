@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Row } from 'react-bootstrap';
 
 interface TimeBarProps {
     bits: number;
@@ -23,7 +22,7 @@ export const TimeBar: React.FunctionComponent<TimeBarProps> = (props: TimeBarPro
         );
     }
     return (
-        <Row className="timeBar" style={{ width: 50 * props.bits + 'px' }}>
+        <div className="pq-inline-row timeBar" style={{ width: 50 * props.bits + 'px' }}>
             <div className="timeBarContent">
                 {beats}
                 <svg
@@ -33,7 +32,7 @@ export const TimeBar: React.FunctionComponent<TimeBarProps> = (props: TimeBarPro
                     <polygon points="2,2 10,8 18,2"></polygon>
                 </svg>
             </div>
-        </Row>
+        </div>
     );
 };
 

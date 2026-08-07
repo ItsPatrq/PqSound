@@ -1,34 +1,26 @@
 import * as React from 'react';
 import Dropzone from 'react-dropzone';
-import { Modal, Button } from 'react-bootstrap';
+import Modal from 'components/Modal';
 
 const FileUploadModal = (props) => {
     return (
         <Modal
-            backdrop="static"
             show={props.showModal}
             size="sm"
+            title="File Upload"
             onHide={() => props.modalVisibilitySwitch()}
             dialogClassName="instrumentModal"
         >
-            <Modal.Header closeButton>
-                <Modal.Title>File Upload</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Dropzone accept=".json" onDrop={props.onFileUpload}>
-                    {({ getRootProps, getInputProps }) => {
-                        return (
-                            <div {...getRootProps()}>
-                                <p>Drag or click to upload your exported composition</p>
-                                <input {...getInputProps()} />
-                            </div>
-                        );
-                    }}
-                </Dropzone>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button onClick={() => props.modalVisibilitySwitch()}>Close</Button>
-            </Modal.Footer>
+            <Dropzone accept=".json" onDrop={props.onFileUpload}>
+                {({ getRootProps, getInputProps }) => {
+                    return (
+                        <div {...getRootProps()}>
+                            <p>Drag or click to upload your exported composition</p>
+                            <input {...getInputProps()} />
+                        </div>
+                    );
+                }}
+            </Dropzone>
         </Modal>
     );
 };

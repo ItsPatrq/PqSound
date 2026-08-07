@@ -1,91 +1,73 @@
 import * as React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import PqKnob from 'components/shared/PqKnob';
 import { oscillatorTypes } from 'constants/Constants';
 
-require('styles/Instruments/MultiOsc.css');
+require('styles/Instruments/InstrumentEditor.css');
 
 const MultiOsc = (props) => {
-    const handleChange = (newWaveNumber, newDetune, newAttack, newRelease, newOscilatorType) => {
-        props.onPresetChange({
-            ...props.instrument.preset,
-            waveNumber: newWaveNumber ? Number(newWaveNumber) : props.instrument.preset.waveNumber,
-            detune: newDetune ? Number(newDetune) : props.instrument.preset.detune,
-            attack: newAttack ? Number(newAttack) : props.instrument.preset.attack,
-            release: newRelease ? Number(newRelease) : props.instrument.preset.release,
-            oscilatorType: newOscilatorType ? newOscilatorType : props.instrument.preset.oscilatorType,
-        });
+    const preset = props.instrument.preset;
+    const handleChange = (patch) => {
+        props.onPresetChange({ ...preset, ...patch });
     };
-    const oscillatorTypesDropdownItems = [];
-    for (let i = 0; i < oscillatorTypes.length; i++) {
-        oscillatorTypesDropdownItems.push(
-            <Dropdown.Item
-                key={oscillatorTypes[i]}
-                eventKey={oscillatorTypes[i]}
-                onClick={() => handleChange(null, null, null, null, oscillatorTypes[i])}
-            >
-                {oscillatorTypes[i]}
-            </Dropdown.Item>,
-        );
-    }
     return (
-        <div className="multiOscContainer">
-            <div className="multiOscBrand">
-                <h1 className="multiOscTitle">MultiOsc Synth</h1>
+        <div className="pq-inst-body">
+            <div className="pq-inst-sec">
+                <div className="pq-inst-sec-head">
+                    <span>WAVEFORM</span>
+                </div>
+                <div className="pq-seg">
+                    {oscillatorTypes.map((type) => (
+                        <button
+                            key={type}
+                            className={'pq-seg-btn' + (preset.oscilatorType === type ? ' is-active' : '')}
+                            onClick={() => handleChange({ oscilatorType: type })}
+                        >
+                            {type}
+                        </button>
+                    ))}
+                </div>
             </div>
-            <div className="multiOscTypeSelector">
-                <p>Oscilator type: </p>
-                <DropdownButton
-                    id={'oscilator-types-drop-down'}
-                    variant="secondary"
-                    className="drop-down"
-                    title={props.instrument.preset.oscilatorType}
-                >
-                    {oscillatorTypesDropdownItems}
-                </DropdownButton>
-            </div>
-            <div className="multiOscSliderContainer">
-                <label>Number of oscilators: {props.instrument.preset.waveNumber}</label>
-                <input
-                    type="range"
-                    value={props.instrument.preset.waveNumber}
-                    step="1"
-                    min="1"
-                    max="20"
-                    onChange={(event) => handleChange(event.target.value)}
-                />
-            </div>
-            <div className="multiOscSliderContainer">
-                <label>Detune: {props.instrument.preset.detune}</label>
-                <input
-                    type="range"
-                    value={props.instrument.preset.detune}
-                    step="1"
-                    min="0"
-                    max="100"
-                    onChange={(event) => handleChange(null, event.target.value)}
-                />
-            </div>
-            <div className="multiOscSliderContainer">
-                <label>Attack: {props.instrument.preset.attack}</label>
-                <input
-                    type="range"
-                    value={props.instrument.preset.attack}
-                    step="0.02"
-                    min="0"
-                    max="4"
-                    onChange={(event) => handleChange(null, null, event.target.value)}
-                />
-            </div>
-            <div className="multiOscSliderContainer">
-                <label>Release: {props.instrument.preset.release}</label>
-                <input
-                    type="range"
-                    value={props.instrument.preset.release}
-                    step="0.02"
-                    min="0"
-                    max="4"
-                    onChange={(event) => handleChange(null, null, null, event.target.value)}
-                />
+
+            <div className="pq-inst-sec">
+                <div className="pq-inst-sec-head">
+                    <span>SOUND</span>
+                </div>
+                <div className="pq-knob-grid">
+                    <PqKnob
+                        label="VOICES"
+                        value={preset.waveNumber}
+                        min={1}
+                        max={20}
+                        step={1}
+                        onChange={(v) => handleChange({ waveNumber: Number(v) })}
+                    />
+                    <PqKnob
+                        label="DETUNE"
+                        value={preset.detune}
+                        min={0}
+                        max={100}
+                        step={1}
+                        onChange={(v) => handleChange({ detune: Number(v) })}
+                    />
+                    <PqKnob
+                        label="ATTACK"
+                        value={preset.attack}
+                        min={0}
+                        max={4}
+                        step={0.02}
+                        display={Number(preset.attack).toFixed(2)}
+                        onChange={(v) => handleChange({ attack: Number(v) })}
+                    />
+                    <PqKnob
+                        label="RELEASE"
+                        value={preset.release}
+                        min={0}
+                        max={4}
+                        step={0.02}
+                        display={Number(preset.release).toFixed(2)}
+                        onChange={(v) => handleChange({ release: Number(v) })}
+                    />
+                </div>
             </div>
         </div>
     );

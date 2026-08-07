@@ -1,35 +1,69 @@
+/* ==== Virtual keyboard overlay — PqSound re-skin (Stage 11) ====
+ * FULL dark theme matching the design comp: white (natural) keys are dark slabs
+ * (--pq-control, rounded bottom, thin border), black (accidental) keys are bright
+ * accent-blue rounded caps (--pq-accent) with dark labels. The blue blacks bridge
+ * the C-D/D-E and F-G/G-A/A-B pairs, so E-F and B-C (no black key) read as the
+ * group separators — that's what gives the design's "grouped card" look with a
+ * plain uniform key row (no per-cluster wrappers needed). Key WIDTHS are the 42px
+ * design scale: white/option/disabled 46px, black 27px. These MUST stay in sync
+ * with the `keyboardWidths` table in constants/Constants.ts (WHITE_KEY_WIDTH) and
+ * the KEYBOARD_BASE_OFFSET offsets in Keyboard.jsx — the three share one px unit,
+ * so any width change is a uniform scale across all three. Heights (white/option
+ * 150px, black 90px) are independent of width and tuned to the design's shorter
+ * keys — change them freely without touching the width table. The dead
+ * `div.flatKeys` nth-child margins below are legacy (blacks position via inline
+ * marginLeft, not this wrapper) — left untouched. */
+/* Bottom-most grid row (below the view bar + footer) — NOT an overlay anymore.
+   Collapses to 0 height when the Keyboard container renders null (hidden). */
 .keyboard {
-    background-color: rgb(82, 97, 102);
-    width: 100%;    
-    color: #000000;
-    position: absolute;
+    background-color: var(--pq-panel-alt);
+    width: 100%;
+    color: var(--pq-text);
     text-align: center;
     display: block;
-    overflow-x:hidden;
-    overflow-y:hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
     white-space: nowrap;
-    top: 100%;
-    transform: translateY(-100%);
+    border-top: 1px solid var(--pq-border);
 }
 
 
+/* space-between pins the octave chevrons to the far edges and centres the
+   fixed-width key block between them → the design's inset/centred keyboard. */
 .keyboardBody {
     width: 100%;
     position: relative;
     float: left;
     display: flex;
     display: -webkit-flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
-.shiftKeyDiv {
-    height: 110px;
-    
+/* Octave-shift chevron = the whole option key is one tall button. */
+.optionKeyBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    color: var(--pq-text-dim);
+    font-size: 24px;
+    -webkit-appearance: none;
+    appearance: none;
+    transition:
+        color 0.12s ease,
+        background 0.12s ease;
+}
+.optionKeyBtn:hover {
+    color: var(--pq-accent);
+    background-color: var(--pq-control-hi);
 }
 
+/* subtle divider along the top of the keyboard (design has no bright accent strip) */
 .colorLine {
-    background-color: rgb(82, 97, 102);
-    color: #000000;
-    height: 6px;
+    background-color: var(--pq-border);
+    height: 1px;
     position: absolute;
     top: 0px;
     width: 100%;
@@ -40,111 +74,107 @@
 .keys {
     position: relative;
     /* float: left; */
-    display: inline-block;    
+    display: inline-block;
 }
 
-.keysRow{
+/* position:relative → the absolutely-positioned black keys resolve against THIS
+   row, so centring the row (space-between above) moves whites + blacks together
+   and the alignment holds. */
+.keysRow {
     display: inline-flex;
+    position: relative;
+    flex: 0 0 auto;
     margin-left: 0px;
     align-content: flex-start;
 }
 
 .optionKey {
-    width: 66px;
-    height: 230px;
-	background-color: rgb(82, 97, 102);
-	border-bottom: 2px solid #626262;
-	-moz-border-radius: 0 0 5px 5px;
-	border-radius: 0 0 5px 5px;
-    border-top: 0px;
-    z-index: 3;    
+    box-sizing: border-box;
+    width: 46px;
+    height: 150px;
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 3;
+    background-color: var(--pq-panel);
+    border: 1px solid var(--pq-border);
+    border-top: 0;
+    border-radius: 0 0 7px 7px;
 }
-    .optionKey.right {
-        position: absolute;
-        float: right;
-    }
-    .optionKey.left {
-        position: relative;
-        float: left;
-    }
 
 .disabledKey {
     float: left;
-    width: 66px;
-    height: 229px;
-    background-color: rgb(160, 160, 160);
-    border: 1px solid #2c2c2c;
+    width: 46px;
+    height: 149px;
+    background: var(--pq-control);
+    border: 1px solid var(--pq-border);
+    border-top: 0;
     position: relative;
-    -moz-border-radius: 0 0 15px 15px;
-    border-radius: 0 0 15px 15px;
-    background-image: -webkit-gradient(center bottom ,  rgb(175, 175, 175) 90%, rgb(82, 82, 82) 100%);
-    -webkit-box-shadow: 0 -10px 2px 0px #838383 none, 0 -60px 40px 10px rgb(158, 158, 158) inset;
-    background-image: -moz-linear-gradient(center bottom , rgb(175, 175, 175) 90%, rgb(82, 82, 82) 100%);
-    -moz-box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px rgb(158, 158, 158) inset;
-    background-image: -gradient(center bottom , rgb(175, 175, 175) 90%, rgb(82, 82, 82) 100%);
-    box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px rgb(158, 158, 158) inset;
+    border-radius: 0 0 7px 7px;
     top: 1px;
+    opacity: 0.5;
 }
 
+/* white (natural) keys — dark theme rounded slabs (design: dark, not light piano keys) */
 .whiteKey {
     float: left;
-    width: 66px;
-    height: 230px;
-    background-color: #F4F4F4;
-    border: 1px solid #626262;
+    width: 46px;
+    height: 150px;
+    background: var(--pq-control);
+    border: 1px solid var(--pq-border);
+    border-top: 0;
     position: relative;
-    -moz-border-radius: 0 0 15px 15px;
-    border-radius: 0 0 15px 15px;
-    background-image: -webkit-gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
-    -webkit-box-shadow: 0 -10px 2px 0px #838383 none, 0 -60px 40px 10px #EEEEEE inset;
-    background-image: -moz-linear-gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
-    -moz-box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px #EEEEEE inset;
-    background-image: -gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
-    box-shadow: 0 -10px 2px 0px #838383 inset, 0 -60px 40px 10px #EEEEEE inset;
+    border-radius: 0 0 7px 7px;
+    box-shadow: none;
     display: -webkit-flex;
     display: flex;
     -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
     -webkit-align-content: center;
     align-content: center;
+    transition:
+        background 0.08s ease,
+        border-color 0.08s ease;
 }
 
-div.whiteKey.pressed {
-  border: 1px solid #343434;
-	background-image: -webkit-gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
-	-webkit-box-shadow: 0 -5px 20px -3px #272927 inset;
-	
-	background-image: -moz-linear-gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
-	-moz-box-shadow: 0 -5px 2px 0px #838383 inset,0 -3px 20px -3px #272927 inset;
-	
-	background-image: -gradient(center bottom , #FFFFFF 90%, #CCCCCC 100%);
-	box-shadow: 0 -5px 20px -3px #272927 inset;
+.whiteKey:hover {
+    background: var(--pq-control-hi);
 }
+
+/* Pressed white = lit dark slab with an accent underline glow — NOT a full accent
+   fill (that read as an extra blue block clashing with the blue black keys). */
+div.whiteKey.pressed {
+    background: var(--pq-control-hi);
+    border-color: var(--pq-accent);
+    box-shadow:
+        inset 0 -4px 0 var(--pq-accent),
+        0 0 10px var(--pq-accent-55);
+}
+
+/* black (accidental) keys — accent-blue rounded caps (design: bright blue) */
 .blackKey {
-	float: left;
-	width: 36px;
-	height: 138px;
-	background-color: #000000;
-	border-bottom: 2px solid #000;
-	border-left: 2px solid #000;
-	border-right: 2px solid #000;
-	position: absolute;
-	top: 6px;
-	z-index: 2;
-	-moz-border-radius: 0 0 5px 5px;
-	border-radius: 0 0 5px 5px;
-	border-top: 0px;
-	-moz-box-shadow: 0 -9px 10px 9px #303030 inset, 0 -15px #F7F7F7 inset;
-	-webkit-box-shadow: 0 -9px 10px 9px #303030 inset, 0 -15px #F7F7F7 inset;
-    box-shadow: 0 -9px 10px 9px #303030 inset, 0 -15px #F7F7F7 inset;
+    float: left;
+    width: 27px;
+    height: 90px;
+    background: var(--pq-accent);
+    border: 0;
+    position: absolute;
+    top: 4px;
+    z-index: 2;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.55);
+    transition:
+        background 0.08s ease,
+        box-shadow 0.08s ease;
+}
+
+.blackKey:hover {
+    background: var(--pq-accent-hi, var(--pq-accent));
+    filter: brightness(1.1);
 }
 
 div.blackKey.pressed {
-  border: 1px solid #CECECE;
-  border-top: 1px solid #626262;
-	-moz-box-shadow: 0 0 6px 7px #303030 inset, 0 -5px #F7F7F7 inset;
-	-webkit-box-shadow: 0 0 6px 7px #303030 inset, 0 -5px #F7F7F7 inset;
-	box-shadow: 0 0 6px 7px #303030 inset, 0 -5px #F7F7F7 inset;
+    background: #dff1fa;
+    box-shadow: 0 0 12px var(--pq-accent-55);
 }
 
 div.flatKeys {
@@ -168,34 +198,39 @@ div.flatKeys :nth-child(5) {
 }
 
 .keyName {
-    font-size: 11px;
+    font-size: 9px;
+    font-family: var(--pq-mono);
     position: absolute;
-    bottom: 20px;
+    bottom: 12px;
     left: 0;
     overflow: hidden;
     width: 100%;
 }
 
 .keyName.white {
-    color: rgb(80, 80, 80);
+    color: var(--pq-text-faint);
 }
 
+/* note name on the blue black keys — dark for contrast */
 .keyName.black {
-    color: #9c9c9c
+    color: rgba(6, 18, 26, 0.72);
 }
 
 .keyBind {
-    font-size: 22px;
+    font-size: 13px;
+    font-family: var(--pq-mono);
+    font-weight: 500;
     position: absolute;
-    bottom: 40px;
+    bottom: 26px;
     left: 0;
     width: 100%;
 }
 
 .keyBind.white {
-    color: rgb(63, 63, 63);
+    color: var(--pq-text);
 }
 
+/* key-binding letter on the blue black keys — dark for contrast */
 .keyBind.black {
-    color: #cacaca
+    color: #08121a;
 }

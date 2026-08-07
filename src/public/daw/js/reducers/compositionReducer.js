@@ -6,9 +6,14 @@ export default function reducer(
         barsInComposition: 48,
         maxBarsInComposition: 1000,
         showPianoRoll: false,
+        showMixer: false,
         pianoRollRegion: null,
         regionList: [],
         regionLastId: 0,
+        // Loop range in BARS. Default = whole composition, disabled.
+        loopEnabled: false,
+        loopStart: 0,
+        loopEnd: 48,
     },
     action,
 ) {
@@ -137,14 +142,45 @@ export default function reducer(
                 showPianoRoll: show,
             };
         }
-        case 'CHANGE_BARS_IN_COMPOSITION': {
+        case 'SWITCH_MIXER_VISIBILITY': {
             return {
                 ...state,
-                barsInComposition: action.payload,
+                showMixer: action.payload === undefined ? !state.showMixer : action.payload,
+            };
+        }
+        case 'CHANGE_BARS_IN_COMPOSITION': {
+            const newBars = action.payload;
+            // Keep the loop range valid as the composition length changes: a loop that
+            // spanned the whole composition grows/shrinks with it, otherwise clamp both
+            // ends into the new range so the loop can never point past the last bar.
+            const loopEnd = state.loopEnd >= state.barsInComposition ? newBars : Math.min(state.loopEnd, newBars);
+            const loopStart = Math.min(state.loopStart, Math.max(0, newBars - 1));
+            return {
+                ...state,
+                barsInComposition: newBars,
+                loopEnd,
+                loopStart,
+            };
+        }
+        case 'SWITCH_LOOP': {
+            return {
+                ...state,
+                loopEnabled: action.payload === undefined ? !state.loopEnabled : action.payload,
+            };
+        }
+        case 'CHANGE_LOOP_RANGE': {
+            return {
+                ...state,
+                loopStart: action.payload.start,
+                loopEnd: action.payload.end,
             };
         }
         case 'LOAD_COMPOSITION_STATE': {
             return {
+                // keep loop defaults if an older saved composition lacks them
+                loopEnabled: false,
+                loopStart: 0,
+                loopEnd: action.payload.barsInComposition || state.loopEnd,
                 ...action.payload,
             };
         }

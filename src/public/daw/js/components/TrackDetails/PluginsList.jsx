@@ -1,6 +1,6 @@
 import * as React from 'react';
 import AddNewPluginButton from 'components/TrackDetails/AddNewPluginButton';
-import { X } from 'react-bootstrap-icons';
+import { X } from 'components/Icons';
 
 const PluginList = (props) => {
     const pluginList = [];

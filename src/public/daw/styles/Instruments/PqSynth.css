@@ -10,17 +10,16 @@
 .pqSynthOscilator {
     margin: 6px;
     padding: 2px;
-    border: #4d4d4d solid thin;
+    border: 1px solid var(--pq-border);
     width: 33.3333%;
-    box-shadow: 0.2em 0.2em 0.8em #999;
     overflow: hidden;
 }
 
 .pqSynthOscilatorTag {
     width: 100%;
-    background: #7a9ca5;
-    border-left: #698fe0 solid 8px;
-    color: #fff;
+    background: var(--pq-control);
+    border-left: var(--pq-accent) solid 6px;
+    color: var(--pq-text);
     font-weight: 100;
     font-size: 18px;
     margin: 1px;
@@ -63,7 +62,8 @@
 
 .sectionLabel {
     width: 100%;
-    background: #cccccc;
+    background: var(--pq-control);
+    color: var(--pq-text-dim);
     font-weight: 100;
     font-size: 15px;
     margin: 1px;

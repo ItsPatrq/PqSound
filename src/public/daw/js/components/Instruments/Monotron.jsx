@@ -1,276 +1,134 @@
 import * as React from 'react';
-import * as Utils from 'engine/Utils';
-import { Knob, Ui } from '../shared/Knob/Knob';
-require('styles/Instruments/Monotron.css');
+import PqKnob from 'components/shared/PqKnob';
 
-class Monotron extends React.Component {
-    params = {
-        rate: {
-            min: 0.001,
-            max: 900.0,
-            scale: 1.1,
-        },
-        int: {
-            min: 0.5,
-            max: 350.0,
-        },
-        cutoff: {
-            min: 0.001,
-            max: 900.0,
-            scale: 1.03,
-        },
-        peak: {
-            min: 0.001,
-            max: 1000.0,
-            scale: 1.1,
-        },
-        pitch: {
-            min: 0.0,
-            max: 2000.0,
-            scale: 1.1,
-        },
-    };
-    knobs = [];
-    inputs = [];
-    initKnob = (input) => {
-        if (!Utils.isNullOrUndefined(input)) {
-            let exists = false;
-            for (let i = 0; i < this.inputs.length; i++) {
-                if (this.inputs[i] === input.id) {
-                    exists = true;
-                    break;
-                }
-            }
-            if (!exists) {
-                this.inputs.push(input.id);
-                input.setAttribute('data-width', 40);
-                input.setAttribute('data-height', 40);
-                input.setAttribute('data-angleOffset', 220);
-                input.setAttribute('data-angleRange', 280);
+require('styles/Instruments/InstrumentEditor.css');
 
-                const knopf = new Knob(input, new Ui.P2());
-                switch (input.id) {
-                    case 'pitch': {
-                        knopf.update(this.props.instrument.preset.vco.knobPitch);
-                        break;
-                    }
-                    case 'rate': {
-                        knopf.update(this.props.instrument.preset.lfo.knobRate);
-                        break;
-                    }
-                    case 'int': {
-                        knopf.update(this.props.instrument.preset.lfo.knobInt);
-                        break;
-                    }
-                    case 'cutoff': {
-                        knopf.update(this.props.instrument.preset.vcf.knobCutoff);
-                        break;
-                    }
-                    case 'peak': {
-                        knopf.update(this.props.instrument.preset.vcf.knobPeak);
-                        break;
-                    }
-                }
-                this.knobs.push(knopf);
-                input.addEventListener('change', (e) => {
-                    this.onChange(e, input.id, knopf);
+// Log-scaled knob ranges (unchanged from the original canvas-knob version): the
+// knob position is 0–100, mapped exponentially onto the real parameter range.
+const PARAMS = {
+    pitch: { min: 0.0, max: 2000.0, scale: 1.1 },
+    rate: { min: 0.001, max: 900.0, scale: 1.1 },
+    int: { min: 0.5, max: 350.0, scale: 1.05 },
+    cutoff: { min: 0.001, max: 900.0, scale: 1.03 },
+    peak: { min: 0.001, max: 1000.0, scale: 1.1 },
+};
+
+const MODS = ['standby', 'pitch', 'cutoff'];
+
+// knob position (0–100) -> real parameter value
+const toValue = (id, pos) => {
+    const p = PARAMS[id];
+    const ratio = Math.pow(p.scale, pos) / Math.pow(p.scale, 100);
+    return ratio * (p.max - p.min) + p.min;
+};
+
+const Monotron = (props) => {
+    const preset = props.instrument.preset;
+    const change = (patch) => props.onPresetChange(patch);
+
+    const onKnob = (id, rawPos) => {
+        const pos = Number(rawPos);
+        const value = toValue(id, pos);
+        switch (id) {
+            case 'pitch':
+                change({ vco: { pitch: value, knobPitch: pos } });
+                break;
+            case 'rate':
+                change({
+                    lfo: { rate: value, knobRate: pos, int: preset.lfo.int, knobInt: preset.lfo.knobInt },
                 });
-            }
+                break;
+            case 'int':
+                change({
+                    lfo: { int: value, knobInt: pos, rate: preset.lfo.rate, knobRate: preset.lfo.knobRate },
+                });
+                break;
+            case 'cutoff':
+                change({
+                    vcf: { cutoff: value, knobCutoff: pos, peak: preset.vcf.peak, knobPeak: preset.vcf.knobPeak },
+                });
+                break;
+            case 'peak':
+                change({
+                    vcf: { peak: value, knobPeak: pos, cutoff: preset.vcf.cutoff, knobCutoff: preset.vcf.knobCutoff },
+                });
+                break;
         }
     };
-    onChange = (event, id, knopf) => {
-        let ratio, scale, value;
-        const param = this.params[id];
-        if (!Utils.isNullOrUndefined(param)) {
-            scale = param.scale != null ? param.scale : 1.05;
-            ratio = Math.pow(scale, parseInt(knopf.value)) / Math.pow(scale, knopf.settings.max);
-            value = ratio * (param.max - param.min) + param.min;
-            switch (id) {
-                case 'pitch': {
-                    this.props.onPresetChange({ vco: { pitch: value, knobPitch: knopf.value } });
-                    break;
-                }
-                case 'rate': {
-                    this.props.onPresetChange({
-                        lfo: {
-                            rate: value,
-                            knobRate: knopf.value,
-                            int: this.props.instrument.preset.lfo.int,
-                            knobInt: this.props.instrument.preset.lfo.knobInt,
-                        },
-                    });
-                    break;
-                }
-                case 'int': {
-                    this.props.onPresetChange({
-                        lfo: {
-                            int: value,
-                            knobInt: knopf.value,
-                            rate: this.props.instrument.preset.lfo.rate,
-                            knobInt: this.props.instrument.preset.lfo.knobRate,
-                        },
-                    });
-                    break;
-                }
-                case 'cutoff': {
-                    this.props.onPresetChange({
-                        vcf: {
-                            cutoff: value,
-                            knobCutoff: knopf.value,
-                            peak: this.props.instrument.preset.vcf.peak,
-                            knobPeak: this.props.instrument.preset.vcf.knobPeak,
-                        },
-                    });
-                    break;
-                }
-                case 'peak': {
-                    this.props.onPresetChange({
-                        vcf: {
-                            peak: value,
-                            knobPeak: knopf.value,
-                            cutoff: this.props.instrument.preset.vcf.cutoff,
-                            knobPeak: this.props.instrument.preset.vcf.knobCutoff,
-                        },
-                    });
-                    break;
-                }
-            }
-        }
-    };
-    onModChange(event) {
-        this.props.onPresetChange({ mod: event.target.value });
-    }
-    render() {
-        return (
-            <div id="monotron">
-                <div id="brand">
-                    <h1 id="title">Monotron</h1>
-                    <div id="description">Analogue Ribbon Synthesizer</div>
+
+    return (
+        <div className="pq-inst-body">
+            <div className="pq-inst-sec">
+                <div className="pq-inst-sec-head">
+                    <span>MOD</span>
                 </div>
-                <div id="controls">
-                    <div className="panel">
-                        <label>
-                            {/* <select id="mod" onChange={this.onModChange.bind(this)} value={this.props.instrument.preset.mod}>
-                                <option value="standby">Standby</option>
-                                <option value="pitch">Pitch</option>
-                                <option value="cutoff">Cutoff</option>
-                            </select> */}
-                            <div className="radio">
-                                <label>
-                                    <input
-                                        type="radio"
-                                        value="standby"
-                                        checked={this.props.instrument.preset.mod === 'standby'}
-                                        onChange={this.onModChange.bind(this)}
-                                    />
-                                    Standby
-                                </label>
-                            </div>
-                            <div className="radio">
-                                <label>
-                                    <input
-                                        type="radio"
-                                        value="pitch"
-                                        checked={this.props.instrument.preset.mod === 'pitch'}
-                                        onChange={this.onModChange.bind(this)}
-                                    />
-                                    Pitch
-                                </label>
-                            </div>
-                            <div className="radio">
-                                <label>
-                                    <input
-                                        type="radio"
-                                        value="cutoff"
-                                        checked={this.props.instrument.preset.mod === 'cutoff'}
-                                        onChange={this.onModChange.bind(this)}
-                                    />
-                                    Cutoff
-                                </label>
-                            </div>
-                            <br />
-                            Mod
-                        </label>
-                    </div>
-                    <div className="panel">
-                        <h2 className="subtitle">VCO</h2>
-                        <div className="knobs">
-                            <div className="knob">
-                                <input
-                                    id="pitch"
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    ref={(input) => {
-                                        this.initKnob(input);
-                                    }}
-                                />
-                                <label>Pitch</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="panel">
-                        <h2>LFO</h2>
-                        <div className="knobs">
-                            <div className="knob">
-                                <input
-                                    id="rate"
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    ref={(input) => {
-                                        this.initKnob(input);
-                                    }}
-                                />
-                                <label>Rate</label>
-                            </div>
-                            <div className="knob">
-                                <input
-                                    id="int"
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    ref={(input) => {
-                                        this.initKnob(input);
-                                    }}
-                                />
-                                <label>Int.</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="panel">
-                        <h2>VCF</h2>
-                        <div className="knobs">
-                            <div className="knob">
-                                <input
-                                    id="cutoff"
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    ref={(input) => {
-                                        this.initKnob(input);
-                                    }}
-                                />
-                                <label>Cutoff</label>
-                            </div>
-                            <div className="knob">
-                                <input
-                                    id="peak"
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    ref={(input) => {
-                                        this.initKnob(input);
-                                    }}
-                                />
-                                <label>Peak</label>
-                            </div>
-                        </div>
-                    </div>
+                <div className="pq-seg">
+                    {MODS.map((m) => (
+                        <button
+                            key={m}
+                            className={'pq-seg-btn' + (preset.mod === m ? ' is-active' : '')}
+                            onClick={() => change({ mod: m })}
+                        >
+                            {m}
+                        </button>
+                    ))}
                 </div>
             </div>
-        );
-    }
-}
+
+            <div className="pq-inst-sec">
+                <div className="pq-inst-sec-head">
+                    <span>VCO · LFO · VCF</span>
+                </div>
+                <div className="pq-knob-grid">
+                    <PqKnob
+                        label="PITCH"
+                        value={preset.vco.knobPitch}
+                        min={0}
+                        max={100}
+                        step={1}
+                        display={Math.round(preset.vco.knobPitch)}
+                        onChange={(v) => onKnob('pitch', v)}
+                    />
+                    <PqKnob
+                        label="RATE"
+                        value={preset.lfo.knobRate}
+                        min={0}
+                        max={100}
+                        step={1}
+                        display={Math.round(preset.lfo.knobRate)}
+                        onChange={(v) => onKnob('rate', v)}
+                    />
+                    <PqKnob
+                        label="INT."
+                        value={preset.lfo.knobInt}
+                        min={0}
+                        max={100}
+                        step={1}
+                        display={Math.round(preset.lfo.knobInt)}
+                        onChange={(v) => onKnob('int', v)}
+                    />
+                    <PqKnob
+                        label="CUTOFF"
+                        value={preset.vcf.knobCutoff}
+                        min={0}
+                        max={100}
+                        step={1}
+                        display={Math.round(preset.vcf.knobCutoff)}
+                        onChange={(v) => onKnob('cutoff', v)}
+                    />
+                    <PqKnob
+                        label="PEAK"
+                        value={preset.vcf.knobPeak}
+                        min={0}
+                        max={100}
+                        step={1}
+                        display={Math.round(preset.vcf.knobPeak)}
+                        onChange={(v) => onKnob('peak', v)}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export default Monotron;
