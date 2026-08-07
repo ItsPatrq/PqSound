@@ -1,6 +1,14 @@
-import Store from '../stroe';
 import * as Utils from './Utils';
 import { SoundOrigin } from '../constants/Constants';
+
+/**
+ * The store is resolved lazily. Importing it at module scope closes an import
+ * cycle (stroe -> reducers -> tracksReducer -> instruments -> AudioEngine ->
+ * Sound), which left the reducers half-initialized when the store was created.
+ * Reading it at call time keeps the cycle out of module evaluation. The
+ * dependency itself goes away with the engine -> store inversion (#156).
+ */
+const getStore = () => require('../stroe').default;
 
 export default class Sound {
     context: AudioContext;
@@ -43,7 +51,7 @@ export default class Sound {
             this.playingSounds[origin].push({ trackIndex: trackIndex, note: note, origin: origin, endIndex: endIndex });
         }
 
-        const currTrack = Utils.getTrackByIndex((Store.getState().tracks as any).trackList, trackIndex);
+        const currTrack = Utils.getTrackByIndex((getStore().getState().tracks as any).trackList, trackIndex);
         currTrack.instrument.noteOn(note, contextPlayTime);
     }
 
@@ -51,7 +59,7 @@ export default class Sound {
         if (Utils.isNullOrUndefined(contextStopTime)) {
             contextStopTime = this.context.currentTime + 0.001;
         }
-        const currTrack = Utils.getTrackByIndex((Store.getState().tracks as any).trackList, trackIndex);
+        const currTrack = Utils.getTrackByIndex((getStore().getState().tracks as any).trackList, trackIndex);
         currTrack.instrument.noteOff(note, contextStopTime);
     }
 }
