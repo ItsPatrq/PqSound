@@ -5,6 +5,7 @@ import * as trackListActions from 'actions/trackListActions';
 import * as compositionActions from 'actions/compositionActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
+import AudioEngine from 'engine/AudioEngine';
 import AddNewTrackModal from 'components/TrackList/AddNewTrackModal';
 import TrackListButtons from 'components/TrackList/TrackListButtons';
 import { textInputFocusedSwitch } from 'actions/controlActions';
@@ -30,7 +31,10 @@ class TrackList extends React.Component {
         this.shouldFetchSamplerInstrument(index);
         const currTrack = Utils.getTrackByIndex(this.props.trackList, index);
         if (!currTrack.record) {
-            currTrack.instrument.stopAll();
+            const instrument = AudioEngine.getInstrument(currTrack.id);
+            if (instrument) {
+                instrument.stopAll();
+            }
         }
     }
 

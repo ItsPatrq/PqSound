@@ -31,6 +31,8 @@ class AudioEngine {
      * reordered.
      */
     private trackNodes: Map<number, Track> = new Map();
+    /** Live instruments, keyed by the same stable track id as the graphs. */
+    private instruments: Map<number, any> = new Map();
 
     /**
      * Creates the AudioContext and the Sound dispatcher. Idempotent: a second
@@ -111,7 +113,27 @@ class AudioEngine {
         return this.midiController;
     }
 
-    /* ---- track graphs ---- */
+    /* ---- track graphs and instruments ---- */
+
+    setInstrument(trackId: number, instrument: any): void {
+        if (instrument === null || instrument === undefined) {
+            this.instruments.delete(trackId);
+            return;
+        }
+        this.instruments.set(trackId, instrument);
+    }
+
+    getInstrument(trackId: number): any {
+        return this.instruments.get(trackId);
+    }
+
+    removeInstrument(trackId: number): void {
+        this.instruments.delete(trackId);
+    }
+
+    clearInstruments(): void {
+        this.instruments.clear();
+    }
 
     setTrackNode(trackId: number, node: Track): void {
         this.trackNodes.set(trackId, node);
@@ -170,6 +192,7 @@ class AudioEngine {
         this.midiController = null;
         this.buffersByInstrumentName.clear();
         this.trackNodes.clear();
+        this.instruments.clear();
     }
 }
 

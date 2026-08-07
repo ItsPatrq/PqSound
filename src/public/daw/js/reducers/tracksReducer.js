@@ -10,7 +10,9 @@ import { TrackTypes } from 'constants/Constants';
  */
 const newMasterPluginList = [];
 const newTrackPluginList = [];
-const firstInstrument = {};
+// Placeholder descriptor: the real one arrives with INIT_INSTRUMENT_CONTEXT,
+// but the UI renders before that and reads .id/.name/.preset off it.
+const firstInstrument = { id: null, name: '', preset: null };
 export default function reducer(
     state = {
         trackList: [
@@ -395,10 +397,21 @@ export default function reducer(
                 ...action.payload,
             };
         }
-        case 'UPDATE_INSTRUMENT_PRESET':
+        case 'UPDATE_INSTRUMENT_PRESET': {
+            // The live instrument is updated by the thunk; the descriptor keeps
+            // the store's copy of the preset in step for rendering and export.
+            return {
+                ...state,
+                trackList: state.trackList.map((track) =>
+                    track.index === action.payload.index && track.instrument
+                        ? { ...track, instrument: { ...track.instrument, preset: action.payload.preset } }
+                        : track,
+                ),
+            };
+        }
         case 'CHANGE_PLUGIN_PRESET': {
-            // The preset itself lives on the live instrument/plugin object and
-            // is updated by the thunk; this only re-renders the subscribers.
+            // Plugins are still live objects in state; the thunk mutates them
+            // and this only re-renders the subscribers.
             return {
                 ...state,
                 trackList: [...state.trackList],

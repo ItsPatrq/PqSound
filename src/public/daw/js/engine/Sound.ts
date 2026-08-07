@@ -1,5 +1,6 @@
 import * as Utils from './Utils';
 import * as EngineStore from './EngineStore';
+import AudioEngine from './AudioEngine';
 import { SoundOrigin } from '../constants/Constants';
 
 export default class Sound {
@@ -11,6 +12,12 @@ export default class Sound {
         }
         this.context = newContext;
         this.playingSounds = [[], [], []]; // trackindex, note, origin, endindex
+    }
+
+    /** Tracks are addressed by index here, but instruments are keyed by id. */
+    private getInstrument(trackIndex: number) {
+        const track = Utils.getTrackByIndex((EngineStore.getState().tracks as any).trackList, trackIndex);
+        return track ? AudioEngine.getInstrument(track.id) : undefined;
     }
 
     scheduleStop(sixteenthPlaying: number, contextPlayTime: number, origin: number, loopEndSixteenth?: number) {
@@ -43,15 +50,19 @@ export default class Sound {
             this.playingSounds[origin].push({ trackIndex: trackIndex, note: note, origin: origin, endIndex: endIndex });
         }
 
-        const currTrack = Utils.getTrackByIndex((EngineStore.getState().tracks as any).trackList, trackIndex);
-        currTrack.instrument.noteOn(note, contextPlayTime);
+        const instrument = this.getInstrument(trackIndex);
+        if (instrument) {
+            instrument.noteOn(note, contextPlayTime);
+        }
     }
 
     stop(trackIndex: number, note: number, contextStopTime?: number) {
         if (Utils.isNullOrUndefined(contextStopTime)) {
             contextStopTime = this.context.currentTime + 0.001;
         }
-        const currTrack = Utils.getTrackByIndex((EngineStore.getState().tracks as any).trackList, trackIndex);
-        currTrack.instrument.noteOff(note, contextStopTime);
+        const instrument = this.getInstrument(trackIndex);
+        if (instrument) {
+            instrument.noteOff(note, contextStopTime);
+        }
     }
 }
