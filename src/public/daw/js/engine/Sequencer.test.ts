@@ -1,15 +1,13 @@
-import Store from '../stroe';
+import * as EngineStore from './EngineStore';
 import AudioEngine from './AudioEngine';
 import Sequencer from './Sequencer';
 import { updateCurrentTime } from '../actions/controlActions';
 import { SoundOrigin } from '../constants/Constants';
 
-jest.mock('../stroe', () => ({
+jest.mock('./EngineStore', () => ({
     __esModule: true,
-    default: {
-        getState: jest.fn(),
-        dispatch: jest.fn(),
-    },
+    getState: jest.fn(),
+    dispatch: jest.fn(),
 }));
 
 // The AudioContext and the Sound dispatcher live in AudioEngine, not in store state.
@@ -26,8 +24,8 @@ jest.mock('../actions/controlActions', () => ({
     updateCurrentTime: jest.fn((time) => ({ type: 'UPDATE_CURRENT_TIME', payload: time })),
 }));
 
-const mockedGetState = Store.getState as jest.Mock;
-const mockedDispatch = Store.dispatch as jest.Mock;
+const mockedGetState = EngineStore.getState as jest.Mock;
+const mockedDispatch = EngineStore.dispatch as jest.Mock;
 const mockedGetContext = AudioEngine.getContext as jest.Mock;
 const mockedGetSound = AudioEngine.getSound as jest.Mock;
 

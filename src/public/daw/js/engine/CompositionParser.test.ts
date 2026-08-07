@@ -1,15 +1,13 @@
-import Store from '../stroe';
+import * as EngineStore from './EngineStore';
 import * as CompositionParser from './CompositionParser';
 
-jest.mock('../stroe', () => ({
+jest.mock('./EngineStore', () => ({
     __esModule: true,
-    default: {
-        getState: jest.fn(),
-        dispatch: jest.fn(),
-    },
+    getState: jest.fn(),
+    dispatch: jest.fn(),
 }));
 
-const mockedGetState = Store.getState as jest.Mock;
+const mockedGetState = EngineStore.getState as jest.Mock;
 
 /**
  * Region helper. `notes` is indexed by note number; each entry is a list of

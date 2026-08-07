@@ -1,4 +1,3 @@
-import Store from '../stroe';
 import { Instruments } from '../constants/Constants';
 import { isNullOrUndefined, noteToFrequency } from '../engine/Utils';
 import { InstrumentBase } from './Instrument';
