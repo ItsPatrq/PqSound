@@ -154,9 +154,14 @@ class TrackDetails extends React.Component {
     }
 
     handleAddPlugin(trackIndex, pluginId) {
-        this.props.dispatch(addNewPlugin(trackIndex, pluginId));
+        // `this.props` still holds the pre-dispatch chain here, so the new
+        // plugin's index is the old length — reading it after the dispatch gave
+        // `length - 1`, which opened the previous plugin (and -1, i.e. nothing,
+        // for the first one added).
         const currTrack = Utils.getTrackByIndex(this.props.trackList, trackIndex);
-        this.props.dispatch(Actions.pluginModalVisibilitySwitch(currTrack.pluginList.length - 1, trackIndex));
+        const addedPluginIndex = currTrack.pluginList.length;
+        this.props.dispatch(addNewPlugin(trackIndex, pluginId));
+        this.props.dispatch(Actions.pluginModalVisibilitySwitch(addedPluginIndex, trackIndex));
     }
 
     handleRemovePlugin(trackIndex, pluginIndex) {

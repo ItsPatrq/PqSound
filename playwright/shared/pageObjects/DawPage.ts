@@ -19,6 +19,15 @@ export class DawPage {
     readonly playButton: Locator;
     readonly recordButton: Locator;
     readonly stopButton: Locator;
+    readonly tracksTitle: Locator;
+    readonly addTrackButton: Locator;
+    readonly trackRows: Locator;
+    readonly editInstrumentButton: Locator;
+    readonly instrumentPanel: Locator;
+    readonly instrumentDropdownToggle: Locator;
+    readonly addPluginToggle: Locator;
+    readonly pluginRows: Locator;
+    readonly fxPanel: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -33,6 +42,82 @@ export class DawPage {
         this.playButton = this.header.locator('button[title="Play"]');
         this.recordButton = this.header.locator('button[title="Record"]');
         this.stopButton = this.header.locator('button[title="Stop"]');
+
+        // Tracks panel: header reads "TRACKS · N"; "+" opens the add-track modal.
+        this.tracksTitle = page.locator('.pq-tracks-title');
+        this.addTrackButton = page.locator('button[title="Add track"]');
+        this.trackRows = page.locator('.trackListContentList > *');
+
+        // Channel panel -> instrument editor column.
+        this.editInstrumentButton = page.locator('button[title="Edit instrument"]');
+        this.instrumentPanel = page.locator('.pq-instrument-col');
+        this.instrumentDropdownToggle = this.instrumentPanel.locator('.pq-inst-select .pq-dropdown-toggle');
+
+        // Channel panel -> plugin chain -> FX editor column.
+        this.addPluginToggle = page.locator('.addNewPluginButton .pq-dropdown-toggle');
+        this.pluginRows = page.locator('.pluginRow');
+        this.fxPanel = page.locator('.pq-fx-col');
+    }
+
+    /** Track count as shown in the tracks-panel header ("TRACKS · N"). */
+    async trackCount(): Promise<number> {
+        const text = (await this.tracksTitle.innerText()).trim();
+        return Number(text.replace(/[^0-9]/g, ''));
+    }
+
+    /** Opens the add-track modal and picks a track type. */
+    async addTrack(type: 'Virtual instrument' | 'AUX'): Promise<void> {
+        await this.addTrackButton.click();
+        const option = this.page.getByText(type, { exact: true });
+        await expect(option).toBeVisible();
+        await option.click();
+    }
+
+    /** Opens the instrument editor column for the selected channel. */
+    async openInstrumentPanel(): Promise<void> {
+        await this.editInstrumentButton.click();
+        await expect(this.instrumentPanel).toBeVisible();
+    }
+
+    /** Current instrument name, as shown on the editor's dropdown toggle. */
+    async selectedInstrumentName(): Promise<string> {
+        return (await this.instrumentDropdownToggle.innerText()).trim();
+    }
+
+    async selectInstrument(name: string): Promise<void> {
+        await this.instrumentDropdownToggle.click();
+        const item = this.instrumentPanel.getByRole('menuitem', { name, exact: true });
+        await expect(item).toBeVisible();
+        await item.click();
+    }
+
+    /** Adds a plugin to the selected channel's chain via the "Add new plugin" dropdown. */
+    async addPlugin(name: string): Promise<void> {
+        await this.addPluginToggle.click();
+        const item = this.page.getByRole('menuitem', { name, exact: true });
+        await expect(item).toBeVisible();
+        await item.click();
+    }
+
+    pluginRow(name: string): Locator {
+        return this.page.locator('.pluginRow', { hasText: name });
+    }
+
+    /**
+     * Ensures the FX editor is showing `name`. Adding a plugin already opens its
+     * editor, and a chain-row click is a toggle, so clicking unconditionally
+     * would close it.
+     */
+    async openPlugin(name: string): Promise<void> {
+        if (!(await this.fxPanel.isVisible()) || !(await this.fxPanel.innerText()).includes(name)) {
+            await this.pluginRow(name).locator('.pluginRowName').click();
+        }
+        await expect(this.fxPanel).toBeVisible();
+        await expect(this.fxPanel).toContainText(name);
+    }
+
+    async removePlugin(name: string): Promise<void> {
+        await this.pluginRow(name).locator('.pluginRowRemove').click();
     }
 
     async goto(): Promise<void> {
