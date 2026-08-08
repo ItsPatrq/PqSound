@@ -72,15 +72,31 @@ describe('Utils', () => {
         });
     });
 
-    describe('removeFirstFromArray', () => {
-        it('removes only the first element matching the condition', () => {
-            expect(Utils.removeFirstFromArray([1, 2, 3, 2], (x) => x === 2)).toEqual([1, 3, 2]);
+    describe('copy', () => {
+        it('deep-copies nested plain data', () => {
+            const input = { a: 1, b: { c: [1, 2] } };
+
+            const output = Utils.copy(input);
+
+            expect(output).toEqual(input);
+            expect(output.b).not.toBe(input.b);
+            expect(output.b.c).not.toBe(input.b.c);
         });
 
-        it('does not mutate the input array', () => {
-            const input = [1, 2, 3];
-            Utils.removeFirstFromArray(input, (x) => x === 2);
-            expect(input).toEqual([1, 2, 3]);
+        it('returns primitives as they are', () => {
+            expect(Utils.copy(5)).toBe(5);
+            expect(Utils.copy('x')).toBe('x');
+            expect(Utils.copy(null)).toBeNull();
+        });
+
+        it('returns null for a Web Audio context, without needing the global', () => {
+            // Named like the real thing: the check is by constructor name, so it
+            // works in node and jsdom where `AudioContext` does not exist.
+            class AudioContext {
+                sampleRate = 44100;
+            }
+
+            expect(Utils.copy(new AudioContext())).toBeNull();
         });
     });
 

@@ -2,9 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 
 /**
  * Serializable-only slice. The live AudioContext / Sound / decoded buffers live
- * in `engine/AudioEngine`; this tracks just what the UI renders from. Converted
- * to createSlice (#156 follow-up); the creators are re-exported from
- * actions/webAudioActions, which keeps the thunks that build the engine objects.
+ * in `engine/AudioEngine`; this tracks just what the UI renders from. The
+ * creators are re-exported from actions/webAudioActions, which keeps the thunks
+ * that build the engine objects.
  */
 const webAudioSlice = createSlice({
     name: 'webAudio',

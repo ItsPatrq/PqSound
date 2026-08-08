@@ -1,9 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 /**
- * Panel visibility for the instrument and FX editor columns. Converted to
- * createSlice alongside the keyboard slice (#156 follow-up); action creators
- * are re-exported from actions/trackDetailsActions.
+ * Panel visibility for the instrument and FX editor columns.
  */
 const trackDetailsSlice = createSlice({
     name: 'trackDetails',

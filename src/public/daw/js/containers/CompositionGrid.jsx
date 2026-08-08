@@ -5,7 +5,7 @@ import PianoRoll from 'components/CompositionGrid/PianoRoll';
 import TimeBar from 'components/CompositionGrid/TimeBar';
 import PianoRollKeyboard from 'components/CompositionGrid/PianoRollKeyboard';
 import PianoRollTimeBar from 'components/CompositionGrid/PianoRollTimeBar';
-import { showPianoRoll, addRegion, removeRegion, addNote, removeNote, pasteRegion } from 'actions/compositionActions';
+import { showPianoRoll, addRegion, removeRegion, addNote, removeNote, pasteRegion } from 'reducers/compositionReducer';
 import { changeCurrentTime, copyRegion } from 'actions/controlActions';
 import { getRegionIdByBitIndex, getRegionByRegionId, notesToDrawParser } from 'engine/CompositionParser';
 import AudioEngine from 'engine/AudioEngine';

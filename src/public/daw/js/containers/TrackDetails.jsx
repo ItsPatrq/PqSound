@@ -4,7 +4,7 @@ import InstrumentInput from 'components/TrackDetails/InstrumentInput';
 import PluginsList from 'components/TrackDetails/PluginsList';
 import Output from 'components/TrackDetails/Output';
 import Oscilloscope from 'components/TrackDetails/Oscilloscope';
-import * as Actions from 'actions/trackDetailsActions';
+import * as Actions from 'reducers/trackDetailsReducer';
 import {
     changeTrackVolume,
     changeTrackInstrument,

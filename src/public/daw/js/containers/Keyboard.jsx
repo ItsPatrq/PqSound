@@ -9,7 +9,7 @@ import {
 } from 'constants/Constants';
 import { isNullOrUndefined, getTrackByIndex, noteToMIDI } from 'engine/Utils';
 import AudioEngine from 'engine/AudioEngine';
-import * as Actions from 'actions/keyboardActions';
+import * as Actions from 'reducers/keyboardReducer';
 import WhiteKey from 'components/Keyboard/WhiteKey';
 import BlackKey from 'components/Keyboard/BlackKey';
 import DisabledKey from 'components/Keyboard/DisabledKey';

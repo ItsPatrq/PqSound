@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { changeMidiDevice } from 'actions/controlActions';
-import { switchKeyboardVisibility, updateWidth } from 'actions/keyboardActions';
+import { switchKeyboardVisibility, updateWidth } from 'reducers/keyboardReducer';
 import { KEYBOARD_VIEW_WIDTH, KEYBOARD_VISIBLE_OCTAVES } from 'constants/Constants';
 import * as Utils from 'engine/Utils';
 

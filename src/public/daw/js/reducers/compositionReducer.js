@@ -11,10 +11,10 @@ import * as compositionParser from 'engine/CompositionParser';
 const copyNotes = (notes) => notes.map((row) => (row ? row.map((note) => ({ ...note })) : row));
 
 /**
- * Regions and their notes. Converted to createSlice (#156 follow-up): the
- * bodies mutate drafts, and Immer keeps the structural sharing the hand-rolled
- * targeted copies from #233 were written to preserve — untouched regions and
- * note rows stay identical, which the tests assert.
+ * Regions and their notes. The bodies mutate drafts, and Immer keeps the
+ * structural sharing the hand-rolled targeted copies from #233 were written to
+ * preserve — untouched regions and note rows stay identical, which the tests
+ * assert.
  */
 const compositionSlice = createSlice({
     name: 'composition',

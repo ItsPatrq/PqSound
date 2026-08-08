@@ -7,7 +7,7 @@ import DistortionComponent from 'components/Plugins/Distortion';
 import DelayComponent from 'components/Plugins/Delay';
 import ReverbComponent from 'components/Plugins/Reverb';
 import ChorusComponent from 'components/Plugins/Chorus';
-import * as Actions from 'actions/trackDetailsActions';
+import * as Actions from 'reducers/trackDetailsReducer';
 import { changePluginPreset } from 'actions/trackListActions';
 import * as Utils from 'engine/Utils';
 import { PluginsEnum } from 'constants/Constants';
