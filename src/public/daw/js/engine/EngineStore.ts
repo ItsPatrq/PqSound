@@ -1,37 +1,55 @@
+import { emptySnapshot, selectEngineSnapshot } from './EngineSnapshot';
+import type { EngineSnapshot } from './EngineSnapshot';
+
 /**
- * The engine's one-way view of the Redux store.
+ * The engine's one-way link to the Redux store.
  *
  * Engine classes used to `import Store from '../store'` directly, which made
  * the dependency run engine -> store -> reducers -> engine and closed an import
- * cycle. They now read through this bridge, which the store connects to itself
- * once at creation. Nothing under `engine/` imports the store module any more,
- * so the engine can be constructed and tested without one (see #156).
+ * cycle. They now read a **snapshot** the store pushes on every change, and
+ * dispatch through here — so the engine sees a small explicit shape rather than
+ * the store's layout, and never calls `getState()` at all (#156).
  *
- * The store shape stays `any` on purpose: typing it belongs with the RTK
- * migration, once the slices are fully serializable.
+ * Nothing under `engine/` imports the store module.
  */
-type GetState = () => any;
 type Dispatch = (action: any) => any;
 
-let getStateFn: GetState | null = null;
 let dispatchFn: Dispatch | null = null;
+let snapshot: EngineSnapshot = emptySnapshot;
 
-export function connectStore(store: { getState: GetState; dispatch: Dispatch }): void {
-    getStateFn = () => store.getState();
+/**
+ * Wires the bridge to a store and keeps the snapshot current. Returns the
+ * unsubscribe handle, mostly so tests can detach.
+ */
+export function connectStore(store: {
+    getState: () => any;
+    dispatch: Dispatch;
+    subscribe: (listener: () => void) => any;
+}) {
     dispatchFn = (action) => store.dispatch(action);
+    snapshot = selectEngineSnapshot(store.getState());
+    return store.subscribe(() => {
+        snapshot = selectEngineSnapshot(store.getState());
+    });
 }
 
-/** Disconnects the bridge. Test seam. */
+/** Disconnects the bridge and drops the snapshot. Test seam. */
 export function disconnectStore(): void {
-    getStateFn = null;
     dispatchFn = null;
+    snapshot = emptySnapshot;
 }
 
-export function getState(): any {
-    if (!getStateFn) {
-        throw new Error('EngineStore is not connected to a store yet');
-    }
-    return getStateFn();
+/**
+ * The engine's view of state, as of the last dispatch. Reads are cheap: the
+ * projection runs once per store change, not once per call.
+ */
+export function getSnapshot(): EngineSnapshot {
+    return snapshot;
+}
+
+/** Test seam: sets the snapshot without a store. */
+export function setSnapshot(next: EngineSnapshot): void {
+    snapshot = next;
 }
 
 export function dispatch(action: any): any {

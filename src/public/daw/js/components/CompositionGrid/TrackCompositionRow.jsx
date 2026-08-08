@@ -4,7 +4,7 @@ import { TrackTypes } from 'constants/Constants';
 
 const TrackCompositionRow = (props) => {
     const bits = [];
-    const bitsToDraw = regionToDrawParser(props.trackIndex, props.bits, props.copiedRegion);
+    const bitsToDraw = regionToDrawParser(props.trackIndex, props.bits, props.copiedRegion, props.regionList);
 
     if (props.trackType === TrackTypes.aux) {
         return <div className="auxTrackCompositionRow"></div>;

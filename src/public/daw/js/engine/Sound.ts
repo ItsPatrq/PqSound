@@ -16,7 +16,7 @@ export default class Sound {
 
     /** Tracks are addressed by index here, but instruments are keyed by id. */
     private getInstrument(trackIndex: number) {
-        const track = Utils.getTrackByIndex((EngineStore.getState().tracks as any).trackList, trackIndex);
+        const track = EngineStore.getSnapshot().tracks.find((curr) => curr.index === trackIndex);
         return track ? AudioEngine.getInstrument(track.id) : undefined;
     }
 

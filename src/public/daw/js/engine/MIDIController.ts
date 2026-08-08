@@ -210,17 +210,14 @@ class MIDIController {
     }
 
     getAllRecordingTracks(): number[] {
-        const recordingTracksSounds: number[] = [];
-        for (let i = 1; i < (EngineStore.getState().tracks as any).trackList.length; i++) {
-            if ((EngineStore.getState().tracks as any).trackList[i].record) {
-                recordingTracksSounds.push((EngineStore.getState().tracks as any).trackList[i].index as number);
-            }
-        }
-        return recordingTracksSounds;
+        // Master (index 0) is never armed.
+        return EngineStore.getSnapshot()
+            .tracks.filter((track) => track.index !== 0 && track.record)
+            .map((track) => track.index);
     }
 
     handleUp(note) {
-        if ((EngineStore.getState().keyboard as any).notesPlaying.includes(note)) {
+        if (EngineStore.getSnapshot().notesPlaying.includes(note)) {
             const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
                 AudioEngine.getSound()!.stop(recordingTracksSounds[i], note);
@@ -230,7 +227,7 @@ class MIDIController {
     }
 
     handleDown(note) {
-        if (!(EngineStore.getState().keyboard as any).notesPlaying.includes(note)) {
+        if (!EngineStore.getSnapshot().notesPlaying.includes(note)) {
             const recordingTracksSounds = this.getAllRecordingTracks();
             for (let i = 0; i < recordingTracksSounds.length; i++) {
                 AudioEngine.getSound()!.play(recordingTracksSounds[i], null, note, SoundOrigin.pianoRollNote);

@@ -1,4 +1,8 @@
-import * as EngineStore from './EngineStore';
+/**
+ * Pure region/note parsing. Every function takes the data it needs; nothing
+ * here reaches for the store, so the same helpers serve the scheduler (which
+ * passes its per-tick snapshot) and the UI (which passes props) — see #156.
+ */
 import * as Utils from './Utils';
 
 interface Region {
@@ -22,17 +26,19 @@ interface Note {
     length: number;
 }
 
-export const getRegionsByTrackIndex = (trackIndex: number, allRegions?: Region[]): Region[] => {
-    if (!allRegions) {
-        allRegions = EngineStore.getState().composition.regionList as Region[];
-    }
+export const getRegionsByTrackIndex = (trackIndex: number, allRegions: Region[]): Region[] => {
     const regionsByTrackIndex = allRegions.filter((x) => x.trackIndex === trackIndex);
 
     return regionsByTrackIndex;
 };
 
-export const regionToDrawParser = (trackIndex: number, bits: number, copiedRegion: number): number[] => {
-    const trackRegionList = getRegionsByTrackIndex(trackIndex);
+export const regionToDrawParser = (
+    trackIndex: number,
+    bits: number,
+    copiedRegion: number,
+    regionList: Region[],
+): number[] => {
+    const trackRegionList = getRegionsByTrackIndex(trackIndex, regionList);
     const bitsToDraw: number[] = [];
     for (let i = 0; i < bits; i++) {
         bitsToDraw.push(0);
@@ -55,8 +61,8 @@ export const regionToDrawParser = (trackIndex: number, bits: number, copiedRegio
     return bitsToDraw;
 };
 
-export const getRegionIdByBitIndex = (trackIndex: number, bitIndex: number): number | null => {
-    const trackRegionList = getRegionsByTrackIndex(trackIndex);
+export const getRegionIdByBitIndex = (trackIndex: number, bitIndex: number, regionList: Region[]): number | null => {
+    const trackRegionList = getRegionsByTrackIndex(trackIndex, regionList);
     let regionId: number | null = null;
     for (let i = 0; i < trackRegionList.length; i++) {
         if (trackRegionList[i].start <= bitIndex && trackRegionList[i].end >= bitIndex) {
@@ -66,10 +72,7 @@ export const getRegionIdByBitIndex = (trackIndex: number, bitIndex: number): num
     return regionId;
 };
 
-export const getRegionByRegionId = (regionId: number, regionList?: Region[]): Region | null => {
-    if (!regionList) {
-        regionList = EngineStore.getState().composition.regionList as Region[];
-    }
+export const getRegionByRegionId = (regionId: number, regionList: Region[]): Region | null => {
     for (let i = 0; i < regionList.length; i++) {
         if (regionList[i].id === regionId) {
             return regionList[i];
@@ -78,8 +81,12 @@ export const getRegionByRegionId = (regionId: number, regionList?: Region[]): Re
     return null;
 };
 
-export const notesToDrawParser = (pianoRollNote: number): number[] | null => {
-    const region = getRegionByRegionId(EngineStore.getState().composition.pianoRollRegion);
+export const notesToDrawParser = (
+    pianoRollNote: number,
+    pianoRollRegion: number,
+    regionList: Region[],
+): number[] | null => {
+    const region = getRegionByRegionId(pianoRollRegion, regionList);
     if (region === null) {
         return null;
     }
@@ -100,8 +107,12 @@ export const notesToDrawParser = (pianoRollNote: number): number[] | null => {
     return notesToDraw;
 };
 
-export const notesToPlay = (sixteenthPlaying: number, trackIndex: number): NoteToPlay[] | null => {
-    const regions = getRegionsByTrackIndex(trackIndex);
+export const notesToPlay = (
+    sixteenthPlaying: number,
+    trackIndex: number,
+    regionList: Region[],
+): NoteToPlay[] | null => {
+    const regions = getRegionsByTrackIndex(trackIndex, regionList);
     const regionsToPlay = regions.filter(
         (x) => x.start * 16 <= sixteenthPlaying && (x.start + x.regionLength) * 16 > sixteenthPlaying,
     );

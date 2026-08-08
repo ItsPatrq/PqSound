@@ -44,21 +44,20 @@ class Sequencer {
             // Convert noteTime to context time.
             const contextPlayTime = this.noteTime! + this.startTime!;
 
-            const trackList = (EngineStore.getState().tracks as any).trackList;
+            const snapshot = EngineStore.getSnapshot();
             const soundHandler = AudioEngine.getSound()!;
             // When the play position is sitting on loopStart (i.e. it just wrapped),
             // flush any note whose end fell at/after the loop end — otherwise the exact
             // endIndex match is skipped by the wrap and the note hangs.
-            const composition = EngineStore.getState().composition as any;
             const loopEndFlush =
-                composition.loopEnabled && this.sixteenthPlaying === composition.loopStart * 16
-                    ? composition.loopEnd * 16
+                snapshot.loopEnabled && this.sixteenthPlaying === snapshot.loopStart * 16
+                    ? snapshot.loopEnd * 16
                     : undefined;
             soundHandler.scheduleStop(this.sixteenthPlaying, contextPlayTime, SoundOrigin.composition, loopEndFlush);
             //iterate through all tracks
-            for (let i = 0; i < trackList.length; i++) {
-                const currTrackIndex = trackList[i].index;
-                const currentNotesToPlay = notesToPlay(this.sixteenthPlaying, currTrackIndex);
+            for (let i = 0; i < snapshot.tracks.length; i++) {
+                const currTrackIndex = snapshot.tracks[i].index;
+                const currentNotesToPlay = notesToPlay(this.sixteenthPlaying, currTrackIndex, snapshot.regionList);
                 if (!Utils.isNullUndefinedOrEmpty(currentNotesToPlay)) {
                     for (let j = 0; j < currentNotesToPlay!.length; j++) {
                         soundHandler.play(
@@ -78,8 +77,8 @@ class Sequencer {
      * change the current note to plan up in time by one sixteenth note time length
      */
     advenceNote() {
-        const tempo = EngineStore.getState().control.BPM;
-        const secoundsPerBeat = 60.0 / tempo;
+        const snapshot = EngineStore.getSnapshot();
+        const secoundsPerBeat = 60.0 / snapshot.bpm;
 
         this.sixteenthPlaying++;
 
@@ -88,10 +87,9 @@ class Sequencer {
         // Loop: wrap the pattern position back to loopStart when it reaches loopEnd.
         // noteTime (the audio clock) keeps marching forward — only the sixteenth index
         // wraps, so the loop range replays without a gap.
-        const composition = EngineStore.getState().composition as any;
-        if (composition.loopEnabled) {
-            const loopEndSixteenth = composition.loopEnd * 16;
-            const loopStartSixteenth = composition.loopStart * 16;
+        if (snapshot.loopEnabled) {
+            const loopEndSixteenth = snapshot.loopEnd * 16;
+            const loopStartSixteenth = snapshot.loopStart * 16;
             if (loopEndSixteenth > loopStartSixteenth && this.sixteenthPlaying >= loopEndSixteenth) {
                 this.sixteenthPlaying = loopStartSixteenth;
             }
