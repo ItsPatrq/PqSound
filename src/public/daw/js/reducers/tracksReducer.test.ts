@@ -256,6 +256,39 @@ describe('tracksReducer', () => {
         });
     });
 
+    describe('SET_TRACK_PLUGINS', () => {
+        it("replaces the addressed track's descriptor list", () => {
+            const pluginList = [{ id: 4, name: 'Equalizer', index: 0, preset: {} }];
+
+            const state: any = reducer(makeState(), {
+                type: 'SET_TRACK_PLUGINS',
+                payload: { index: 1, pluginList },
+            });
+
+            expect(trackAt(state, 1).pluginList).toBe(pluginList);
+            expect(trackAt(state, 2).pluginList).toEqual([]);
+        });
+    });
+
+    describe('CHANGE_PLUGIN_PRESET', () => {
+        it('updates the descriptor preset of one plugin, replacing rather than mutating', () => {
+            const initial = makeState();
+            initial.trackList[1].pluginList = [
+                { id: 4, name: 'Equalizer', index: 0, preset: { lowFilterGain: 0 } },
+                { id: 0, name: 'Compressor', index: 1, preset: { ratio: 20 } },
+            ];
+
+            const state: any = reducer(initial, {
+                type: 'CHANGE_PLUGIN_PRESET',
+                payload: { index: 1, pluginIndex: 0, preset: { lowFilterGain: 6 } },
+            });
+
+            expect(trackAt(state, 1).pluginList[0].preset).toEqual({ lowFilterGain: 6 });
+            expect(trackAt(state, 1).pluginList[1].preset).toEqual({ ratio: 20 });
+            expect(trackAt(state, 1).pluginList[0]).not.toBe(initial.trackList[1].pluginList[0]);
+        });
+    });
+
     describe('ADD_NEW_TRACK_MODAL_VISIBILITY_SWITCH', () => {
         it('toggles the modal flag', () => {
             const state: any = reducer(makeState(), { type: 'ADD_NEW_TRACK_MODAL_VISIBILITY_SWITCH' });

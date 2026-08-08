@@ -8,8 +8,6 @@ import { TrackTypes } from 'constants/Constants';
  * this reducer already constructed. Nothing here calls `new` or touches an
  * audio node — see #156.
  */
-const newMasterPluginList = [];
-const newTrackPluginList = [];
 // Placeholder descriptor: the real one arrives with INIT_INSTRUMENT_CONTEXT,
 // but the UI renders before that and reads .id/.name/.preset off it.
 const firstInstrument = { id: null, name: '', preset: null };
@@ -19,7 +17,7 @@ export default function reducer(
             {
                 name: 'Master',
                 trackType: TrackTypes.aux,
-                pluginList: newMasterPluginList,
+                pluginList: [],
                 volume: 1.0,
                 pan: 0,
                 record: false,
@@ -33,7 +31,7 @@ export default function reducer(
                 name: 'multi-oscilator',
                 trackType: TrackTypes.virtualInstrument,
                 instrument: firstInstrument,
-                pluginList: newTrackPluginList,
+                pluginList: [],
                 volume: 1.0,
                 pan: 0,
                 record: true,
@@ -363,30 +361,14 @@ export default function reducer(
                 trackList: newTrackList,
             };
         }
-        case 'ADD_NEW_PLUGIN': {
-            const newTrackList = [...state.trackList];
-            const currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
-            currTrack.pluginList.push(action.payload.plugin);
+        case 'SET_TRACK_PLUGINS': {
+            // The engine owns the live chain and hands over the whole
+            // descriptor list after every add/remove.
             return {
                 ...state,
-                trackList: newTrackList,
-            };
-        }
-        case 'REMOVE_PLUGIN': {
-            const newTrackList = [...state.trackList];
-            const currTrack = Utils.getTrackByIndex(newTrackList, action.payload.index);
-            for (let i = 0; i < currTrack.pluginList.length; i++) {
-                if (currTrack.pluginList[i].index === action.payload.pluginIndex) {
-                    currTrack.pluginList.splice(i, 1);
-                    for (let j = i; j < currTrack.pluginList.length; j++) {
-                        currTrack.pluginList[j].index = j;
-                    }
-                    break;
-                }
-            }
-            return {
-                ...state,
-                trackList: newTrackList,
+                trackList: state.trackList.map((track) =>
+                    track.index === action.payload.index ? { ...track, pluginList: action.payload.pluginList } : track,
+                ),
             };
         }
         case 'LOAD_TRACK_STATE': {
@@ -410,11 +392,22 @@ export default function reducer(
             };
         }
         case 'CHANGE_PLUGIN_PRESET': {
-            // Plugins are still live objects in state; the thunk mutates them
-            // and this only re-renders the subscribers.
+            // The live plugin is updated by the thunk; the descriptor keeps the
+            // store's copy of the preset in step for rendering and export.
             return {
                 ...state,
-                trackList: [...state.trackList],
+                trackList: state.trackList.map((track) =>
+                    track.index === action.payload.index
+                        ? {
+                              ...track,
+                              pluginList: track.pluginList.map((plugin) =>
+                                  plugin.index === action.payload.pluginIndex
+                                      ? { ...plugin, preset: action.payload.preset }
+                                      : plugin,
+                              ),
+                          }
+                        : track,
+                ),
             };
         }
     }

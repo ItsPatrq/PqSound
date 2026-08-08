@@ -152,6 +152,76 @@ describe('AudioEngine', () => {
         });
     });
 
+    describe('plugins', () => {
+        it('hands back the same array instance it was given (the Track node holds it)', () => {
+            const plugins: any[] = [];
+
+            const registered = AudioEngine.setPlugins(1, plugins);
+
+            expect(registered).toBe(plugins);
+            expect(AudioEngine.getPlugins(1)).toBe(plugins);
+        });
+
+        it('returns an empty array for an unknown track', () => {
+            expect(AudioEngine.getPlugins(42)).toEqual([]);
+        });
+
+        it('appends in place so the node sees the addition', () => {
+            const plugins: any[] = [];
+            AudioEngine.setPlugins(1, plugins);
+
+            AudioEngine.addPlugin(1, { id: 0, index: 0 });
+
+            expect(plugins).toHaveLength(1);
+        });
+
+        it('removes by the plugin index and renumbers the rest in place', () => {
+            const plugins = [
+                { id: 0, index: 0 },
+                { id: 1, index: 1 },
+                { id: 2, index: 2 },
+            ];
+            AudioEngine.setPlugins(1, plugins);
+
+            AudioEngine.removePlugin(1, 1);
+
+            expect(plugins.map((plugin) => plugin.id)).toEqual([0, 2]);
+            expect(plugins.map((plugin) => plugin.index)).toEqual([0, 1]);
+        });
+
+        it('ignores a removal for a plugin index that is not there', () => {
+            const plugins = [{ id: 0, index: 0 }];
+            AudioEngine.setPlugins(1, plugins);
+
+            AudioEngine.removePlugin(1, 5);
+
+            expect(plugins).toHaveLength(1);
+        });
+
+        it('forwards a preset to the addressed plugin only', () => {
+            const first = { index: 0, updatePreset: jest.fn() };
+            const second = { index: 1, updatePreset: jest.fn() };
+            AudioEngine.setPlugins(1, [first, second]);
+
+            AudioEngine.updatePluginPreset(1, 1, { gain: 2 });
+
+            expect(second.updatePreset).toHaveBeenCalledWith({ gain: 2 });
+            expect(first.updatePreset).not.toHaveBeenCalled();
+        });
+
+        it("drops one track's chain and clears them all", () => {
+            AudioEngine.setPlugins(1, [{}]);
+            AudioEngine.setPlugins(2, [{}]);
+
+            AudioEngine.removePlugins(1);
+            expect(AudioEngine.getPlugins(1)).toEqual([]);
+            expect(AudioEngine.getPlugins(2)).toHaveLength(1);
+
+            AudioEngine.clearPlugins();
+            expect(AudioEngine.getPlugins(2)).toEqual([]);
+        });
+    });
+
     describe('instrument buffers', () => {
         it('stores and returns buffers by instrument name', () => {
             const buffers = [{} as AudioBuffer, {} as AudioBuffer];

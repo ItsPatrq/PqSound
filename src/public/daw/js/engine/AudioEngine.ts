@@ -33,6 +33,13 @@ class AudioEngine {
     private trackNodes: Map<number, Track> = new Map();
     /** Live instruments, keyed by the same stable track id as the graphs. */
     private instruments: Map<number, any> = new Map();
+    /**
+     * Live plugin chains, keyed by track id. The engine owns the array
+     * instance: a track's Track node holds the same reference as its
+     * `pluginNodeList`, so mutating it in place is what the node sees on
+     * `refreshTrackNode`. Never replace an entry's array — mutate it.
+     */
+    private plugins: Map<number, any[]> = new Map();
 
     /**
      * Creates the AudioContext and the Sound dispatcher. Idempotent: a second
@@ -135,6 +142,60 @@ class AudioEngine {
         this.instruments.clear();
     }
 
+    /**
+     * Registers (and returns) the live plugin array for a track. The same
+     * instance must be handed to the track's Track node.
+     */
+    setPlugins(trackId: number, plugins: any[]): any[] {
+        this.plugins.set(trackId, plugins);
+        return plugins;
+    }
+
+    getPlugins(trackId: number): any[] {
+        return this.plugins.get(trackId) || [];
+    }
+
+    /** Appends to the existing array so the Track node sees the new plugin. */
+    addPlugin(trackId: number, plugin: any): void {
+        const plugins = this.plugins.get(trackId);
+        if (plugins) {
+            plugins.push(plugin);
+        } else {
+            this.plugins.set(trackId, [plugin]);
+        }
+    }
+
+    /** Removes by the plugin's own `index` and renumbers the ones after it. */
+    removePlugin(trackId: number, pluginIndex: number): void {
+        const plugins = this.plugins.get(trackId);
+        if (!plugins) {
+            return;
+        }
+        const position = plugins.findIndex((plugin) => plugin.index === pluginIndex);
+        if (position === -1) {
+            return;
+        }
+        plugins.splice(position, 1);
+        for (let i = position; i < plugins.length; i++) {
+            plugins[i].index = i;
+        }
+    }
+
+    updatePluginPreset(trackId: number, pluginIndex: number, preset: any): void {
+        const plugin = this.getPlugins(trackId).find((curr) => curr.index === pluginIndex);
+        if (plugin) {
+            plugin.updatePreset(preset);
+        }
+    }
+
+    removePlugins(trackId: number): void {
+        this.plugins.delete(trackId);
+    }
+
+    clearPlugins(): void {
+        this.plugins.clear();
+    }
+
     setTrackNode(trackId: number, node: Track): void {
         this.trackNodes.set(trackId, node);
     }
@@ -193,6 +254,7 @@ class AudioEngine {
         this.buffersByInstrumentName.clear();
         this.trackNodes.clear();
         this.instruments.clear();
+        this.plugins.clear();
     }
 }
 
