@@ -1,13 +1,11 @@
-import * as EngineStore from './EngineStore';
 import * as CompositionParser from './CompositionParser';
 
-jest.mock('./EngineStore', () => ({
-    __esModule: true,
-    getState: jest.fn(),
-    dispatch: jest.fn(),
-}));
-
-const mockedGetState = EngineStore.getState as jest.Mock;
+/**
+ * The parser takes its data explicitly now (#156), so these tests hold the
+ * composition locally instead of mocking a store.
+ */
+let regionList: any[] = [];
+let pianoRollRegion = 0;
 
 /**
  * Region helper. `notes` is indexed by note number; each entry is a list of
@@ -23,7 +21,10 @@ const makeRegion = (overrides = {}) => ({
     ...overrides,
 });
 
-const setState = (state) => mockedGetState.mockReturnValue(state);
+const setState = (state) => {
+    regionList = state.composition.regionList;
+    pianoRollRegion = state.composition.pianoRollRegion;
+};
 
 describe('CompositionParser', () => {
     afterEach(() => {
@@ -43,7 +44,7 @@ describe('CompositionParser', () => {
 
         it('falls back to the store region list when none is given', () => {
             setState({ composition: { regionList: [makeRegion({ id: 5, trackIndex: 2 })] } });
-            const result = CompositionParser.getRegionsByTrackIndex(2);
+            const result = CompositionParser.getRegionsByTrackIndex(2, regionList);
             expect(result.map((r) => r.id)).toEqual([5]);
         });
     });
@@ -53,14 +54,14 @@ describe('CompositionParser', () => {
             setState({
                 composition: { regionList: [makeRegion({ id: 1, start: 1, end: 3 })] },
             });
-            expect(CompositionParser.regionToDrawParser(0, 6, -1)).toEqual([0, 1, 2, 3, 0, 0]);
+            expect(CompositionParser.regionToDrawParser(0, 6, -1, regionList)).toEqual([0, 1, 2, 3, 0, 0]);
         });
 
         it('marks the copied region with 4/5/6 instead', () => {
             setState({
                 composition: { regionList: [makeRegion({ id: 7, start: 0, end: 2 })] },
             });
-            expect(CompositionParser.regionToDrawParser(0, 4, 7)).toEqual([4, 5, 6, 0]);
+            expect(CompositionParser.regionToDrawParser(0, 4, 7, regionList)).toEqual([4, 5, 6, 0]);
         });
     });
 
@@ -74,13 +75,13 @@ describe('CompositionParser', () => {
         });
 
         it('returns the region id when the bit falls inside a region (bounds inclusive)', () => {
-            expect(CompositionParser.getRegionIdByBitIndex(0, 2)).toBe(10);
-            expect(CompositionParser.getRegionIdByBitIndex(0, 3)).toBe(10);
-            expect(CompositionParser.getRegionIdByBitIndex(0, 4)).toBe(10);
+            expect(CompositionParser.getRegionIdByBitIndex(0, 2, regionList)).toBe(10);
+            expect(CompositionParser.getRegionIdByBitIndex(0, 3, regionList)).toBe(10);
+            expect(CompositionParser.getRegionIdByBitIndex(0, 4, regionList)).toBe(10);
         });
 
         it('returns null when the bit is outside every region', () => {
-            expect(CompositionParser.getRegionIdByBitIndex(0, 5)).toBeNull();
+            expect(CompositionParser.getRegionIdByBitIndex(0, 5, regionList)).toBeNull();
         });
     });
 
@@ -98,7 +99,7 @@ describe('CompositionParser', () => {
     describe('notesToDrawParser', () => {
         it('returns null when the piano roll region does not exist', () => {
             setState({ composition: { regionList: [], pianoRollRegion: 42 } });
-            expect(CompositionParser.notesToDrawParser(0)).toBeNull();
+            expect(CompositionParser.notesToDrawParser(0, pianoRollRegion, regionList)).toBeNull();
         });
 
         it('marks note sixteenths with 1 (start), 2 (middle), 3 (end)', () => {
@@ -110,7 +111,7 @@ describe('CompositionParser', () => {
                     pianoRollRegion: 1,
                 },
             });
-            const result = CompositionParser.notesToDrawParser(5)!;
+            const result = CompositionParser.notesToDrawParser(5, pianoRollRegion, regionList)!;
             expect(result).toHaveLength(16);
             expect(result.slice(0, 6)).toEqual([0, 0, 1, 2, 3, 0]);
         });
@@ -122,7 +123,7 @@ describe('CompositionParser', () => {
                     pianoRollRegion: 1,
                 },
             });
-            expect(CompositionParser.notesToDrawParser(0)).toEqual(new Array(16).fill(0));
+            expect(CompositionParser.notesToDrawParser(0, pianoRollRegion, regionList)).toEqual(new Array(16).fill(0));
         });
     });
 
@@ -136,7 +137,7 @@ describe('CompositionParser', () => {
             setState({
                 composition: { regionList: [makeRegion({ notes })] },
             });
-            expect(CompositionParser.notesToPlay(2, 0)).toEqual([{ note: 4, duration: 2 }]);
+            expect(CompositionParser.notesToPlay(2, 0, regionList)).toEqual([{ note: 4, duration: 2 }]);
         });
 
         it('offsets note positions by the region start (in bars of 16 sixteenths)', () => {
@@ -145,8 +146,8 @@ describe('CompositionParser', () => {
             setState({
                 composition: { regionList: [makeRegion({ start: 2, end: 3, notes })] },
             });
-            expect(CompositionParser.notesToPlay(32, 0)).toEqual([{ note: 0, duration: 1 }]);
-            expect(CompositionParser.notesToPlay(0, 0)).toEqual([]);
+            expect(CompositionParser.notesToPlay(32, 0, regionList)).toEqual([{ note: 0, duration: 1 }]);
+            expect(CompositionParser.notesToPlay(0, 0, regionList)).toEqual([]);
         });
 
         it('skips empty note rows and other tracks', () => {
@@ -161,7 +162,7 @@ describe('CompositionParser', () => {
                     ],
                 },
             });
-            expect(CompositionParser.notesToPlay(0, 0)).toEqual([{ note: 2, duration: 1 }]);
+            expect(CompositionParser.notesToPlay(0, 0, regionList)).toEqual([{ note: 2, duration: 1 }]);
         });
     });
 });

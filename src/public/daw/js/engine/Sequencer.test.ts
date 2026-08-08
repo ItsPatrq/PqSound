@@ -6,7 +6,7 @@ import { SoundOrigin } from '../constants/Constants';
 
 jest.mock('./EngineStore', () => ({
     __esModule: true,
-    getState: jest.fn(),
+    getSnapshot: jest.fn(),
     dispatch: jest.fn(),
 }));
 
@@ -24,29 +24,41 @@ jest.mock('../actions/controlActions', () => ({
     updateCurrentTime: jest.fn((time) => ({ type: 'UPDATE_CURRENT_TIME', payload: time })),
 }));
 
-const mockedGetState = EngineStore.getState as jest.Mock;
+const mockedGetSnapshot = EngineStore.getSnapshot as jest.Mock;
 const mockedDispatch = EngineStore.dispatch as jest.Mock;
 const mockedGetContext = AudioEngine.getContext as jest.Mock;
 const mockedGetSound = AudioEngine.getSound as jest.Mock;
 
 /**
- * Builds the store slices the Sequencer reads and, alongside them, the live
- * audio doubles it now pulls from AudioEngine. The returned `audio` field is
- * what assertions look at; it is deliberately not part of store state.
+ * Builds the engine snapshot the Sequencer reads (#156) plus the live audio
+ * doubles it pulls from AudioEngine. The returned `audio` field is what
+ * assertions look at; it is not part of the snapshot.
  */
-const makeState = ({ currentTime = 0, BPM = 120, regionList = [] as any[], trackList = [{ index: 0 }] } = {}) => {
+const makeState = ({
+    currentTime = 0,
+    BPM = 120,
+    regionList = [] as any[],
+    trackList = [{ index: 0, id: 0, record: false }],
+    loopEnabled = false,
+    loopStart = 0,
+    loopEnd = 0,
+} = {}) => {
     const audio = {
         context: { currentTime, state: 'running', resume: jest.fn() },
         sound: { play: jest.fn(), scheduleStop: jest.fn(), stopAll: jest.fn() },
     };
     mockedGetContext.mockReturnValue(audio.context);
     mockedGetSound.mockReturnValue(audio.sound);
-    return {
-        audio,
-        tracks: { trackList },
-        control: { BPM },
-        composition: { regionList },
-    };
+    mockedGetSnapshot.mockReturnValue({
+        bpm: BPM,
+        loopEnabled,
+        loopStart,
+        loopEnd,
+        regionList,
+        tracks: trackList,
+        notesPlaying: [],
+    });
+    return { audio };
 };
 
 describe('Sequencer', () => {
@@ -57,7 +69,7 @@ describe('Sequencer', () => {
     describe('advenceNote', () => {
         it('advances noteTime by a sixteenth note length derived from BPM', () => {
             // 120 BPM -> 0.5 s per beat -> 0.125 s per sixteenth
-            mockedGetState.mockReturnValue(makeState({ BPM: 120 }));
+            makeState({ BPM: 120 });
             const sequencer = new Sequencer();
             sequencer.noteTime = 0;
 
@@ -69,7 +81,7 @@ describe('Sequencer', () => {
 
         it('scales with tempo', () => {
             // 60 BPM -> 1 s per beat -> 0.25 s per sixteenth
-            mockedGetState.mockReturnValue(makeState({ BPM: 60 }));
+            makeState({ BPM: 60 });
             const sequencer = new Sequencer();
             sequencer.noteTime = 0;
 
@@ -79,7 +91,7 @@ describe('Sequencer', () => {
         });
 
         it('dispatches the updated playhead position', () => {
-            mockedGetState.mockReturnValue(makeState());
+            makeState();
             const sequencer = new Sequencer();
             sequencer.noteTime = 0;
 
@@ -95,7 +107,6 @@ describe('Sequencer', () => {
             // currentTime 0, lookahead 0.2 s, 0.125 s per sixteenth at 120 BPM:
             // sixteenths 0 (noteTime 0) and 1 (noteTime 0.125) fit; 0.25 does not.
             const state = makeState({ BPM: 120 });
-            mockedGetState.mockReturnValue(state);
             const sequencer = new Sequencer();
             sequencer.startTime = 0;
             sequencer.noteTime = 0;
@@ -128,7 +139,6 @@ describe('Sequencer', () => {
                 },
             ];
             const state = makeState({ BPM: 120, regionList, currentTime: 10 });
-            mockedGetState.mockReturnValue(state);
             const sequencer = new Sequencer();
             sequencer.startTime = 10;
             sequencer.noteTime = 0;
@@ -147,7 +157,6 @@ describe('Sequencer', () => {
 
         it('plays nothing when no track has notes in the window', () => {
             const state = makeState();
-            mockedGetState.mockReturnValue(state);
             const sequencer = new Sequencer();
             sequencer.startTime = 0;
             sequencer.noteTime = 0;
@@ -169,7 +178,6 @@ describe('Sequencer', () => {
 
         it('stops the timer worker, then stops all composition sounds and resets the playhead', () => {
             const state = makeState();
-            mockedGetState.mockReturnValue(state);
             const sequencer = new Sequencer();
             sequencer.timerWorker = { postMessage: jest.fn() } as any;
             sequencer.sixteenthPlaying = 12;
@@ -190,7 +198,6 @@ describe('Sequencer', () => {
     describe('handlePause', () => {
         it('stops the timer worker and all composition sounds immediately', () => {
             const state = makeState();
-            mockedGetState.mockReturnValue(state);
             const sequencer = new Sequencer();
             sequencer.timerWorker = { postMessage: jest.fn() } as any;
 

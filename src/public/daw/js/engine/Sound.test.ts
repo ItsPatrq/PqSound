@@ -5,7 +5,7 @@ import { SoundOrigin } from '../constants/Constants';
 
 jest.mock('./EngineStore', () => ({
     __esModule: true,
-    getState: jest.fn(),
+    getSnapshot: jest.fn(),
     dispatch: jest.fn(),
 }));
 
@@ -15,7 +15,7 @@ jest.mock('./AudioEngine', () => ({
     default: { getInstrument: jest.fn() },
 }));
 
-const mockedGetState = EngineStore.getState as jest.Mock;
+const mockedGetSnapshot = EngineStore.getSnapshot as jest.Mock;
 const mockedGetInstrument = AudioEngine.getInstrument as jest.Mock;
 
 const makeContext = (state = 'running') =>
@@ -60,7 +60,7 @@ describe('Sound', () => {
     describe('play', () => {
         it('calls noteOn on the track instrument with the given play time', () => {
             const track = makeTrack(0);
-            mockedGetState.mockReturnValue({ tracks: { trackList: [track] } });
+            mockedGetSnapshot.mockReturnValue({ tracks: [track] });
             const sound = new Sound(makeContext());
 
             sound.play(0, 2.5, 69, SoundOrigin.keyboard, undefined);
@@ -70,7 +70,7 @@ describe('Sound', () => {
 
         it('defaults the play time to context.currentTime + 0.001 when not given', () => {
             const track = makeTrack(0);
-            mockedGetState.mockReturnValue({ tracks: { trackList: [track] } });
+            mockedGetSnapshot.mockReturnValue({ tracks: [track] });
             const sound = new Sound(makeContext());
 
             sound.play(0, null, 60, SoundOrigin.keyboard, undefined);
@@ -80,7 +80,7 @@ describe('Sound', () => {
 
         it('registers composition-origin notes in playingSounds for scheduled stop', () => {
             const track = makeTrack(0);
-            mockedGetState.mockReturnValue({ tracks: { trackList: [track] } });
+            mockedGetSnapshot.mockReturnValue({ tracks: [track] });
             const sound = new Sound(makeContext());
 
             sound.play(0, 2.5, 69, SoundOrigin.composition, 8);
@@ -92,7 +92,7 @@ describe('Sound', () => {
 
         it('does not register keyboard-origin notes in playingSounds', () => {
             const track = makeTrack(0);
-            mockedGetState.mockReturnValue({ tracks: { trackList: [track] } });
+            mockedGetSnapshot.mockReturnValue({ tracks: [track] });
             const sound = new Sound(makeContext());
 
             sound.play(0, 2.5, 69, SoundOrigin.keyboard, undefined);
@@ -104,7 +104,7 @@ describe('Sound', () => {
     describe('stop', () => {
         it('calls noteOff on the track instrument with the given stop time', () => {
             const track = makeTrack(1);
-            mockedGetState.mockReturnValue({ tracks: { trackList: [track] } });
+            mockedGetSnapshot.mockReturnValue({ tracks: [track] });
             const sound = new Sound(makeContext());
 
             sound.stop(1, 69, 3.0);
@@ -114,7 +114,7 @@ describe('Sound', () => {
 
         it('defaults the stop time to context.currentTime + 0.001 when not given', () => {
             const track = makeTrack(1);
-            mockedGetState.mockReturnValue({ tracks: { trackList: [track] } });
+            mockedGetSnapshot.mockReturnValue({ tracks: [track] });
             const sound = new Sound(makeContext());
 
             sound.stop(1, 69);
@@ -126,7 +126,7 @@ describe('Sound', () => {
     describe('scheduleStop', () => {
         it('stops and removes only notes whose endIndex matches the playing sixteenth', () => {
             const track = makeTrack(0);
-            mockedGetState.mockReturnValue({ tracks: { trackList: [track] } });
+            mockedGetSnapshot.mockReturnValue({ tracks: [track] });
             const sound = new Sound(makeContext());
             sound.playingSounds[SoundOrigin.composition] = [
                 { trackIndex: 0, note: 60, origin: SoundOrigin.composition, endIndex: 4 },
@@ -146,7 +146,7 @@ describe('Sound', () => {
 
         it('flushes notes whose endIndex is at/after the loop end when the loop wraps', () => {
             const track = makeTrack(0);
-            mockedGetState.mockReturnValue({ tracks: { trackList: [track] } });
+            mockedGetSnapshot.mockReturnValue({ tracks: [track] });
             const sound = new Sound(makeContext());
             sound.playingSounds[SoundOrigin.composition] = [
                 { trackIndex: 0, note: 60, origin: SoundOrigin.composition, endIndex: 30 }, // inside loop → keep
@@ -169,7 +169,7 @@ describe('Sound', () => {
     describe('stopAll', () => {
         it('stops every note of the given origin and clears the list', () => {
             const track = makeTrack(0);
-            mockedGetState.mockReturnValue({ tracks: { trackList: [track] } });
+            mockedGetSnapshot.mockReturnValue({ tracks: [track] });
             const sound = new Sound(makeContext());
             sound.playingSounds[SoundOrigin.composition] = [
                 { trackIndex: 0, note: 60, origin: SoundOrigin.composition, endIndex: 4 },
