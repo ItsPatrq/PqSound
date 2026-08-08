@@ -67,8 +67,6 @@
         "webpack-hot-middleware": "^2.26.1"
     },
     "dependencies": {
-        "@overnightjs/core": "^1.7.6",
-        "@overnightjs/logger": "^1.2.1",
         "@reduxjs/toolkit": "^2.12.0",
         "@types/express": "5.0.6",
         "cross-env": "10.1.0",
