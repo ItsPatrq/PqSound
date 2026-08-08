@@ -178,15 +178,7 @@ class Header extends React.Component {
         // MIDI device selection is per-session hardware state, not composition data.
         delete tempControl['midi'];
         const tempTracks = Utils.copy(this.props.tracks);
-        for (let i = 0; i < tempTracks.trackList.length; i++) {
-            for (let j = 0; j < tempTracks.trackList[i].pluginList.length; j++) {
-                tempTracks.trackList[i].pluginList[j] = {
-                    preset: tempTracks.trackList[i].pluginList[j].preset,
-                    id: tempTracks.trackList[i].pluginList[j].id,
-                    index: tempTracks.trackList[i].pluginList[j].index,
-                };
-            }
-        }
+        for (let i = 0; i < tempTracks.trackList.length; i++) {}
         return encodeURIComponent(
             JSON.stringify({ tracks: tempTracks, control: tempControl, composition: this.props.composition }),
         );

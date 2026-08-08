@@ -19,6 +19,10 @@ import { Utils as SamplerPresetsUtils, Presets as SamplerPresets } from 'constan
 const describeInstrument = (instrument) =>
     instrument ? { id: instrument.id, name: instrument.name, preset: instrument.preset } : null;
 
+/** The serializable half of a plugin chain. */
+const describePlugins = (plugins) =>
+    plugins.map((plugin) => ({ id: plugin.id, name: plugin.name, index: plugin.index, preset: plugin.preset }));
+
 const trackIdByIndex = (trackList, index) => {
     const track = Utils.getTrackByIndex(trackList, index);
     return track ? track.id : undefined;
@@ -62,10 +66,10 @@ export function addTrack(newTrackType) {
             newTrackType === TrackTypes.virtualInstrument
                 ? new Sampler(SamplerPresetsUtils.getPresetById(SamplerPresets.DSKGrandPiano.id), audioContext)
                 : null;
-        const pluginList = [];
+        const plugins = AudioEngine.setPlugins(nextTrackId, []);
         AudioEngine.setTrackNode(
             nextTrackId,
-            new Track(pluginList, instrument, destinationInput(trackList, 0), audioContext, 1.0, 0),
+            new Track(plugins, instrument, destinationInput(trackList, 0), audioContext, 1.0, 0),
         );
         AudioEngine.setInstrument(nextTrackId, instrument);
         dispatch({
@@ -73,7 +77,7 @@ export function addTrack(newTrackType) {
             payload: {
                 trackType: newTrackType,
                 instrument: describeInstrument(instrument),
-                pluginList: pluginList,
+                pluginList: describePlugins(plugins),
                 id: nextTrackId,
             },
         });
@@ -97,6 +101,7 @@ export function removeTrack(index) {
         if (removedId !== undefined) {
             AudioEngine.removeTrackNode(removedId);
             AudioEngine.removeInstrument(removedId);
+            AudioEngine.removePlugins(removedId);
         }
     };
 }
@@ -139,12 +144,12 @@ export function initInstrumentContext(newIndex) {
         if (!audioContext || !masterTrack || !track) {
             return;
         }
-        const masterNode = new Track(masterTrack.pluginList, null, null, audioContext, 1, 0);
+        const masterNode = new Track(AudioEngine.setPlugins(masterTrack.id, []), null, null, audioContext, 1, 0);
         AudioEngine.setTrackNode(masterTrack.id, masterNode);
         const instrument = new MultiOsc(undefined, audioContext);
         AudioEngine.setTrackNode(
             track.id,
-            new Track(track.pluginList, instrument, masterNode.input, audioContext, 1, 0),
+            new Track(AudioEngine.setPlugins(track.id, []), instrument, masterNode.input, audioContext, 1, 0),
         );
         AudioEngine.setInstrument(track.id, instrument);
         dispatch({
@@ -294,42 +299,44 @@ export function addNewPlugin(newIndex, newPluginId) {
         if (!track) {
             return;
         }
-        // The plugin list array is shared with the track's Track node, so the
-        // reducer's push is visible to the graph on refresh.
-        const plugin = PluginsUtils.getNewPluginByIndex(newPluginId, track.pluginList.length, audioContext);
+        const plugins = AudioEngine.getPlugins(track.id);
+        AudioEngine.addPlugin(track.id, PluginsUtils.getNewPluginByIndex(newPluginId, plugins.length, audioContext));
+        // The engine mutates the array the Track node holds, so refreshing the
+        // node is what actually rewires the chain.
+        AudioEngine.refreshTrackNode(track.id);
         dispatch({
-            type: 'ADD_NEW_PLUGIN',
+            type: 'SET_TRACK_PLUGINS',
             payload: {
                 index: newIndex,
-                plugin: plugin,
+                pluginList: describePlugins(AudioEngine.getPlugins(track.id)),
             },
         });
-        AudioEngine.refreshTrackNode(track.id);
     };
 }
 
 export function removePlugin(newTrackIndex, newPluginIndex) {
     return function (dispatch, getState) {
+        const trackId = trackIdByIndex(getState().tracks.trackList, newTrackIndex);
+        if (trackId === undefined) {
+            return;
+        }
+        AudioEngine.removePlugin(trackId, newPluginIndex);
+        AudioEngine.refreshTrackNode(trackId);
         dispatch({
-            type: 'REMOVE_PLUGIN',
+            type: 'SET_TRACK_PLUGINS',
             payload: {
                 index: newTrackIndex,
-                pluginIndex: newPluginIndex,
+                pluginList: describePlugins(AudioEngine.getPlugins(trackId)),
             },
         });
-        const trackId = trackIdByIndex(getState().tracks.trackList, newTrackIndex);
-        if (trackId !== undefined) {
-            AudioEngine.refreshTrackNode(trackId);
-        }
     };
 }
 
 export function changePluginPreset(newTrackIndex, newPluginIndex, newPreset) {
     return function (dispatch, getState) {
-        const track = Utils.getTrackByIndex(getState().tracks.trackList, newTrackIndex);
-        const plugin = track ? track.pluginList.find((curr) => curr.index === newPluginIndex) : undefined;
-        if (plugin) {
-            plugin.updatePreset(newPreset);
+        const trackId = trackIdByIndex(getState().tracks.trackList, newTrackIndex);
+        if (trackId !== undefined) {
+            AudioEngine.updatePluginPreset(trackId, newPluginIndex, newPreset);
         }
         dispatch({
             type: 'CHANGE_PLUGIN_PRESET',
@@ -353,19 +360,21 @@ export function loadTrackState(newState) {
         const masterTrack = Utils.getTrackByIndex(getState().tracks.trackList, 0);
         const masterId = masterTrack ? masterTrack.id : 0;
 
-        const buildPluginList = (sourceTrack, targetTrack) => {
-            const pluginList = [];
+        // Builds the live chain, registers it under the track id and leaves the
+        // descriptor copy on the track that goes into the store.
+        const buildPluginList = (sourceTrack, targetTrack, trackId) => {
+            const plugins = AudioEngine.setPlugins(trackId, []);
             for (let j = 0; j < sourceTrack.pluginList.length; j++) {
-                pluginList.push(PluginsUtils.getNewPluginByIndex(sourceTrack.pluginList[j].id, j, audioContext));
-                pluginList[j].updatePreset(sourceTrack.pluginList[j].preset);
+                plugins.push(PluginsUtils.getNewPluginByIndex(sourceTrack.pluginList[j].id, j, audioContext));
+                plugins[j].updatePreset(sourceTrack.pluginList[j].preset);
             }
-            targetTrack.pluginList = pluginList;
-            return pluginList;
+            targetTrack.pluginList = describePlugins(plugins);
+            return plugins;
         };
 
         // Master keeps its existing node; only its plugin chain is replaced.
-        const masterPluginList = buildPluginList(newState.trackList[0], loaded.trackList[0]);
         loaded.trackList[0].id = masterId;
+        const masterPluginList = buildPluginList(newState.trackList[0], loaded.trackList[0], masterId);
         const masterNode = AudioEngine.getTrackNode(masterId);
         if (masterNode) {
             masterNode.pluginNodeList = masterPluginList;
@@ -375,6 +384,10 @@ export function loadTrackState(newState) {
         // Every other track is rebuilt from scratch under a fresh id.
         AudioEngine.clearTrackNodes();
         AudioEngine.clearInstruments();
+        // Master's chain was just registered, so keep it while dropping the rest.
+        const masterPlugins = AudioEngine.getPlugins(masterId);
+        AudioEngine.clearPlugins();
+        AudioEngine.setPlugins(masterId, masterPlugins);
         if (masterNode) {
             AudioEngine.setTrackNode(masterId, masterNode);
         }
@@ -382,7 +395,7 @@ export function loadTrackState(newState) {
         for (let i = 1; i < loaded.trackList.length; i++) {
             const track = loaded.trackList[i];
             track.id = nextTrackId++;
-            const pluginList = buildPluginList(newState.trackList[i], track);
+            const pluginList = buildPluginList(newState.trackList[i], track, track.id);
             let instrument = null;
             if (track.trackType !== TrackTypes.aux) {
                 instrument = InstrumentsUtils.getNewInstrumentByIndex(

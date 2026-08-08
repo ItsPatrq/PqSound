@@ -28,6 +28,13 @@ jest.mock('engine/AudioEngine', () => ({
         getInstrument: jest.fn(),
         removeInstrument: jest.fn(),
         clearInstruments: jest.fn(),
+        setPlugins: jest.fn((trackId: number, plugins: any[]) => plugins),
+        getPlugins: jest.fn(() => []),
+        addPlugin: jest.fn(),
+        removePlugin: jest.fn(),
+        removePlugins: jest.fn(),
+        clearPlugins: jest.fn(),
+        updatePluginPreset: jest.fn(),
         refreshTrackNode: jest.fn(),
     },
 }));
@@ -184,6 +191,7 @@ describe('trackListActions', () => {
 
             expect(engine.setTrackNode).toHaveBeenCalledWith(10, expect.anything());
             expect(engine.setInstrument).toHaveBeenCalledWith(10, expect.objectContaining({ name: 'Sampler' }));
+            expect(engine.setPlugins).toHaveBeenCalledWith(10, []);
             // The store gets the serializable descriptor, not the live object.
             expect(dispatch).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -206,6 +214,7 @@ describe('trackListActions', () => {
             expect(dispatch).toHaveBeenCalledWith({ type: 'REMOVE_TRACK', payload: 2 });
             expect(engine.removeTrackNode).toHaveBeenCalledWith(9);
             expect(engine.removeInstrument).toHaveBeenCalledWith(9);
+            expect(engine.removePlugins).toHaveBeenCalledWith(9);
         });
     });
 
@@ -225,17 +234,45 @@ describe('trackListActions', () => {
     });
 
     describe('addNewPlugin / removePlugin', () => {
-        it('builds the plugin, dispatches it, then rebuilds the chain', () => {
+        it('hands the plugin to the engine, rebuilds the chain, then dispatches descriptors', () => {
+            engine.getPlugins.mockReturnValue([{ id: 4, name: 'Equalizer', index: 0, preset: { gain: 0 } }]);
+
             const { dispatch } = run(actions.addNewPlugin(1, 4));
 
-            expect(dispatch.mock.calls[0][0].payload.plugin).toBeDefined();
+            expect(engine.addPlugin).toHaveBeenCalledWith(7, expect.objectContaining({ id: 4 }));
             expect(engine.refreshTrackNode).toHaveBeenCalledWith(7);
+            expect(dispatch).toHaveBeenCalledWith({
+                type: 'SET_TRACK_PLUGINS',
+                payload: {
+                    index: 1,
+                    pluginList: [{ id: 4, name: 'Equalizer', index: 0, preset: { gain: 0 } }],
+                },
+            });
         });
 
-        it('rebuilds the chain after a removal', () => {
-            run(actions.removePlugin(2, 0));
+        it('removes through the engine so the live array the node holds is the one mutated', () => {
+            engine.getPlugins.mockReturnValue([]);
 
+            const { dispatch } = run(actions.removePlugin(2, 0));
+
+            expect(engine.removePlugin).toHaveBeenCalledWith(9, 0);
             expect(engine.refreshTrackNode).toHaveBeenCalledWith(9);
+            expect(dispatch).toHaveBeenCalledWith({
+                type: 'SET_TRACK_PLUGINS',
+                payload: { index: 2, pluginList: [] },
+            });
+        });
+    });
+
+    describe('changePluginPreset', () => {
+        it('updates the plugin the engine holds, then dispatches the preset', () => {
+            const { dispatch } = run(actions.changePluginPreset(1, 0, { gain: 3 }));
+
+            expect(engine.updatePluginPreset).toHaveBeenCalledWith(7, 0, { gain: 3 });
+            expect(dispatch).toHaveBeenCalledWith({
+                type: 'CHANGE_PLUGIN_PRESET',
+                payload: { index: 1, pluginIndex: 0, preset: { gain: 3 } },
+            });
         });
     });
 
