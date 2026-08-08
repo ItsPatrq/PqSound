@@ -4,6 +4,7 @@
 import AudioEngine from 'engine/AudioEngine';
 import * as actions from 'actions/trackListActions';
 import { TrackTypes } from 'constants/Constants';
+import * as slice from 'reducers/tracksReducer';
 
 /**
  * The audio-graph side effects that used to sit inside tracksReducer now live
@@ -117,10 +118,7 @@ describe('trackListActions', () => {
         it('addresses the engine by track id, not index', () => {
             const { dispatch } = run(actions.changeTrackVolume(2, 0.25));
 
-            expect(dispatch).toHaveBeenCalledWith({
-                type: 'CHANGE_TRACK_VOLUME',
-                payload: { index: 2, volume: 0.25 },
-            });
+            expect(dispatch).toHaveBeenCalledWith(slice.changeTrackVolume(2, 0.25));
             expect(engine.applyTrackVolume).toHaveBeenCalledWith(9, 0.25);
         });
 
@@ -135,7 +133,7 @@ describe('trackListActions', () => {
         it('dispatches then mutes the addressed track node', () => {
             const { dispatch } = run(actions.changeMuteState(1));
 
-            expect(dispatch).toHaveBeenCalledWith({ type: 'CHANGE_TRACK_MUTE_STATE', payload: 1 });
+            expect(dispatch).toHaveBeenCalledWith(slice.changeMuteState(1));
             expect(engine.applyTrackMute).toHaveBeenCalledWith(7);
         });
     });
@@ -195,7 +193,7 @@ describe('trackListActions', () => {
             // The store gets the serializable descriptor, not the live object.
             expect(dispatch).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    type: 'ADD_TRACK',
+                    type: slice.addTrack.type,
                     payload: expect.objectContaining({
                         id: 10,
                         trackType: TrackTypes.virtualInstrument,
@@ -211,7 +209,7 @@ describe('trackListActions', () => {
         it('resolves the id before the reducer renumbers, then drops the graph', () => {
             const { dispatch } = run(actions.removeTrack(2));
 
-            expect(dispatch).toHaveBeenCalledWith({ type: 'REMOVE_TRACK', payload: 2 });
+            expect(dispatch).toHaveBeenCalledWith(slice.removeTrack(2));
             expect(engine.removeTrackNode).toHaveBeenCalledWith(9);
             expect(engine.removeInstrument).toHaveBeenCalledWith(9);
             expect(engine.removePlugins).toHaveBeenCalledWith(9);
@@ -223,7 +221,7 @@ describe('trackListActions', () => {
             const { dispatch } = run(actions.changeTrackInstrument(3, 1));
 
             const dispatched = dispatch.mock.calls[0][0];
-            expect(dispatched.type).toBe('CHANGE_TRACK_INSTRUMENT');
+            expect(dispatched.type).toBe(slice.changeTrackInstrument.type);
             expect(dispatched.payload.instrument).toEqual({ id: 5, name: 'PqSynth', preset: { gain: 0 } });
             expect(dispatched.payload.instrument.updatePreset).toBeUndefined();
 
@@ -241,13 +239,9 @@ describe('trackListActions', () => {
 
             expect(engine.addPlugin).toHaveBeenCalledWith(7, expect.objectContaining({ id: 4 }));
             expect(engine.refreshTrackNode).toHaveBeenCalledWith(7);
-            expect(dispatch).toHaveBeenCalledWith({
-                type: 'SET_TRACK_PLUGINS',
-                payload: {
-                    index: 1,
-                    pluginList: [{ id: 4, name: 'Equalizer', index: 0, preset: { gain: 0 } }],
-                },
-            });
+            expect(dispatch).toHaveBeenCalledWith(
+                slice.setTrackPlugins(1, [{ id: 4, name: 'Equalizer', index: 0, preset: { gain: 0 } }]),
+            );
         });
 
         it('removes through the engine so the live array the node holds is the one mutated', () => {
@@ -257,10 +251,7 @@ describe('trackListActions', () => {
 
             expect(engine.removePlugin).toHaveBeenCalledWith(9, 0);
             expect(engine.refreshTrackNode).toHaveBeenCalledWith(9);
-            expect(dispatch).toHaveBeenCalledWith({
-                type: 'SET_TRACK_PLUGINS',
-                payload: { index: 2, pluginList: [] },
-            });
+            expect(dispatch).toHaveBeenCalledWith(slice.setTrackPlugins(2, []));
         });
     });
 
@@ -269,10 +260,7 @@ describe('trackListActions', () => {
             const { dispatch } = run(actions.changePluginPreset(1, 0, { gain: 3 }));
 
             expect(engine.updatePluginPreset).toHaveBeenCalledWith(7, 0, { gain: 3 });
-            expect(dispatch).toHaveBeenCalledWith({
-                type: 'CHANGE_PLUGIN_PRESET',
-                payload: { index: 1, pluginIndex: 0, preset: { gain: 3 } },
-            });
+            expect(dispatch).toHaveBeenCalledWith(slice.changePluginPreset(1, 0, { gain: 3 }));
         });
     });
 
@@ -285,10 +273,7 @@ describe('trackListActions', () => {
 
             expect(engine.getInstrument).toHaveBeenCalledWith(7);
             expect(live.updatePreset).toHaveBeenCalledWith({ gain: 1 });
-            expect(dispatch).toHaveBeenCalledWith({
-                type: 'UPDATE_INSTRUMENT_PRESET',
-                payload: { index: 1, preset: { gain: 1 } },
-            });
+            expect(dispatch).toHaveBeenCalledWith(slice.updateInstrumentPreset({ gain: 1 }, 1));
         });
     });
 });

@@ -1,7 +1,24 @@
 /**
  * @jest-environment jsdom
  */
-import reducer from 'reducers/tracksReducer';
+import reducer, {
+    addTrack,
+    removeTrack,
+    changeRecordState,
+    changeSoloState,
+    changeMuteState,
+    changeTrackName,
+    changeSelectedTrack,
+    changeTrackVolume,
+    changeTrackPan,
+    changeTrackOutput,
+    addNewTrackModalVisibilitySwitch,
+    trackIndexUp,
+    trackIndexDown,
+    setTrackPlugins,
+    updateInstrumentPreset,
+    changePluginPreset,
+} from 'reducers/tracksReducer';
 import { TrackTypes } from 'constants/Constants';
 
 /**
@@ -91,30 +108,27 @@ describe('tracksReducer', () => {
         expect(reducer(state, { type: 'NOT_A_REAL_ACTION' })).toBe(state);
     });
 
-    describe('CHANGE_TRACK_NAME', () => {
+    describe('changeTrackName', () => {
         it('renames the addressed track only', () => {
-            const state: any = reducer(makeState(), {
-                type: 'CHANGE_TRACK_NAME',
-                payload: { index: 2, newTrackName: 'renamed' },
-            });
+            const state: any = reducer(makeState(), changeTrackName('renamed', 2));
 
             expect(trackAt(state, 2).name).toBe('renamed');
             expect(trackAt(state, 1).name).toBe('track one');
         });
     });
 
-    describe('CHANGE_RECORD_STATE', () => {
+    describe('changeRecordState', () => {
         it('toggles the record arm of the addressed track', () => {
-            const state: any = reducer(makeState(), { type: 'CHANGE_RECORD_STATE', payload: 2 });
+            const state: any = reducer(makeState(), changeRecordState(2));
 
             expect(trackAt(state, 2).record).toBe(true);
             expect(trackAt(state, 1).record).toBe(true);
         });
     });
 
-    describe('CHANGE_SELECTED_TRACK', () => {
+    describe('changeSelectedTrack', () => {
         it('moves the single armed track to the newly selected one', () => {
-            const state: any = reducer(makeState(), { type: 'CHANGE_SELECTED_TRACK', payload: 2 });
+            const state: any = reducer(makeState(), changeSelectedTrack(2));
 
             expect(state.selected).toBe(2);
             expect(trackAt(state, 2).record).toBe(true);
@@ -125,31 +139,31 @@ describe('tracksReducer', () => {
             const initial = makeState();
             initial.trackList[2].record = true;
 
-            const state: any = reducer(initial, { type: 'CHANGE_SELECTED_TRACK', payload: 2 });
+            const state: any = reducer(initial, changeSelectedTrack(2));
 
             expect(trackAt(state, 1).record).toBe(true);
             expect(trackAt(state, 2).record).toBe(true);
         });
 
         it('never arms an aux track', () => {
-            const state: any = reducer(makeState(), { type: 'CHANGE_SELECTED_TRACK', payload: 0 });
+            const state: any = reducer(makeState(), changeSelectedTrack(0));
 
             expect(trackAt(state, 0).record).toBe(false);
             expect(state.selected).toBe(0);
         });
     });
 
-    describe('CHANGE_TRACK_MUTE_STATE', () => {
+    describe('changeMuteState', () => {
         it('toggles mute', () => {
-            const state: any = reducer(makeState(), { type: 'CHANGE_TRACK_MUTE_STATE', payload: 1 });
+            const state: any = reducer(makeState(), changeMuteState(1));
 
             expect(trackAt(state, 1).mute).toBe(true);
         });
     });
 
-    describe('CHANGE_TRACK_SOLO_STATE', () => {
+    describe('changeSoloState', () => {
         it('raises anyVirtualInstrumentSolo', () => {
-            const state: any = reducer(makeState(), { type: 'CHANGE_TRACK_SOLO_STATE', payload: 1 });
+            const state: any = reducer(makeState(), changeSoloState(1));
 
             expect(trackAt(state, 1).solo).toBe(true);
             expect(state.anyVirtualInstrumentSolo).toBe(true);
@@ -161,40 +175,34 @@ describe('tracksReducer', () => {
             initial.trackList[1].solo = true;
             initial.anyVirtualInstrumentSolo = true;
 
-            const state: any = reducer(initial, { type: 'CHANGE_TRACK_SOLO_STATE', payload: 1 });
+            const state: any = reducer(initial, changeSoloState(1));
 
             expect(trackAt(state, 1).solo).toBe(false);
             expect(state.anyVirtualInstrumentSolo).toBe(false);
         });
     });
 
-    describe('CHANGE_TRACK_VOLUME / CHANGE_TRACK_PAN', () => {
+    describe('changeTrackVolume / changeTrackPan', () => {
         it('stores the volume', () => {
-            const state: any = reducer(makeState(), {
-                type: 'CHANGE_TRACK_VOLUME',
-                payload: { index: 1, volume: 0.25 },
-            });
+            const state: any = reducer(makeState(), changeTrackVolume(1, 0.25));
 
             expect(trackAt(state, 1).volume).toBe(0.25);
         });
 
         it('stores the pan', () => {
-            const state: any = reducer(makeState(), { type: 'CHANGE_TRACK_PAN', payload: { index: 2, pan: -0.5 } });
+            const state: any = reducer(makeState(), changeTrackPan(2, -0.5));
 
             expect(trackAt(state, 2).pan).toBe(-0.5);
         });
     });
 
-    describe('CHANGE_TRACK_OUTPUT', () => {
+    describe('changeTrackOutput', () => {
         it('rewires the routing lists on both ends', () => {
             const initial = makeState();
             // Make track 2 an aux so track 1 has somewhere else to go.
             initial.trackList[2].trackType = TrackTypes.aux;
 
-            const state: any = reducer(initial, {
-                type: 'CHANGE_TRACK_OUTPUT',
-                payload: { index: 1, outputIndex: 2 },
-            });
+            const state: any = reducer(initial, changeTrackOutput(1, 2));
 
             expect(trackAt(state, 1).output).toBe(2);
             expect(trackAt(state, 0).input).not.toContain(1);
@@ -202,9 +210,9 @@ describe('tracksReducer', () => {
         });
     });
 
-    describe('TRACK_INDEX_UP / TRACK_INDEX_DOWN', () => {
+    describe('trackIndexUp / trackIndexDown', () => {
         it('swaps a track with the one above it and keeps the list sorted', () => {
-            const state: any = reducer(makeState(), { type: 'TRACK_INDEX_UP', payload: 1 });
+            const state: any = reducer(makeState(), trackIndexUp(1));
 
             expect(state.trackList.map((track: any) => track.index)).toEqual([0, 1, 2]);
             expect(trackAt(state, 2).name).toBe('track one');
@@ -212,7 +220,7 @@ describe('tracksReducer', () => {
         });
 
         it('swaps a track with the one below it', () => {
-            const state: any = reducer(makeState(), { type: 'TRACK_INDEX_DOWN', payload: 2 });
+            const state: any = reducer(makeState(), trackIndexDown(2));
 
             expect(state.trackList.map((track: any) => track.index)).toEqual([0, 1, 2]);
             expect(trackAt(state, 1).name).toBe('track two');
@@ -220,9 +228,9 @@ describe('tracksReducer', () => {
         });
     });
 
-    describe('REMOVE_TRACK', () => {
+    describe('removeTrack', () => {
         it('drops the track, reindexes the rest and unhooks it from its output', () => {
-            const state: any = reducer(makeState(), { type: 'REMOVE_TRACK', payload: 1 });
+            const state: any = reducer(makeState(), removeTrack(1));
 
             expect(state.trackList).toHaveLength(2);
             expect(state.trackList.map((track: any) => track.index)).toEqual([0, 1]);
@@ -231,15 +239,12 @@ describe('tracksReducer', () => {
         });
     });
 
-    describe('UPDATE_INSTRUMENT_PRESET', () => {
+    describe('updateInstrumentPreset', () => {
         it('keeps the descriptor preset in step with the live instrument', () => {
             const initial = makeState();
             initial.trackList[1].instrument = { id: 1, name: 'MultiOsc', preset: { gain: 0 } };
 
-            const state: any = reducer(initial, {
-                type: 'UPDATE_INSTRUMENT_PRESET',
-                payload: { index: 1, preset: { gain: 0.5 } },
-            });
+            const state: any = reducer(initial, updateInstrumentPreset({ gain: 0.5 }, 1));
 
             expect(trackAt(state, 1).instrument).toEqual({ id: 1, name: 'MultiOsc', preset: { gain: 0.5 } });
             // Descriptors are replaced, not mutated in place.
@@ -247,30 +252,24 @@ describe('tracksReducer', () => {
         });
 
         it('leaves tracks without an instrument alone', () => {
-            const state: any = reducer(makeState(), {
-                type: 'UPDATE_INSTRUMENT_PRESET',
-                payload: { index: 0, preset: { gain: 1 } },
-            });
+            const state: any = reducer(makeState(), updateInstrumentPreset({ gain: 1 }, 0));
 
             expect(trackAt(state, 0).instrument).toBeUndefined();
         });
     });
 
-    describe('SET_TRACK_PLUGINS', () => {
+    describe('setTrackPlugins', () => {
         it("replaces the addressed track's descriptor list", () => {
             const pluginList = [{ id: 4, name: 'Equalizer', index: 0, preset: {} }];
 
-            const state: any = reducer(makeState(), {
-                type: 'SET_TRACK_PLUGINS',
-                payload: { index: 1, pluginList },
-            });
+            const state: any = reducer(makeState(), setTrackPlugins(1, pluginList));
 
             expect(trackAt(state, 1).pluginList).toBe(pluginList);
             expect(trackAt(state, 2).pluginList).toEqual([]);
         });
     });
 
-    describe('CHANGE_PLUGIN_PRESET', () => {
+    describe('changePluginPreset', () => {
         it('updates the descriptor preset of one plugin, replacing rather than mutating', () => {
             const initial = makeState();
             initial.trackList[1].pluginList = [
@@ -278,10 +277,7 @@ describe('tracksReducer', () => {
                 { id: 0, name: 'Compressor', index: 1, preset: { ratio: 20 } },
             ];
 
-            const state: any = reducer(initial, {
-                type: 'CHANGE_PLUGIN_PRESET',
-                payload: { index: 1, pluginIndex: 0, preset: { lowFilterGain: 6 } },
-            });
+            const state: any = reducer(initial, changePluginPreset(1, 0, { lowFilterGain: 6 }));
 
             expect(trackAt(state, 1).pluginList[0].preset).toEqual({ lowFilterGain: 6 });
             expect(trackAt(state, 1).pluginList[1].preset).toEqual({ ratio: 20 });
@@ -289,20 +285,17 @@ describe('tracksReducer', () => {
         });
     });
 
-    describe('ADD_NEW_TRACK_MODAL_VISIBILITY_SWITCH', () => {
+    describe('addNewTrackModalVisibilitySwitch', () => {
         it('toggles the modal flag', () => {
-            const state: any = reducer(makeState(), { type: 'ADD_NEW_TRACK_MODAL_VISIBILITY_SWITCH' });
+            const state: any = reducer(makeState(), addNewTrackModalVisibilitySwitch(undefined));
 
             expect(state.showAddNewTrackModal).toBe(true);
         });
     });
 
-    describe('ADD_TRACK', () => {
+    describe('addTrack', () => {
         it('appends a descriptor with the id handed to it and bumps nextTrackId', () => {
-            const state: any = reducer(makeState(), {
-                type: 'ADD_TRACK',
-                payload: { trackType: TrackTypes.aux, instrument: null, pluginList: [], id: 3 },
-            });
+            const state: any = reducer(makeState(), addTrack(TrackTypes.aux, null, [], 3));
 
             expect(state.trackList).toHaveLength(4);
             expect(state.trackList[3].id).toBe(3);
@@ -313,12 +306,12 @@ describe('tracksReducer', () => {
     });
 
     it('keeps track ids stable when indices are renumbered', () => {
-        const removed: any = reducer(makeState(), { type: 'REMOVE_TRACK', payload: 1 });
+        const removed: any = reducer(makeState(), removeTrack(1));
 
         // "track two" kept id 2 even though its index moved from 2 to 1.
         expect(trackAt(removed, 1).id).toBe(2);
 
-        const reordered: any = reducer(makeState(), { type: 'TRACK_INDEX_UP', payload: 1 });
+        const reordered: any = reducer(makeState(), trackIndexUp(1));
         expect(trackAt(reordered, 2).id).toBe(1);
         expect(trackAt(reordered, 1).id).toBe(2);
     });
