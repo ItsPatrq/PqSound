@@ -1,24 +1,27 @@
 import * as path from 'path';
 import type * as webpack from 'webpack';
-import { DemoController } from './controllers/DemoController';
+import { demoRouter } from './controllers/DemoController';
 import { getInstrument } from './controllers/SamplerController';
-import { Server } from '@overnightjs/core';
-import { Logger } from '@overnightjs/logger';
+import { Logger } from './logger';
+import { rateLimit } from 'express-rate-limit';
 import { publicPath } from '../webpackCfg/defaults';
-import * as express from 'express';
+// `import =` rather than a namespace import: express is a callable CommonJS
+// export and the project does not enable esModuleInterop.
+import express = require('express');
 // webpack + dev-middleware are dev-only; they are require()d lazily inside setupFrontEnd()
 // so production never loads them (keeps them out of the runtime dependency graph).
 
-export class DawApiServer extends Server {
-    private readonly SERVER_START_MSG =
-        '🌎 ==>\x1b[0m ' + (process.env.hostName === 'localhost' ? 'localhost' : process.env.hostName) + ':';
+export class DawApiServer {
+    // `hostName` is set in the deployed environment; both branches read it, so
+    // this only distinguishes the literal 'localhost' case for readability.
+    private readonly SERVER_START_MSG = '🌎 ==>\x1b[0m ' + (process.env.hostName || 'localhost') + ':';
+    public readonly app = express();
     private compiler?: webpack.Compiler;
     private webpackInitialized = false;
     constructor() {
-        super(true);
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
-        super.addControllers(new DemoController());
+        this.app.use('/api/say-hello', demoRouter);
         this.setupFrontEnd();
         this.setupRoutes();
     }
@@ -28,7 +31,19 @@ export class DawApiServer extends Server {
     }
 
     private setupRoutes(): void {
-        this.app.route('/api/samplerinstrument/*').get(getInstrument);
+        // The sampler endpoint reads files off disk per request; cap how fast a
+        // single client can do that. Generous, since loading one instrument
+        // fetches ~80 samples at once.
+        const samplerLimiter = rateLimit({
+            windowMs: 60_000,
+            limit: 600,
+            standardHeaders: 'draft-7',
+            legacyHeaders: false,
+        });
+        // Express 5 (path-to-regexp v8) requires a *named* wildcard: a bare '*'
+        // throws at registration. Until overnightjs was dropped this route ran on
+        // the Express 4 app that package created, which is why it worked.
+        this.app.route('/api/samplerinstrument/*splat').get(samplerLimiter, getInstrument);
         this.app.use(function (req, res) {
             res.status(404).send({ url: req.originalUrl + ' not found' });
         });
