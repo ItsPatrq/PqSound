@@ -144,6 +144,45 @@ export class DawPage {
         await this.trackRow(position).locator('[title="M"]').first().click();
     }
 
+    /* ---- composition grid + piano roll ---- */
+
+    /** Transport tool buttons in the header ("Pointer" / "Draw" / "Erase" / "Split"). */
+    async selectTool(title: 'Pointer' | 'Draw' | 'Erase' | 'Split'): Promise<void> {
+        await this.header.locator(`button[title="${title}"]`).click();
+    }
+
+    /** Composition-grid lanes; row 0 is the first non-aux track. */
+    compositionRow(position: number): Locator {
+        return this.page.locator('.trackCompositionRow').nth(position);
+    }
+
+    /** Region blocks inside a lane. */
+    regionsInRow(position: number): Locator {
+        return this.compositionRow(position).locator('.trackCompositionBit.region');
+    }
+
+    /** Clicks an empty bar; with the Draw tool that creates a region. */
+    async clickBar(rowPosition: number, barIndex: number): Promise<void> {
+        await this.compositionRow(rowPosition).locator('.trackCompositionBit').nth(barIndex).click();
+    }
+
+    pianoRoll(): Locator {
+        return this.page.locator('.pianRollKeyRows');
+    }
+
+    pianoRollNotes(): Locator {
+        return this.pianoRoll().locator('.note');
+    }
+
+    /**
+     * Clicks a piano-roll key row. The row derives the sixteenth from the click
+     * x-offset (30 px per sixteenth), so the offset picks the column.
+     */
+    async clickPianoRollRow(rowPosition: number, sixteenth: number): Promise<void> {
+        const row = this.pianoRoll().locator('.keyRow').nth(rowPosition);
+        await row.click({ position: { x: sixteenth * 30 + 5, y: 5 }, force: true });
+    }
+
     async removePlugin(name: string): Promise<void> {
         await this.pluginRow(name).locator('.pluginRowRemove').click();
     }
