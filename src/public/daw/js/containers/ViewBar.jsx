@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Store from '../stroe';
+import Store from '../store';
 import { switchPianorollVisibility, switchMixerVisibility } from 'actions/compositionActions';
 import * as Utils from 'engine/Utils';
 import AudioEngine from 'engine/AudioEngine';
