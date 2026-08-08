@@ -12,12 +12,9 @@ const store = configureStore({
             // state. The live AudioContext/Track/instrument/plugin objects live
             // in engine/AudioEngine.
             serializableCheck: true,
-            // Off for now: the reducers are copy-on-write at the list level but
-            // still mutate the track objects inside (e.g. `newTrackList[i].record = …`
-            // after a shallow `[...state.trackList]`), which this check flags.
-            // Making them fully immutable — or moving them to RTK's createSlice,
-            // where Immer handles it — is the follow-up.
-            immutableCheck: false,
+            // On since the reducers were made fully copy-on-write: nothing
+            // writes to an object from the previous state any more.
+            immutableCheck: true,
         }),
     // RTK wires the Redux DevTools extension itself; the manual composeEnhancers
     // dance the old store did is gone.

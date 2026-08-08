@@ -67,7 +67,7 @@ export default function reducer(
         case 'CHANGE_KEY_BINDINGS': {
             const newKeyBindings = [...state.keyBindings];
             for (let i = 0; i < newKeyBindings.length; i++) {
-                newKeyBindings[i].MIDINote = newKeyBindings[i].MIDINote + action.payload;
+                newKeyBindings[i] = { ...newKeyBindings[i], MIDINote: newKeyBindings[i].MIDINote + action.payload };
             }
             return {
                 ...state,

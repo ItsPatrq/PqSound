@@ -19,14 +19,11 @@ export default function reducer(
 ) {
     switch (action.type) {
         case 'REMOVE_TRACK_FROM_COMPOSITION': {
-            const newRegionList = state.regionList.filter((el) => {
-                return el.trackIndex !== action.payload;
-            });
-            for (let i = 0; i < newRegionList.length; i++) {
-                if (newRegionList[i].trackIndex > action.payload) {
-                    newRegionList[i].trackIndex = newRegionList[i].trackIndex - 1;
-                }
-            }
+            // Copy-on-write: the surviving regions are the same objects as in
+            // the previous state, so shifting the index has to replace them.
+            const newRegionList = state.regionList
+                .filter((el) => el.trackIndex !== action.payload)
+                .map((el) => (el.trackIndex > action.payload ? { ...el, trackIndex: el.trackIndex - 1 } : el));
             const newPianoRollRegion = state.pianoRollRegion === action.payload ? null : state.pianoRollRegion;
             return {
                 ...state,

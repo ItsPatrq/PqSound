@@ -7,10 +7,69 @@ import { TrackTypes } from 'constants/Constants';
  * plugins are built by the thunks in actions/trackListActions and handed to
  * this reducer already constructed. Nothing here calls `new` or touches an
  * audio node — see #156.
+ *
+ * Fully copy-on-write: no case writes to an object from the previous state, so
+ * the store can run RTK's `immutableCheck`.
  */
 // Placeholder descriptor: the real one arrives with INIT_INSTRUMENT_CONTEXT,
 // but the UI renders before that and reads .id/.name/.preset off it.
 const firstInstrument = { id: null, name: '', preset: null };
+
+/** Replaces the tracks matching `predicate` with `update(track)`. */
+const updateTracks = (trackList, predicate, update) =>
+    trackList.map((track) => (predicate(track) ? update(track) : track));
+
+const updateTrackAtIndex = (trackList, index, update) =>
+    updateTracks(trackList, (track) => track.index === index, update);
+
+/**
+ * Moves the track at `movedIndex` by `movedDelta` and the one it swaps with by
+ * `otherDelta`, carrying the routing with it: every child's `output` follows its
+ * parent, and the parents' entries in their own output's `input` list follow
+ * their new index. Used by both reorder actions.
+ */
+const reorderTracks = (trackList, movedIndex, movedDelta, otherIndex, otherDelta) => {
+    const moves = [
+        [Utils.getTrackByIndex(trackList, movedIndex), movedDelta],
+        [Utils.getTrackByIndex(trackList, otherIndex), otherDelta],
+    ].filter(([track]) => !!track);
+
+    const indexDelta = new Map();
+    const childOutputDelta = new Map();
+    const inputRewrites = new Map();
+    moves.forEach(([track, delta]) => {
+        indexDelta.set(track.index, delta);
+        track.input.forEach((childIndex) => childOutputDelta.set(childIndex, delta));
+        const rewrites = inputRewrites.get(track.output) || [];
+        rewrites.push([track.index, delta]);
+        inputRewrites.set(track.output, rewrites);
+    });
+
+    return trackList
+        .map((track) => {
+            let next = track;
+            const rewrites = inputRewrites.get(track.index);
+            if (rewrites) {
+                const input = [...next.input];
+                rewrites.forEach(([entry, delta]) => {
+                    const position = input.indexOf(entry);
+                    if (position !== -1) {
+                        input[position] = input[position] + delta;
+                    }
+                });
+                next = { ...next, input };
+            }
+            if (childOutputDelta.has(track.index)) {
+                next = { ...next, output: next.output + childOutputDelta.get(track.index) };
+            }
+            if (indexDelta.has(track.index)) {
+                next = { ...next, index: next.index + indexDelta.get(track.index) };
+            }
+            return next;
+        })
+        .sort((a, b) => a.index - b.index);
+};
+
 export default function reducer(
     state = {
         trackList: [
@@ -55,9 +114,12 @@ export default function reducer(
 ) {
     switch (action.type) {
         case 'ADD_TRACK': {
-            const newTrackList = [...state.trackList];
-            newTrackList[0].input.push(state.trackList.length);
-            newTrackList.push({
+            const newTrackIndex = state.trackList.length;
+            const trackList = updateTrackAtIndex(state.trackList, 0, (master) => ({
+                ...master,
+                input: [...master.input, newTrackIndex],
+            }));
+            trackList.push({
                 name: 'Default',
                 trackType: action.payload.trackType,
                 instrument: action.payload.instrument,
@@ -67,218 +129,186 @@ export default function reducer(
                 record: false,
                 mute: false,
                 solo: false,
-                index: state.trackList.length,
+                index: newTrackIndex,
                 id: action.payload.id,
                 output: 0,
                 input: [],
             });
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: trackList,
                 nextTrackId: action.payload.id + 1,
             };
         }
         case 'REMOVE_TRACK': {
-            const newTrackList = [...state.trackList];
-            let selected = state.selected;
-            for (let i = 1; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload) {
-                    selected = selected === newTrackList.length - 1 ? selected - 1 : selected;
-                    const currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
-                    for (let j = 0; j < currOutput.input.length; j++) {
-                        if (currOutput.input[j] === action.payload) {
-                            currOutput.input.splice(j, 1);
-                            break;
-                        }
-                    }
-                    for (let j = 0; j < newTrackList[i].input.length; j++) {
-                        Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output = newTrackList[i].output;
-                        currOutput.input.push(newTrackList[i].input[j]);
-                    }
-                    newTrackList.splice(i, 1);
-                    for (let j = 0; j < newTrackList.length; j++) {
-                        const currTrack = Utils.getTrackByIndex(newTrackList, newTrackList[j].index);
-                        for (let k = 0; k < currTrack.input.length; k++) {
-                            if (currTrack.input[k] >= i) {
-                                --currTrack.input[k];
-                            }
-                        }
-                        currTrack.output = currTrack.output >= i ? currTrack.output - 1 : currTrack.output;
-                        currTrack.index = currTrack.index >= i ? currTrack.index - 1 : currTrack.index;
-                    }
-                    break;
-                }
+            // Master (position 0) is never removable.
+            const position = state.trackList.findIndex((track, i) => i >= 1 && track.index === action.payload);
+            if (position === -1) {
+                return state;
             }
+            const removed = state.trackList[position];
+            const selected = state.selected === state.trackList.length - 1 ? state.selected - 1 : state.selected;
+
+            // Re-parent the removed track's children onto its own output, then
+            // drop it and close the gap its index left behind.
+            const rewired = state.trackList.map((track) => {
+                if (track.index === removed.output) {
+                    return {
+                        ...track,
+                        input: track.input.filter((entry) => entry !== action.payload).concat(removed.input),
+                    };
+                }
+                if (removed.input.includes(track.index)) {
+                    return { ...track, output: removed.output };
+                }
+                return track;
+            });
+            const trackList = rewired
+                .filter((track, i) => i !== position)
+                .map((track) => ({
+                    ...track,
+                    input: track.input.map((entry) => (entry >= position ? entry - 1 : entry)),
+                    output: track.output >= position ? track.output - 1 : track.output,
+                    index: track.index >= position ? track.index - 1 : track.index,
+                }));
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: trackList,
                 selected: selected,
             };
         }
         case 'CHANGE_RECORD_STATE': {
-            const newTrackList = [...state.trackList];
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload) {
-                    newTrackList[i].record = !newTrackList[i].record;
-                }
-            }
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: updateTrackAtIndex(state.trackList, action.payload, (track) => ({
+                    ...track,
+                    record: !track.record,
+                })),
             };
         }
         case 'CHANGE_TRACK_SOLO_STATE': {
-            const newTrackList = [...state.trackList];
+            // Master (position 0) has no solo of its own.
+            const trackList = state.trackList.map((track, i) =>
+                i >= 1 && track.index === action.payload ? { ...track, solo: !track.solo } : track,
+            );
             let newAnyVirtualInstrumentSolo = false;
             let newAnyAuxSolo = false;
-            for (let i = 1; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload) {
-                    newTrackList[i].solo = !newTrackList[i].solo;
-                }
-                if (newTrackList[i].solo) {
-                    if (newTrackList[i].trackType === TrackTypes.virtualInstrument) {
+            for (let i = 1; i < trackList.length; i++) {
+                if (trackList[i].solo) {
+                    if (trackList[i].trackType === TrackTypes.virtualInstrument) {
                         newAnyVirtualInstrumentSolo = true;
-                    } else if (newTrackList[i].trackType === TrackTypes.aux) {
+                    } else if (trackList[i].trackType === TrackTypes.aux) {
                         newAnyAuxSolo = true;
                     }
                 }
             }
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: trackList,
                 anyVirtualInstrumentSolo: newAnyVirtualInstrumentSolo,
                 anyAuxSolo: newAnyAuxSolo,
             };
         }
         case 'CHANGE_TRACK_MUTE_STATE': {
-            const newTrackList = [...state.trackList];
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload) {
-                    newTrackList[i].mute = !newTrackList[i].mute;
-                    break;
-                }
-            }
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: updateTrackAtIndex(state.trackList, action.payload, (track) => ({
+                    ...track,
+                    mute: !track.mute,
+                })),
             };
         }
         case 'CHANGE_TRACK_NAME': {
-            const newTrackList = [...state.trackList];
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload.index) {
-                    newTrackList[i].name = action.payload.newTrackName;
-                }
-            }
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: updateTrackAtIndex(state.trackList, action.payload.index, (track) => ({
+                    ...track,
+                    name: action.payload.newTrackName,
+                })),
             };
         }
         case 'CHANGE_SELECTED_TRACK': {
-            const newTrackList = [...state.trackList];
-            let recording = 0;
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].record) {
-                    recording++;
+            // With exactly one track armed, selecting moves the arm; with
+            // several, selecting only adds one. Aux tracks are never armed.
+            const armedCount = state.trackList.filter((track) => track.record).length;
+            const trackList = state.trackList.map((track) => {
+                let record = track.record;
+                if (armedCount === 1 && record) {
+                    record = false;
                 }
-            }
-            if (recording === 1) {
-                for (let i = 0; i < newTrackList.length; i++) {
-                    if (newTrackList[i].record) {
-                        newTrackList[i].record = false;
-                    }
-                    if (newTrackList[i].index === action.payload) {
-                        newTrackList[i].record = true;
-                    }
+                if (track.index === action.payload) {
+                    record = true;
                 }
-            } else {
-                for (let i = 0; i < newTrackList.length; i++) {
-                    if (newTrackList[i].index === action.payload) {
-                        newTrackList[i].record = true;
-                    }
+                if (record && track.trackType === TrackTypes.aux) {
+                    record = false;
                 }
-            }
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].record && newTrackList[i].trackType === TrackTypes.aux) {
-                    newTrackList[i].record = false;
-                }
-            }
+                return record === track.record ? track : { ...track, record };
+            });
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: trackList,
                 selected: action.payload,
             };
         }
         case 'INIT_INSTRUMENT_CONTEXT': {
-            const newTrackList = [...state.trackList];
-            const { index, instrument } = action.payload;
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === index) {
-                    newTrackList[i].instrument = instrument;
-                }
-            }
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: updateTrackAtIndex(state.trackList, action.payload.index, (track) => ({
+                    ...track,
+                    instrument: action.payload.instrument,
+                })),
             };
         }
         case 'CHANGE_TRACK_VOLUME': {
-            const newTrackList = [...state.trackList];
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload.index) {
-                    newTrackList[i].volume = action.payload.volume;
-                }
-            }
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: updateTrackAtIndex(state.trackList, action.payload.index, (track) => ({
+                    ...track,
+                    volume: action.payload.volume,
+                })),
             };
         }
         case 'CHANGE_TRACK_PAN': {
-            const newTrackList = [...state.trackList];
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload.index) {
-                    newTrackList[i].pan = action.payload.pan;
-                }
-            }
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: updateTrackAtIndex(state.trackList, action.payload.index, (track) => ({
+                    ...track,
+                    pan: action.payload.pan,
+                })),
             };
         }
         case 'CHANGE_TRACK_INSTRUMENT': {
-            const newTrackList = [...state.trackList];
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload.index) {
-                    newTrackList[i].instrument = action.payload.instrument;
-                    break;
-                }
-            }
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: updateTrackAtIndex(state.trackList, action.payload.index, (track) => ({
+                    ...track,
+                    instrument: action.payload.instrument,
+                })),
             };
         }
         case 'CHANGE_TRACK_OUTPUT': {
-            const newTrackList = [...state.trackList];
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload.index) {
-                    const currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
-                    for (let j = 0; j < currOutput.input.length; j++) {
-                        if (currOutput.input[j] === action.payload.index) {
-                            currOutput.input.splice(j, 1);
-                            break;
-                        }
-                    }
-                    newTrackList[i].output = action.payload.outputIndex;
-                    Utils.getTrackByIndex(newTrackList, action.payload.outputIndex).input.push(action.payload.index);
-                    break;
-                }
+            const track = Utils.getTrackByIndex(state.trackList, action.payload.index);
+            if (!track) {
+                return state;
             }
+            // Sequential, so a track that is both the old and the new output
+            // (or the moved track itself) picks up every applicable change.
+            const trackList = state.trackList.map((curr) => {
+                let next = curr;
+                if (curr.index === action.payload.index) {
+                    next = { ...next, output: action.payload.outputIndex };
+                }
+                if (curr.index === track.output) {
+                    next = { ...next, input: next.input.filter((entry) => entry !== action.payload.index) };
+                }
+                if (curr.index === action.payload.outputIndex) {
+                    next = { ...next, input: [...next.input, action.payload.index] };
+                }
+                return next;
+            });
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: trackList,
             };
         }
         case 'ADD_NEW_TRACK_MODAL_VISIBILITY_SWITCH': {
@@ -288,77 +318,15 @@ export default function reducer(
             };
         }
         case 'TRACK_INDEX_UP': {
-            const newTrackList = [...state.trackList];
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload) {
-                    for (let j = 0; j < newTrackList[i].input.length; j++) {
-                        Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output++;
-                    }
-                    const currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
-                    for (let j = 0; j < currOutput.input.length; j++) {
-                        if (currOutput.input[j] === newTrackList[i].index) {
-                            currOutput.input[j]++;
-                            break;
-                        }
-                    }
-                    ++newTrackList[i].index;
-                } else if (newTrackList[i].index === action.payload + 1) {
-                    for (let j = 0; j < newTrackList[i].input.length; j++) {
-                        Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output--;
-                    }
-                    const currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
-                    for (let j = 0; j < currOutput.input.length; j++) {
-                        if (currOutput.input[j] === newTrackList[i].index) {
-                            currOutput.input[j]--;
-                            break;
-                        }
-                    }
-                    --newTrackList[i].index;
-                }
-            }
-            newTrackList.sort((a, b) => {
-                return a.index - b.index;
-            });
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: reorderTracks(state.trackList, action.payload, 1, action.payload + 1, -1),
             };
         }
         case 'TRACK_INDEX_DOWN': {
-            const newTrackList = [...state.trackList];
-            for (let i = 0; i < newTrackList.length; i++) {
-                if (newTrackList[i].index === action.payload) {
-                    for (let j = 0; j < newTrackList[i].input.length; j++) {
-                        Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output--;
-                    }
-                    const currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
-                    for (let j = 0; j < currOutput.input.length; j++) {
-                        if (currOutput.input[j] === newTrackList[i].index) {
-                            currOutput.input[j]--;
-                            break;
-                        }
-                    }
-                    --newTrackList[i].index;
-                } else if (newTrackList[i].index === action.payload - 1) {
-                    for (let j = 0; j < newTrackList[i].input.length; j++) {
-                        Utils.getTrackByIndex(newTrackList, newTrackList[i].input[j]).output++;
-                    }
-                    const currOutput = Utils.getTrackByIndex(newTrackList, newTrackList[i].output);
-                    for (let j = 0; j < currOutput.input.length; j++) {
-                        if (currOutput.input[j] === newTrackList[i].index) {
-                            currOutput.input[j]++;
-                            break;
-                        }
-                    }
-                    ++newTrackList[i].index;
-                }
-            }
-            newTrackList.sort((a, b) => {
-                return a.index - b.index;
-            });
             return {
                 ...state,
-                trackList: newTrackList,
+                trackList: reorderTracks(state.trackList, action.payload, -1, action.payload - 1, 1),
             };
         }
         case 'SET_TRACK_PLUGINS': {
@@ -366,9 +334,10 @@ export default function reducer(
             // descriptor list after every add/remove.
             return {
                 ...state,
-                trackList: state.trackList.map((track) =>
-                    track.index === action.payload.index ? { ...track, pluginList: action.payload.pluginList } : track,
-                ),
+                trackList: updateTrackAtIndex(state.trackList, action.payload.index, (track) => ({
+                    ...track,
+                    pluginList: action.payload.pluginList,
+                })),
             };
         }
         case 'LOAD_TRACK_STATE': {
@@ -384,10 +353,13 @@ export default function reducer(
             // the store's copy of the preset in step for rendering and export.
             return {
                 ...state,
-                trackList: state.trackList.map((track) =>
-                    track.index === action.payload.index && track.instrument
-                        ? { ...track, instrument: { ...track.instrument, preset: action.payload.preset } }
-                        : track,
+                trackList: updateTracks(
+                    state.trackList,
+                    (track) => track.index === action.payload.index && !!track.instrument,
+                    (track) => ({
+                        ...track,
+                        instrument: { ...track.instrument, preset: action.payload.preset },
+                    }),
                 ),
             };
         }
@@ -396,18 +368,14 @@ export default function reducer(
             // store's copy of the preset in step for rendering and export.
             return {
                 ...state,
-                trackList: state.trackList.map((track) =>
-                    track.index === action.payload.index
-                        ? {
-                              ...track,
-                              pluginList: track.pluginList.map((plugin) =>
-                                  plugin.index === action.payload.pluginIndex
-                                      ? { ...plugin, preset: action.payload.preset }
-                                      : plugin,
-                              ),
-                          }
-                        : track,
-                ),
+                trackList: updateTrackAtIndex(state.trackList, action.payload.index, (track) => ({
+                    ...track,
+                    pluginList: track.pluginList.map((plugin) =>
+                        plugin.index === action.payload.pluginIndex
+                            ? { ...plugin, preset: action.payload.preset }
+                            : plugin,
+                    ),
+                })),
             };
         }
     }
