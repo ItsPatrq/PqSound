@@ -1,6 +1,7 @@
 import SamplerPresets from 'constants/SamplerPresets';
 import AudioEngine from 'engine/AudioEngine';
 import BufferLoader from 'engine/BufferLoader';
+import { initWebAudio, samplerInstrumentFetching, samplerInstrumentFetched } from 'reducers/webAudioReducer';
 
 /**
  * Builds the serializable per-instrument descriptor list. The decoded buffers
@@ -39,14 +40,13 @@ function findPresetById(instrumentId) {
 export function initializeWebAudio() {
     return function (dispatch) {
         const initialized = AudioEngine.init();
-        dispatch({
-            type: 'INIT_WEB_AUDIO',
-            payload: {
+        dispatch(
+            initWebAudio({
                 initialized: initialized,
                 sampleRate: AudioEngine.getSampleRate(),
                 samplerInstrumentsSounds: buildSamplerInstrumentDescriptors(),
-            },
-        });
+            }),
+        );
     };
 }
 
@@ -57,35 +57,15 @@ export function fetchSamplerInstrument(newInstrumentId) {
         if (!preset || !context) {
             return;
         }
-        dispatch({
-            type: 'NEED_TO_FETCH_SAMPLER_INSTRUMENT',
-            payload: {
-                instrumentId: newInstrumentId,
-            },
-        });
+        dispatch(samplerInstrumentFetching({ instrumentId: newInstrumentId }));
         const bufferLoader = new BufferLoader(
             context,
             preset.content.map((el) => el.url),
             (loadedBufferLoader) => {
                 AudioEngine.setInstrumentBuffers(preset.name, loadedBufferLoader.bufferList);
-                dispatch({
-                    type: 'FETCHED_SAMPLER_INSTRUMENT',
-                    payload: {
-                        id: newInstrumentId,
-                    },
-                });
+                dispatch(samplerInstrumentFetched({ id: newInstrumentId }));
             },
         );
         bufferLoader.load();
-    };
-}
-
-export function loadKeyboardSounds(loadName, loadVolume) {
-    return {
-        type: 'LOAD_KEYBOARD_SOUNDS',
-        payload: {
-            name: loadName,
-            volume: loadVolume,
-        },
     };
 }
