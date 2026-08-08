@@ -3,6 +3,7 @@ import type * as webpack from 'webpack';
 import { demoRouter } from './controllers/DemoController';
 import { getInstrument } from './controllers/SamplerController';
 import { Logger } from './logger';
+import { rateLimit } from 'express-rate-limit';
 import { publicPath } from '../webpackCfg/defaults';
 // `import =` rather than a namespace import: express is a callable CommonJS
 // export and the project does not enable esModuleInterop.
@@ -30,10 +31,19 @@ export class DawApiServer {
     }
 
     private setupRoutes(): void {
+        // The sampler endpoint reads files off disk per request; cap how fast a
+        // single client can do that. Generous, since loading one instrument
+        // fetches ~80 samples at once.
+        const samplerLimiter = rateLimit({
+            windowMs: 60_000,
+            limit: 600,
+            standardHeaders: 'draft-7',
+            legacyHeaders: false,
+        });
         // Express 5 (path-to-regexp v8) requires a *named* wildcard: a bare '*'
         // throws at registration. Until overnightjs was dropped this route ran on
         // the Express 4 app that package created, which is why it worked.
-        this.app.route('/api/samplerinstrument/*splat').get(getInstrument);
+        this.app.route('/api/samplerinstrument/*splat').get(samplerLimiter, getInstrument);
         this.app.use(function (req, res) {
             res.status(404).send({ url: req.originalUrl + ' not found' });
         });
