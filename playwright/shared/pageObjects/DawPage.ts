@@ -116,6 +116,34 @@ export class DawPage {
         await expect(this.fxPanel).toContainText(name);
     }
 
+    /**
+     * Track-row controls, addressed by row position — the name lives in an
+     * <input>, so its value is not matchable as text.
+     */
+    trackRow(position: number): Locator {
+        return this.trackRows.nth(position);
+    }
+
+    async moveTrackDown(position: number): Promise<void> {
+        await this.trackRow(position).locator('[title="Move down"]').first().click();
+    }
+
+    async moveTrackUp(position: number): Promise<void> {
+        await this.trackRow(position).locator('[title="Move up"]').first().click();
+    }
+
+    async removeTrackRow(position: number): Promise<void> {
+        await this.trackRow(position).locator('[title="Remove track"]').first().click();
+    }
+
+    async toggleTrackSolo(position: number): Promise<void> {
+        await this.trackRow(position).locator('[title="S"]').first().click();
+    }
+
+    async toggleTrackMute(position: number): Promise<void> {
+        await this.trackRow(position).locator('[title="M"]').first().click();
+    }
+
     async removePlugin(name: string): Promise<void> {
         await this.pluginRow(name).locator('.pluginRowRemove').click();
     }
