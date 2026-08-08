@@ -1,41 +1,40 @@
+import { createSlice } from '@reduxjs/toolkit';
+
 /**
  * Serializable-only slice. The live AudioContext / Sound / decoded buffers live
- * in `engine/AudioEngine`; this reducer tracks just what the UI renders from.
+ * in `engine/AudioEngine`; this tracks just what the UI renders from. Converted
+ * to createSlice (#156 follow-up); the creators are re-exported from
+ * actions/webAudioActions, which keeps the thunks that build the engine objects.
  */
-export default function reducer(
-    state = {
+const webAudioSlice = createSlice({
+    name: 'webAudio',
+    initialState: {
         initialized: false,
         sampleRate: null,
         samplerInstrumentsSounds: [],
     },
-    action,
-) {
-    switch (action.type) {
-        case 'INIT_WEB_AUDIO': {
-            return {
-                ...state,
-                initialized: action.payload.initialized,
-                sampleRate: action.payload.sampleRate,
-                samplerInstrumentsSounds: action.payload.samplerInstrumentsSounds,
-            };
-        }
-        case 'NEED_TO_FETCH_SAMPLER_INSTRUMENT': {
-            return {
-                ...state,
-                samplerInstrumentsSounds: state.samplerInstrumentsSounds.map((instrument) =>
-                    instrument.id === action.payload.instrumentId ? { ...instrument, fetching: true } : instrument,
-                ),
-            };
-        }
-        case 'FETCHED_SAMPLER_INSTRUMENT': {
-            return {
-                ...state,
-                samplerInstrumentsSounds: state.samplerInstrumentsSounds.map((instrument) =>
-                    instrument.id === action.payload.id ? { ...instrument, loaded: true, fetching: false } : instrument,
-                ),
-            };
-        }
-    }
+    reducers: {
+        initWebAudio(state, action) {
+            state.initialized = action.payload.initialized;
+            state.sampleRate = action.payload.sampleRate;
+            state.samplerInstrumentsSounds = action.payload.samplerInstrumentsSounds;
+        },
+        samplerInstrumentFetching(state, action) {
+            const instrument = state.samplerInstrumentsSounds.find((curr) => curr.id === action.payload.instrumentId);
+            if (instrument) {
+                instrument.fetching = true;
+            }
+        },
+        samplerInstrumentFetched(state, action) {
+            const instrument = state.samplerInstrumentsSounds.find((curr) => curr.id === action.payload.id);
+            if (instrument) {
+                instrument.loaded = true;
+                instrument.fetching = false;
+            }
+        },
+    },
+});
 
-    return state;
-}
+export const { initWebAudio, samplerInstrumentFetching, samplerInstrumentFetched } = webAudioSlice.actions;
+
+export default webAudioSlice.reducer;
