@@ -1,6 +1,24 @@
 import * as Utils from 'engine/Utils';
 import * as compositionParser from 'engine/CompositionParser';
 
+/** Copies a region's note rows and the notes inside them. */
+const copyNotes = (notes) => notes.map((row) => (row ? row.map((note) => ({ ...note })) : row));
+
+/**
+ * Replaces one note row of one region, leaving every other region — and every
+ * other row of that region — untouched. Drawing a note used to deep-copy the
+ * whole composition (`JSON.parse(JSON.stringify(regionList))`) for this.
+ */
+const updateNoteRow = (regionList, regionId, noteNumber, update) =>
+    regionList.map((region) => {
+        if (region.id !== regionId) {
+            return region;
+        }
+        const notes = [...region.notes];
+        notes[noteNumber] = update(notes[noteNumber] || []);
+        return { ...region, notes };
+    });
+
 export default function reducer(
     state = {
         barsInComposition: 48,
@@ -32,39 +50,44 @@ export default function reducer(
             };
         }
         case 'ADD_REGION': {
-            const newRegionList = JSON.parse(JSON.stringify(state.regionList));
-            let newRegionLastId = state.regionLastId;
-            newRegionList.push({
-                id: ++newRegionLastId,
-                trackIndex: action.payload.trackIndex,
-                regionLength: action.payload.length,
-                start: action.payload.start,
-                end: action.payload.start + action.payload.length - 1,
-                notes: new Array(88),
-            });
+            const newRegionLastId = state.regionLastId + 1;
             return {
                 ...state,
-                regionList: newRegionList,
+                regionList: [
+                    ...state.regionList,
+                    {
+                        id: newRegionLastId,
+                        trackIndex: action.payload.trackIndex,
+                        regionLength: action.payload.length,
+                        start: action.payload.start,
+                        end: action.payload.start + action.payload.length - 1,
+                        notes: new Array(88),
+                    },
+                ],
                 regionLastId: newRegionLastId,
             };
         }
         case 'PASTE_REGION': {
-            const newRegionList = JSON.parse(JSON.stringify(state.regionList));
-            let newRegionLastId = state.regionLastId;
-            const copiedRegion = compositionParser.getRegionByRegionId(action.payload.copiedRegion, newRegionList);
-            if (!Utils.isNullOrUndefined(copiedRegion)) {
-                newRegionList.push({
-                    id: ++newRegionLastId,
-                    trackIndex: action.payload.trackIndex,
-                    regionLength: copiedRegion.regionLength,
-                    start: action.payload.start,
-                    end: action.payload.start + copiedRegion.regionLength - 1,
-                    notes: JSON.parse(JSON.stringify(copiedRegion.notes)),
-                });
+            const copiedRegion = compositionParser.getRegionByRegionId(action.payload.copiedRegion, state.regionList);
+            if (Utils.isNullOrUndefined(copiedRegion)) {
+                return state;
             }
+            const newRegionLastId = state.regionLastId + 1;
             return {
                 ...state,
-                regionList: newRegionList,
+                regionList: [
+                    ...state.regionList,
+                    {
+                        id: newRegionLastId,
+                        trackIndex: action.payload.trackIndex,
+                        regionLength: copiedRegion.regionLength,
+                        start: action.payload.start,
+                        end: action.payload.start + copiedRegion.regionLength - 1,
+                        // The pasted region owns its notes: copy the rows and the
+                        // notes in them, not just the outer array.
+                        notes: copyNotes(copiedRegion.notes),
+                    },
+                ],
                 regionLastId: newRegionLastId,
             };
         }
@@ -77,37 +100,39 @@ export default function reducer(
             };
         }
         case 'ADD_NOTE': {
-            const newRegionsList = JSON.parse(JSON.stringify(state.regionList));
-            const currRegion = compositionParser.getRegionByRegionId(action.payload.regionId, newRegionsList);
-            if (Utils.isNullOrUndefined(currRegion.notes[action.payload.noteNumber])) {
-                currRegion.notes[action.payload.noteNumber] = [];
-            }
-            currRegion.notes[action.payload.noteNumber].push({
-                sixteenthNumber: action.payload.sixteenthNumber,
-                length: action.payload.noteLength,
-            });
             return {
                 ...state,
-                regionList: newRegionsList,
+                regionList: updateNoteRow(
+                    state.regionList,
+                    action.payload.regionId,
+                    action.payload.noteNumber,
+                    (row) => [
+                        ...row,
+                        {
+                            sixteenthNumber: action.payload.sixteenthNumber,
+                            length: action.payload.noteLength,
+                        },
+                    ],
+                ),
             };
         }
         case 'REMOVE_NOTE': {
-            const newRegionsList = JSON.parse(JSON.stringify(state.regionList));
-            const currRegion = compositionParser.getRegionByRegionId(action.payload.regionId, newRegionsList);
-            for (let i = 0; i < currRegion.notes[action.payload.noteNumber].length; i++) {
-                if (
-                    currRegion.notes[action.payload.noteNumber][i].sixteenthNumber <= action.payload.sixteenthNumber &&
-                    currRegion.notes[action.payload.noteNumber][i].sixteenthNumber +
-                        currRegion.notes[action.payload.noteNumber][i].length >
-                        action.payload.sixteenthNumber
-                ) {
-                    currRegion.notes[action.payload.noteNumber].splice(i, 1);
-                    break;
-                }
-            }
             return {
                 ...state,
-                regionList: newRegionsList,
+                regionList: updateNoteRow(
+                    state.regionList,
+                    action.payload.regionId,
+                    action.payload.noteNumber,
+                    (row) => {
+                        // Only the first note covering that sixteenth is removed.
+                        const hit = row.findIndex(
+                            (note) =>
+                                note.sixteenthNumber <= action.payload.sixteenthNumber &&
+                                note.sixteenthNumber + note.length > action.payload.sixteenthNumber,
+                        );
+                        return hit === -1 ? row : [...row.slice(0, hit), ...row.slice(hit + 1)];
+                    },
+                ),
             };
         }
         case 'CHANGE_BITS_NUMBER': {
@@ -182,31 +207,31 @@ export default function reducer(
             };
         }
         case 'REGION_TRACK_INDEX_UP': {
-            const newRegionsList = JSON.parse(JSON.stringify(state.regionList));
-            for (let i = 0; i < newRegionsList.length; i++) {
-                if (newRegionsList[i].trackIndex === action.payload) {
-                    ++newRegionsList[i].trackIndex;
-                } else if (newRegionsList[i].trackIndex === action.payload + 1) {
-                    --newRegionsList[i].trackIndex;
-                }
-            }
             return {
                 ...state,
-                regionList: newRegionsList,
+                regionList: state.regionList.map((region) => {
+                    if (region.trackIndex === action.payload) {
+                        return { ...region, trackIndex: region.trackIndex + 1 };
+                    }
+                    if (region.trackIndex === action.payload + 1) {
+                        return { ...region, trackIndex: region.trackIndex - 1 };
+                    }
+                    return region;
+                }),
             };
         }
         case 'REGION_TRACK_INDEX_DOWN': {
-            const newRegionsList = JSON.parse(JSON.stringify(state.regionList));
-            for (let i = 0; i < newRegionsList.length; i++) {
-                if (newRegionsList[i].trackIndex === action.payload) {
-                    --newRegionsList[i].trackIndex;
-                } else if (newRegionsList[i].trackIndex === action.payload - 1) {
-                    ++newRegionsList[i].trackIndex;
-                }
-            }
             return {
                 ...state,
-                regionList: newRegionsList,
+                regionList: state.regionList.map((region) => {
+                    if (region.trackIndex === action.payload) {
+                        return { ...region, trackIndex: region.trackIndex - 1 };
+                    }
+                    if (region.trackIndex === action.payload - 1) {
+                        return { ...region, trackIndex: region.trackIndex + 1 };
+                    }
+                    return region;
+                }),
             };
         }
     }
