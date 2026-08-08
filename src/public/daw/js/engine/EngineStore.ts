@@ -1,7 +1,7 @@
 /**
  * The engine's one-way view of the Redux store.
  *
- * Engine classes used to `import Store from '../stroe'` directly, which made
+ * Engine classes used to `import Store from '../store'` directly, which made
  * the dependency run engine -> store -> reducers -> engine and closed an import
  * cycle. They now read through this bridge, which the store connects to itself
  * once at creation. Nothing under `engine/` imports the store module any more,
