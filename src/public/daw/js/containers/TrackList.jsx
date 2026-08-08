@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import Track from 'components/TrackList/Track';
 import * as trackListActions from 'actions/trackListActions';
-import * as compositionActions from 'actions/compositionActions';
+import * as compositionActions from 'reducers/compositionReducer';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 import AudioEngine from 'engine/AudioEngine';
@@ -97,7 +97,7 @@ class TrackList extends React.Component {
         } else if (this.props.selected === index + 1) {
             this.props.dispatch(trackListActions.changeSelectedTrack(index));
         }
-        this.props.dispatch(compositionActions.trackIndexUp(index));
+        this.props.dispatch(compositionActions.regionTrackIndexUp(index));
         this.props.dispatch(trackListActions.trackIndexUp(index));
     }
 
@@ -107,7 +107,7 @@ class TrackList extends React.Component {
         } else if (this.props.selected === index - 1) {
             this.props.dispatch(trackListActions.changeSelectedTrack(index));
         }
-        this.props.dispatch(compositionActions.trackIndexDown(index));
+        this.props.dispatch(compositionActions.regionTrackIndexDown(index));
         this.props.dispatch(trackListActions.trackIndexDown(index));
     }
 

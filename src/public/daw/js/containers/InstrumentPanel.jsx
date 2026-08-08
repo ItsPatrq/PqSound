@@ -6,7 +6,7 @@ import SamplerComponent from 'components/Instruments/Sampler';
 import MonotronComponent from 'components/Instruments/Monotron';
 import MultiOscComponent from 'components/Instruments/MultiOsc';
 import PqSynthComponent from 'components/Instruments/PqSynth';
-import * as Actions from 'actions/trackDetailsActions';
+import * as Actions from 'reducers/trackDetailsReducer';
 import { changeTrackInstrument, updateInstrumentPreset } from 'actions/trackListActions';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';

@@ -4,10 +4,9 @@ import * as Utils from 'engine/Utils';
 import { defaultKeyBindings } from 'constants/Constants';
 
 /**
- * First slice converted to RTK's createSlice (#156 follow-up). The bodies read
- * as mutations but run through Immer, so the copy-on-write rules the store's
- * immutableCheck enforces still hold. Action creators are re-exported from
- * actions/keyboardActions, so call sites are unchanged.
+ * Computer-keyboard input: visible range, held notes and key bindings. The
+ * bodies read as mutations but run through Immer, so the copy-on-write rules
+ * the store's immutableCheck enforces still hold.
  */
 const keyboardSlice = createSlice({
     name: 'keyboard',

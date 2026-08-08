@@ -5,8 +5,8 @@ import {
     updateWidth,
     switchKeyNameVisibility,
     switchKeyBindVisibility,
-} from 'actions/keyboardActions';
-import { loadCompositionState, changeBarsInComposition, switchLoop } from 'actions/compositionActions';
+} from 'reducers/keyboardReducer';
+import { loadCompositionState, changeBarsInComposition, switchLoop } from 'reducers/compositionReducer';
 import {
     switchUploadModalVisibility,
     switchAboutModalVisibility,

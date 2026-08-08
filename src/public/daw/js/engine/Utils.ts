@@ -37,17 +37,6 @@ export const removeAllFromArray = (array, condition) => {
     return newArray;
 };
 
-export const removeFirstFromArray = (array, condition) => {
-    const newArray = [...array];
-    for (let i = 0; i < newArray.length; i++) {
-        if (condition(newArray[i], i)) {
-            newArray.splice(i, 1);
-            break;
-        }
-    }
-    return newArray;
-};
-
 /**
  * Returns corresponding fequency for the MIDI note number
  * @param {*MIDI note number (for 69 frequency is equal to 440.0)} note
@@ -90,18 +79,24 @@ export const panLabel = (pan) => {
  */
 export const volumeToDb = (volume) => (volume > 0.0001 ? (20 * Math.log10(volume)).toFixed(1) : '-∞');
 
+/**
+ * Deep copy of plain data. Web Audio objects are not copyable, so they come
+ * back as null — the check is by constructor name rather than
+ * `instanceof AudioContext`, which throws wherever that global is absent
+ * (jsdom, node).
+ */
 export const copy = (data) => {
-    if (!(data instanceof AudioContext)) {
-        let v, key;
-        const output = Array.isArray(data) ? [] : {};
-        for (key in data) {
-            v = data[key];
-            output[key] = typeof v === 'object' ? copy(v) : v;
-        }
-        return output;
-    } else {
+    if (data === null || typeof data !== 'object') {
+        return data;
+    }
+    if (data.constructor && /^(AudioContext|BaseAudioContext|OfflineAudioContext)$/.test(data.constructor.name)) {
         return null;
     }
+    const output = Array.isArray(data) ? [] : {};
+    for (const key in data) {
+        output[key] = copy(data[key]);
+    }
+    return output;
 };
 
 export const devLog = (msg) => console.warn(msg);

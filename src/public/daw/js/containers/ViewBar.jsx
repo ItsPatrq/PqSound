@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import Store from '../store';
-import { switchPianorollVisibility, switchMixerVisibility } from 'actions/compositionActions';
+import { switchPianorollVisibility, switchMixerVisibility } from 'reducers/compositionReducer';
 import * as Utils from 'engine/Utils';
 import AudioEngine from 'engine/AudioEngine';
 

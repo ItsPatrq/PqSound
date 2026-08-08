@@ -3,9 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 import * as Constants from 'constants/Constants';
 
 /**
- * Transport, tools and modal flags. Converted to createSlice (#156 follow-up);
- * the plain action creators are re-exported from actions/controlActions, which
- * keeps the two thunks that live alongside them.
+ * Transport, tools and modal flags. The plain creators are re-exported from
+ * actions/controlActions, which keeps the two thunks that live alongside
+ * them.
  */
 const controlSlice = createSlice({
     name: 'control',
