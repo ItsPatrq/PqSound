@@ -1,19 +1,5 @@
-// `show` optional: omit to toggle (the name-click), or pass true/false to set it
-// explicitly (open on instrument-change, close on the panel's × button) so the two
-// callers can't desync the panel's open state.
-export function instrumentModalVisibilitySwitch(show) {
-    return {
-        type: 'INSTRUMENT_MODAL_VISIBILITY_SWITCH',
-        payload: show,
-    };
-}
-
-export function pluginModalVisibilitySwitch(newPluginIndex, newTrackIndex) {
-    return {
-        type: 'PLUGIN_MODAL_VISIBILITY_SWITCH',
-        payload: {
-            selectedPluginIndex: newPluginIndex,
-            selectedPluginTrackIndex: newTrackIndex,
-        },
-    };
-}
+/**
+ * The trackDetails slice owns these now — RTK generates the creators and their
+ * action types. Re-exported here so the existing import paths keep working.
+ */
+export { instrumentModalVisibilitySwitch, pluginModalVisibilitySwitch } from 'reducers/trackDetailsReducer';

@@ -1,8 +1,17 @@
+import { createSlice } from '@reduxjs/toolkit';
+
 import * as Utils from 'engine/Utils';
 import { defaultKeyBindings } from 'constants/Constants';
 
-export default function reducer(
-    state = {
+/**
+ * First slice converted to RTK's createSlice (#156 follow-up). The bodies read
+ * as mutations but run through Immer, so the copy-on-write rules the store's
+ * immutableCheck enforces still hold. Action creators are re-exported from
+ * actions/keyboardActions, so call sites are unchanged.
+ */
+const keyboardSlice = createSlice({
+    name: 'keyboard',
+    initialState: {
         width: 0,
         firstKey: 27, // C3 — the visible range always starts on a C
         show: false,
@@ -11,82 +20,54 @@ export default function reducer(
         keyBindings: defaultKeyBindings,
         keyBindVisible: true,
     },
-    action,
-) {
-    switch (action.type) {
-        case 'CHANGE_OCTAVE_NUMBER': {
-            return {
-                ...state,
-                octaves: action.payload,
-            };
-        }
-        case 'SWITCH_KEYBOARD_VISIBILITY': {
-            let showKeyboard;
-            if (Utils.isNullUndefinedOrEmpty(action.payload)) {
-                showKeyboard = !state.show;
-            } else {
-                showKeyboard = action.payload;
+    reducers: {
+        changeOctaveNumber(state, action) {
+            state.octaves = action.payload;
+        },
+        // Omit the payload to toggle, pass true/false to set it explicitly.
+        switchKeyboardVisibility(state, action) {
+            state.show = Utils.isNullUndefinedOrEmpty(action.payload) ? !state.show : action.payload;
+        },
+        updateWidth(state, action) {
+            state.width = action.payload;
+        },
+        changeFirstKeyboardKey(state, action) {
+            state.firstKey = action.payload;
+        },
+        addPlayingNote(state, action) {
+            state.notesPlaying.push(action.payload);
+        },
+        removePlayingNote(state, action) {
+            // Only the first occurrence: a note can be held from the keyboard
+            // and MIDI at once.
+            const position = state.notesPlaying.indexOf(action.payload);
+            if (position !== -1) {
+                state.notesPlaying.splice(position, 1);
             }
-            return {
-                ...state,
-                show: showKeyboard,
-            };
-        }
-        case 'UPDATE_WIDTH': {
-            return {
-                ...state,
-                width: action.payload,
-            };
-        }
-        case 'CHANGE_FIRST_KEYBOARD_KEY': {
-            return {
-                ...state,
-                firstKey: action.payload,
-            };
-        }
-        case 'ADD_PLAYING_NOTE': {
-            const newNotesPlaying = [...state.notesPlaying];
-            newNotesPlaying.push(action.payload);
-            return {
-                ...state,
-                notesPlaying: newNotesPlaying,
-            };
-        }
-        case 'REMOVE_PLAYING_NOTE': {
-            let newNotesPlaying = [...state.notesPlaying];
-            newNotesPlaying = Utils.removeFirstFromArray(newNotesPlaying, (element /*, index*/) => {
-                if (element === action.payload) {
-                    return true;
-                }
+        },
+        changeKeyBindings(state, action) {
+            state.keyBindings.forEach((binding) => {
+                binding.MIDINote = binding.MIDINote + action.payload;
             });
-            return {
-                ...state,
-                notesPlaying: newNotesPlaying,
-            };
-        }
-        case 'CHANGE_KEY_BINDINGS': {
-            const newKeyBindings = [...state.keyBindings];
-            for (let i = 0; i < newKeyBindings.length; i++) {
-                newKeyBindings[i] = { ...newKeyBindings[i], MIDINote: newKeyBindings[i].MIDINote + action.payload };
-            }
-            return {
-                ...state,
-                keyBindings: newKeyBindings,
-            };
-        }
-        case 'SWITCH_KEY_NAME_VISIBILITY': {
-            return {
-                ...state,
-                keyNamesVisible: !state.keyNamesVisible,
-            };
-        }
-        case 'SWITCH_KEY_BIND_VISIBILITY': {
-            return {
-                ...state,
-                keyBindVisible: !state.keyBindVisible,
-            };
-        }
-    }
+        },
+        switchKeyNameVisibility(state) {
+            state.keyNamesVisible = !state.keyNamesVisible;
+        },
+        switchKeyBindVisibility(state) {
+            state.keyBindVisible = !state.keyBindVisible;
+        },
+    },
+});
 
-    return state;
-}
+export const {
+    changeOctaveNumber,
+    switchKeyboardVisibility,
+    updateWidth,
+    changeFirstKeyboardKey,
+    addPlayingNote,
+    removePlayingNote,
+    changeKeyBindings,
+    switchKeyNameVisibility,
+    switchKeyBindVisibility,
+} = keyboardSlice.actions;
+export default keyboardSlice.reducer;
