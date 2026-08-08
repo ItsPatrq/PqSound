@@ -1,7 +1,15 @@
 /**
  * @jest-environment jsdom
  */
-import reducer from 'reducers/compositionReducer';
+import reducer, {
+    addRegion,
+    addNote,
+    removeNote,
+    pasteRegion,
+    removeTrackFromComposition,
+    regionTrackIndexUp,
+    regionTrackIndexDown,
+} from 'reducers/compositionReducer';
 
 /**
  * compositionReducer used to clone the entire region list on every note edit.
@@ -39,10 +47,7 @@ const makeState = (overrides: any = {}): any => ({
 describe('compositionReducer', () => {
     describe('ADD_REGION', () => {
         it('appends a region and advances the id counter', () => {
-            const state: any = reducer(makeState(), {
-                type: 'ADD_REGION',
-                payload: { trackIndex: 2, start: 4, length: 2 },
-            });
+            const state: any = reducer(makeState(), addRegion(2, 4, 2));
 
             expect(state.regionList).toHaveLength(1);
             expect(state.regionList[0]).toMatchObject({ id: 1, trackIndex: 2, start: 4, regionLength: 2, end: 5 });
@@ -53,10 +58,7 @@ describe('compositionReducer', () => {
             const existing = makeRegion({ id: 1 });
             const initial = makeState({ regionList: [existing], regionLastId: 1 });
 
-            const state: any = reducer(initial, {
-                type: 'ADD_REGION',
-                payload: { trackIndex: 1, start: 8, length: 1 },
-            });
+            const state: any = reducer(initial, addRegion(1, 8, 1));
 
             expect(state.regionList[0]).toBe(existing);
             expect(state.regionList[1].id).toBe(2);
@@ -67,10 +69,7 @@ describe('compositionReducer', () => {
         it('adds the note to the addressed row', () => {
             const initial = makeState({ regionList: [makeRegion({ id: 7 })] });
 
-            const state: any = reducer(initial, {
-                type: 'ADD_NOTE',
-                payload: { regionId: 7, noteNumber: 40, sixteenthNumber: 3, noteLength: 2 },
-            });
+            const state: any = reducer(initial, addNote(7, 40, 3, 2));
 
             expect(state.regionList[0].notes[40]).toEqual([{ sixteenthNumber: 3, length: 2 }]);
         });
@@ -80,10 +79,7 @@ describe('compositionReducer', () => {
             notes[40] = [makeNote(0)];
             const initial = makeState({ regionList: [makeRegion({ id: 7, notes })] });
 
-            const state: any = reducer(initial, {
-                type: 'ADD_NOTE',
-                payload: { regionId: 7, noteNumber: 40, sixteenthNumber: 8, noteLength: 1 },
-            });
+            const state: any = reducer(initial, addNote(7, 40, 8, 1));
 
             expect(state.regionList[0].notes[40]).toHaveLength(2);
             // The previous row array is not mutated.
@@ -97,10 +93,7 @@ describe('compositionReducer', () => {
             const target = makeRegion({ id: 7 });
             const initial = makeState({ regionList: [target, untouched] });
 
-            const state: any = reducer(initial, {
-                type: 'ADD_NOTE',
-                payload: { regionId: 7, noteNumber: 40, sixteenthNumber: 0, noteLength: 1 },
-            });
+            const state: any = reducer(initial, addNote(7, 40, 0, 1));
 
             // Other regions keep their identity — the point of dropping the
             // whole-composition deep copy.
@@ -117,10 +110,7 @@ describe('compositionReducer', () => {
             notes[40] = [makeNote(0, 4), makeNote(8, 2)];
             const initial = makeState({ regionList: [makeRegion({ id: 7, notes })] });
 
-            const state: any = reducer(initial, {
-                type: 'REMOVE_NOTE',
-                payload: { regionId: 7, noteNumber: 40, sixteenthNumber: 2 },
-            });
+            const state: any = reducer(initial, removeNote(7, 40, 2, 1));
 
             expect(state.regionList[0].notes[40]).toEqual([{ sixteenthNumber: 8, length: 2 }]);
             expect(notes[40]).toHaveLength(2);
@@ -131,10 +121,7 @@ describe('compositionReducer', () => {
             notes[40] = [makeNote(0, 4), makeNote(0, 4)];
             const initial = makeState({ regionList: [makeRegion({ id: 7, notes })] });
 
-            const state: any = reducer(initial, {
-                type: 'REMOVE_NOTE',
-                payload: { regionId: 7, noteNumber: 40, sixteenthNumber: 1 },
-            });
+            const state: any = reducer(initial, removeNote(7, 40, 1, 1));
 
             expect(state.regionList[0].notes[40]).toHaveLength(1);
         });
@@ -144,10 +131,7 @@ describe('compositionReducer', () => {
             notes[40] = [makeNote(0, 1)];
             const initial = makeState({ regionList: [makeRegion({ id: 7, notes })] });
 
-            const state: any = reducer(initial, {
-                type: 'REMOVE_NOTE',
-                payload: { regionId: 7, noteNumber: 40, sixteenthNumber: 9 },
-            });
+            const state: any = reducer(initial, removeNote(7, 40, 9, 1));
 
             expect(state.regionList[0].notes[40]).toEqual([{ sixteenthNumber: 0, length: 1 }]);
         });
@@ -160,10 +144,7 @@ describe('compositionReducer', () => {
             const source = makeRegion({ id: 3, regionLength: 2, notes });
             const initial = makeState({ regionList: [source], regionLastId: 3 });
 
-            const state: any = reducer(initial, {
-                type: 'PASTE_REGION',
-                payload: { copiedRegion: 3, trackIndex: 2, start: 10 },
-            });
+            const state: any = reducer(initial, pasteRegion(2, 10, 3));
 
             const pasted = state.regionList[1];
             expect(pasted).toMatchObject({ id: 4, trackIndex: 2, start: 10, regionLength: 2, end: 11 });
@@ -176,10 +157,7 @@ describe('compositionReducer', () => {
         it('is a no-op when the copied region is gone', () => {
             const initial = makeState({ regionList: [], regionLastId: 0 });
 
-            const state: any = reducer(initial, {
-                type: 'PASTE_REGION',
-                payload: { copiedRegion: 99, trackIndex: 1, start: 0 },
-            });
+            const state: any = reducer(initial, pasteRegion(1, 0, 99));
 
             expect(state).toBe(initial);
         });
@@ -195,7 +173,7 @@ describe('compositionReducer', () => {
                 ],
             });
 
-            const state: any = reducer(initial, { type: 'REMOVE_TRACK_FROM_COMPOSITION', payload: 2 });
+            const state: any = reducer(initial, removeTrackFromComposition(2));
 
             expect(state.regionList.map((region: any) => region.id)).toEqual([1, 3]);
             expect(state.regionList.map((region: any) => region.trackIndex)).toEqual([1, 2]);
@@ -214,11 +192,11 @@ describe('compositionReducer', () => {
                 ],
             });
 
-            const up: any = reducer(initial, { type: 'REGION_TRACK_INDEX_UP', payload: 1 });
+            const up: any = reducer(initial, regionTrackIndexUp(1));
             expect(up.regionList.map((region: any) => region.trackIndex)).toEqual([2, 1, 5]);
             expect(up.regionList[2]).toBe(initial.regionList[2]);
 
-            const down: any = reducer(initial, { type: 'REGION_TRACK_INDEX_DOWN', payload: 2 });
+            const down: any = reducer(initial, regionTrackIndexDown(2));
             expect(down.regionList.map((region: any) => region.trackIndex)).toEqual([2, 1, 5]);
         });
     });
