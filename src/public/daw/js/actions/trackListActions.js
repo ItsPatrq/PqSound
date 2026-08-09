@@ -286,9 +286,15 @@ export function loadTrackState(newState) {
             AudioEngine.setTrackNode(masterId, masterNode);
         }
         let nextTrackId = masterId + 1;
+        // Ids are handed out before anything is built. A track may be routed to
+        // a destination that sits *above* it in the list, and resolving that
+        // destination reads the target's id — which, mid-loop, would still be
+        // the id the file supplied and the engine no longer knows (#253).
+        for (let i = 1; i < loaded.trackList.length; i++) {
+            loaded.trackList[i].id = nextTrackId++;
+        }
         for (let i = 1; i < loaded.trackList.length; i++) {
             const track = loaded.trackList[i];
-            track.id = nextTrackId++;
             const pluginList = buildPluginList(newState.trackList[i], track, track.id);
             let instrument = null;
             if (track.trackType !== TrackTypes.aux) {
@@ -312,6 +318,15 @@ export function loadTrackState(newState) {
                     track.pan,
                 ),
             );
+        }
+
+        // Routing is resolved once every node exists. During the build loop a
+        // destination higher up the list has not been constructed yet, and
+        // Track treats an absent destination as "connect to context.destination"
+        // — which silently bypassed the aux bus and master (#253).
+        for (let i = 1; i < loaded.trackList.length; i++) {
+            const track = loaded.trackList[i];
+            AudioEngine.refreshTrackNode(track.id, destinationInput(loaded.trackList, track.output));
         }
 
         dispatch(slice.loadTrackState({ ...loaded, nextTrackId: nextTrackId }));

@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import AudioEngine from 'engine/AudioEngine';
+import TrackMock from 'engine/Track';
 import * as actions from 'actions/trackListActions';
 import { TrackTypes } from 'constants/Constants';
 import * as slice from 'slices/tracksSlice';
@@ -274,6 +275,117 @@ describe('trackListActions', () => {
             expect(engine.getInstrument).toHaveBeenCalledWith(7);
             expect(live.updatePreset).toHaveBeenCalledWith({ gain: 1 });
             expect(dispatch).toHaveBeenCalledWith(slice.updateInstrumentPreset({ gain: 1 }, 1));
+        });
+    });
+
+    /**
+     * #253: loadTrackState rebuilds tracks in ascending index order and hands
+     * out fresh ids as it goes, so a track routed to a destination at a *higher*
+     * index resolved that destination through an id the file supplied and the
+     * engine no longer knows. That returned undefined — and Track treats an
+     * absent destination as "connect to context.destination", so the track
+     * bypassed both the aux bus and master. Worse, a stale file id can collide
+     * with an id already handed to a different track, which routes the audio
+     * into the wrong bus instead.
+     */
+    describe('loadTrackState routing', () => {
+        /** Master, an instrument track routed to the aux, and the aux above it. */
+        const stateWithForwardRoute = (): any => ({
+            trackList: [
+                {
+                    name: 'Master',
+                    trackType: TrackTypes.aux,
+                    index: 0,
+                    id: 3,
+                    output: null,
+                    input: [1],
+                    pluginList: [],
+                },
+                {
+                    name: 'lead',
+                    trackType: TrackTypes.virtualInstrument,
+                    index: 1,
+                    id: 4,
+                    // Routed to the aux at index 2 — the forward reference.
+                    output: 2,
+                    input: [],
+                    pluginList: [],
+                    instrument: { id: 1, name: 'MultiOsc', preset: {} },
+                },
+                {
+                    name: 'reverb bus',
+                    trackType: TrackTypes.aux,
+                    index: 2,
+                    id: 5,
+                    output: 0,
+                    input: [1],
+                    pluginList: [],
+                },
+            ],
+            nextTrackId: 6,
+            selected: 1,
+            anyVirtualInstrumentSolo: false,
+            anyAuxSolo: false,
+        });
+
+        /** Track doubles with distinguishable inputs, wired into the engine registry. */
+        const trackRegistry = () => {
+            const nodes: Record<number, any> = {};
+            let created = 0;
+            engine.setTrackNode.mockImplementation((id: number, node: any) => {
+                nodes[id] = node;
+            });
+            engine.getTrackNode.mockImplementation((id: number) => nodes[id]);
+            engine.refreshTrackNode.mockImplementation((id: number, destination: any) => {
+                if (nodes[id]) {
+                    nodes[id].updateTrackNode(destination);
+                }
+            });
+            (TrackMock as unknown as jest.Mock).mockImplementation(
+                (pluginList: any, instrument: any, destination: any) => {
+                    const node: any = {
+                        input: `input-${created++}`,
+                        destination,
+                        pluginNodeList: pluginList,
+                        updateTrackNode: jest.fn((next: any) => {
+                            if (next !== undefined) {
+                                node.destination = next;
+                            }
+                        }),
+                    };
+                    return node;
+                },
+            );
+            return nodes;
+        };
+
+        it('connects a track to an aux that sits above it in the list', () => {
+            const nodes = trackRegistry();
+            // Master already has a live node before a load, as in the real app.
+            const master = { input: 'master-input', pluginNodeList: [], updateTrackNode: jest.fn() };
+            engine.setTrackNode(3, master);
+
+            const loaded = stateWithForwardRoute();
+            run(actions.loadTrackState(loaded), loaded);
+
+            // Ids are handed out from master's id upward: lead=4, aux=5.
+            const lead = nodes[4];
+            const aux = nodes[5];
+            expect(aux).toBeDefined();
+            // The whole point: the lead must feed the aux's input, not fall
+            // through to context.destination and not land on another bus.
+            expect(lead.destination).toBe(aux.input);
+        });
+
+        it('still routes a track to master when that is where it points', () => {
+            const nodes = trackRegistry();
+            const master = { input: 'master-input', pluginNodeList: [], updateTrackNode: jest.fn() };
+            engine.setTrackNode(3, master);
+
+            const loaded = stateWithForwardRoute();
+            run(actions.loadTrackState(loaded), loaded);
+
+            expect(nodes[5].destination).toBe('master-input');
         });
     });
 });
