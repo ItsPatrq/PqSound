@@ -95,6 +95,14 @@ class InstrumentPanel extends React.Component {
             return null;
         }
         const track = this.getSelectedTrack();
+        // Aux and master tracks carry no instrument. TrackDetails gates the
+        // "Edit instrument" button on trackType, but this panel stays mounted on
+        // `show` and re-reads whichever track is *currently* selected — so
+        // selecting an aux track with the editor open used to read `.id` off
+        // null and take the whole tree down (#252).
+        if (Utils.isNullOrUndefined(track) || Utils.isNullOrUndefined(track.instrument)) {
+            return null;
+        }
         const instrumentItems = [];
         for (const property in Instruments) {
             if (Instruments.hasOwnProperty(property)) {
