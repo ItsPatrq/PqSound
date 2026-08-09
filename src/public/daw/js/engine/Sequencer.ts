@@ -14,22 +14,41 @@ class Sequencer {
     scheduleAhead = 0.2;
     handlePlay() {
         const audioContext = AudioEngine.getContext()!;
+        // A stop within the last 80 ms still has its reset pending; let it fire
+        // and it would stopAll() the notes this run is about to schedule and
+        // snap the playhead back to 0 mid-playback (#250).
+        this.cancelPendingStop();
         AudioEngine.resume();
         this.noteTime = 0.0;
         this.startTime = audioContext.currentTime + 0.005;
         this.schedule();
         this.timerWorker!.postMessage('start');
     }
+    /**
+     * Drops a reset queued by handleStop. The id is kept so play/pause can
+     * cancel it — the delay exists to let already-scheduled notes ring out, not
+     * to reach across a later transport action.
+     */
+    cancelPendingStop() {
+        if (this.timeoutId !== undefined) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = undefined;
+        }
+    }
     handleStop(/*event*/) {
         this.timerWorker!.postMessage('stop');
-        setTimeout(() => {
+        this.cancelPendingStop();
+        this.timeoutId = setTimeout(() => {
+            this.timeoutId = undefined;
             AudioEngine.getSound()!.stopAll(SoundOrigin.composition);
             this.sixteenthPlaying = 0;
             EngineStore.dispatch(updateCurrentTime(this.sixteenthPlaying));
-        }, 80);
+        }, 80) as unknown as number;
     }
     handlePause(/*event*/) {
         this.timerWorker!.postMessage('stop');
+        // Pause holds the playhead where it is; a pending stop would reset it to 0.
+        this.cancelPendingStop();
         AudioEngine.getSound()!.stopAll(SoundOrigin.composition);
     }
     schedule = () => {
@@ -110,6 +129,10 @@ class Sequencer {
         const timerWorkerBlobURL = window.URL.createObjectURL(timerWorkerBlob);
 
         this.timerWorker = new Worker(timerWorkerBlobURL);
+        // The worker keeps its own reference to the script once constructed, so
+        // the URL can be released immediately rather than leaked for the life
+        // of the page (#250).
+        window.URL.revokeObjectURL(timerWorkerBlobURL);
         this.timerWorker.onmessage = function (/*e*/) {
             schedule();
         };
