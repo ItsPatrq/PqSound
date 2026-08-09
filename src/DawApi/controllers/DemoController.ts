@@ -1,8 +1,15 @@
-import { OK, BAD_REQUEST } from 'http-status-codes';
 import { Request, Response, Router } from 'express';
 import { Logger } from '../logger';
 
 export const SUCCESS_MSG = 'hello ';
+
+/**
+ * The two codes this API actually returns. A whole dependency for these was
+ * more than they were worth; the sampler route already writes its statuses as
+ * numeric literals.
+ */
+export const OK = 200;
+export const BAD_REQUEST = 400;
 
 export function sayHello(req: Request, res: Response) {
     try {
