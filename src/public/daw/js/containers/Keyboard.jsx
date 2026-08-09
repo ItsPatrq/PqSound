@@ -7,7 +7,7 @@ import {
     KEYBOARD_BASE_OFFSET,
     KEYBOARD_VIEW_WIDTH,
 } from 'constants/Constants';
-import { isNullOrUndefined, getTrackByIndex, noteToMIDI } from 'engine/Utils';
+import { isNullOrUndefined, noteToMIDI } from 'engine/Utils';
 import AudioEngine from 'engine/AudioEngine';
 import * as Actions from 'slices/keyboardSlice';
 import WhiteKey from 'components/Keyboard/WhiteKey';
@@ -55,7 +55,9 @@ class Keyboard extends React.Component {
     }
 
     handleGlobalKeyDown(e) {
-        if (e.ctrlKey || e.altKey) {
+        // metaKey included: r/e/s/c are all bound to notes, so on macOS ⌘R, ⌘E,
+        // ⌘S and ⌘C used to fire a note alongside the browser action (#253).
+        if (e.ctrlKey || e.altKey || e.metaKey) {
             return;
         }
         const index = KEY_TO_INDEX[e.key];
@@ -65,6 +67,8 @@ class Keyboard extends React.Component {
     }
 
     handleGlobalKeyUp(e) {
+        // Deliberately looser than keydown: a note started before a modifier was
+        // pressed still has to receive its key-up, or it sticks on.
         if (e.altKey) {
             return;
         }
@@ -113,13 +117,6 @@ class Keyboard extends React.Component {
             this.props.dispatch(Actions.addPlayingNote(note));
         }
         return false;
-    }
-
-    getKeyName(note) {
-        const recordingTracksSounds = this.getAllRecordingTracks();
-        if (recordingTracksSounds.length === 1) {
-            return getTrackByIndex(this.props.trackList, recordingTracksSounds[0]).instrument.getNoteName(note);
-        }
     }
 
     getDefaultKeyName(note) {

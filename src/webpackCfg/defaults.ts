@@ -30,7 +30,10 @@ export const defaultSettings: webpack.Configuration = {
             instruments: `${srcPath}/js/instruments`,
             plugins: `${srcPath}/js/plugins`,
             styles: `${srcPath}/styles/`,
-            config: `${srcPath}/config/` + process.env.REACT_WEBPACK_ENV,
+            // No `config` alias: nothing imported through it, REACT_WEBPACK_ENV
+            // is set nowhere, so it resolved to `config/undefined` and would
+            // have failed on first use. src/public/daw/config/ is still live —
+            // constants/AudioFiles.js reaches it by relative path.
         },
     },
     cache: true,
