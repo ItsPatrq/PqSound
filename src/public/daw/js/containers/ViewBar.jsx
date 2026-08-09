@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Store from '../store';
 import { switchPianorollVisibility, switchMixerVisibility } from 'slices/compositionSlice';
 import * as Utils from 'engine/Utils';
 import AudioEngine from 'engine/AudioEngine';
@@ -32,8 +31,12 @@ class ViewBar extends React.Component {
     }
 
     tickMeter() {
-        const master = Store.getState().tracks.trackList[0];
-        const node = master && AudioEngine.getTrackNode(master.id);
+        // masterTrackId arrives as a prop rather than from Store.getState(): this
+        // runs every animation frame, and reaching into the store singleton from a
+        // connected component is the one thing that would still couple the UI to
+        // the store's layout after #156.
+        const { masterTrackId } = this.props;
+        const node = masterTrackId === null ? null : AudioEngine.getTrackNode(masterTrackId);
         let left = 0;
         let right = 0;
         if (node && typeof node.getAverageVolume === 'function') {
@@ -115,6 +118,10 @@ const mapStateToProps = (state) => ({
     showPianoRoll: state.composition.showPianoRoll,
     showMixer: state.composition.showMixer,
     pianoRollRegion: state.composition.pianoRollRegion,
+    // Master is always position 0, but its id is what the engine registry is
+    // keyed by — and the id is what survives the renumbering that removing or
+    // reordering a track does to `index`.
+    masterTrackId: state.tracks.trackList.length > 0 ? state.tracks.trackList[0].id : null,
 });
 
 export default connect(mapStateToProps)(ViewBar);
