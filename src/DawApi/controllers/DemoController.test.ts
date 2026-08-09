@@ -1,5 +1,7 @@
-import { OK, BAD_REQUEST } from 'http-status-codes';
 import { sayHello, SUCCESS_MSG } from './DemoController';
+
+// Asserted as literals on purpose: importing the controller's own OK/BAD_REQUEST
+// would make these pass whatever those constants happened to be set to.
 
 function mockRes() {
     const res: any = {};
@@ -15,7 +17,7 @@ describe('DemoController', () => {
 
         sayHello(req, res);
 
-        expect(res.status).toHaveBeenCalledWith(OK);
+        expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({ message: SUCCESS_MSG + 'world' });
     });
 
@@ -25,6 +27,6 @@ describe('DemoController', () => {
 
         sayHello(req, res);
 
-        expect(res.status).toHaveBeenCalledWith(BAD_REQUEST);
+        expect(res.status).toHaveBeenCalledWith(400);
     });
 });
