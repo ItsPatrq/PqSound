@@ -1,7 +1,7 @@
 import * as EngineStore from './EngineStore';
 import AudioEngine from './AudioEngine';
 import { updateMidiState, changeMidiDevice } from '../actions/controlActions';
-import { addPlayingNote, removePlayingNote } from '../reducers/keyboardReducer';
+import { addPlayingNote, removePlayingNote } from '../slices/keyboardSlice';
 import { isNullOrUndefined } from './Utils';
 import { SoundOrigin } from '../constants/Constants';
 

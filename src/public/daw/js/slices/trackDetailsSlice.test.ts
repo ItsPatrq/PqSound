@@ -1,9 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import reducer, { instrumentModalVisibilitySwitch, pluginModalVisibilitySwitch } from 'reducers/trackDetailsReducer';
+import reducer, { instrumentModalVisibilitySwitch, pluginModalVisibilitySwitch } from 'slices/trackDetailsSlice';
 
-describe('trackDetailsReducer', () => {
+describe('trackDetailsSlice', () => {
     const initial = () => reducer(undefined, { type: '@@INIT' }) as any;
 
     it('starts with both editor columns closed', () => {

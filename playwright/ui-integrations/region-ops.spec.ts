@@ -3,7 +3,7 @@ import { test, expect } from '../shared/fixtures/test';
 /**
  * Region-level operations on the composition grid: copy/paste, erase, and
  * keeping regions attached to their track when it is reordered. These run
- * through compositionReducer's PASTE_REGION / REMOVE_REGION /
+ * through compositionSlice's PASTE_REGION / REMOVE_REGION /
  * REGION_TRACK_INDEX_UP|DOWN, which had unit tests (#233) but no end-to-end
  * coverage.
  */

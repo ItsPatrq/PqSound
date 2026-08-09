@@ -11,10 +11,10 @@ import reducer, {
     loadControlState,
     copyRegion,
     textInputFocusedSwitch,
-} from 'reducers/controlReducer';
+} from 'slices/controlSlice';
 import { tools } from 'constants/Constants';
 
-describe('controlReducer', () => {
+describe('controlSlice', () => {
     const initial = () => reducer(undefined, { type: '@@INIT' }) as any;
 
     it('starts stopped at 120 BPM with the draw tool', () => {

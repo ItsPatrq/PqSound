@@ -33,7 +33,7 @@ Single-context: one `CONTEXT.md` + `docs/adr/` at the repo root (created lazily 
   - `instruments/` (TS) — `PqSynth`, `Monotron`, `MultiOsc`, `Sampler`, per-note `Voice`. All native Web Audio nodes; no `ScriptProcessorNode` anywhere (good — no AudioWorklet migration forced).
   - `plugins/` (TS) — effects (Chorus, Compressor, Delay, Distortion, Equalizer, Reverb) wrapping native nodes, chained in `Track.getPluginChainNode()`.
   - `components/` + `containers/` — React UI: `.jsx` class components with `react-redux` `connect` for containers, mix of class/function presentational components.
-  - `reducers/` — six RTK `createSlice` slices (`tracks`, `composition`, `control`, `keyboard`, `webAudio`, `trackDetails`). Each exports its reducer as the default and its generated action creators as named exports; import creators from the slice. `actions/` holds only the three modules that still have thunks (`trackListActions`, `controlActions`, `webAudioActions`) — the thunks are the ones that must touch `AudioEngine` before dispatching.
+  - `slices/` — six RTK `createSlice` slices (`tracks`, `composition`, `control`, `keyboard`, `webAudio`, `trackDetails`). Each exports its reducer as the default and its generated action creators as named exports; import creators from the slice. `actions/` holds only the three modules that still have thunks (`trackListActions`, `controlActions`, `webAudioActions`) — the thunks are the ones that must touch `AudioEngine` before dispatching.
   - `store.js` — the Redux store (`configureStore`, with `serializableCheck` and `immutableCheck` both on). It was called `stroe.js` until 2026-08; that typo is gone.
   - `config/` — picked by the webpack `config` alias via `REACT_WEBPACK_ENV`; `index.ts` also branches on `NODE_HOST === 'heroku'`, a leftover from the pre-Fly.io Heroku deployment.
 - `assets/` — ~85 MB of instrument samples (DSKGrandPiano, RockKit, SlingerlandKit).
@@ -48,7 +48,7 @@ This used to be the codebase's biggest structural problem — live `AudioContext
 - **The engine never reads the store.** `engine/EngineStore.ts` subscribes once and keeps an `EngineSnapshot` (bpm, loop range, region list, `{ index, id, record }` per track, notes playing); `Sequencer`, `Sound` and `MIDIController` read that snapshot and dispatch through the same module. Nothing under `engine/` imports `store.js`.
 - **`engine/CompositionParser.ts` is pure** — every function takes its region data as an argument, so the UI passes props and the scheduler passes its per-tick snapshot.
 
-If you add state, keep it serializable and put the live object in `AudioEngine`. The tests that protect this are `reducers/*.test.ts` (36 cases on `tracks`/`composition` alone), `actions/trackListActions.test.ts`, and the Playwright specs.
+If you add state, keep it serializable and put the live object in `AudioEngine`. The tests that protect this are `slices/*.test.ts` (36 cases on `tracks`/`composition` alone), `actions/trackListActions.test.ts`, and the Playwright specs.
 
 ## Modernization notes (state of the stack, 2026)
 
@@ -75,15 +75,15 @@ Fixed (kept here so they aren't "rediscovered"):
 - ~~`DawApiServer.ts` `SERVER_START_MSG` precedence~~ — the ternary is now parenthesized correctly.
 - ~~eager `webpack(config)` at boot~~ — `compiler` is now optional and only instantiated inside `setupFrontEnd()` when `shouldBuildFront`.
 - ~~`DawApiServer.ts` top-level webpack import (prod module-load coupling)~~ — webpack/config/dev-middleware are now `require()`d lazily inside the `setupFrontEnd()` dev branch; the only remaining webpack reference at module scope is a `import type` (erased at compile). Production start no longer loads the webpack graph. Also swapped the `body-parser` package for the built-in `express.json()`/`express.urlencoded()`.
-- ~~`webAudioReducer.js` `alert()`~~ — now `console.error` (still a `//TODO` to surface an error panel).
-- ~~`webkitAudioContext` fallback~~ — gone; reducer uses bare `new AudioContext()`.
+- ~~`webAudioSlice.js` `alert()`~~ — now `console.error` (still a `//TODO` to surface an error panel).
+- ~~`webkitAudioContext` fallback~~ — gone; the slice uses bare `new AudioContext()`.
+- ~~`reducers/*Reducer.js` naming~~ — the directory is `slices/` and the files are `*Slice.js`; the alias is `slices/` in all three places (webpack, tsconfig, Jest).
 
 Also fixed: the missing `Sampler` import that made `ADD_TRACK` throw; `CHANGE_TRACK_OUTPUT` passing an output *index* where `Track.updateTrackNode` expects an `AudioNode`; `TrackDetails.handleAddPlugin` reading the new plugin's index from stale props (it opened the previous plugin, or nothing for the first); `Utils.copy`'s `instanceof AudioContext` test, which threw in jsdom/node.
 
 Still open:
 - `DawApiServer.ts`: the `SERVER_START_MSG` ternary is correct but pointless — both non-literal branches use `process.env.hostName`. Cosmetic.
 - A few dozen explicit/implicit `any`s remain in `engine/` under `noImplicitAny: false`.
-- `reducers/*Reducer.js` still say "reducer" while holding slices; renaming to `slices/*Slice.js` is cosmetic and touches every import.
 
 ### Suggested modernization order
 

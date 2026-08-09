@@ -27,7 +27,7 @@
     "paths": {
       /* Mirrors the webpack aliases in src/webpackCfg/defaults.ts and the Jest moduleNameMapper in jest.config.js. Keep the three in sync. */
       "actions/*": ["src/public/daw/js/actions/*"],
-      "reducers/*": ["src/public/daw/js/reducers/*"],
+      "slices/*": ["src/public/daw/js/slices/*"],
       "components/*": ["src/public/daw/js/components/*"],
       "containers/*": ["src/public/daw/js/containers/*"],
       "engine/*": ["src/public/daw/js/engine/*"],

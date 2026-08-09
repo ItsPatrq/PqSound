@@ -9,10 +9,10 @@ import reducer, {
     removeTrackFromComposition,
     regionTrackIndexUp,
     regionTrackIndexDown,
-} from 'reducers/compositionReducer';
+} from 'slices/compositionSlice';
 
 /**
- * compositionReducer used to clone the entire region list on every note edit.
+ * compositionSlice used to clone the entire region list on every note edit.
  * These cover the behaviour that had to survive replacing those clones with
  * targeted copies, and pin down that untouched regions keep their identity —
  * which is what makes the copies worth doing.
@@ -44,7 +44,7 @@ const makeState = (overrides: any = {}): any => ({
     ...overrides,
 });
 
-describe('compositionReducer', () => {
+describe('compositionSlice', () => {
     describe('ADD_REGION', () => {
         it('appends a region and advances the id counter', () => {
             const state: any = reducer(makeState(), addRegion(2, 4, 2));

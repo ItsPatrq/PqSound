@@ -2,7 +2,7 @@ import { test, expect } from '../shared/fixtures/test';
 
 /**
  * Covers the composition-grid → piano-roll flow: drawing a region, opening it,
- * and adding/removing notes. That path runs through compositionReducer's
+ * and adding/removing notes. That path runs through compositionSlice's
  * ADD_REGION / ADD_NOTE / REMOVE_NOTE, which #233 rewrote from
  * whole-composition deep copies to targeted ones — and which had no end-to-end
  * coverage at all.

@@ -22,7 +22,7 @@ export const defaultSettings: webpack.Configuration = {
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
         alias: {
             actions: `${srcPath}/js/actions/`,
-            reducers: `${srcPath}/js/reducers/`,
+            slices: `${srcPath}/js/slices/`,
             components: `${srcPath}/js/components/`,
             containers: `${srcPath}/js/containers/`,
             engine: `${srcPath}/js/engine/`,

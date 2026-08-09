@@ -1,7 +1,7 @@
 import SamplerPresets from 'constants/SamplerPresets';
 import AudioEngine from 'engine/AudioEngine';
 import BufferLoader from 'engine/BufferLoader';
-import { initWebAudio, samplerInstrumentFetching, samplerInstrumentFetched } from 'reducers/webAudioReducer';
+import { initWebAudio, samplerInstrumentFetching, samplerInstrumentFetched } from 'slices/webAudioSlice';
 
 /**
  * Builds the serializable per-instrument descriptor list. The decoded buffers

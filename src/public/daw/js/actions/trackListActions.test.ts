@@ -4,10 +4,10 @@
 import AudioEngine from 'engine/AudioEngine';
 import * as actions from 'actions/trackListActions';
 import { TrackTypes } from 'constants/Constants';
-import * as slice from 'reducers/tracksReducer';
+import * as slice from 'slices/tracksSlice';
 
 /**
- * The audio-graph side effects that used to sit inside tracksReducer now live
+ * The audio-graph side effects that used to sit inside tracksSlice now live
  * in these thunks (#156). Track graphs are addressed by the track's stable
  * `id`, never by its index — these tests are what pins that down.
  */
