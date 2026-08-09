@@ -109,6 +109,7 @@ Each step is independently shippable; don't combine unrelated upgrades in one br
 - Controllers under `src/DawApi/controllers/` are a mix of `.ts` and plain `.js` files — this is intentional/legacy, not a build error.
 - Env vars in use: `PORT`, `NODE_ENV`, `NODE_HOST`, `SERVER_ONLY`, `REACT_WEBPACK_ENV`, and a lowercase `hostName` — none are documented elsewhere, so check actual usages (`grep`) before assuming behavior.
 - CI is configured: `.github/workflows/ci.yml` and `codeql.yml` exist.
+- Styling is plain CSS files under `src/public/daw/styles/`, with the design tokens in `theme.css` (`var(--pq-*)`) as the single source of truth for colour. No CSS-in-JS — see `docs/adr/0001-plain-css-with-design-tokens.md` for what would reopen that.
 - Client imports use webpack aliases (`engine/...`, `components/...`, `constants/...`). They are declared in **three** places that must stay in sync: `src/webpackCfg/defaults.ts`, `tsconfig.json` `paths`, and `jest.config.js` `moduleNameMapper`. The bare `constants` alias is deliberately **not** mapped in Jest — it collides with the Node builtin that `graceful-fs` requires.
 - `Utils.copy` returns `null` for a Web Audio context and deep-copies everything else. It identifies the context by constructor name, so it is safe in node and jsdom.
 - RTK types a no-payload action creator's argument as `void`, which TypeScript will not accept as *zero* arguments from a `.ts` test — pass `undefined` explicitly there. The app's `.jsx` call sites are unchecked and call them bare.
