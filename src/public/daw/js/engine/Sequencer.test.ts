@@ -195,6 +195,65 @@ describe('Sequencer', () => {
         });
     });
 
+    /**
+     * #250: handleStop's 80 ms reset used to be fire-and-forget. The delay is
+     * there to let already-scheduled notes ring out, not to reach across a
+     * later transport action — so play and pause have to cancel it.
+     */
+    describe('the pending stop reset', () => {
+        beforeEach(() => {
+            jest.useFakeTimers();
+        });
+        afterEach(() => {
+            jest.useRealTimers();
+        });
+
+        it('still resets when nothing interrupts it', () => {
+            const state = makeState();
+            const sequencer = new Sequencer();
+            sequencer.timerWorker = { postMessage: jest.fn() } as any;
+            sequencer.sixteenthPlaying = 12;
+
+            sequencer.handleStop();
+            jest.advanceTimersByTime(80);
+
+            expect(state.audio.sound.stopAll).toHaveBeenCalledWith(SoundOrigin.composition);
+            expect(sequencer.sixteenthPlaying).toBe(0);
+        });
+
+        it('does not fire after a play that lands inside the 80 ms window', () => {
+            const state = makeState();
+            const sequencer = new Sequencer();
+            sequencer.timerWorker = { postMessage: jest.fn() } as any;
+
+            sequencer.handleStop();
+            jest.advanceTimersByTime(40);
+            sequencer.handlePlay();
+            const scheduledDuringPlay = state.audio.sound.stopAll.mock.calls.length;
+            jest.advanceTimersByTime(200);
+
+            // The stale reset would have killed the notes the new run just
+            // scheduled and snapped the playhead back to 0.
+            expect(state.audio.sound.stopAll.mock.calls.length).toBe(scheduledDuringPlay);
+            expect(sequencer.sixteenthPlaying).not.toBe(0);
+        });
+
+        it('does not fire after a pause that lands inside the window', () => {
+            makeState();
+            const sequencer = new Sequencer();
+            sequencer.timerWorker = { postMessage: jest.fn() } as any;
+            sequencer.sixteenthPlaying = 7;
+
+            sequencer.handleStop();
+            jest.advanceTimersByTime(40);
+            sequencer.handlePause();
+            jest.advanceTimersByTime(200);
+
+            // Pause holds position; only stop returns to the start.
+            expect(sequencer.sixteenthPlaying).toBe(7);
+        });
+    });
+
     describe('handlePause', () => {
         it('stops the timer worker and all composition sounds immediately', () => {
             const state = makeState();
