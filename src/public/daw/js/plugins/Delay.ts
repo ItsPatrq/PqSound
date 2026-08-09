@@ -73,7 +73,14 @@ class Delay extends Plugin {
                 lowCutFilter.connect(this.outputGainNode);
                 this.delayArray.push(delay, feedback, highCutFilter, lowCutFilter);
             }
-            this.wetGainNode.connect(this.delayArray[0]);
+            // iterations: 0 leaves the array empty. The UI slider starts at 1,
+            // but an imported composition can carry anything, and connecting to
+            // delayArray[0] then threw out of updatePreset -> the thunk, leaving
+            // the store and the engine disagreeing (#253). With no delay line
+            // the wet path is simply silent and dry passes through.
+            if (this.delayArray.length > 0) {
+                this.wetGainNode.connect(this.delayArray[0]);
+            }
             this.lastIterations = this.preset.iterations;
         }
 
