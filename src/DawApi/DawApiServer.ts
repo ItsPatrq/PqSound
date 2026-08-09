@@ -19,6 +19,16 @@ export class DawApiServer {
     private compiler?: webpack.Compiler;
     private webpackInitialized = false;
     constructor() {
+        // Fly's [http_service] puts fly-proxy in front of the app, so without
+        // this every request looks like it came from the proxy and
+        // express-rate-limit's default req.ip key is identical for all clients
+        // — making the sampler limit global rather than per-client (#253).
+        //
+        // Exactly one hop, never `true`: measured against express, a client
+        // sending "X-Forwarded-For: 1.2.3.4, <proxy>" is keyed as the real
+        // proxy-appended address under `1`, but as the attacker-chosen 1.2.3.4
+        // under `true` — which would let anyone evade the limiter outright.
+        this.app.set('trust proxy', 1);
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use('/api/say-hello', demoRouter);
