@@ -54,29 +54,36 @@ class Header extends React.Component {
         // (LOOP now backed by composition.loopEnabled, REC by the selected track's
         // record flag — neither is local state anymore.)
         this.state = { menuOpen: false, editing: null, tempBPM: '', tempBars: '' };
-        // Alt-key keyboard shortcuts (ported from the old TopNavBar).
-        window.addEventListener(
-            'keydown',
-            (e) => {
-                if (!e.altKey) return;
-                switch (e.keyCode) {
-                    case 80:
-                        this.toggleKeyboard();
-                        break;
-                    case 78:
-                        this.props.dispatch(switchKeyBindVisibility());
-                        break;
-                    case 66:
-                        this.props.dispatch(switchKeyNameVisibility());
-                        break;
-                }
-            },
-            false,
-        );
+        // Alt-key keyboard shortcuts (ported from the old TopNavBar). Kept as a
+        // named handler so componentWillUnmount can hand it back — it used to be
+        // an anonymous listener registered here in the constructor, which both
+        // leaked (React can construct an instance it never mounts) and made
+        // removal impossible (#253).
+        this.handleShortcutKeyDown = this.handleShortcutKeyDown.bind(this);
+    }
+
+    handleShortcutKeyDown(e) {
+        if (!e.altKey) return;
+        switch (e.keyCode) {
+            case 80:
+                this.toggleKeyboard();
+                break;
+            case 78:
+                this.props.dispatch(switchKeyBindVisibility());
+                break;
+            case 66:
+                this.props.dispatch(switchKeyNameVisibility());
+                break;
+        }
     }
 
     componentDidMount() {
+        window.addEventListener('keydown', this.handleShortcutKeyDown, false);
         this.toggleKeyboard();
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.handleShortcutKeyDown, false);
     }
 
     // Keyboard is a fixed-size inset panel now → set its constant width, no
