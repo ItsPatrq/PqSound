@@ -6,11 +6,16 @@ const fs = require('fs'),
     // the guard reject every legitimate request.
     instrumentsPath = path.resolve(__dirname, '../../../assets/audio/samples/instruments');
 
-const mimeTypes = {
+// Null-prototype: this object is indexed with an untrusted path segment, and a
+// plain object literal would resolve inherited keys. `constructor`, `toString`
+// and friends all returned truthy values and sailed past the whitelist check
+// below, which served the file with the prototype method's source text as its
+// Content-Type.
+const mimeTypes = Object.assign(Object.create(null), {
     DSKGrandPiano: 'audio/wav',
     SlingerlandKit: 'audio/wav',
     RockKit: 'audio/wav',
-};
+});
 
 const getSound = function (req, res, filePath, mimeType) {
     fs.readFile(filePath, function (err, data) {
@@ -30,7 +35,7 @@ export const getInstrument = function (req, res) {
     const splat = req.params.splat;
     const sound = (Array.isArray(splat) ? splat.join('/') : splat) || '';
     const instrument = sound.substring(0, sound.indexOf('/'));
-    const mimeType = mimeTypes[instrument];
+    const mimeType = Object.prototype.hasOwnProperty.call(mimeTypes, instrument) ? mimeTypes[instrument] : undefined;
     if (!mimeType) {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         res.end("Instrument '" + instrument + "' not found");

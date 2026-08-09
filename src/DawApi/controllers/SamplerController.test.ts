@@ -75,6 +75,29 @@ describe('SamplerController.getInstrument', () => {
 
         expect(res.writeHead).toHaveBeenCalledWith(404, expect.anything());
     });
+
+    /**
+     * The instrument segment is attacker-controlled and was used to index a
+     * plain object literal, so every inherited key passed the whitelist gate.
+     * Verified against a running server before the fix:
+     *   GET /api/samplerinstrument/constructor/../DSKGrandPiano/DSK_Grand_A0.wav
+     *   -> 200, Content-Type: function Object() { [native code] }
+     * The containment guard was never breached — this is a whitelist bypass and
+     * an attacker-influenced response header, not a traversal.
+     */
+    it.each(['constructor', 'toString', 'valueOf', 'hasOwnProperty', 'isPrototypeOf', '__proto__'])(
+        'does not resolve the prototype key %s as an instrument',
+        (key) => {
+            const res = mockRes();
+
+            getInstrument(request(`${key}/../DSKGrandPiano/DSK_Grand_A0.wav`), res);
+
+            expect(res.writeHead).toHaveBeenCalledWith(404, expect.anything());
+            // Anything but text/plain here means a prototype member's source
+            // text reached the Content-Type header.
+            expect(res.writeHead.mock.calls[0][1]['Content-Type']).toBe('text/plain');
+        },
+    );
 });
 
 // Guards the assumption the tests above rest on.
