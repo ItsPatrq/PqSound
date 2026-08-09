@@ -222,6 +222,80 @@ describe('AudioEngine', () => {
         });
     });
 
+    /**
+     * #249: dropping a registry entry does not detach anything — the Web Audio
+     * graph is an owning reference, so an undisconnected node stays alive and
+     * audible after its track is gone. These pin that every removal path tears
+     * the graph down rather than leaving it to the caller.
+     */
+    describe('teardown on removal', () => {
+        const makePlugin = (index: number) => ({
+            index,
+            input: { disconnect: jest.fn() },
+            output: { disconnect: jest.fn() },
+        });
+        const makeInstrument = () => ({ disconnect: jest.fn(), stopAll: jest.fn() });
+
+        it('disposes a track node when it is removed', () => {
+            const node: any = { dispose: jest.fn() };
+            AudioEngine.setTrackNode(7, node);
+
+            AudioEngine.removeTrackNode(7);
+
+            expect(node.dispose).toHaveBeenCalled();
+            expect(AudioEngine.getTrackNode(7)).toBeUndefined();
+        });
+
+        it('disposes every track node on clear', () => {
+            const a: any = { dispose: jest.fn() };
+            const b: any = { dispose: jest.fn() };
+            AudioEngine.setTrackNode(1, a);
+            AudioEngine.setTrackNode(2, b);
+
+            AudioEngine.clearTrackNodes();
+
+            expect(a.dispose).toHaveBeenCalled();
+            expect(b.dispose).toHaveBeenCalled();
+        });
+
+        it('silences and detaches an instrument when it is removed', () => {
+            const instrument = makeInstrument();
+            AudioEngine.setInstrument(3, instrument);
+
+            AudioEngine.removeInstrument(3);
+
+            expect(instrument.stopAll).toHaveBeenCalled();
+            expect(instrument.disconnect).toHaveBeenCalled();
+        });
+
+        it('detaches a single plugin before it leaves the chain', () => {
+            const keep = makePlugin(0);
+            const drop = makePlugin(1);
+            AudioEngine.setPlugins(4, [keep, drop]);
+
+            AudioEngine.removePlugin(4, 1);
+
+            expect(drop.input.disconnect).toHaveBeenCalled();
+            expect(drop.output.disconnect).toHaveBeenCalled();
+            // The surviving plugin keeps its edges; updateTrackNode rewires it.
+            expect(keep.output.disconnect).not.toHaveBeenCalled();
+            expect(AudioEngine.getPlugins(4)).toHaveLength(1);
+        });
+
+        it('detaches the whole chain on removePlugins and clearPlugins', () => {
+            const one = makePlugin(0);
+            const two = makePlugin(0);
+            AudioEngine.setPlugins(5, [one]);
+            AudioEngine.setPlugins(6, [two]);
+
+            AudioEngine.removePlugins(5);
+            AudioEngine.clearPlugins();
+
+            expect(one.output.disconnect).toHaveBeenCalled();
+            expect(two.output.disconnect).toHaveBeenCalled();
+        });
+    });
+
     describe('instrument buffers', () => {
         it('stores and returns buffers by instrument name', () => {
             const buffers = [{} as AudioBuffer, {} as AudioBuffer];

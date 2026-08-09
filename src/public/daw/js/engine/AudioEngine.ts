@@ -6,6 +6,23 @@ import type MIDIController from './MIDIController';
 import type Track from './Track';
 
 /**
+ * Teardown helpers. Dropping a registry entry does not detach anything — the
+ * Web Audio graph is itself an owning reference, so a node stays alive and
+ * audible for as long as it is connected. The engine therefore disconnects on
+ * the way out rather than leaving it to each caller, which is how the leaks in
+ * #249 accumulated. Disconnecting twice is a no-op, so these are idempotent.
+ */
+const disposeInstrument = (instrument: any): void => {
+    instrument?.stopAll?.();
+    instrument?.disconnect?.();
+};
+
+const disposePlugin = (plugin: any): void => {
+    plugin?.input?.disconnect?.();
+    plugin?.output?.disconnect?.();
+};
+
+/**
  * Owns every live, non-serializable object that used to sit inside store state:
  * the `AudioContext`, the `Sound` dispatcher and the decoded sample buffers
  * (from `webAudioSlice`), plus the `Sequencer` and `MIDIController`
@@ -135,10 +152,12 @@ class AudioEngine {
     }
 
     removeInstrument(trackId: number): void {
+        disposeInstrument(this.instruments.get(trackId));
         this.instruments.delete(trackId);
     }
 
     clearInstruments(): void {
+        this.instruments.forEach(disposeInstrument);
         this.instruments.clear();
     }
 
@@ -175,6 +194,10 @@ class AudioEngine {
         if (position === -1) {
             return;
         }
+        // Detach before splicing: updateTrackNode only disconnects plugins still
+        // in the list, so a removed one would keep its edge into the next
+        // plugin's input and its nodes would stay live (#249).
+        disposePlugin(plugins[position]);
         plugins.splice(position, 1);
         for (let i = position; i < plugins.length; i++) {
             plugins[i].index = i;
@@ -189,10 +212,12 @@ class AudioEngine {
     }
 
     removePlugins(trackId: number): void {
+        (this.plugins.get(trackId) || []).forEach(disposePlugin);
         this.plugins.delete(trackId);
     }
 
     clearPlugins(): void {
+        this.plugins.forEach((plugins) => plugins.forEach(disposePlugin));
         this.plugins.clear();
     }
 
@@ -205,10 +230,12 @@ class AudioEngine {
     }
 
     removeTrackNode(trackId: number): void {
+        this.trackNodes.get(trackId)?.dispose();
         this.trackNodes.delete(trackId);
     }
 
     clearTrackNodes(): void {
+        this.trackNodes.forEach((node) => node.dispose());
         this.trackNodes.clear();
     }
 

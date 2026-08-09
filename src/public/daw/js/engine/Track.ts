@@ -84,6 +84,39 @@ class Track {
         }
     }
 
+    /**
+     * Tears the track's node graph down.
+     *
+     * Removing a track used to drop the registry entry and nothing else, which
+     * left the whole gain -> pan -> splitter -> analyser chain (and the
+     * instrument, and the plugin chain) connected to the destination. The graph
+     * itself is an owning reference, so nothing was collectable and a held note
+     * kept sounding after its track was gone (#249).
+     *
+     * Disconnecting an already-disconnected node is a no-op in Web Audio, so
+     * this is safe to call more than once.
+     */
+    dispose() {
+        if (!isNullOrUndefined(this.instrument)) {
+            // Silence anything still ringing before detaching it.
+            this.instrument.stopAll?.();
+            this.instrument.disconnect?.();
+            this.instrument = null;
+        }
+        for (let i = 0; i < this.pluginNodeList.length; i++) {
+            this.pluginNodeList[i].input?.disconnect?.();
+            this.pluginNodeList[i].output?.disconnect?.();
+        }
+        this.gainNode?.disconnect();
+        this.muteNode?.disconnect();
+        this.panNode?.disconnect();
+        this.splitter?.disconnect();
+        this.leftAnalyserNode?.disconnect();
+        this.rightAnalyserNode?.disconnect();
+        this.output = undefined;
+        this.destTrack = undefined;
+    }
+
     updateInstrument(newInstrument) {
         this.instrument.disconnect();
         this.instrument = newInstrument;
