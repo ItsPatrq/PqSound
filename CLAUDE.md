@@ -83,7 +83,6 @@ Also fixed: the missing `Sampler` import that made `ADD_TRACK` throw; `CHANGE_TR
 Still open:
 - `DawApiServer.ts`: the `SERVER_START_MSG` ternary is correct but pointless — both non-literal branches use `process.env.hostName`. Cosmetic.
 - A few dozen explicit/implicit `any`s remain in `engine/` under `noImplicitAny: false`.
-- The engine snapshot (`EngineStore`) is rebuilt on every dispatch, including `UPDATE_CURRENT_TIME` at ~8×/second during playback. Memoize with `reselect` if it ever shows up in a profile — not measured yet.
 - `reducers/*Reducer.js` still say "reducer" while holding slices; renaming to `slices/*Slice.js` is cosmetic and touches every import.
 
 ### Suggested modernization order
@@ -111,6 +110,7 @@ Each step is independently shippable; don't combine unrelated upgrades in one br
 - CI is configured: `.github/workflows/ci.yml` and `codeql.yml` exist.
 - Styling is plain CSS files under `src/public/daw/styles/`, with the design tokens in `theme.css` (`var(--pq-*)`) as the single source of truth for colour. No CSS-in-JS — see `docs/adr/0001-plain-css-with-design-tokens.md` for what would reopen that.
 - Client imports use webpack aliases (`engine/...`, `components/...`, `constants/...`). They are declared in **three** places that must stay in sync: `src/webpackCfg/defaults.ts`, `tsconfig.json` `paths`, and `jest.config.js` `moduleNameMapper`. The bare `constants` alias is deliberately **not** mapped in Jest — it collides with the Node builtin that `graceful-fs` requires.
+- The engine snapshot (`EngineStore`) is rebuilt on every dispatch. This was measured, not guessed: 36–90 ns per projection at realistic project sizes, ~0.0008 ms per second of playback. Don't memoize it — see the comment on `selectEngineSnapshot`.
 - `Utils.copy` returns `null` for a Web Audio context and deep-copies everything else. It identifies the context by constructor name, so it is safe in node and jsdom.
 - RTK types a no-payload action creator's argument as `void`, which TypeScript will not accept as *zero* arguments from a `.ts` test — pass `undefined` explicitly there. The app's `.jsx` call sites are unchecked and call them bare.
 
