@@ -118,9 +118,16 @@ class Track {
     }
 
     updateInstrument(newInstrument) {
-        this.instrument.disconnect();
+        // Aux and master tracks are built with a null instrument, and dispose()
+        // nulls it too — the constructor already guarded this call site, but
+        // this one dereferenced blind (#252).
+        if (!isNullOrUndefined(this.instrument)) {
+            this.instrument.disconnect();
+        }
         this.instrument = newInstrument;
-        this.instrument.connect(this.input);
+        if (!isNullOrUndefined(this.instrument)) {
+            this.instrument.connect(this.input);
+        }
     }
 
     changeVolume(newVolume, changeTime?) {

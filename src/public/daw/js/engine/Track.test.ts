@@ -76,6 +76,40 @@ describe('Track.dispose', () => {
     });
 });
 
+describe('Track.updateInstrument', () => {
+    it('attaches an instrument to a track that had none', () => {
+        const context: any = makeContext();
+        const track = new Track([], null, undefined, context);
+        const instrument = { connect: jest.fn(), disconnect: jest.fn() };
+
+        // Aux and master tracks are built with a null instrument, so this used
+        // to throw on the unguarded this.instrument.disconnect().
+        expect(() => track.updateInstrument(instrument)).not.toThrow();
+        expect(instrument.connect).toHaveBeenCalledWith(track.input);
+    });
+
+    it('detaches the previous instrument before attaching the next', () => {
+        const context: any = makeContext();
+        const first = { connect: jest.fn(), disconnect: jest.fn() };
+        const second = { connect: jest.fn(), disconnect: jest.fn() };
+        const track = new Track([], first, undefined, context);
+
+        track.updateInstrument(second);
+
+        expect(first.disconnect).toHaveBeenCalled();
+        expect(second.connect).toHaveBeenCalledWith(track.input);
+    });
+
+    it('accepts null as the new instrument', () => {
+        const context: any = makeContext();
+        const instrument = { connect: jest.fn(), disconnect: jest.fn() };
+        const track = new Track([], instrument, undefined, context);
+
+        expect(() => track.updateInstrument(null)).not.toThrow();
+        expect(instrument.disconnect).toHaveBeenCalled();
+    });
+});
+
 describe('Track.getPluginChainNode', () => {
     // The null-context constructor path logs "Error initializing track" via
     // devLog (console.warn) by design; silence it to keep test output clean.
