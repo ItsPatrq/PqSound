@@ -70,6 +70,15 @@ class Equalizer extends Plugin {
     }
 
     updateNodes() {
+        // The band splits and shelf gain were applied in the constructor only,
+        // so a preset carrying different values — which an imported composition
+        // can — moved the store and left the filters where they were (#253).
+        // The UI exposes the three gains alone, which is why this never showed
+        // up interactively.
+        this.hBand.frequency.setValueAtTime(this.preset.lowBandSplit, this.context.currentTime);
+        this.hBand.gain.setValueAtTime(this.preset.gainDb, this.context.currentTime);
+        this.lBand.frequency.setValueAtTime(this.preset.highBandSplit, this.context.currentTime);
+        this.lBand.gain.setValueAtTime(this.preset.gainDb, this.context.currentTime);
         this.lGain.gain.setValueAtTime(
             this.preset.lowFilterGain ? this.preset.lowFilterGain : 0.000001,
             this.context.currentTime,
