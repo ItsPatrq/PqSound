@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import reducer, { initWebAudio, samplerInstrumentFetching, samplerInstrumentFetched } from 'reducers/webAudioReducer';
+import reducer, { initWebAudio, samplerInstrumentFetching, samplerInstrumentFetched } from 'slices/webAudioSlice';
 
 const withInstruments = () =>
     reducer(
@@ -16,7 +16,7 @@ const withInstruments = () =>
         }),
     ) as any;
 
-describe('webAudioReducer', () => {
+describe('webAudioSlice', () => {
     it('starts uninitialized with no instruments', () => {
         const state = reducer(undefined, { type: '@@INIT' }) as any;
 

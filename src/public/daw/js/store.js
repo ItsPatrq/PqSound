@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import reducer from './reducers';
+import reducer from './slices';
 import { connectStore } from './engine/EngineStore';
 
 const store = configureStore({
@@ -12,7 +12,7 @@ const store = configureStore({
             // state. The live AudioContext/Track/instrument/plugin objects live
             // in engine/AudioEngine.
             serializableCheck: true,
-            // On since the reducers were made fully copy-on-write: nothing
+            // On since the slices were made fully copy-on-write: nothing
             // writes to an object from the previous state any more.
             immutableCheck: true,
         }),

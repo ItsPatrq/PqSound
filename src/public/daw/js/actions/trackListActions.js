@@ -5,7 +5,7 @@ import { MultiOsc, Sampler, Utils as InstrumentsUtils } from 'instruments';
 import { Utils as PluginsUtils } from 'plugins';
 import { TrackTypes } from 'constants/Constants';
 import { Utils as SamplerPresetsUtils, Presets as SamplerPresets } from 'constants/SamplerPresets';
-import * as slice from 'reducers/tracksReducer';
+import * as slice from 'slices/tracksSlice';
 
 // The pure creators come straight from the slice; the thunks below wrap the
 // ones that have to touch AudioEngine first.
@@ -18,7 +18,7 @@ export const trackIndexDown = slice.trackIndexDown;
 
 /**
  * Track thunks. Everything that constructs or mutates a Web Audio node happens
- * here; `tracksReducer` only moves descriptors around. Track graphs are keyed
+ * here; `tracksSlice` only moves descriptors around. Track graphs are keyed
  * in AudioEngine by the track's stable `id` (see #156).
  */
 

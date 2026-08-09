@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import Track from 'components/TrackList/Track';
 import * as trackListActions from 'actions/trackListActions';
-import * as compositionActions from 'reducers/compositionReducer';
+import * as compositionActions from 'slices/compositionSlice';
 import { fetchSamplerInstrument } from 'actions/webAudioActions';
 import * as Utils from 'engine/Utils';
 import AudioEngine from 'engine/AudioEngine';

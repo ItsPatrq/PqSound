@@ -8,8 +8,8 @@ import type Track from './Track';
 /**
  * Owns every live, non-serializable object that used to sit inside store state:
  * the `AudioContext`, the `Sound` dispatcher and the decoded sample buffers
- * (from `webAudioReducer`), plus the `Sequencer` and `MIDIController`
- * singletons (from `controlReducer`).
+ * (from `webAudioSlice`), plus the `Sequencer` and `MIDIController`
+ * singletons (from `controlSlice`).
  *
  * The store now keeps only serializable descriptors (`initialized`,
  * `sampleRate`, and per-instrument `loaded`/`fetching` flags) and points at

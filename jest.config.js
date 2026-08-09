@@ -12,14 +12,14 @@ module.exports = {
     testEnvironment: 'node',
     // Client sources are a mix of .ts/.tsx/.js/.jsx; ts-jest handles all of
     // them (tsconfig has allowJs). The default preset transforms .ts only,
-    // which left alias-imported .js reducers untransformed.
+    // which left alias-imported .js slices untransformed.
     transform: {
         '^.+\\.[tj]sx?$': ['ts-jest', {}],
     },
     testMatch: ['<rootDir>/src/**/*.test.ts'],
     moduleNameMapper: {
         '^actions/(.*)$': `${srcPath}/js/actions/$1`,
-        '^reducers/(.*)$': `${srcPath}/js/reducers/$1`,
+        '^slices/(.*)$': `${srcPath}/js/slices/$1`,
         '^components/(.*)$': `${srcPath}/js/components/$1`,
         '^containers/(.*)$': `${srcPath}/js/containers/$1`,
         '^engine/(.*)$': `${srcPath}/js/engine/$1`,

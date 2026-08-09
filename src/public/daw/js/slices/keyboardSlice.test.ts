@@ -10,14 +10,14 @@ import reducer, {
     changeKeyBindings,
     switchKeyNameVisibility,
     switchKeyBindVisibility,
-} from 'reducers/keyboardReducer';
+} from 'slices/keyboardSlice';
 
 /**
  * The slice runs through Immer now (#156 follow-up), so these check both the
  * behaviour and that the previous state is left alone — the property the
  * store's immutableCheck enforces.
  */
-describe('keyboardReducer', () => {
+describe('keyboardSlice', () => {
     const initial = () => reducer(undefined, { type: '@@INIT' }) as any;
 
     it('starts hidden, on C3, with no notes held', () => {

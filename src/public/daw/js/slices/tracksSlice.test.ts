@@ -18,11 +18,11 @@ import reducer, {
     setTrackPlugins,
     updateInstrumentPreset,
     changePluginPreset,
-} from 'reducers/tracksReducer';
+} from 'slices/tracksSlice';
 import { TrackTypes } from 'constants/Constants';
 
 /**
- * tracksReducer is now pure: descriptors only, no `new`, no audio-node calls.
+ * tracksSlice is now pure: descriptors only, no `new`, no audio-node calls.
  * These cover the routing and index arithmetic; the audio-graph side effects
  * that used to live here are covered in actions/trackListActions.test.ts.
  *
@@ -83,7 +83,7 @@ const makeState = (): any => ({
 
 const trackAt = (state: any, index: number) => state.trackList.find((track: any) => track.index === index);
 
-describe('tracksReducer', () => {
+describe('tracksSlice', () => {
     it('returns the default state, with Master at index 0', () => {
         const state: any = reducer(undefined, { type: '@@INIT' });
 

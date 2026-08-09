@@ -1,5 +1,5 @@
 import AudioEngine from 'engine/AudioEngine';
-import { setCurrentTime, updateMidiState } from 'reducers/controlReducer';
+import { setCurrentTime, updateMidiState } from 'slices/controlSlice';
 
 /**
  * The control slice owns the plain creators; they are re-exported here so the
@@ -21,7 +21,7 @@ export {
     loadControlState,
     textInputFocusedSwitch,
     copyRegion,
-} from 'reducers/controlReducer';
+} from 'slices/controlSlice';
 
 // Selecting a device rewires `onmidimessage` on a live MIDIPort, so it runs in
 // the engine and only the resulting snapshot is dispatched.
