@@ -178,7 +178,11 @@ class Header extends React.Component {
         // MIDI device selection is per-session hardware state, not composition data.
         delete tempControl['midi'];
         const tempTracks = Utils.copy(this.props.tracks);
-        for (let i = 0; i < tempTracks.trackList.length; i++) {}
+        // The payload is percent-encoded here and again by `export()` when it
+        // builds the data: URL. That is not a double-encode bug: the browser
+        // decodes the data: URL once while writing the file, so what lands on
+        // disk is single-encoded — the format `loadComposition` expects and the
+        // one `constants/Demo.js` ships in.
         return encodeURIComponent(
             JSON.stringify({ tracks: tempTracks, control: tempControl, composition: this.props.composition }),
         );
