@@ -144,6 +144,16 @@ export class DawPage {
         await this.trackRow(position).locator('[title="M"]').first().click();
     }
 
+    /** Record-arm chip. Aux tracks do not render one. */
+    async toggleTrackRecord(position: number): Promise<void> {
+        await this.trackRow(position).locator('[title="R"]').first().click();
+    }
+
+    /** Selects a track by clicking its row, which also moves the record arm. */
+    async selectTrack(position: number): Promise<void> {
+        await this.trackRow(position).click();
+    }
+
     /* ---- composition grid + piano roll ---- */
 
     /** Transport tool buttons in the header ("Pointer" / "Draw" / "Erase" / "Split"). */
