@@ -11,7 +11,14 @@ const FileUploadModal = (props) => {
             onHide={() => props.modalVisibilitySwitch()}
             dialogClassName="instrumentModal"
         >
-            <Dropzone accept=".json" onDrop={props.onFileUpload}>
+            {/*
+              react-dropzone's `accept` takes a MIME-type -> extensions map, not
+              a string. `accept=".json"` was silently ignored — the file input
+              rendered accept="" and offered every file type — on the installed
+              version and on every version since. It is a .jsx file, so nothing
+              typechecked it.
+            */}
+            <Dropzone accept={{ 'application/json': ['.json'] }} onDrop={props.onFileUpload}>
                 {({ getRootProps, getInputProps }) => {
                     return (
                         <div {...getRootProps()}>
