@@ -93,9 +93,13 @@ test.describe('Plugin chain', () => {
 
         const firstSlider = dawPage.fxPanel.locator('input[type="range"]').first();
         await expect(firstSlider).toBeVisible();
-        // Stay inside the control's own range rather than hard-coding a value.
-        const max = await firstSlider.getAttribute('max');
-        const target = String(Number(max) / 2);
+        // This used to use max/2, which for the Equalizer's 0..2 lowFilterGain
+        // slider is exactly its 1.0 default — so the assertion below held
+        // whether or not the fill did anything. Assert the target differs from
+        // what is already there.
+        const initial = await firstSlider.inputValue();
+        const target = '0.25';
+        expect(target).not.toBe(initial);
         await firstSlider.fill(target);
 
         // The descriptor in the store is what the editor re-renders from, so the

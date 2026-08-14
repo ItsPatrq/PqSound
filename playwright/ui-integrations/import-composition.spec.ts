@@ -45,6 +45,64 @@ test('loads a composition back from an exported file', async ({ dawPage, page })
     expect(crashes).toEqual([]);
 });
 
+/**
+ * Track count alone does not prove much: the import path rebuilds every plugin
+ * from scratch and replays the saved preset into it, so a regression there is
+ * invisible to a count.
+ *
+ * Deliberately NOT covered here: audio routing. #263's bug left a track wired
+ * to context.destination instead of its aux while the store descriptor stayed
+ * correct, so no DOM assertion can see it — checking that needs the engine's
+ * graph exposed to the page, which nothing currently does.
+ */
+test('keeps plugin presets across a round trip', async ({ dawPage, page }) => {
+    const crashes: string[] = [];
+    page.on('pageerror', (error) => crashes.push(error.message));
+
+    await dawPage.waitForAppReady();
+
+    await dawPage.addTrack('AUX');
+    const tracksBefore = await dawPage.trackCount();
+
+    await dawPage.addPlugin('Equalizer');
+    await dawPage.openPlugin('Equalizer');
+    const slider = dawPage.fxPanel.locator('input[type="range"]').first();
+    // Must differ from the preset default, or the assertion passes without the
+    // value ever having been carried anywhere. lowFilterGain defaults to 1.0 on
+    // a 0..2 slider, so the midpoint — the obvious choice — is exactly the
+    // value that proves nothing.
+    const initial = await slider.inputValue();
+    const target = '0.25';
+    expect(target).not.toBe(initial);
+    await slider.fill(target);
+    await expect.poll(async () => slider.inputValue()).toBe(target);
+
+    await dawPage.openMenu();
+    const [download] = await Promise.all([
+        page.waitForEvent('download'),
+        page.getByText('Export JSON…', { exact: true }).click(),
+    ]);
+    const exported = test.info().outputPath(download.suggestedFilename());
+    await download.saveAs(exported);
+
+    await page.reload();
+    await dawPage.waitForAppReady();
+    await dawPage.openMenu();
+    await page.getByText('Import…', { exact: true }).click();
+    await page.locator('input[type="file"]').setInputFiles(exported);
+
+    await expect.poll(() => dawPage.trackCount()).toBe(tracksBefore);
+
+    // The plugin is back on the chain with the edited value, not its default —
+    // which means the descriptor survived export, import and the rebuild that
+    // constructs a fresh plugin and replays the preset into it.
+    await dawPage.openPlugin('Equalizer');
+    const restored = dawPage.fxPanel.locator('input[type="range"]').first();
+    await expect.poll(async () => restored.inputValue()).toBe(target);
+
+    expect(crashes).toEqual([]);
+});
+
 test('offers the file picker a json filter', async ({ dawPage, page }) => {
     await dawPage.waitForAppReady();
     await dawPage.openMenu();
