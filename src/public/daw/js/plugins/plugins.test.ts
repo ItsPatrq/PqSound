@@ -1,3 +1,4 @@
+import Chorus from './Chorus';
 import Delay from './Delay';
 import Equalizer from './Equalizer';
 
@@ -22,11 +23,22 @@ const makeNode = (extra: Record<string, unknown> = {}) => ({
     ...extra,
 });
 
+/** Every node the fake context hands out, so teardown can be checked in full. */
+const created: any[] = [];
+
+const track = (node: any) => {
+    created.push(node);
+    return node;
+};
+
 const makeContext = (): any => ({
     currentTime: 0,
-    createGain: () => makeNode({ gain: param() }),
-    createDelay: () => makeNode({ delayTime: param() }),
-    createBiquadFilter: () => makeNode({ frequency: param(), gain: param(), type: '' }),
+    createGain: () => track(makeNode({ gain: param() })),
+    createDelay: () => track(makeNode({ delayTime: param() })),
+    createBiquadFilter: () => track(makeNode({ frequency: param(), gain: param(), type: '' })),
+    createOscillator: () => track(makeNode({ frequency: param(), type: '', start: jest.fn(), stop: jest.fn() })),
+    createChannelSplitter: () => track(makeNode()),
+    createChannelMerger: () => track(makeNode()),
 });
 
 describe('Delay', () => {
@@ -78,5 +90,57 @@ describe('Equalizer', () => {
         expect(equalizer.lGain.gain.setValueAtTime).toHaveBeenCalledWith(0.5, 0);
         expect(equalizer.mGain.gain.setValueAtTime).toHaveBeenCalledWith(0.25, 0);
         expect(equalizer.hGain.gain.setValueAtTime).toHaveBeenCalledWith(2, 0);
+    });
+});
+
+/**
+ * #276: teardown released `input` and `output` only, so each plugin's internal
+ * graph stayed wired together after removal — and Chorus's LFO oscillator,
+ * started in the constructor and never stopped, kept running for the life of
+ * the page while still driving both delay lines' delayTime params.
+ */
+describe('plugin disposal', () => {
+    beforeEach(() => {
+        created.length = 0;
+    });
+
+    it('Chorus stops its LFO oscillator', () => {
+        const chorus: any = new Chorus(0, makeContext());
+        expect(chorus.osc.start).toHaveBeenCalled();
+
+        chorus.dispose();
+
+        // The leak: started in the constructor, never stopped, never collectable.
+        expect(chorus.osc.stop).toHaveBeenCalled();
+        expect(chorus.osc.disconnect).toHaveBeenCalled();
+    });
+
+    it('Chorus releases every node it built, not just input and output', () => {
+        const chorus: any = new Chorus(0, makeContext());
+        const built = [...created];
+        expect(built.length).toBeGreaterThan(5);
+
+        chorus.dispose();
+
+        built.forEach((node) => expect(node.disconnect).toHaveBeenCalled());
+    });
+
+    it('Delay releases the delay lines it keeps in an array', () => {
+        const delay: any = new Delay(0, makeContext());
+        const lines = [...delay.delayArray];
+        expect(lines.length).toBeGreaterThan(0);
+
+        delay.dispose();
+
+        lines.forEach((node: any) => expect(node.disconnect).toHaveBeenCalled());
+    });
+
+    it('is safe to call twice', () => {
+        const equalizer: any = new Equalizer(0, makeContext());
+
+        expect(() => {
+            equalizer.dispose();
+            equalizer.dispose();
+        }).not.toThrow();
     });
 });

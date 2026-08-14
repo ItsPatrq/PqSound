@@ -18,6 +18,12 @@ const disposeInstrument = (instrument: any): void => {
 };
 
 const disposePlugin = (plugin: any): void => {
+    // PluginBase.dispose releases the plugin's whole internal graph and stops
+    // any scheduled source; input/output alone left Chorus's LFO running (#276).
+    if (typeof plugin?.dispose === 'function') {
+        plugin.dispose();
+        return;
+    }
     plugin?.input?.disconnect?.();
     plugin?.output?.disconnect?.();
 };
