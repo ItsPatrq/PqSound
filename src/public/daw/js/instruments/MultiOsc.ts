@@ -40,14 +40,12 @@ class MultiOscVoice extends VoiceSynthBase {
         time = time || this.context.currentTime;
         this.output.gain.setValueAtTime(this.maxGain, time);
         this.output.gain.linearRampToValueAtTime(0.0001, time + this.preset.release);
-        setTimeout(
-            () => {
-                for (let i = 0; i < this.waves.length; i++) {
-                    this.waves[i].disconnect();
-                }
-            },
-            Math.floor((time + this.preset.release - this.context.currentTime) * 1000),
-        );
+        this.releaseNodes(time, this.preset.release, () => {
+            for (let i = 0; i < this.waves.length; i++) {
+                this.stopSource(this.waves[i]);
+                this.waves[i].disconnect();
+            }
+        });
     }
 
     connect(target) {
