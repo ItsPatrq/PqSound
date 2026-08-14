@@ -34,6 +34,19 @@ test('keeps store state serializable and immutable across the main flows', async
     await dawPage.moveTrackUp(1);
     await dawPage.toggleTrackSolo(0);
     await dawPage.toggleTrackMute(0);
+
+    // This guard only covers the reducers the flow happens to reach, which is
+    // easy to forget when adding one. Verified by injecting a live object into
+    // `changeRecordState` — the spec passed, because nothing here had ever
+    // triggered it. Record-arm and row-select close that gap; a plugin preset
+    // change covers changePluginPreset, whose descriptor is the other place a
+    // live object could reach the store.
+    await dawPage.toggleTrackRecord(1);
+    await dawPage.selectTrack(1);
+    await dawPage.openPlugin('Equalizer');
+    const eqSlider = dawPage.fxPanel.locator('input[type="range"]').first();
+    await eqSlider.fill('0.25');
+
     await dawPage.removeTrackRow(0);
 
     await dawPage.loadDemo();
