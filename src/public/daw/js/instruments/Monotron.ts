@@ -51,15 +51,14 @@ class MonotronVoice extends VoiceSynthBase {
     stop(time) {
         time = time || this.context.currentTime;
         this.output.gain.exponentialRampToValueAtTime(0.0001, time + 0.05);
-        setTimeout(
-            () => {
-                this.vco.disconnect();
-                this.lfo.disconnect();
-                this.lfoGain.disconnect();
-                this.vcf.disconnect();
-            },
-            Math.floor((time + 0.05 - this.context.currentTime) * 1000),
-        );
+        this.releaseNodes(time, 0.05, () => {
+            this.stopSource(this.vco);
+            this.stopSource(this.lfo);
+            this.vco.disconnect();
+            this.lfo.disconnect();
+            this.lfoGain.disconnect();
+            this.vcf.disconnect();
+        });
     }
 
     connect(target) {
