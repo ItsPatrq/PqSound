@@ -45,3 +45,6 @@ playwright/test-results
 # graphify: all output is regenerable machine data rebuilt locally by the
 # post-commit hook. Never tracked — avoids diff churn and keeps trunk clean.
 graphify-out/
+
+# Local agent/automation helpers, not part of the project
+scripts/
