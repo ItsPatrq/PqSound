@@ -72,7 +72,7 @@
         "normalize.css": "8.0.1",
         "react": "19.2.8",
         "react-dom": "19.2.8",
-        "react-dropzone": "20.1.0",
+        "react-dropzone": "20.1.1",
         "react-redux": "9.3.0",
         "redux": "5.0.1",
         "ts-node": "^10.9.2",
