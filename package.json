@@ -67,7 +67,7 @@
         "@types/express": "5.0.6",
         "cross-env": "10.1.0",
         "express": "^5.2.1",
-        "express-rate-limit": "^8.6.2",
+        "express-rate-limit": "^8.7.0",
         "nodemon": "^3.1.14",
         "normalize.css": "8.0.1",
         "react": "19.2.8",
