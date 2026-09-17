@@ -77,7 +77,7 @@
         "redux": "5.0.1",
         "ts-node": "^10.9.2",
         "tslib": "^2.8.1",
-        "typescript": "^6.0.3"
+        "typescript": "^7.0.2"
     },
     "comments": {
         "overrides": "Transitive-only security bumps for advisories with no direct-dependency fix available. Version-scoped so packages pinning an older major are left alone. Drop an entry once the parent dependency ships a fixed range."
