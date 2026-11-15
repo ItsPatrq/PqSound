@@ -290,6 +290,17 @@ function measureAll(get: (r: CalibrationRender) => Float32Array[] | undefined) {
                 );
                 break;
             }
+            case 'dc': {
+                // Running mean (DC) per 1024 samples, ×10⁴, from 0.1 s before note-on.
+                const out: number[] = [];
+                for (let i = onset - 4096; i + 1024 <= Math.min(x.length, off + SR / 2); i += 1024) {
+                    let m = 0;
+                    for (let k = i; k < i + 1024; k++) m += x[k];
+                    out.push(Math.round((m / 1024) * 1e4));
+                }
+                tracks[`dc-${r.value}`] = out;
+                break;
+            }
             case 'vcfres': {
                 const spec = noiseSpectrumDb(x, onset + SR / 2, off);
                 let peakK = binOf(100);
@@ -355,8 +366,11 @@ fs.writeFileSync(
 
 // --ours: the same sweeps through PqSound's engine, measured identically, so
 // any estimator bias cancels and the two columns can be compared directly.
+const wanted = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const ours = process.argv.includes('--ours')
     ? measureAll((r) => {
+          // Render only what was asked for: a group name, or a track like envtrack-0.
+          if (wanted.length && !wanted.some((w) => w === r.group || w.startsWith(r.group))) return undefined;
           const events = r.notes.flatMap((n) => [
               { time: blockToSample(n.onBlock) / SR, note: n.note, on: true },
               { time: blockToSample(n.offBlock) / SR, note: n.note, on: false },

@@ -137,6 +137,12 @@ export const CALIBRATION: CalibrationRender[] = [
             6,
         ),
     ),
+    // DC through a closed filter: whatever the DCO's mean is, and how it decays.
+    make('dc', 0, { vcfFreq: 0, vcaGate: true }, hold(52, on, offAt(1.9)), 2.5),
+    make('dc', 1, { saw: false, pulse: true, vcfFreq: 0, vcaGate: true }, hold(52, on, offAt(1.9)), 2.5),
+    make('dc', 2, { vcfFreq: 0, envD: 60, envS: 0 }, hold(52, on, offAt(1.9)), 2.5),
+    make('dc', 3, { saw: true, pulse: true, vcfFreq: 0, vcaGate: true }, hold(52, on, offAt(1.9)), 2.5),
+    make('dc', 4, { vcfFreq: 0, vcaGate: true, octave: 0 }, hold(40, on, offAt(1.9)), 2.5),
     // Idle floor: no note at all, chorus off / I / II.
     ...[0, 1, 2].map((v) => make('hiss', v, { chorus: v as 0 | 1 | 2 }, [], 2)),
     // Sustain level law.

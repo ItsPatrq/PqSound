@@ -52,31 +52,43 @@ export const JUNO_CALIBRATION = {
     vcfKbdPivot: 60,
     /** Envelope depth: octaves of cutoff per ENV step at envelope = 1 (linear in the slider). */
     vcfEnvOctavesPerStep: 7.02 / 64,
-    /** VCF LFO depth at full, octaves peak. Not yet measured. */
-    vcfLfoOctaves: 3,
-    /** Ladder feedback at full resonance (4 is the linear self-oscillation point). */
-    resonanceMax: 4.6,
+    /** VCF LFO depth at full, octaves peak (linear in the slider). */
+    vcfLfoOctaves: 3.38,
+    /**
+     * Ladder feedback k per RES step (4 is the linear self-oscillation point).
+     * Fitted so the resonant peak over noise matches the reference: linear to
+     * 96, tapered above, full resonance still self-oscillates.
+     */
+    resonance: [
+        [0, 0],
+        [96, 3.477],
+        [112, 3.77],
+        [120, 3.98],
+        [127, 4.6],
+    ] as Curve,
     /** DCO LFO depth, semitones peak. */
     dcoLfoSemis: [
-        [0, 0],
-        [16, 0.1127],
-        [32, 0.1962],
-        [64, 0.3585],
-        [96, 0.6497],
-        [127, 3.455],
+        [0, 0.0],
+        [16, 0.11766],
+        [32, 0.20483],
+        [64, 0.37427],
+        [96, 0.67829],
+        [127, 3.60702],
     ] as Curve,
     /** Pulse duty under manual PWM. */
     pwmDuty: [
         [0, 0.5],
-        [16, 0.5711],
-        [32, 0.6424],
-        [48, 0.7144],
-        [64, 0.7879],
-        [80, 0.8655],
-        [96, 0.9711],
-        [105, 0.99],
-        [127, 0.99],
+        [16, 0.5685],
+        [32, 0.637],
+        [48, 0.7053],
+        [64, 0.7731],
+        [80, 0.8377],
+        [96, 0.9422],
+        [105, 0.97],
+        [127, 0.97],
     ] as Curve,
+    /** LFO phase at power-on, cycles: the LFO free-runs from there (measured at two rates). */
+    lfoStartPhase: 0.33,
     /** LFO rate, Hz. */
     lfoHz: [
         [0, 0.09463],
@@ -99,31 +111,31 @@ export const JUNO_CALIBRATION = {
     ] as Curve,
     /** LFO delay: seconds until the LFO reaches 90% depth (an RC fade-in). */
     lfoDelay90: [
-        [0, 0],
-        [32, 0.5457],
-        [64, 1.289],
-        [96, 2.113],
-        [127, 4.063],
+        [0, 0.0],
+        [32, 0.69253],
+        [64, 1.46004],
+        [96, 2.31695],
+        [127, 5.58747],
     ] as Curve,
     /** Attack: linear ramp time, seconds. */
     attackSec: [
-        [0, 0.003225],
-        [8, 0.04515],
-        [16, 0.0903],
-        [24, 0.1564],
-        [32, 0.1967],
-        [40, 0.237],
-        [48, 0.2822],
-        [56, 0.3273],
-        [64, 0.3886],
-        [72, 0.4692],
-        [80, 0.5853],
-        [88, 0.7724],
-        [96, 0.9643],
-        [104, 1.237],
-        [112, 1.58],
-        [120, 1.772],
-        [127, 2.307],
+        [0, 0.00323],
+        [8, 0.05268],
+        [16, 0.12642],
+        [24, 0.20232],
+        [32, 0.27577],
+        [40, 0.33816],
+        [48, 0.39502],
+        [56, 0.44285],
+        [64, 0.53512],
+        [72, 0.67262],
+        [80, 0.79873],
+        [88, 1.08493],
+        [96, 1.38622],
+        [104, 1.7737],
+        [112, 2.22694],
+        [120, 2.52817],
+        [127, 3.28331],
     ] as Curve,
     /**
      * Decay: a pure exponential toward zero that stops at the sustain level
@@ -133,21 +145,21 @@ export const JUNO_CALIBRATION = {
     decayTau: [
         [0, 0.00315],
         [8, 0.00945],
-        [16, 0.04472],
-        [24, 0.06235],
-        [32, 0.09385],
-        [40, 0.19459],
-        [48, 0.35832],
-        [56, 0.44908],
-        [64, 0.61281],
-        [72, 0.71732],
-        [80, 0.83577],
-        [88, 0.99922],
-        [96, 1.22657],
-        [104, 1.59913],
-        [112, 2.33087],
-        [120, 7.267],
-        [127, 17.574],
+        [16, 0.05115],
+        [24, 0.07442],
+        [32, 0.1165],
+        [40, 0.25469],
+        [48, 0.50296],
+        [56, 0.62269],
+        [64, 0.80165],
+        [72, 0.98155],
+        [80, 1.13492],
+        [88, 1.32531],
+        [96, 1.6331],
+        [104, 2.07727],
+        [112, 2.93779],
+        [120, 6.49988],
+        [127, 11.00839],
     ] as Curve,
     /**
      * Release: an RC discharge toward a target slightly below zero, so the
@@ -155,25 +167,31 @@ export const JUNO_CALIBRATION = {
      * −40/−20 dB time ratio is ≈1.78, against 2.0 for a pure exponential).
      */
     releaseTau: [
-        [0, 0.001978],
-        [8, 0.01253],
-        [16, 0.05604],
-        [24, 0.0745],
-        [32, 0.118],
-        [40, 0.2459],
-        [48, 0.4793],
-        [56, 0.5888],
-        [64, 0.8076],
-        [72, 0.9461],
-        [80, 1.089],
-        [88, 1.307],
-        [96, 1.588],
-        [104, 2.074],
-        [112, 5.007],
-        [120, 28.37],
-        [127, 48.91],
+        [0, 0.00198],
+        [8, 0.01408],
+        [16, 0.06867],
+        [24, 0.09265],
+        [32, 0.14177],
+        [40, 0.30387],
+        [48, 0.59404],
+        [56, 0.73586],
+        [64, 0.9469],
+        [72, 1.1602],
+        [80, 1.34414],
+        [88, 1.5608],
+        [96, 2.02127],
+        [104, 2.84403],
+        [112, 4.20575],
+        [120, 31.87369],
+        [127, 54.95039],
     ] as Curve,
-    releaseUndershoot: 0.01,
+    releaseUndershoot: 0.02,
+    /**
+     * The cutoff's envelope decays this much slower than the VCA's (measured:
+     * τ 0.88 s vs 0.71 s at D=60, from self-oscillation sweeps); attack and
+     * sustain are shared.
+     */
+    vcfDecaySlowdown: 1.24,
     /** Sustain level, linear amplitude. */
     sustain: [
         [0, 0],
@@ -189,22 +207,36 @@ export const JUNO_CALIBRATION = {
      * sub (full) +6.72 dB, noise (full) +5.14 dB; each of ours is set so its
      * own waveform's RMS lands on that offset (see the engine test).
      */
+    /**
+     * Pulse alignment against the saw ramp: 0 = high from the ramp reset for
+     * `duty`, 1 = high for the last `duty` of the ramp; +2 inverts. Matters
+     * only when saw and pulse sound together (their harmonics interact).
+     */
+    pulseAlign: 1,
+    /** Capacitor-charge curvature of the saw ramp: pos·(1 + c·(1 − pos)); 0 = straight. */
+    sawCurve: 0.12,
+    /** Output AC coupling, Hz (0 = DC-coupled). */
+    dcBlockHz: 0,
+    /** DCO→VCF coupling per voice, Hz: blocks the curved saw's DC ahead of the VCA (0 = off). */
+    dcoCouplingHz: 0,
+    /** Floor/BBD hiss colour: 0 = white, 1 = pink-ish (equal energy per octave). */
+    hissPink: 1,
     sawGain: 0.5,
     pulseGain: 0.5 * Math.pow(10, (3.2 - 4.771) / 20),
-    subGain: 0.5 * Math.pow(10, (6.72 - 4.771) / 20),
+    subGain: 0.5 * Math.pow(10, (6.72 - 4.771) / 20) * 1.114 * Math.pow(10, -0.89 / 20),
     subCurve: [
         [0, 0],
         [64, 0.4559],
         [127, 1],
     ] as Curve,
-    noiseGain: 1.234,
+    noiseGain: 1.686 * Math.pow(10, -1.07 / 20),
     noiseCurve: [
         [0, 0],
         [64, 0.4732],
         [127, 1],
     ] as Curve,
     /** Output gain: our open-filter saw at VCA 64 lands at the reference's −19.5 dBFS RMS. */
-    outputGain: 0.366,
+    outputGain: 0.3829 * Math.pow(10, -0.33 / 20),
     /** HPF corners. */
     hpfBoostHz: 150,
     hpfBoostDb: 10,
@@ -213,12 +245,34 @@ export const JUNO_CALIBRATION = {
     /** Chorus: centre delay, per-mode rate and depth, BBD bandwidth. */
     chorusCentreMs: 3.5,
     chorus1Hz: 0.513,
-    chorus1DepthMs: 1.6,
-    chorus2Hz: 0.863,
-    chorus2DepthMs: 1.6,
+    chorus1DepthMs: 2.32,
+    chorus2Hz: 0.842,
+    chorus2DepthMs: 1.86,
     chorusLowpassHz: 14000,
     chorusDry: 0.4,
     chorusWet: 0.6,
+    /** Phase of the right tap's delay sweep relative to the left, in cycles (0.5 = antiphase). */
+    chorusTapPhase: 0.5,
+    /** Idle floor (dBFS RMS per channel): always, and while the chorus (BBD) runs. */
+    floorDbfs: -84,
+    chorus1HissDbfs: -62.4,
+    chorus2HissDbfs: -64,
+    /**
+     * Ladder drive: the input is scaled down into the saturating stages and
+     * back up after, keeping loud input out of hard saturation (which pulled
+     * the resonant peak down in frequency and flattened it), and passband
+     * compensation 1 + 0.55·k holds the measured ~4 dB passband loss at full
+     * resonance.
+     */
+    filterDrive: 0.15,
+    /** Thermal noise injected at the ladder input, scaled down as the filter's own energy rises. */
+    /** Saturate each ladder stage's input as well as the feedback sum (OTA per stage). */
+    stageClip: 1,
+    thermalLevel: 1e-4,
+    thermalAdaptive: 0,
+    /** Per-voice analog noise at the DCO mix (pre-VCF), amplitude of uniform white. */
+    voiceNoise: 0.01,
+    passbandComp: 0.55,
 };
 
 export type JunoCalibration = typeof JUNO_CALIBRATION;
@@ -296,6 +350,8 @@ interface Derived {
     vcaGate: boolean;
     attackInc: number;
     decayMul: number;
+    vcfDecayMul: number;
+    couplingG: number;
     sustain: number;
     releaseCoeff: number;
     lfoInc: number;
@@ -315,12 +371,15 @@ class Voice {
     gate = false;
     stage = Stage.Idle;
     env = 0;
+    /** Filter-envelope copy: shares attack/sustain/release, decays slower. */
+    fenv = 0;
     gateEnv = 0;
     phase = 0;
     subPhase = 0;
     private s = [0, 0, 0, 0];
     private noiseState: number;
     private noiseLp = 0;
+    private couplingS = 0;
     age = 0;
 
     constructor(seed: number) {
@@ -372,24 +431,25 @@ class Voice {
         switch (this.stage) {
             case Stage.Attack:
                 this.env += d.attackInc;
+                this.fenv = this.env;
                 if (this.env >= 1) {
                     this.env = 1;
+                    this.fenv = 1;
                     this.stage = Stage.Decay;
                 }
                 break;
             case Stage.Decay:
-                this.env *= d.decayMul;
-                if (this.env <= d.sustain) {
-                    this.env = d.sustain;
-                    this.stage = Stage.Sustain;
-                }
-                break;
             case Stage.Sustain:
-                this.env += (d.sustain - this.env) * 0.001;
+                // RC toward the sustain level: the cutoff keeps gliding rather
+                // than landing on S (measured on self-oscillating envelope sweeps).
+                this.env += (d.sustain - this.env) * (1 - d.decayMul);
+                this.fenv += (d.sustain - this.fenv) * (1 - d.vcfDecayMul);
                 break;
             case Stage.Release:
                 this.env += (-JUNO_CALIBRATION.releaseUndershoot - this.env) * d.releaseCoeff;
                 if (this.env < 0) this.env = 0;
+                this.fenv += (-JUNO_CALIBRATION.releaseUndershoot - this.fenv) * d.releaseCoeff;
+                if (this.fenv < 0) this.fenv = 0;
                 break;
         }
         const gateTarget = this.gate ? 1 : 0;
@@ -398,6 +458,7 @@ class Voice {
         if (!this.gate && level < 1e-5) {
             this.stage = Stage.Idle;
             this.env = 0;
+            this.fenv = 0;
             this.gateEnv = 0;
             this.s.fill(0);
         }
@@ -419,17 +480,25 @@ class Voice {
 
         let mix = 0;
         if (d.sawOn) {
-            const saw = 2 * this.phase - 1 - polyBlep(this.phase, dt);
+            const cv = JUNO_CALIBRATION.sawCurve;
+            const ramp = cv ? this.phase * (1 + cv * (1 - this.phase)) : this.phase;
+            const saw = 2 * ramp - 1 - polyBlep(this.phase, dt);
             mix += saw * d.sawOn;
         }
         if (d.pulseOn) {
             const width = d.pwmManual ? 0 : d.pwmByte * (lfo + 1) * 0.5;
             const duty = d.pwmManual ? d.pwmDuty : curve(JUNO_CALIBRATION.pwmDuty, width);
-            let pulse = this.phase < duty ? 1 : -1;
-            pulse += polyBlep(this.phase, dt);
-            let t2 = this.phase - duty;
-            if (t2 < 0) t2 += 1;
-            pulse -= polyBlep(t2, dt);
+            const align = JUNO_CALIBRATION.pulseAlign;
+            // Rising edge at `rise`, falling edge `duty` later (mod 1).
+            const rise = align & 1 ? 1 - duty : 0;
+            let tr = this.phase - rise;
+            if (tr < 0) tr += 1;
+            let pulse = tr < duty ? 1 : -1;
+            pulse += polyBlep(tr, dt);
+            let tf = tr - duty;
+            if (tf < 0) tf += 1;
+            pulse -= polyBlep(tf, dt);
+            if (align & 2) pulse = -pulse;
             mix += pulse * d.pulseOn;
         }
         if (d.subLevel) {
@@ -442,18 +511,26 @@ class Voice {
             mix += sub * d.subLevel;
         }
         if (d.noiseLevel) mix += this.noise() * d.noiseLevel;
+        if (JUNO_CALIBRATION.voiceNoise) mix += this.thermal() * JUNO_CALIBRATION.voiceNoise;
+        if (JUNO_CALIBRATION.dcoCouplingHz) {
+            const v = (mix - this.couplingS) * d.couplingG;
+            const lp = v + this.couplingS;
+            this.couplingS = lp + v;
+            mix -= lp;
+        }
 
         // VCF: 4 one-pole TPT stages with saturating feedback, 2× oversampled.
         const envLevel = this.env;
+        const filterEnv = this.fenv;
         const kbdOct = (d.kbd * (this.note - JUNO_CALIBRATION.vcfKbdPivot)) / 12;
-        const cutoffOct = d.cutoffBaseOct + kbdOct + d.envOct * envLevel + d.lfoOct * lfo;
+        const cutoffOct = d.cutoffBaseOct + kbdOct + d.envOct * filterEnv + d.lfoOct * lfo;
         const fs2 = sr * 2;
-        const fc = Math.max(20, Math.min(Math.pow(2, cutoffOct), 0.41 * fs2));
+        const fc = Math.max(4, Math.min(Math.pow(2, cutoffOct), 0.41 * fs2));
         const g = Math.tan((Math.PI * fc) / fs2);
         const G = g / (1 + g);
         const nyqTaper = fc / fs2 > 0.35 ? Math.max(0.25, 1 - (fc / fs2 - 0.35) * 6) : 1;
         const k = d.resonance * nyqTaper;
-        const comp = 1 + (k / 4) * (k / 4) * 0.5;
+        const comp = (1 + JUNO_CALIBRATION.passbandComp * k) * JUNO_CALIBRATION.filterDrive;
         const s = this.s;
         let y = 0;
         for (let os = 0; os < 2; os++) {
@@ -463,11 +540,15 @@ class Voice {
             const G4 = G2 * G2;
             // A tiny noise floor, as in the analog circuit: without it a digital
             // ladder at full resonance with no input never starts oscillating.
-            const thermal = this.thermal() * 1e-4;
+            const tl = JUNO_CALIBRATION.thermalLevel;
+            const energy = s[0] * s[0] + s[1] * s[1] + s[2] * s[2] + s[3] * s[3];
+            const thermal = this.thermal() * (JUNO_CALIBRATION.thermalAdaptive ? tl / (1 + energy * 1000) : tl);
             let u = ((mix + thermal) * comp - k * S) / (1 + k * G4);
             u = softClip(u);
             let x = u;
+            const clip = JUNO_CALIBRATION.stageClip;
             for (let i = 0; i < 4; i++) {
+                if (clip && i > 0) x = softClip(x);
                 const v = (x - s[i]) * G;
                 const out = v + s[i];
                 s[i] = out + v;
@@ -475,7 +556,7 @@ class Voice {
             }
             y += x;
         }
-        y *= 0.5;
+        y *= 0.5 / JUNO_CALIBRATION.filterDrive;
 
         const level = d.vcaGate ? this.gateEnv : envLevel;
         return y * level * d.vcaGain;
@@ -490,7 +571,7 @@ export class JunoEngine {
     private clock = 0;
 
     // LFO
-    private lfoPhase = 0;
+    private lfoPhase = JUNO_CALIBRATION.lfoStartPhase;
     private lfoFade = 0;
     private lfoFadeCoeff = 1;
 
@@ -505,6 +586,35 @@ export class JunoEngine {
     private chorusLpL = new OnePole();
     private chorusLpR = new OnePole();
 
+    // Output AC coupling (one-pole high-pass on the voice sum).
+    private dcLp = new OnePole();
+    // Pink-ish filter state for the hiss (Kellet's economy 3-pole), per channel.
+    private pinkL = [0, 0, 0];
+    private pinkR = [0, 0, 0];
+    private pink(b: number[], white: number): number {
+        b[0] = 0.99765 * b[0] + white * 0.099046;
+        b[1] = 0.963 * b[1] + white * 0.2965164;
+        b[2] = 0.57 * b[2] + white * 1.0526913;
+        // Scaled so its RMS equals the white input's.
+        return (b[0] + b[1] + b[2] + white * 0.1848) * 0.2;
+    }
+
+    // Measured idle/BBD hiss, deterministic so offline renders repeat.
+    private hissState = 0x2545f491;
+    private hissSample(state: number[]): number {
+        const w = this.hiss();
+        return JUNO_CALIBRATION.hissPink ? this.pink(state, w) : w;
+    }
+
+    private hiss(): number {
+        let x = this.hissState;
+        x ^= x << 13;
+        x ^= x >>> 17;
+        x ^= x << 5;
+        this.hissState = x >>> 0;
+        return (this.hissState / 4294967296) * 2 - 1;
+    }
+
     constructor(sampleRate: number, patch: JunoPatch = defaultPatch, polyphony = 6) {
         this.sampleRate = sampleRate;
         this.voices = Array.from({ length: polyphony }, (_, i) => new Voice(i + 1));
@@ -513,6 +623,7 @@ export class JunoEngine {
         this.delayR = new Float32Array(delaySamples);
         this.chorusLpL.setCutoff(JUNO_CALIBRATION.chorusLowpassHz, sampleRate);
         this.chorusLpR.setCutoff(JUNO_CALIBRATION.chorusLowpassHz, sampleRate);
+        this.dcLp.setCutoff(Math.max(0.01, JUNO_CALIBRATION.dcBlockHz), sampleRate);
         this.setPatch(patch);
     }
 
@@ -538,12 +649,17 @@ export class JunoEngine {
             kbd: norm(p.vcfKbd) * c.vcfKbdFull,
             envOct: p.vcfEnv * c.vcfEnvOctavesPerStep * (p.vcfEnvInvert ? -1 : 1),
             lfoOct: norm(p.vcfLfo) * c.vcfLfoOctaves,
-            resonance: norm(p.vcfRes) * c.resonanceMax,
+            resonance: curve(c.resonance, p.vcfRes),
             dcoLfoSemis: curve(c.dcoLfoSemis, p.dcoLfo),
             vcaGain: c.outputGain * Math.pow(10, ((p.vcaLevel - 64) * c.vcaDbPerStep) / 20),
             vcaGate: p.vcaGate,
             attackInc: 1 / (curve(c.attackSec, p.envA, true) * sr),
             decayMul: Math.exp(-1 / (curve(c.decayTau, p.envD, true) * sr)),
+            couplingG: (() => {
+                const g = Math.tan((Math.PI * Math.max(0.01, c.dcoCouplingHz)) / sr);
+                return g / (1 + g);
+            })(),
+            vcfDecayMul: Math.exp(-1 / (curve(c.decayTau, p.envD, true) * c.vcfDecaySlowdown * sr)),
             sustain: curve(c.sustain, p.envS),
             releaseCoeff: 1 - Math.exp(-1 / (curve(c.releaseTau, p.envR, true) * sr)),
             lfoInc: curve(c.lfoHz, p.lfoRate, true) / sr,
@@ -629,27 +745,34 @@ export class JunoEngine {
         const rate = chorus === 1 ? c.chorus1Hz : c.chorus2Hz;
         const depth = ((chorus === 1 ? c.chorus1DepthMs : c.chorus2DepthMs) / 1000) * sr;
         const centre = (c.chorusCentreMs / 1000) * sr;
+        // Uniform white noise has RMS 1/√3, so this amplitude lands on the measured dBFS RMS.
+        const hissDb = chorus === 0 ? c.floorDbfs : chorus === 1 ? c.chorus1HissDbfs : c.chorus2HissDbfs;
+        const hissAmp = Math.pow(10, hissDb / 20) * Math.sqrt(3);
         for (let i = offset; i < offset + frames; i++) {
             const lfo = this.lfoTick();
             let mono = 0;
             for (const v of this.voices) mono += v.tick(this.d, lfo, sr);
+            if (c.dcBlockHz) mono -= this.dcLp.lowpass(mono);
             mono = this.hpf(mono);
 
             if (chorus === 0) {
-                left[i] = mono;
-                right[i] = mono;
+                left[i] = mono + this.hissSample(this.pinkL) * hissAmp;
+                right[i] = mono + this.hissSample(this.pinkR) * hissAmp;
                 continue;
             }
             this.chorusPhase += rate / sr;
             if (this.chorusPhase >= 1) this.chorusPhase -= 1;
             const tri = 1 - 4 * Math.abs(this.chorusPhase - 0.5);
+            let phR = this.chorusPhase + c.chorusTapPhase;
+            if (phR >= 1) phR -= 1;
+            const triR = 1 - 4 * Math.abs(phR - 0.5);
             this.delayL[this.writeIndex] = mono;
             this.delayR[this.writeIndex] = mono;
             const wetL = this.chorusLpL.lowpass(this.readDelay(this.delayL, centre + depth * tri));
-            const wetR = this.chorusLpR.lowpass(this.readDelay(this.delayR, centre - depth * tri));
+            const wetR = this.chorusLpR.lowpass(this.readDelay(this.delayR, centre + depth * triR));
             this.writeIndex = (this.writeIndex + 1) % this.delayL.length;
-            left[i] = c.chorusDry * mono + c.chorusWet * wetL;
-            right[i] = c.chorusDry * mono + c.chorusWet * wetR;
+            left[i] = c.chorusDry * mono + c.chorusWet * wetL + this.hissSample(this.pinkL) * hissAmp;
+            right[i] = c.chorusDry * mono + c.chorusWet * wetR + this.hissSample(this.pinkR) * hissAmp;
         }
     }
 }
