@@ -5,7 +5,8 @@ import * as webpack from 'webpack';
 import HtmlWebpackPlugin = require('html-webpack-plugin');
 
 export const srcPath = path.join(__dirname, './../public/daw/');
-export const publicPath = '/assets/';
+import { publicPath } from './publicPath';
+export { publicPath };
 
 // Add needed plugins here
 // const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');

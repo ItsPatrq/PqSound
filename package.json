@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "description": "",
     "scripts": {
-        "start": "node --max-old-space-size=128 -r ts-node/register  ./src/start.ts",
+        "start": "node --max-old-space-size=128 -r ts-node/register/transpile-only ./src/start.ts",
         "lint": "eslint --fix .",
         "test": "jest",
         "typecheck": "tsc --noEmit -p tsconfig.json",
