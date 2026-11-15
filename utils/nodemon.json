@@ -9,5 +9,5 @@
     "env": {
         "NODE_ENV": "local"
     },
-    "exec": "ts-node ./src/start.ts dev"
+    "exec": "node -r ./utils/typescript6.js -r ts-node/register ./src/start.ts dev"
 }

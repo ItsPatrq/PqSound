@@ -8,9 +8,6 @@ export const srcPath = path.join(__dirname, './../public/daw/');
 import { publicPath } from './publicPath';
 export { publicPath };
 
-// Add needed plugins here
-// const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-
 export const defaultSettings: webpack.Configuration = {
     context: path.join(__dirname, '/../'),
     devtool: 'eval-source-map',
@@ -45,9 +42,6 @@ export const defaultSettings: webpack.Configuration = {
             filename: 'index.html',
         }),
         new MiniCssExtractPlugin({ filename: 'style.css' }),
-        //   new ForkTsCheckerWebpackPlugin({
-        //       tsconfig: path.join(__dirname, '/../tsconfig.json')
-        //   }) //not working
     ],
     module: {
         rules: [

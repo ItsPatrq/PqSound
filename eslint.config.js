@@ -1,3 +1,5 @@
+// Must run before typescript-eslint loads: it needs TS6's compiler API. See utils/typescript6.js.
+require('./utils/typescript6');
 const globals = require('globals');
 const tseslint = require('typescript-eslint');
 const reactPlugin = require('eslint-plugin-react');
