@@ -4,6 +4,7 @@ import Dropdown from 'components/Dropdown';
 import { X } from 'components/Icons';
 import SamplerComponent from 'components/Instruments/Sampler';
 import MonotronComponent from 'components/Instruments/Monotron';
+import JunoComponent from 'components/Instruments/Juno';
 import MultiOscComponent from 'components/Instruments/MultiOsc';
 import PqSynthComponent from 'components/Instruments/PqSynth';
 import * as Actions from 'slices/trackDetailsSlice';
@@ -72,6 +73,14 @@ class InstrumentPanel extends React.Component {
             case Instruments.MultiOsc.id:
                 return (
                     <MultiOscComponent
+                        instrument={track.instrument}
+                        trackIndex={track.index}
+                        onPresetChange={this.handleInstrumentPresetChange.bind(this)}
+                    />
+                );
+            case Instruments.Juno.id:
+                return (
+                    <JunoComponent
                         instrument={track.instrument}
                         trackIndex={track.index}
                         onPresetChange={this.handleInstrumentPresetChange.bind(this)}

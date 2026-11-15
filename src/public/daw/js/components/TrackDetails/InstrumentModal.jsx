@@ -2,6 +2,7 @@ import * as React from 'react';
 import Modal from 'components/Modal';
 import SamplerComponent from 'components/Instruments/Sampler';
 import MonotronComponent from 'components/Instruments/Monotron';
+import JunoComponent from 'components/Instruments/Juno';
 import MultiOscComponent from 'components/Instruments/MultiOsc';
 import PqSynthComponent from 'components/Instruments/PqSynth';
 import { Instruments } from 'constants/Constants';
@@ -29,6 +30,16 @@ const InstrumentModal = (props) => {
         case Instruments.MultiOsc.id: {
             modalBody = (
                 <MultiOscComponent
+                    instrument={props.track.instrument}
+                    trackIndex={props.track.index}
+                    onPresetChange={props.onInstrumentPresetChange}
+                />
+            );
+            break;
+        }
+        case Instruments.Juno.id: {
+            modalBody = (
+                <JunoComponent
                     instrument={props.track.instrument}
                     trackIndex={props.track.index}
                     onPresetChange={props.onInstrumentPresetChange}

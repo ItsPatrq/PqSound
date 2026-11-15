@@ -48,3 +48,6 @@ graphify-out/
 
 # Local agent/automation helpers, not part of the project
 scripts/
+
+# Fetched/built tooling and renders (tools/juno-reference)
+.cache/

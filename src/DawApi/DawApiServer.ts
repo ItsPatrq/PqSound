@@ -16,7 +16,7 @@ export class DawApiServer {
     // this only distinguishes the literal 'localhost' case for readability.
     private readonly SERVER_START_MSG = '🌎 ==>\x1b[0m ' + (process.env.hostName || 'localhost') + ':';
     public readonly app = express();
-    private compiler?: webpack.Compiler;
+    private compiler?: webpack.MultiCompiler;
     private webpackInitialized = false;
     constructor() {
         // Fly's [http_service] puts fly-proxy in front of the app, so without
