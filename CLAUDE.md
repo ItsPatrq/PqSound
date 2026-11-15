@@ -30,13 +30,21 @@ Single-context: one `CONTEXT.md` + `docs/adr/` at repo root (created lazily by `
 - `src/DawApi/controllers/` — `DemoController.ts` (`/api/say-hello/:name`) and `SamplerController.js` (`/api/samplerinstrument/*`, streams sample files from `assets/audio/samples/instruments/`; path-traversal guarded).
 - Client (`src/public/daw/js/`):
   - `engine/` (TS) — `Sequencer.ts` (lookahead scheduler, 0.2 s ahead, ticked by inline-Blob Web Worker on 80 ms `setTimeout` — standard "tale of two clocks" pattern, still valid), `Sound.ts` (note on/off dispatch), `Track.ts` (per-track Web Audio node graph: gain/mute/pan/analysers), `MIDIController.ts` (WebMIDI), `BufferLoader.ts`, `CompositionParser.ts`.
-  - `instruments/` (TS) — `PqSynth`, `Monotron`, `MultiOsc`, `Sampler`, per-note `Voice`. All native Web Audio nodes; no `ScriptProcessorNode` anywhere (good — no forced AudioWorklet migration).
+  - `instruments/` (TS) — `PqSynth`, `Monotron`, `MultiOsc`, `Sampler`, per-note `Voice`: native Web Audio nodes, no `ScriptProcessorNode`. Plus `Juno` (Juno-106-style), the one AudioWorklet instrument — see "Juno instrument" below.
   - `plugins/` (TS) — effects (Chorus, Compressor, Delay, Distortion, Equalizer, Reverb) wrapping native nodes, chained in `Track.getPluginChainNode()`.
   - `components/` + `containers/` — React UI: `.jsx` class components with `react-redux` `connect` for containers, mix of class/function presentational components.
   - `slices/` — six RTK `createSlice` slices (`tracks`, `composition`, `control`, `keyboard`, `webAudio`, `trackDetails`). Each exports reducer as default, generated action creators as named exports; import creators from the slice. `actions/` holds only three modules that still have thunks (`trackListActions`, `controlActions`, `webAudioActions`) — those thunks must touch `AudioEngine` before dispatching.
   - `store.js` — Redux store (`configureStore`, `serializableCheck` and `immutableCheck` both on). Was called `stroe.js` until 2026-08; typo gone.
   - `config/` — picked by webpack `config` alias via `REACT_WEBPACK_ENV`; `index.ts` also branches on `NODE_HOST === 'heroku'`, leftover from pre-Fly.io Heroku deploy.
 - `assets/` — ~85 MB instrument samples (DSKGrandPiano, RockKit, SlingerlandKit).
+
+### Juno instrument
+
+- DSP is plain TS in `instruments/juno/JunoEngine.ts` (no Web Audio), hosted by `juno.worklet.ts` in an AudioWorklet and rendered offline under Jest. The worklet is a **second webpack compiler** (`webpackCfg/worklet.ts`, exported as an array from `webpack.config.ts`): the worklet scope has no `self`/`window`, so it must not get the app's HMR runtime. Output `/assets/juno-worklet.js`; `Juno.test.ts` pins the URL to `publicPath`.
+- Preset = `JunoPatch`, the hardware's own 16 sliders + 2 switch bytes (a Juno-106 APR SysEx), so it is serializable and identical bytes drive any Juno-106 implementation.
+- Sound is compared by automation against **Ultramaster KR-106** (GPL-3.0, never vendored): `npm run juno:reference` clones it at a pinned tag into git-ignored `.cache/`, builds its header-only `render_midi`, renders the 12 patches in `reference/testPatches.ts`; `JunoReference.test.ts` compares pitch, 1/3-octave timbre, K-weighted loudness (mean + p95) and spectrogram, plus a discrimination check. CI job `juno-reference` runs it with `JUNO_REFERENCE_REQUIRED=1`; locally the suite skips without references.
+- Every slider law in `JUNO_CALIBRATION` is a **measurement of KR-106's output**, not taken from its source: `npm run juno:reference -- --calibration` renders slider sweeps, `npm run juno:fit -- --ours [groups]` measures them and our engine identically, side by side. Change a law → re-fit, don't guess.
+- MIDI events go one tick after each 512-sample block (`blockToTick`): `render_midi` converts ticks to samples in floating point and would otherwise apply them a block early.
 
 ### Engine / store split (the thing to understand first)
 
@@ -64,7 +72,7 @@ Largely modernized as of 2026-08 (TypeScript 7 since 2026-11): TypeScript 7, Web
 | Redux | **Redux Toolkit 2**: `configureStore`, six `createSlice` slices, thunks for engine-touching actions | Done. Both `serializableCheck` and `immutableCheck` on, guarded by e2e spec. `redux-thunk` and `redux-devtools-extension` gone — RTK provides both. |
 | ESLint | **10** + typescript-eslint 8, flat config (`eslint.config.js`) | Done. Lint still the formatter (Prettier via `eslint-plugin-prettier`) — run `npm run lint`, never `prettier` directly. |
 | Server | **Plain Express 5.2.1** — `DawApiServer.ts` builds the app, `controllers/*` export routers | Done (#242). overnightjs gone; `src/DawApi/logger.ts` is the ~20-line replacement for `@overnightjs/logger` and strips CR/LF (log-injection fix). The sampler route is rate-limited (`express-rate-limit`, 600/min). `body-parser` gone too (built-in `express.json()`/`express.urlencoded()`). |
-| Tests | Jest: **24 suites / 283 tests** — six slices, `trackListActions`, engine modules, both controllers, `store-boundaries`, `productionDependencies` (boot graph has no devDependency). Global `testEnvironment: node`; client suites opt into jsdom with `@jest-environment jsdom` docblock. Aliases resolve via `moduleNameMapper`. Plus **19 Playwright e2e specs** in `playwright/` (`test:e2e`, `test:e2e:ui`). | E2e suite only thing catching first-render crashes — caught two so far. Add spec when you touch UI flow. |
+| Tests | Jest: **27 suites / 359 tests** — six slices, `trackListActions`, engine modules, both controllers, `store-boundaries`, `productionDependencies` (boot graph has no devDependency). Global `testEnvironment: node`; client suites opt into jsdom with `@jest-environment jsdom` docblock. Aliases resolve via `moduleNameMapper`. Plus **19 Playwright e2e specs** in `playwright/` (`test:e2e`, `test:e2e:ui`). | E2e suite only thing catching first-render crashes — caught two so far. Add spec when you touch UI flow. |
 | CI | **Present**: `.github/workflows/ci.yml` + `codeql.yml` | Safety net exists. |
 
 ### Known bugs / smells

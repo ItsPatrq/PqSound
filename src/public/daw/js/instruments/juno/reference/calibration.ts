@@ -1,0 +1,150 @@
+import { JunoPatch } from '../JunoPatch';
+import { TestNote, TestPatch } from './testPatches';
+import { TEST_BASE } from './testPatches';
+
+/**
+ * Black-box measurement renders. Each sweeps one slider of the reference
+ * across its range with everything else held still, so
+ * tools/juno-reference/fit-calibration.ts can read that slider's law (Hz,
+ * seconds, dB, duty) straight off the audio. Rendered un-normalised (--raw) so
+ * levels compare across files.
+ *
+ * Nothing here is taken from the reference's source: the engine's calibration
+ * tables are measurements of its output.
+ */
+
+export const SWEEP = Array.from({ length: 17 }, (_, i) => Math.min(127, i * 8));
+
+export interface CalibrationRender extends TestPatch {
+    group: string;
+    value: number;
+}
+
+const hold = (note: number, onBlock: number, offBlock: number): TestNote[] => [{ note, onBlock, offBlock }];
+const SEC = 44100 / 512; // blocks per second
+
+function make(
+    group: string,
+    value: number,
+    patch: Partial<JunoPatch>,
+    notes: TestNote[],
+    seconds: number,
+): CalibrationRender {
+    return {
+        name: `cal-${group}-${value}`,
+        group,
+        value,
+        patch: { ...TEST_BASE, ...patch },
+        notes,
+        lengthBlocks: Math.round(seconds * SEC),
+        hold: [0, 0],
+    };
+}
+
+const on = 8;
+const offAt = (s: number) => Math.round(s * SEC);
+
+export const CALIBRATION: CalibrationRender[] = [
+    // Envelope stages (saw, filter open).
+    ...SWEEP.map((v) => make('attack', v, { envA: v, envS: 127 }, hold(57, on, offAt(5)), 5.5)),
+    ...SWEEP.map((v) => make('decay', v, { envD: v, envS: 0 }, hold(57, on, offAt(9.5)), 10)),
+    ...SWEEP.map((v) => make('release', v, { envR: v }, hold(57, on, offAt(0.5)), 10)),
+    // VCF: self-oscillation (no oscillator, full resonance) per cutoff byte.
+    ...SWEEP.map((v) => make('vcffreq', v, { saw: false, vcfRes: 127, vcfFreq: v }, hold(60, on, offAt(1.4)), 1.5)),
+    // VCF keyboard tracking at full KYBD: self-oscillation across notes.
+    ...[36, 48, 60, 72, 84].map((n) =>
+        make('vcfkbd', n, { saw: false, vcfRes: 127, vcfFreq: 40, vcfKbd: 127 }, hold(n, on, offAt(1.4)), 1.5),
+    ),
+    // VCF envelope depth: self-oscillation with the envelope held at 1 (A0 D-max S-max).
+    ...[0, 32, 64, 96, 127].map((v) =>
+        make(
+            'vcfenv',
+            v,
+            { saw: false, vcfRes: 127, vcfFreq: 16, vcfEnv: v, envS: 127 },
+            hold(60, on, offAt(1.4)),
+            1.5,
+        ),
+    ),
+    // LFO rate (full DCO LFO depth, so the rate shows as vibrato).
+    ...SWEEP.map((v) => make('lforate', v, { lfoRate: v, dcoLfo: 127, vcfFreq: 127 }, hold(69, on, offAt(11.5)), 12)),
+    // DCO LFO depth.
+    ...[16, 32, 64, 96, 127].map((v) => make('dcolfo', v, { lfoRate: 40, dcoLfo: v }, hold(69, on, offAt(5.5)), 6)),
+    // LFO delay.
+    ...[32, 64, 96, 127].map((v) =>
+        make('lfodelay', v, { lfoRate: 90, dcoLfo: 127, lfoDelay: v }, hold(69, on, offAt(5.5)), 6),
+    ),
+    // Pulse width (manual PWM).
+    ...[0, 16, 32, 48, 64, 80, 96, 105, 127].map((v) =>
+        make('pwm', v, { saw: false, pulse: true, dcoPwm: v }, hold(45, on, offAt(1.4)), 1.5),
+    ),
+    // Mixer levels, all at the same note.
+    make('level', 0, { saw: true }, hold(45, on, offAt(1.4)), 1.5),
+    make('level', 1, { saw: false, pulse: true }, hold(45, on, offAt(1.4)), 1.5),
+    make('level', 2, { saw: false, dcoSub: 127 }, hold(45, on, offAt(1.4)), 1.5),
+    make('level', 3, { saw: false, dcoNoise: 127 }, hold(45, on, offAt(1.4)), 1.5),
+    make('level', 4, { saw: false, dcoSub: 64 }, hold(45, on, offAt(1.4)), 1.5),
+    make('level', 5, { saw: false, dcoNoise: 64 }, hold(45, on, offAt(1.4)), 1.5),
+    // VCA level law.
+    ...[0, 32, 64, 96, 127].map((v) => make('vca', v, { vcaLevel: v }, hold(45, on, offAt(1.4)), 1.5)),
+    // Cutoff trajectory while the envelope moves: the filter self-oscillates
+    // (no oscillator, full resonance) and its pitch tracks the cutoff.
+    make(
+        'envtrack',
+        0,
+        { saw: false, vcfRes: 127, vcfFreq: 16, vcfEnv: 64, envD: 60, envS: 0 },
+        hold(60, on, offAt(1.6)),
+        2.5,
+    ),
+    make(
+        'envtrack',
+        1,
+        { saw: false, vcfRes: 127, vcfFreq: 110, vcfEnv: 64, vcfEnvInvert: true, envD: 60, envS: 0 },
+        hold(60, on, offAt(1.6)),
+        2.5,
+    ),
+    make(
+        'envtrack',
+        2,
+        { saw: false, vcfRes: 127, vcfFreq: 110, vcfEnv: 60, vcfEnvInvert: true, envD: 60, envS: 30, vcaGate: true },
+        hold(60, on, offAt(1.6)),
+        2.5,
+    ),
+    make(
+        'envtrack',
+        3,
+        { saw: false, vcfRes: 127, vcfFreq: 16, vcfEnv: 64, envA: 64, envD: 60, envS: 64 },
+        hold(60, on, offAt(1.6)),
+        2.5,
+    ),
+    // VCF response to noise across resonance, and its slope at three cutoffs.
+    ...[0, 16, 32, 48, 64, 80, 96, 112, 120].map((v) =>
+        make('vcfres', v, { saw: false, dcoNoise: 127, vcfFreq: 64, vcfRes: v }, hold(60, on, offAt(2.9)), 3),
+    ),
+    ...[32, 64, 96].map((v) =>
+        make('vcfslope', v, { saw: false, dcoNoise: 127, vcfFreq: v }, hold(60, on, offAt(2.9)), 3),
+    ),
+    // Chorus modulation of a self-oscillating sine (stored stereo).
+    ...[1, 2].map((v) =>
+        make('chorusmod', v, { saw: false, vcfRes: 127, vcfFreq: 56, chorus: v as 1 | 2 }, hold(60, on, offAt(7.9)), 8),
+    ),
+    // VCF LFO depth on a self-oscillating filter.
+    ...[32, 64, 127].map((v) =>
+        make(
+            'vcflfo',
+            v,
+            { saw: false, vcfRes: 127, vcfFreq: 64, vcfLfo: v, lfoRate: 40 },
+            hold(60, on, offAt(5.9)),
+            6,
+        ),
+    ),
+    // DC through a closed filter: whatever the DCO's mean is, and how it decays.
+    make('dc', 0, { vcfFreq: 0, vcaGate: true }, hold(52, on, offAt(1.9)), 2.5),
+    make('dc', 1, { saw: false, pulse: true, vcfFreq: 0, vcaGate: true }, hold(52, on, offAt(1.9)), 2.5),
+    make('dc', 2, { vcfFreq: 0, envD: 60, envS: 0 }, hold(52, on, offAt(1.9)), 2.5),
+    make('dc', 3, { saw: true, pulse: true, vcfFreq: 0, vcaGate: true }, hold(52, on, offAt(1.9)), 2.5),
+    make('dc', 4, { vcfFreq: 0, vcaGate: true, octave: 0 }, hold(40, on, offAt(1.9)), 2.5),
+    // Idle floor: no note at all, chorus off / I / II.
+    ...[0, 1, 2].map((v) => make('hiss', v, { chorus: v as 0 | 1 | 2 }, [], 2)),
+    // Sustain level law.
+    ...[0, 32, 64, 96, 127].map((v) => make('sustain', v, { envS: v, envD: 0 }, hold(45, on, offAt(1.4)), 1.5)),
+];

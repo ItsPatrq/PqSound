@@ -71,3 +71,45 @@ jobs:
           name: playwright-report
           path: playwright/report/
           retention-days: 7
+
+  # Compares the Juno instrument against the reference Juno-106 emulation
+  # (Ultramaster KR-106, GPL-3.0). The reference is fetched and built into
+  # .cache/ here, never vendored: see tools/juno-reference/render-reference.ts.
+  juno-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Cache reference renderer
+        uses: actions/cache@v6
+        with:
+          path: .cache/kr106
+          key: kr106-${{ hashFiles('tools/juno-reference/render-reference.ts') }}
+
+      - name: Render reference audio
+        run: npm run juno:reference
+
+      - name: Render calibration sweeps
+        run: npm run juno:reference -- --calibration
+
+      - name: Compare against the reference
+        env:
+          JUNO_REFERENCE_REQUIRED: '1'
+        run: npx jest src/public/daw/js/instruments/juno --verbose
+
+      - name: Upload renders
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: juno-reference
+          path: .cache/juno-reference/
+          retention-days: 7

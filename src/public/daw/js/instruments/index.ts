@@ -2,6 +2,7 @@ import Sampler from './Sampler';
 import PqSynth from './PqSynth';
 import Monotron from './Monotron';
 import MultiOsc from './MultiOsc';
+import Juno from './Juno';
 import { Instruments as InstrumentsEnum } from '../constants/Constants';
 
 interface InstrumentUtils {
@@ -22,6 +23,9 @@ const Utils: InstrumentUtils = {
             case InstrumentsEnum.MultiOsc.id: {
                 return new MultiOsc(preset, audioContext);
             }
+            case InstrumentsEnum.Juno.id: {
+                return new Juno(preset, audioContext);
+            }
             default: {
                 return;
             }
@@ -29,4 +33,4 @@ const Utils: InstrumentUtils = {
     },
 };
 
-export { Sampler, PqSynth, Monotron, MultiOsc, Utils };
+export { Sampler, PqSynth, Monotron, MultiOsc, Juno, Utils };

@@ -54,6 +54,7 @@ export const Instruments = {
     PqSynth: { name: 'PqSynth', id: 1 },
     Monotron: { name: 'Monotron', id: 2 },
     MultiOsc: { name: 'MultiOsc Synth', id: 3 },
+    Juno: { name: 'Juno-106', id: 4 },
 };
 
 export enum PluginsEnum {
