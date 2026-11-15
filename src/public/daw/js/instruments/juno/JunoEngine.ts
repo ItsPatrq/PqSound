@@ -213,13 +213,7 @@ export const JUNO_CALIBRATION = {
      * only when saw and pulse sound together (their harmonics interact).
      */
     pulseAlign: 1,
-    /** Capacitor-charge curvature of the saw ramp: pos·(1 + c·(1 − pos)); 0 = straight. */
-    sawCurve: 0.12,
-    /** Output AC coupling, Hz (0 = DC-coupled). */
-    dcBlockHz: 0,
-    /** DCO→VCF coupling per voice, Hz: blocks the curved saw's DC ahead of the VCA (0 = off). */
-    dcoCouplingHz: 0,
-    /** Floor/BBD hiss colour: 0 = white, 1 = pink-ish (equal energy per octave). */
+    /** Floor/BBD hiss colour: 0 = white, 1 = pink-ish (equal energy per octave, as measured). */
     hissPink: 1,
     sawGain: 0.5,
     pulseGain: 0.5 * Math.pow(10, (3.2 - 4.771) / 20),
@@ -265,11 +259,10 @@ export const JUNO_CALIBRATION = {
      * resonance.
      */
     filterDrive: 0.15,
-    /** Thermal noise injected at the ladder input, scaled down as the filter's own energy rises. */
     /** Saturate each ladder stage's input as well as the feedback sum (OTA per stage). */
     stageClip: 1,
+    /** Thermal noise at the ladder input: lets full resonance self-oscillate from silence. */
     thermalLevel: 1e-4,
-    thermalAdaptive: 0,
     /** Per-voice analog noise at the DCO mix (pre-VCF), amplitude of uniform white. */
     voiceNoise: 0.01,
     passbandComp: 0.55,
@@ -351,7 +344,6 @@ interface Derived {
     attackInc: number;
     decayMul: number;
     vcfDecayMul: number;
-    couplingG: number;
     sustain: number;
     releaseCoeff: number;
     lfoInc: number;
@@ -379,7 +371,6 @@ class Voice {
     private s = [0, 0, 0, 0];
     private noiseState: number;
     private noiseLp = 0;
-    private couplingS = 0;
     age = 0;
 
     constructor(seed: number) {
@@ -480,9 +471,9 @@ class Voice {
 
         let mix = 0;
         if (d.sawOn) {
-            const cv = JUNO_CALIBRATION.sawCurve;
-            const ramp = cv ? this.phase * (1 + cv * (1 - this.phase)) : this.phase;
-            const saw = 2 * ramp - 1 - polyBlep(this.phase, dt);
+            // Straight ramp: the reference shows no DC through a closed filter,
+            // which rules out a curved (DC-carrying) capacitor ramp.
+            const saw = 2 * this.phase - 1 - polyBlep(this.phase, dt);
             mix += saw * d.sawOn;
         }
         if (d.pulseOn) {
@@ -512,12 +503,6 @@ class Voice {
         }
         if (d.noiseLevel) mix += this.noise() * d.noiseLevel;
         if (JUNO_CALIBRATION.voiceNoise) mix += this.thermal() * JUNO_CALIBRATION.voiceNoise;
-        if (JUNO_CALIBRATION.dcoCouplingHz) {
-            const v = (mix - this.couplingS) * d.couplingG;
-            const lp = v + this.couplingS;
-            this.couplingS = lp + v;
-            mix -= lp;
-        }
 
         // VCF: 4 one-pole TPT stages with saturating feedback, 2× oversampled.
         const envLevel = this.env;
@@ -540,9 +525,7 @@ class Voice {
             const G4 = G2 * G2;
             // A tiny noise floor, as in the analog circuit: without it a digital
             // ladder at full resonance with no input never starts oscillating.
-            const tl = JUNO_CALIBRATION.thermalLevel;
-            const energy = s[0] * s[0] + s[1] * s[1] + s[2] * s[2] + s[3] * s[3];
-            const thermal = this.thermal() * (JUNO_CALIBRATION.thermalAdaptive ? tl / (1 + energy * 1000) : tl);
+            const thermal = this.thermal() * JUNO_CALIBRATION.thermalLevel;
             let u = ((mix + thermal) * comp - k * S) / (1 + k * G4);
             u = softClip(u);
             let x = u;
@@ -586,8 +569,6 @@ export class JunoEngine {
     private chorusLpL = new OnePole();
     private chorusLpR = new OnePole();
 
-    // Output AC coupling (one-pole high-pass on the voice sum).
-    private dcLp = new OnePole();
     // Pink-ish filter state for the hiss (Kellet's economy 3-pole), per channel.
     private pinkL = [0, 0, 0];
     private pinkR = [0, 0, 0];
@@ -623,7 +604,6 @@ export class JunoEngine {
         this.delayR = new Float32Array(delaySamples);
         this.chorusLpL.setCutoff(JUNO_CALIBRATION.chorusLowpassHz, sampleRate);
         this.chorusLpR.setCutoff(JUNO_CALIBRATION.chorusLowpassHz, sampleRate);
-        this.dcLp.setCutoff(Math.max(0.01, JUNO_CALIBRATION.dcBlockHz), sampleRate);
         this.setPatch(patch);
     }
 
@@ -655,10 +635,6 @@ export class JunoEngine {
             vcaGate: p.vcaGate,
             attackInc: 1 / (curve(c.attackSec, p.envA, true) * sr),
             decayMul: Math.exp(-1 / (curve(c.decayTau, p.envD, true) * sr)),
-            couplingG: (() => {
-                const g = Math.tan((Math.PI * Math.max(0.01, c.dcoCouplingHz)) / sr);
-                return g / (1 + g);
-            })(),
             vcfDecayMul: Math.exp(-1 / (curve(c.decayTau, p.envD, true) * c.vcfDecaySlowdown * sr)),
             sustain: curve(c.sustain, p.envS),
             releaseCoeff: 1 - Math.exp(-1 / (curve(c.releaseTau, p.envR, true) * sr)),
@@ -752,7 +728,6 @@ export class JunoEngine {
             const lfo = this.lfoTick();
             let mono = 0;
             for (const v of this.voices) mono += v.tick(this.d, lfo, sr);
-            if (c.dcBlockHz) mono -= this.dcLp.lowpass(mono);
             mono = this.hpf(mono);
 
             if (chorus === 0) {

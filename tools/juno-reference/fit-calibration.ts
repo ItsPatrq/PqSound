@@ -21,11 +21,6 @@ import { renderOffline } from '../../src/public/daw/js/instruments/juno/JunoEngi
 const dir = path.join(__dirname, '../../.cache/juno-reference/calibration');
 const SR = SAMPLE_RATE;
 
-function load(r: CalibrationRender): Float32Array | undefined {
-    const file = path.join(dir, `${r.name}.wav`);
-    return fs.existsSync(file) ? readWav(fs.readFileSync(file)).channels[0] : undefined;
-}
-
 /** RMS envelope in dB, `win`-sample frames. */
 function envelopeDb(x: Float32Array, win: number): number[] {
     const out: number[] = [];
@@ -88,24 +83,6 @@ function pitchTrack(x: Float32Array, a: number, b: number, near: number): number
         out.push((best + (l - r) / (2 * (l - 2 * c + r))) * binHz);
     }
     return out;
-}
-
-/** Seconds for a dB line to fall 60 dB, fitted between `top` and `bottom` dB below `start`. */
-function t60(env: number[], from: number, win: number, top = 3, bottom = 40): number {
-    const ref = Math.max(...env.slice(from, from + 8));
-    const pts: [number, number][] = [];
-    for (let i = from; i < env.length; i++) {
-        const d = ref - env[i];
-        if (d >= top && d <= bottom) pts.push([(i * win) / SR, env[i]]);
-        if (d > bottom) break;
-    }
-    if (pts.length < 2) return NaN;
-    const n = pts.length;
-    const mx = pts.reduce((s, p) => s + p[0], 0) / n;
-    const my = pts.reduce((s, p) => s + p[1], 0) / n;
-    const slope =
-        pts.reduce((s, p) => s + (p[0] - mx) * (p[1] - my), 0) / pts.reduce((s, p) => s + (p[0] - mx) ** 2, 0);
-    return -60 / slope;
 }
 
 /** Undershoot target of the decay/release RC, as a fraction of full level (measured on release 16/24). */

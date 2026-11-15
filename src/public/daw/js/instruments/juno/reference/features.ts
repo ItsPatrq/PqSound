@@ -6,7 +6,10 @@
  *
  *   - pitch          fundamental of the held note, cents
  *   - timbre         average spectrum in 1/3-octave bands over the held part, dB
- *   - loudness curve RMS per 11.6 ms frame across the whole render, dB
+ *   - loudness curve RMS per 11.6 ms frame across the whole render, dB,
+ *                    after the 38 Hz high-pass of ITU-R BS.1770 K-weighting:
+ *                    sub-audio content (e.g. a filter ringing at 28 Hz) is not
+ *                    loudness a listener hears
  *   - spectrogram    the band spectrum frame by frame (timbre *and* its motion:
  *                    filter sweeps, PWM, chorus), dB
  *
@@ -74,6 +77,33 @@ const hann = (() => {
 /** 1/3-octave band centres from 50 Hz to 16 kHz. */
 export const BAND_CENTRES = Array.from({ length: 26 }, (_, i) => 50 * Math.pow(2, i / 3));
 
+/** 2nd-order (Q = 0.5) high-pass at 38 Hz: the low-frequency stage of BS.1770 K-weighting. */
+function kHighPass(x: Float32Array, sampleRate: number): Float32Array {
+    const w0 = (2 * Math.PI * 38) / sampleRate;
+    const alpha = Math.sin(w0) / (2 * 0.5);
+    const cw = Math.cos(w0);
+    const a0 = 1 + alpha;
+    const b0 = (1 + cw) / 2 / a0;
+    const b1 = -(1 + cw) / a0;
+    const b2 = b0;
+    const a1 = (-2 * cw) / a0;
+    const a2 = (1 - alpha) / a0;
+    const y = new Float32Array(x.length);
+    let x1 = 0;
+    let x2 = 0;
+    let y1 = 0;
+    let y2 = 0;
+    for (let i = 0; i < x.length; i++) {
+        const v = b0 * x[i] + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
+        x2 = x1;
+        x1 = x[i];
+        y2 = y1;
+        y1 = v;
+        y[i] = v;
+    }
+    return y;
+}
+
 export interface Analysis {
     sampleRate: number;
     /** frames × bands, power (linear). */
@@ -97,6 +127,7 @@ export function analyse(signal: Float32Array, sampleRate: number): Analysis {
     const scale = n ? 1 / Math.sqrt(sum / n) : 1;
     const x = signal.map((v) => v * scale);
 
+    const weighted = kHighPass(x, sampleRate);
     const binHz = sampleRate / FRAME;
     const edges = BAND_CENTRES.map((c) => [c * Math.pow(2, -1 / 6), c * Math.pow(2, 1 / 6)]);
     const frames = Math.max(0, Math.floor((x.length - FRAME) / HOP) + 1);
@@ -108,7 +139,8 @@ export function analyse(signal: Float32Array, sampleRate: number): Analysis {
         for (let i = 0; i < FRAME; i++) {
             const v = x[f * HOP + i];
             buf[i] = v * hann[i];
-            e += v * v;
+            const k = weighted[f * HOP + i];
+            e += k * k;
         }
         power[f] = e / FRAME;
         const mags = fftPower(buf);
@@ -199,12 +231,17 @@ function frameDb(a: Analysis) {
     return { loud, bands };
 }
 
-export function compare(ours: Analysis, reference: Analysis, w: CompareWindow, maxLag = 4): Comparison {
+/**
+ * `maxLag` frames of alignment search. The test renders are sample-exact by
+ * construction (see blockToTick in testPatches.ts), so the default is 0: a
+ * search would only let a fast-changing sound (a pluck) shift its own window
+ * to wherever the loudness curve happens to fit best, which measures nothing.
+ */
+export function compare(ours: Analysis, reference: Analysis, w: CompareWindow, maxLag = 0): Comparison {
     const A = frameDb(ours);
     const B = frameDb(reference);
     const frames = Math.min(A.loud.length, B.loud.length);
 
-    // Small alignment search: renderers may quantise note-on to their block size.
     let lagFrames = 0;
     let bestLoud = Infinity;
     for (let lag = -maxLag; lag <= maxLag; lag++) {
