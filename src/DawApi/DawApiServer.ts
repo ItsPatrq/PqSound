@@ -4,7 +4,7 @@ import { demoRouter } from './controllers/DemoController';
 import { getInstrument } from './controllers/SamplerController';
 import { Logger } from './logger';
 import { rateLimit } from 'express-rate-limit';
-import { publicPath } from '../webpackCfg/defaults';
+import { publicPath } from '../webpackCfg/publicPath';
 // `import =` rather than a namespace import: express is a callable CommonJS
 // export and the project does not enable esModuleInterop.
 import express = require('express');
