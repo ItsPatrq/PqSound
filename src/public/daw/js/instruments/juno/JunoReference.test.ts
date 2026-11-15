@@ -83,7 +83,8 @@ describeIfReference('Juno engine vs. KR-106 reference', () => {
     describe.each(TEST_PATCHES.map((t) => [t.name, t] as const))('%s', (name, t) => {
         it('matches pitch', () => {
             const r = results.get(name)!;
-            if (t.patch.saw || t.patch.pulse || t.patch.dcoSub) {
+            // Pitch is defined for a single held note of a periodic patch (not a chord, not noise).
+            if (t.notes.length === 1 && (t.patch.saw || t.patch.pulse || t.patch.dcoSub)) {
                 expect(Math.abs(r.pitchCents)).toBeLessThan(THRESHOLDS.pitchCents);
             }
         });
