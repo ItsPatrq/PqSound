@@ -78,11 +78,11 @@ function render(binary: string, t: TestPatch, dir: string, raw: boolean) {
     const rendered = readWav(fs.readFileSync(rawPath));
     fs.rmSync(rawPath);
     if (rendered.sampleRate !== SAMPLE_RATE) throw new Error(`${t.name}: rendered at ${rendered.sampleRate} Hz`);
-    const mono = mixToMono(rendered.channels).slice(0, lengthSamples(t));
-    fs.writeFileSync(
-        path.join(dir, `${t.name}.wav`),
-        writeWav({ sampleRate: SAMPLE_RATE, channels: [mono] }, { float: raw }),
-    );
+    // Calibration (raw) renders keep both channels: the chorus taps are antiphase.
+    const channels = raw
+        ? rendered.channels.map((c) => c.slice(0, lengthSamples(t)))
+        : [mixToMono(rendered.channels).slice(0, lengthSamples(t))];
+    fs.writeFileSync(path.join(dir, `${t.name}.wav`), writeWav({ sampleRate: SAMPLE_RATE, channels }, { float: raw }));
 }
 
 function main() {

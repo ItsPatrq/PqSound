@@ -86,6 +86,59 @@ export const CALIBRATION: CalibrationRender[] = [
     make('level', 5, { saw: false, dcoNoise: 64 }, hold(45, on, offAt(1.4)), 1.5),
     // VCA level law.
     ...[0, 32, 64, 96, 127].map((v) => make('vca', v, { vcaLevel: v }, hold(45, on, offAt(1.4)), 1.5)),
+    // Cutoff trajectory while the envelope moves: the filter self-oscillates
+    // (no oscillator, full resonance) and its pitch tracks the cutoff.
+    make(
+        'envtrack',
+        0,
+        { saw: false, vcfRes: 127, vcfFreq: 16, vcfEnv: 64, envD: 60, envS: 0 },
+        hold(60, on, offAt(1.6)),
+        2.5,
+    ),
+    make(
+        'envtrack',
+        1,
+        { saw: false, vcfRes: 127, vcfFreq: 110, vcfEnv: 64, vcfEnvInvert: true, envD: 60, envS: 0 },
+        hold(60, on, offAt(1.6)),
+        2.5,
+    ),
+    make(
+        'envtrack',
+        2,
+        { saw: false, vcfRes: 127, vcfFreq: 110, vcfEnv: 60, vcfEnvInvert: true, envD: 60, envS: 30, vcaGate: true },
+        hold(60, on, offAt(1.6)),
+        2.5,
+    ),
+    make(
+        'envtrack',
+        3,
+        { saw: false, vcfRes: 127, vcfFreq: 16, vcfEnv: 64, envA: 64, envD: 60, envS: 64 },
+        hold(60, on, offAt(1.6)),
+        2.5,
+    ),
+    // VCF response to noise across resonance, and its slope at three cutoffs.
+    ...[0, 16, 32, 48, 64, 80, 96, 112, 120].map((v) =>
+        make('vcfres', v, { saw: false, dcoNoise: 127, vcfFreq: 64, vcfRes: v }, hold(60, on, offAt(2.9)), 3),
+    ),
+    ...[32, 64, 96].map((v) =>
+        make('vcfslope', v, { saw: false, dcoNoise: 127, vcfFreq: v }, hold(60, on, offAt(2.9)), 3),
+    ),
+    // Chorus modulation of a self-oscillating sine (stored stereo).
+    ...[1, 2].map((v) =>
+        make('chorusmod', v, { saw: false, vcfRes: 127, vcfFreq: 56, chorus: v as 1 | 2 }, hold(60, on, offAt(7.9)), 8),
+    ),
+    // VCF LFO depth on a self-oscillating filter.
+    ...[32, 64, 127].map((v) =>
+        make(
+            'vcflfo',
+            v,
+            { saw: false, vcfRes: 127, vcfFreq: 64, vcfLfo: v, lfoRate: 40 },
+            hold(60, on, offAt(5.9)),
+            6,
+        ),
+    ),
+    // Idle floor: no note at all, chorus off / I / II.
+    ...[0, 1, 2].map((v) => make('hiss', v, { chorus: v as 0 | 1 | 2 }, [], 2)),
     // Sustain level law.
     ...[0, 32, 64, 96, 127].map((v) => make('sustain', v, { envS: v, envD: 0 }, hold(45, on, offAt(1.4)), 1.5)),
 ];

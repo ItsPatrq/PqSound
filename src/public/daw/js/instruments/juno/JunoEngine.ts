@@ -16,43 +16,195 @@ import { JunoPatch, defaultPatch } from './JunoPatch';
  * the engine to a reference is a matter of changing numbers there.
  */
 
-const C1_HZ = 32.703;
+/**
+ * Slider (0–127) to physical-unit laws, as [slider, value] points.
+ *
+ * Every table is a measurement of the reference's output, not a value taken
+ * from its source: tools/juno-reference/fit-calibration.ts reads slider sweeps
+ * rendered by `npm run juno:reference -- --calibration` and prints them.
+ * Between points, times and frequencies interpolate in log space, the rest
+ * linearly.
+ */
+type Curve = [number, number][];
 
-/** Slider (0–127) to physical-unit laws. Fitted by measurement; see tools/juno-reference. */
 export const JUNO_CALIBRATION = {
-    /** VCF cutoff at slider 0 and 127, Hz, exponential in between. */
-    vcfMinHz: 5,
-    vcfMaxHz: 25000,
-    /** Octaves of cutoff sweep at full envelope amount and envelope = 1. */
-    vcfEnvOctaves: 10,
-    /** Octaves of cutoff sweep at full VCF LFO amount. */
+    /** VCF cutoff with KYBD at 0 (or at the C4 pivot), Hz. ×1.85 per 8 steps; the top is extrapolated. */
+    vcfHz: [
+        [0, 4.83],
+        [8, 10.91],
+        [16, 20.2],
+        [24, 37.21],
+        [32, 67.36],
+        [40, 124.3],
+        [48, 229.9],
+        [56, 425.3],
+        [64, 797.2],
+        [72, 1473],
+        [80, 2729],
+        [88, 5055],
+        [96, 9314],
+        [104, 16820],
+        [112, 31000],
+        [127, 99000],
+    ] as Curve,
+    /** Keyboard tracking at full KYBD: octaves of cutoff per octave of pitch, pivoting at C4. */
+    vcfKbdFull: 1.0,
+    vcfKbdPivot: 60,
+    /** Envelope depth: octaves of cutoff per ENV step at envelope = 1 (linear in the slider). */
+    vcfEnvOctavesPerStep: 7.02 / 64,
+    /** VCF LFO depth at full, octaves peak. Not yet measured. */
     vcfLfoOctaves: 3,
     /** Ladder feedback at full resonance (4 is the linear self-oscillation point). */
     resonanceMax: 4.6,
-    /** Pitch modulation at full DCO LFO amount, semitones peak. */
-    dcoLfoSemitones: 3,
-    /** Pulse duty range across the PWM slider. */
-    pwmMinDuty: 0.5,
-    pwmMaxDuty: 0.95,
-    /** The Juno-106 firmware scales the PWM byte against 105, not 127. */
-    pwmFullScale: 105,
-    /** LFO rate range, Hz. */
-    lfoMinHz: 0.1,
-    lfoMaxHz: 30,
-    /** LFO fade-in time at full delay, seconds. */
-    lfoDelayMaxSec: 1.5,
-    /** Envelope time ranges, seconds (attack: linear ramp; decay/release: to −60 dB). */
-    attackMinSec: 0.0015,
-    attackMaxSec: 3,
-    decayMinSec: 0.0015,
-    decayMaxSec: 12,
-    releaseMinSec: 0.0015,
-    releaseMaxSec: 12,
-    /** Mixer gains. */
+    /** DCO LFO depth, semitones peak. */
+    dcoLfoSemis: [
+        [0, 0],
+        [16, 0.1127],
+        [32, 0.1962],
+        [64, 0.3585],
+        [96, 0.6497],
+        [127, 3.455],
+    ] as Curve,
+    /** Pulse duty under manual PWM. */
+    pwmDuty: [
+        [0, 0.5],
+        [16, 0.5711],
+        [32, 0.6424],
+        [48, 0.7144],
+        [64, 0.7879],
+        [80, 0.8655],
+        [96, 0.9711],
+        [105, 0.99],
+        [127, 0.99],
+    ] as Curve,
+    /** LFO rate, Hz. */
+    lfoHz: [
+        [0, 0.09463],
+        [8, 0.7202],
+        [16, 1.285],
+        [24, 1.845],
+        [32, 2.36],
+        [40, 2.952],
+        [48, 3.475],
+        [56, 3.938],
+        [64, 4.542],
+        [72, 5.368],
+        [80, 6.561],
+        [88, 7.381],
+        [96, 8.435],
+        [104, 11.81],
+        [112, 14.76],
+        [120, 19.69],
+        [127, 29.53],
+    ] as Curve,
+    /** LFO delay: seconds until the LFO reaches 90% depth (an RC fade-in). */
+    lfoDelay90: [
+        [0, 0],
+        [32, 0.5457],
+        [64, 1.289],
+        [96, 2.113],
+        [127, 4.063],
+    ] as Curve,
+    /** Attack: linear ramp time, seconds. */
+    attackSec: [
+        [0, 0.003225],
+        [8, 0.04515],
+        [16, 0.0903],
+        [24, 0.1564],
+        [32, 0.1967],
+        [40, 0.237],
+        [48, 0.2822],
+        [56, 0.3273],
+        [64, 0.3886],
+        [72, 0.4692],
+        [80, 0.5853],
+        [88, 0.7724],
+        [96, 0.9643],
+        [104, 1.237],
+        [112, 1.58],
+        [120, 1.772],
+        [127, 2.307],
+    ] as Curve,
+    /**
+     * Decay: a pure exponential toward zero that stops at the sustain level
+     * (so its timing does not depend on S), time constant in seconds.
+     * Slider 120/127 outlast the 10 s sweep and are extrapolated from slope fits.
+     */
+    decayTau: [
+        [0, 0.00315],
+        [8, 0.00945],
+        [16, 0.04472],
+        [24, 0.06235],
+        [32, 0.09385],
+        [40, 0.19459],
+        [48, 0.35832],
+        [56, 0.44908],
+        [64, 0.61281],
+        [72, 0.71732],
+        [80, 0.83577],
+        [88, 0.99922],
+        [96, 1.22657],
+        [104, 1.59913],
+        [112, 2.33087],
+        [120, 7.267],
+        [127, 17.574],
+    ] as Curve,
+    /**
+     * Release: an RC discharge toward a target slightly below zero, so the
+     * tail falls ever faster in dB and ends in finite time (measured: the
+     * −40/−20 dB time ratio is ≈1.78, against 2.0 for a pure exponential).
+     */
+    releaseTau: [
+        [0, 0.001978],
+        [8, 0.01253],
+        [16, 0.05604],
+        [24, 0.0745],
+        [32, 0.118],
+        [40, 0.2459],
+        [48, 0.4793],
+        [56, 0.5888],
+        [64, 0.8076],
+        [72, 0.9461],
+        [80, 1.089],
+        [88, 1.307],
+        [96, 1.588],
+        [104, 2.074],
+        [112, 5.007],
+        [120, 28.37],
+        [127, 48.91],
+    ] as Curve,
+    releaseUndershoot: 0.01,
+    /** Sustain level, linear amplitude. */
+    sustain: [
+        [0, 0],
+        [32, 0.2291],
+        [64, 0.4862],
+        [96, 0.7412],
+        [127, 1],
+    ] as Curve,
+    /** VCA: dB per step around 0 dB at 64. */
+    vcaDbPerStep: 10.08 / 64,
+    /**
+     * Mixer gains, relative to the saw. Measured RMS offsets: pulse +3.20 dB,
+     * sub (full) +6.72 dB, noise (full) +5.14 dB; each of ours is set so its
+     * own waveform's RMS lands on that offset (see the engine test).
+     */
     sawGain: 0.5,
-    pulseGain: 0.5,
-    subGain: 0.67,
-    noiseGain: 0.5,
+    pulseGain: 0.5 * Math.pow(10, (3.2 - 4.771) / 20),
+    subGain: 0.5 * Math.pow(10, (6.72 - 4.771) / 20),
+    subCurve: [
+        [0, 0],
+        [64, 0.4559],
+        [127, 1],
+    ] as Curve,
+    noiseGain: 1.234,
+    noiseCurve: [
+        [0, 0],
+        [64, 0.4732],
+        [127, 1],
+    ] as Curve,
+    /** Output gain: our open-filter saw at VCA 64 lands at the reference's −19.5 dBFS RMS. */
+    outputGain: 0.366,
     /** HPF corners. */
     hpfBoostHz: 150,
     hpfBoostDb: 10,
@@ -71,7 +223,18 @@ export const JUNO_CALIBRATION = {
 
 export type JunoCalibration = typeof JUNO_CALIBRATION;
 
-const expMap = (x: number, lo: number, hi: number) => lo * Math.pow(hi / lo, x);
+/** Piecewise interpolation of a [slider, value] curve; `log` interpolates log(value). */
+export function curve(points: Curve, x: number, log = false): number {
+    const v = Math.max(points[0][0], Math.min(points[points.length - 1][0], x));
+    let i = 1;
+    while (i < points.length - 1 && points[i][0] < v) i++;
+    const [x0, y0] = points[i - 1];
+    const [x1, y1] = points[i];
+    const t = x1 === x0 ? 0 : (v - x0) / (x1 - x0);
+    if (log && y0 > 0 && y1 > 0) return Math.exp(Math.log(y0) + t * (Math.log(y1) - Math.log(y0)));
+    return y0 + t * (y1 - y0);
+}
+
 const norm = (v: number) => Math.max(0, Math.min(127, v)) / 127;
 
 /** Padé tanh: accurate to the ladder's operating range and cheap. */
@@ -120,7 +283,8 @@ interface Derived {
     pulseOn: number;
     subLevel: number;
     noiseLevel: number;
-    pwm: number;
+    pwmByte: number;
+    pwmDuty: number;
     pwmManual: boolean;
     cutoffBaseOct: number;
     kbd: number;
@@ -133,7 +297,7 @@ interface Derived {
     attackInc: number;
     decayMul: number;
     sustain: number;
-    releaseMul: number;
+    releaseCoeff: number;
     lfoInc: number;
     lfoDelaySec: number;
 }
@@ -224,7 +388,8 @@ class Voice {
                 this.env += (d.sustain - this.env) * 0.001;
                 break;
             case Stage.Release:
-                this.env *= d.releaseMul;
+                this.env += (-JUNO_CALIBRATION.releaseUndershoot - this.env) * d.releaseCoeff;
+                if (this.env < 0) this.env = 0;
                 break;
         }
         const gateTarget = this.gate ? 1 : 0;
@@ -258,9 +423,8 @@ class Voice {
             mix += saw * d.sawOn;
         }
         if (d.pulseOn) {
-            const width = d.pwmManual ? d.pwm : d.pwm * (lfo + 1) * 0.5;
-            const duty =
-                JUNO_CALIBRATION.pwmMinDuty + (JUNO_CALIBRATION.pwmMaxDuty - JUNO_CALIBRATION.pwmMinDuty) * width;
+            const width = d.pwmManual ? 0 : d.pwmByte * (lfo + 1) * 0.5;
+            const duty = d.pwmManual ? d.pwmDuty : curve(JUNO_CALIBRATION.pwmDuty, width);
             let pulse = this.phase < duty ? 1 : -1;
             pulse += polyBlep(this.phase, dt);
             let t2 = this.phase - duty;
@@ -281,7 +445,8 @@ class Voice {
 
         // VCF: 4 one-pole TPT stages with saturating feedback, 2× oversampled.
         const envLevel = this.env;
-        const cutoffOct = d.cutoffBaseOct + d.kbd * Math.log2(freq / C1_HZ) + d.envOct * envLevel + d.lfoOct * lfo;
+        const kbdOct = (d.kbd * (this.note - JUNO_CALIBRATION.vcfKbdPivot)) / 12;
+        const cutoffOct = d.cutoffBaseOct + kbdOct + d.envOct * envLevel + d.lfoOct * lfo;
         const fs2 = sr * 2;
         const fc = Math.max(20, Math.min(Math.pow(2, cutoffOct), 0.41 * fs2));
         const g = Math.tan((Math.PI * fc) / fs2);
@@ -327,7 +492,7 @@ export class JunoEngine {
     // LFO
     private lfoPhase = 0;
     private lfoFade = 0;
-    private lfoFadeInc = 1;
+    private lfoFadeCoeff = 1;
 
     // HPF
     private hpfLp = new OnePole();
@@ -360,31 +525,32 @@ export class JunoEngine {
         const c = JUNO_CALIBRATION;
         const sr = this.sampleRate;
         const p = this.patch;
-        const t60 = (sec: number) => Math.exp(Math.log(1e-3) / (sec * sr));
         this.d = {
             octaveShift: [-12, 0, 12][p.octave],
             sawOn: p.saw ? c.sawGain : 0,
             pulseOn: p.pulse ? c.pulseGain : 0,
-            subLevel: norm(p.dcoSub) * c.subGain,
-            noiseLevel: norm(p.dcoNoise) * c.noiseGain,
-            pwm: Math.min(p.dcoPwm, c.pwmFullScale) / c.pwmFullScale,
+            subLevel: curve(c.subCurve, p.dcoSub) * c.subGain,
+            noiseLevel: curve(c.noiseCurve, p.dcoNoise) * c.noiseGain,
+            pwmByte: p.dcoPwm,
+            pwmDuty: curve(c.pwmDuty, p.dcoPwm),
             pwmManual: p.pwmManual,
-            cutoffBaseOct: Math.log2(expMap(norm(p.vcfFreq), c.vcfMinHz, c.vcfMaxHz)),
-            kbd: norm(p.vcfKbd),
-            envOct: norm(p.vcfEnv) * c.vcfEnvOctaves * (p.vcfEnvInvert ? -1 : 1),
+            cutoffBaseOct: Math.log2(curve(c.vcfHz, p.vcfFreq, true)),
+            kbd: norm(p.vcfKbd) * c.vcfKbdFull,
+            envOct: p.vcfEnv * c.vcfEnvOctavesPerStep * (p.vcfEnvInvert ? -1 : 1),
             lfoOct: norm(p.vcfLfo) * c.vcfLfoOctaves,
             resonance: norm(p.vcfRes) * c.resonanceMax,
-            dcoLfoSemis: norm(p.dcoLfo) * c.dcoLfoSemitones,
-            vcaGain: Math.pow(10, ((norm(p.vcaLevel) - 0.5) * 20) / 20),
+            dcoLfoSemis: curve(c.dcoLfoSemis, p.dcoLfo),
+            vcaGain: c.outputGain * Math.pow(10, ((p.vcaLevel - 64) * c.vcaDbPerStep) / 20),
             vcaGate: p.vcaGate,
-            attackInc: 1 / (expMap(norm(p.envA), c.attackMinSec, c.attackMaxSec) * sr),
-            decayMul: t60(expMap(norm(p.envD), c.decayMinSec, c.decayMaxSec)),
-            sustain: norm(p.envS),
-            releaseMul: t60(expMap(norm(p.envR), c.releaseMinSec, c.releaseMaxSec)),
-            lfoInc: expMap(norm(p.lfoRate), c.lfoMinHz, c.lfoMaxHz) / sr,
-            lfoDelaySec: norm(p.lfoDelay) * c.lfoDelayMaxSec,
+            attackInc: 1 / (curve(c.attackSec, p.envA, true) * sr),
+            decayMul: Math.exp(-1 / (curve(c.decayTau, p.envD, true) * sr)),
+            sustain: curve(c.sustain, p.envS),
+            releaseCoeff: 1 - Math.exp(-1 / (curve(c.releaseTau, p.envR, true) * sr)),
+            lfoInc: curve(c.lfoHz, p.lfoRate, true) / sr,
+            lfoDelaySec: curve(c.lfoDelay90, p.lfoDelay),
         };
-        this.lfoFadeInc = this.d.lfoDelaySec > 0 ? 1 / (this.d.lfoDelaySec * sr) : 1;
+        // RC fade-in reaching 90% at the measured delay time: τ = t90 / ln 10.
+        this.lfoFadeCoeff = this.d.lfoDelaySec > 0 ? 1 - Math.exp(-Math.LN10 / (this.d.lfoDelaySec * sr)) : 1;
         this.hpfLp.setCutoff(p.hpf === 0 ? c.hpfBoostHz : p.hpf === 2 ? c.hpf2Hz : p.hpf === 3 ? c.hpf3Hz : 1000, sr);
     }
 
@@ -419,7 +585,7 @@ export class JunoEngine {
         if (this.lfoPhase >= 1) this.lfoPhase -= 1;
         let tri = 1 - 4 * Math.abs(this.lfoPhase - 0.5);
         tri = tri * (1.5 - 0.5 * tri * tri);
-        if (this.lfoFade < 1) this.lfoFade = Math.min(1, this.lfoFade + this.lfoFadeInc);
+        if (this.lfoFade < 1) this.lfoFade += (1 - this.lfoFade) * this.lfoFadeCoeff;
         return tri * this.lfoFade;
     }
 

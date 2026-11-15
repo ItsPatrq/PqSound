@@ -15,7 +15,8 @@
         "": "--------------------------------------------------------------------------",
         "build": "rm -rf dist && node -r ./utils/typescript6.js -r ts-node/register ./node_modules/webpack/bin/webpack.js --config src/webpackCfg/webpack.config.ts",
         "build:local": "rm -rf dist && cross-env NODE_ENV=local NODE_HOST=local node -r ./utils/typescript6.js -r ts-node/register ./node_modules/webpack/bin/webpack.js --config src/webpackCfg/webpack.config.ts",
-        "juno:reference": "node -r ./utils/typescript6.js -r ts-node/register/transpile-only tools/juno-reference/render-reference.ts"
+        "juno:reference": "node -r ./utils/typescript6.js -r ts-node/register/transpile-only tools/juno-reference/render-reference.ts",
+        "juno:fit": "node -r ./utils/typescript6.js -r ts-node/register/transpile-only tools/juno-reference/fit-calibration.ts"
     },
     "keywords": [
         "express",

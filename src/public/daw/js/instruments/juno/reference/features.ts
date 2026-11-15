@@ -26,7 +26,7 @@ export function mixToMono(channels: Float32Array[]): Float32Array {
     return out;
 }
 
-function fftMagnitudes(frame: Float32Array): Float32Array {
+export function fftPower(frame: Float32Array): Float32Array {
     const n = frame.length;
     const re = new Float64Array(n);
     const im = new Float64Array(n);
@@ -111,7 +111,7 @@ export function analyse(signal: Float32Array, sampleRate: number): Analysis {
             e += v * v;
         }
         power[f] = e / FRAME;
-        const mags = fftMagnitudes(buf);
+        const mags = fftPower(buf);
         const b = new Float64Array(BAND_CENTRES.length);
         edges.forEach(([lo, hi], k) => {
             const i0 = Math.max(1, Math.floor(lo / binHz));
