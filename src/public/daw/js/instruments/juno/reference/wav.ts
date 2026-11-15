@@ -49,11 +49,12 @@ export function readWav(buf: Uint8Array): Audio {
     throw new Error('WAVE file has no data chunk');
 }
 
-/** 16-bit PCM. */
-export function writeWav(audio: Audio): Uint8Array {
+/** 16-bit PCM, or 32-bit float (`float: true`) for un-normalised audio that may exceed full scale. */
+export function writeWav(audio: Audio, opts: { float?: boolean } = {}): Uint8Array {
     const ch = audio.channels.length;
     const frames = audio.channels[0].length;
-    const dataSize = frames * ch * 2;
+    const bytes = opts.float ? 4 : 2;
+    const dataSize = frames * ch * bytes;
     const buf = new Uint8Array(44 + dataSize);
     const view = new DataView(buf.buffer);
     const str = (o: number, s: string) => [...s].forEach((c, i) => (buf[o + i] = c.charCodeAt(0)));
@@ -62,18 +63,19 @@ export function writeWav(audio: Audio): Uint8Array {
     str(8, 'WAVE');
     str(12, 'fmt ');
     view.setUint32(16, 16, true);
-    view.setUint16(20, 1, true);
+    view.setUint16(20, opts.float ? 3 : 1, true);
     view.setUint16(22, ch, true);
     view.setUint32(24, audio.sampleRate, true);
-    view.setUint32(28, audio.sampleRate * ch * 2, true);
-    view.setUint16(32, ch * 2, true);
-    view.setUint16(34, 16, true);
+    view.setUint32(28, audio.sampleRate * ch * bytes, true);
+    view.setUint16(32, ch * bytes, true);
+    view.setUint16(34, bytes * 8, true);
     str(36, 'data');
     view.setUint32(40, dataSize, true);
     for (let f = 0; f < frames; f++) {
         for (let c = 0; c < ch; c++) {
-            const v = Math.max(-1, Math.min(1, audio.channels[c][f]));
-            view.setInt16(44 + (f * ch + c) * 2, Math.round(v * 32767), true);
+            const p = 44 + (f * ch + c) * bytes;
+            if (opts.float) view.setFloat32(p, audio.channels[c][f], true);
+            else view.setInt16(p, Math.round(Math.max(-1, Math.min(1, audio.channels[c][f])) * 32767), true);
         }
     }
     return buf;

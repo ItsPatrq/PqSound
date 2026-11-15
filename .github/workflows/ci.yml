@@ -98,6 +98,9 @@ jobs:
       - name: Render reference audio
         run: npm run juno:reference
 
+      - name: Render calibration sweeps
+        run: npm run juno:reference -- --calibration
+
       - name: Compare against the reference
         env:
           JUNO_REFERENCE_REQUIRED: '1'

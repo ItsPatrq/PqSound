@@ -34,6 +34,8 @@ test.describe('Juno-106 instrument', () => {
                 }
             } as typeof AudioWorkletNode;
         });
+        // The fixture has already loaded the app; init scripts apply from the next navigation.
+        await dawPage.page.reload();
     });
 
     test('loads its worklet and sounds when a key is played', async ({ dawPage }) => {

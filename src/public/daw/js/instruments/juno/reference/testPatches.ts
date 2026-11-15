@@ -29,7 +29,7 @@ export interface TestPatch {
     hold: [number, number];
 }
 
-const base: JunoPatch = {
+export const TEST_BASE: JunoPatch = {
     ...defaultPatch,
     vcfFreq: 127,
     vcfRes: 0,
@@ -60,38 +60,38 @@ const base: JunoPatch = {
 const single = (note: number): TestNote[] => [{ note, onBlock: 8, offBlock: 120 }];
 
 export const TEST_PATCHES: TestPatch[] = [
-    { name: 'saw-open', patch: { ...base }, notes: single(57), lengthBlocks: 172, hold: [0.4, 1.3] },
+    { name: 'saw-open', patch: { ...TEST_BASE }, notes: single(57), lengthBlocks: 172, hold: [0.4, 1.3] },
     {
         name: 'square',
-        patch: { ...base, saw: false, pulse: true, vcfFreq: 110 },
+        patch: { ...TEST_BASE, saw: false, pulse: true, vcfFreq: 110 },
         notes: single(45),
         lengthBlocks: 172,
         hold: [0.4, 1.3],
     },
     {
         name: 'pwm-lfo',
-        patch: { ...base, saw: false, pulse: true, dcoPwm: 90, pwmManual: false, lfoRate: 60, vcfFreq: 100 },
+        patch: { ...TEST_BASE, saw: false, pulse: true, dcoPwm: 90, pwmManual: false, lfoRate: 60, vcfFreq: 100 },
         notes: single(57),
         lengthBlocks: 258,
         hold: [0.4, 2.0],
     },
     {
         name: 'sub-bass',
-        patch: { ...base, dcoSub: 127, octave: 0, vcfFreq: 50, vcfRes: 40 },
+        patch: { ...TEST_BASE, dcoSub: 127, octave: 0, vcfFreq: 50, vcfRes: 40 },
         notes: single(48),
         lengthBlocks: 172,
         hold: [0.4, 1.3],
     },
     {
         name: 'pluck',
-        patch: { ...base, vcfFreq: 20, vcfEnv: 100, vcfRes: 60, envD: 50, envS: 0, envR: 30 },
+        patch: { ...TEST_BASE, vcfFreq: 20, vcfEnv: 100, vcfRes: 60, envD: 50, envS: 0, envR: 30 },
         notes: single(60),
         lengthBlocks: 172,
         hold: [0.1, 0.5],
     },
     {
         name: 'resonant',
-        patch: { ...base, vcfFreq: 64, vcfRes: 110, vcfKbd: 127 },
+        patch: { ...TEST_BASE, vcfFreq: 64, vcfRes: 110, vcfKbd: 127 },
         notes: single(48),
         lengthBlocks: 172,
         hold: [0.4, 1.3],
@@ -99,7 +99,7 @@ export const TEST_PATCHES: TestPatch[] = [
     {
         name: 'pad-chorus1',
         patch: {
-            ...base,
+            ...TEST_BASE,
             pulse: true,
             dcoPwm: 50,
             vcfFreq: 70,
@@ -116,35 +116,44 @@ export const TEST_PATCHES: TestPatch[] = [
     },
     {
         name: 'chorus2',
-        patch: { ...base, vcfFreq: 90, chorus: 2 },
+        patch: { ...TEST_BASE, vcfFreq: 90, chorus: 2 },
         notes: single(57),
         lengthBlocks: 258,
         hold: [0.4, 2.0],
     },
     {
         name: 'noise-hpf3',
-        patch: { ...base, saw: false, dcoNoise: 127, hpf: 3 },
+        patch: { ...TEST_BASE, saw: false, dcoNoise: 127, hpf: 3 },
         notes: single(60),
         lengthBlocks: 172,
         hold: [0.4, 1.3],
     },
     {
         name: 'vibrato',
-        patch: { ...base, dcoLfo: 60, lfoRate: 70, vcfFreq: 100 },
+        patch: { ...TEST_BASE, dcoLfo: 60, lfoRate: 70, vcfFreq: 100 },
         notes: single(69),
         lengthBlocks: 258,
         hold: [0.4, 2.0],
     },
     {
         name: 'gate-invenv',
-        patch: { ...base, pulse: true, vcaGate: true, vcfFreq: 80, vcfEnv: 60, vcfEnvInvert: true, envD: 60, envS: 30 },
+        patch: {
+            ...TEST_BASE,
+            pulse: true,
+            vcaGate: true,
+            vcfFreq: 80,
+            vcfEnv: 60,
+            vcfEnvInvert: true,
+            envD: 60,
+            envS: 30,
+        },
         notes: single(52),
         lengthBlocks: 172,
         hold: [0.4, 1.3],
     },
     {
         name: 'hpf0-boost',
-        patch: { ...base, dcoSub: 100, hpf: 0, vcfFreq: 80 },
+        patch: { ...TEST_BASE, dcoSub: 100, hpf: 0, vcfFreq: 80 },
         notes: single(40),
         lengthBlocks: 172,
         hold: [0.4, 1.3],
@@ -152,4 +161,13 @@ export const TEST_PATCHES: TestPatch[] = [
 ];
 
 export const blockToSample = (b: number) => b * BLOCK;
+
+/**
+ * MIDI tick for an event meant to land on block `b`. The reference converts
+ * ticks to samples in floating point, so tick N comes out as N − ε and, being
+ * truncated, falls into the *previous* 512-sample block, which it applies at
+ * that block's start: one block early. One tick (one sample) later truncates
+ * into the intended block, which it then applies at exactly blockToSample(b).
+ */
+export const blockToTick = (b: number) => b * BLOCK + 1;
 export const lengthSamples = (t: TestPatch) => blockToSample(t.lengthBlocks);
