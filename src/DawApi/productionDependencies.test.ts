@@ -26,7 +26,7 @@ const dependencies = new Set(Object.keys(pkg.dependencies));
 // `export ... from 'x'`, and top-level `const x = require('x')`. Type-only
 // imports are erased under transpile-only, so they never reach Node.
 const importPattern =
-    /^(?:(?:import|export)\s+(?!type\b)[\w$*\s{},]+?\s+from\s*|import\s+\w+\s*=\s*require\(|(?:const|let|var)\s+[\w$\s{},:]+=\s*require\(|import\s*)['"]([^'"]+)['"]/gm;
+    /^(?:(?:import|export)\s+(?!type\b)[\w$*\s{},]+?\s+from\s*|import\s+\w+\s*=\s*require\(|(?:const|let|var)\s+[\w$\s{},:]+=\s*require(?:\.resolve)?\(|import\s*)['"]([^'"]+)['"]/gm;
 
 const packageName = (specifier: string) =>
     specifier.startsWith('@') ? specifier.split('/').slice(0, 2).join('/') : specifier.split('/')[0];
@@ -38,10 +38,10 @@ const resolveLocal = (from: string, specifier: string): string | undefined => {
         .find((p) => fs.existsSync(p) && fs.statSync(p).isFile());
 };
 
-function walk(entry: string) {
+function walk(entries: string[]) {
     const seen = new Set<string>();
     const external = new Map<string, string>();
-    const queue = [entry];
+    const queue = [...entries];
     while (queue.length) {
         const file = queue.pop()!;
         if (seen.has(file)) continue;
@@ -60,12 +60,22 @@ function walk(entry: string) {
     return { files: [...seen].map((f) => path.relative(root, f)), external };
 }
 
+// `node -r <module>` preloads from the start script run before src/start.ts.
+// Local ones are walked like any source file; package ones are checked as-is.
+const preloads = [...pkg.scripts.start.matchAll(/(?:-r|--require)\s+(\S+)/g)].map(([, m]) => m);
+const localPreloads = preloads.filter((m) => m.startsWith('.')).map((m) => path.join(root, m));
+
 describe('production server dependencies', () => {
-    const { files, external } = walk(path.join(root, 'src/start.ts'));
+    const { files, external } = walk([path.join(root, 'src/start.ts'), ...localPreloads]);
+    preloads.filter((m) => !m.startsWith('.')).forEach((m) => external.set(packageName(m), 'package.json "start"'));
 
     it('reaches the server modules (guards against the walk silently finding nothing)', () => {
         expect(files).toEqual(expect.arrayContaining(['src/DawApi/DawApiServer.ts', 'src/webpackCfg/publicPath.ts']));
         expect(external.has('express')).toBe(true);
+        expect(external.has('ts-node')).toBe(true);
+        // TS7 ships no compiler API, so ts-node gets TS6's through this preload.
+        expect(files).toContain('utils/typescript6.js');
+        expect(external.has('@typescript/typescript6')).toBe(true);
     });
 
     it('loads no devDependency at boot', () => {

@@ -12,7 +12,7 @@
       "jest"
     ] /* Type declaration files to be included in compilation. WebMIDI types now ship in the TS DOM lib (@types/webmidi 3 is an empty stub). */,
     "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
-    "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
+    "moduleResolution": "bundler" /* node10 ('node') was removed in TS7; 'bundler' matches how webpack, Jest and ts-node actually resolve here, and is accepted by both TS6 and TS7. */,
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     "emitDecoratorMetadata": true,
     "importHelpers": true,
@@ -23,25 +23,23 @@
     "strict": true /* Enable all strict type-checking options. */,
     "outDir": "./dist/" /* Redirect output structure to the directory. */,
     "rootDir": "./" /* Explicit source root; TS6 (TS5011) requires this when 'outDir' is set. Repo root covers src plus root-level configs (.eslintrc.js, playwright) pulled in by 'include'. */,
-    "baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
     "paths": {
-      /* Mirrors the webpack aliases in src/webpackCfg/defaults.ts and the Jest moduleNameMapper in jest.config.js. Keep the three in sync. */
-      "actions/*": ["src/public/daw/js/actions/*"],
-      "slices/*": ["src/public/daw/js/slices/*"],
-      "components/*": ["src/public/daw/js/components/*"],
-      "containers/*": ["src/public/daw/js/containers/*"],
-      "engine/*": ["src/public/daw/js/engine/*"],
-      "constants/*": ["src/public/daw/js/constants/*"],
-      "instruments": ["src/public/daw/js/instruments"],
-      "instruments/*": ["src/public/daw/js/instruments/*"],
-      "plugins": ["src/public/daw/js/plugins"],
-      "plugins/*": ["src/public/daw/js/plugins/*"]
+      /* Mirrors the webpack aliases in src/webpackCfg/defaults.ts and the Jest moduleNameMapper in jest.config.js. Keep the three in sync. No baseUrl (removed in TS7), so targets must start with ./ */
+      "actions/*": ["./src/public/daw/js/actions/*"],
+      "slices/*": ["./src/public/daw/js/slices/*"],
+      "components/*": ["./src/public/daw/js/components/*"],
+      "containers/*": ["./src/public/daw/js/containers/*"],
+      "engine/*": ["./src/public/daw/js/engine/*"],
+      "constants/*": ["./src/public/daw/js/constants/*"],
+      "instruments": ["./src/public/daw/js/instruments"],
+      "instruments/*": ["./src/public/daw/js/instruments/*"],
+      "plugins": ["./src/public/daw/js/plugins"],
+      "plugins/*": ["./src/public/daw/js/plugins/*"]
     },
     "typeRoots": [
       "./types",
-      "node_modules/@types"
+      "./node_modules/@types"
     ] /* List of folders to include type definitions from. */,
-    "ignoreDeprecations": "6.0" /* Silence TS6 deprecation errors for 'moduleResolution: node' and 'baseUrl'; revisit before TS7. */,
     "strictNullChecks": true /* Enable strict null checks. */,
     "skipLibCheck": true /* Skip type checking of declaration files (avoids errors from third-party .d.ts). */,
     "allowJs": true /* Allow javascript files to be compiled. */

@@ -8,13 +8,14 @@ const styleMock = path.join(__dirname, 'src/__mocks__/styleMock.js');
 // cannot be required from a test — which is why the engine tests used to reach
 // for relative imports only. Keep the two lists in sync.
 module.exports = {
-    preset: 'ts-jest',
     testEnvironment: 'node',
     // Client sources are a mix of .ts/.tsx/.js/.jsx; ts-jest handles all of
     // them (tsconfig has allowJs). The default preset transforms .ts only,
     // which left alias-imported .js slices untransformed.
     transform: {
-        '^.+\\.[tj]sx?$': ['ts-jest', {}],
+        // ts-jest, loaded through a wrapper that gives it TS6's compiler API
+        // (TS7 has none). See utils/typescript6.js.
+        '^.+\\.[tj]sx?$': ['<rootDir>/utils/ts-jest.js', {}],
     },
     testMatch: ['<rootDir>/src/**/*.test.ts'],
     moduleNameMapper: {
